@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authserver.life.mapper.UserGroupMapper">
+
+    <resultMap id="usergroupMap" type="com.authserver.life.entity.UserGroup">
+        <id column="user_group_id" property="userGroupId"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_group_code" property="userGroupCode"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="created_by_user" property="createdByUser"/>
+        <result column="created_by_emp" property="createdByEmp"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by_user" property="updatedByUser"/>
+        <result column="updated_by_emp" property="updatedByEmp"/>
+        <result column="updated_time" property="updatedTime"/>
+    </resultMap>
+
+
+    <sql id="lifetime_user_group_column">
+        ${prefix}user_group_id,
+        ${prefix}user_id,
+        ${prefix}user_group_code,
+        ${prefix}tenant_id,
+        ${prefix}created_by_user,
+        ${prefix}created_by_emp,
+        ${prefix}created_time,
+        ${prefix}updated_by_user,
+        ${prefix}updated_by_emp,
+        ${prefix}updated_time
+    </sql>
+
+    <select id="page" resultType="com.authserver.life.entity.UserGroup">
+        SELECT
+        <include refid="lifetime_user_group_column">
+            <property name="prefix" value="t1."/>
+        </include>
+        FROM lifetime_user_group t1
+    </select>
+
+</mapper>

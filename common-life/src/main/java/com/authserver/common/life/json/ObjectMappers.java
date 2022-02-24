@@ -1,6 +1,6 @@
-package com.authserver.common.json;
+package com.authserver.common.life.json;
 
-import com.authserver.common.jwt.Jwts;
+import com.authserver.common.life.jwt.Jwts;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers;

@@ -1,6 +1,6 @@
-package com.authserver.common.entity;
+package com.authserver.common.life.entity;
 
-import com.authserver.common.jwt.Jwts;
+import com.authserver.common.life.jwt.Jwts;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

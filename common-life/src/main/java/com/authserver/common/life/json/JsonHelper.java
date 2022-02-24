@@ -1,4 +1,4 @@
-package com.authserver.common.json;
+package com.authserver.common.life.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

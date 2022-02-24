@@ -1,9 +1,9 @@
-package com.authserver.common.filter;
+package com.authserver.common.life.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.authserver.common.entity.UserDetail;
-import com.authserver.common.json.JsonHelper;
-import com.authserver.common.jwt.Jwts;
+import com.authserver.common.life.entity.UserDetail;
+import com.authserver.common.life.json.JsonHelper;
+import com.authserver.common.life.jwt.Jwts;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import lombok.extern.slf4j.Slf4j;

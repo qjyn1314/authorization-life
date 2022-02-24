@@ -1,7 +1,9 @@
-package com.authserver.common.security;
+package com.authserver.common.life.security;
 
-import com.authserver.common.filter.JwtAuthenticationFilter;
+import com.authserver.common.life.UserDetailsServiceImpl;
+import com.authserver.common.life.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +27,6 @@ import org.springframework.web.filter.CorsFilter;
  * EnableGlobalMethodSecurity 注解详解：
  * https://blog.csdn.net/chihaihai/article/details/104678864
  */
-@Component
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -102,6 +103,12 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
 
     @Configuration
     static class SecurityComponent {
+
+        @Bean
+        @ConditionalOnMissingBean
+        public UserDetailsService userDetailsService(){
+            return new UserDetailsServiceImpl();
+        }
 
         /**
          * 强散列哈希加密实现

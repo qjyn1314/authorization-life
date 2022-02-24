@@ -1,4 +1,4 @@
-package com.authserver.common.jwt;
+package com.authserver.common.life.jwt;
 
 /**
  * jwt通用异常

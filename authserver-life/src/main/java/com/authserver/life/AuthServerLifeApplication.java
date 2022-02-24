@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * <p>
@@ -13,6 +14,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
  * @author wangjunming
  * @since 2022/2/21 20:30
  */
+@ComponentScan(basePackages = "com.authserver")
 @EnableDiscoveryClient
 @SpringBootApplication
 public class AuthServerLifeApplication {

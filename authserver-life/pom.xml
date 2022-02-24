@@ -17,8 +17,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.authserver.lifetime</groupId>
+            <artifactId>common-life</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -43,16 +43,8 @@
         </dependency>
         <!--以上为redis中的引用-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -73,6 +65,11 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
+            <!--源码包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
             <!--jar包-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -13,7 +13,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
  * @author wangjunming
  * @since 2022/2/21 20:30
  */
-@RefreshScope
 @EnableDiscoveryClient
 @SpringBootApplication
 public class AuthServerLifeApplication {

@@ -1,22 +1,21 @@
 package com.authserver.life.security.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import com.authserver.life.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * <p>
- *    查询用户信息
- * </p>
- *
- * @author wangjunming
- * @since 2022/2/23 16:40
+ * 查询用户信息
  */
 @Service
-public class AuthUserServiceImpl implements UserDetailService {
+public class AuthUserServiceImpl implements UserDetailsService {
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+
+
         return null;
     }
+
 }

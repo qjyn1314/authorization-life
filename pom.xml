@@ -11,6 +11,7 @@
 
     <properties>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <authserver-lifetime.version>1.0.0</authserver-lifetime.version>
@@ -30,8 +31,9 @@
     </properties>
 
     <modules>
-        <module>authserver-life</module>
         <module>gateway-life</module>
+        <module>common-life</module>
+        <module>authserver-life</module>
         <module>use-life</module>
     </modules>
 
@@ -48,6 +50,10 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -68,6 +74,16 @@
             <dependency>
                 <groupId>com.authserver.lifetime</groupId>
                 <artifactId>gateway-life</artifactId>
+                <version>${authserver-lifetime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authserver.lifetime</groupId>
+                <artifactId>common-life</artifactId>
+                <version>${authserver-lifetime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authserver.lifetime</groupId>
+                <artifactId>use-life</artifactId>
                 <version>${authserver-lifetime.version}</version>
             </dependency>
             <dependency>
@@ -164,6 +180,20 @@
         <finalName>${project.artifactId}</finalName>
         <pluginManagement>
             <plugins>
+                <!--源码包-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <!--jar包-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

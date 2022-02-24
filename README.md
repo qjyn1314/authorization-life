@@ -10,6 +10,13 @@
 
 #### spring-security深度整合的模块，颁发token。
 
+
+## 公共模块：
+
+### common-life
+
+#### 每个业务工程都将引用此工程，每次请求都将获取gateway中解析(前端请求头的token)过后的的jwt-token。
+
 ## 网关：
 
 ### gateway-life

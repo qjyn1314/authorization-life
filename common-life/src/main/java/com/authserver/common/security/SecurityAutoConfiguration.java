@@ -1,5 +1,6 @@
-package com.authserver.life.security;
+package com.authserver.common.security;
 
+import com.authserver.common.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,6 +26,7 @@ import org.springframework.web.filter.CorsFilter;
  * https://blog.csdn.net/chihaihai/article/details/104678864
  */
 @Component
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -31,6 +35,11 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
     private CorsFilter corsFilter;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public static final String LOGIN_URL = "/login";
+
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -66,13 +75,13 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling();
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+                .exceptionHandling()
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN_URL));
         // 过滤器顺序为 sessionFilter -> wechatFilter -> jwtFilter -> UsernamePasswordFilter
         // 添加jwtfilter
-//        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加CORS filter
-//        httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationFilter.class);
         httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
     }
 
@@ -100,6 +109,11 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
         @Bean
         public BCryptPasswordEncoder bCryptPasswordEncoder() {
             return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public JwtAuthenticationFilter jwtAuthenticationFilter(){
+            return new JwtAuthenticationFilter();
         }
 
         /**

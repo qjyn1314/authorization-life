@@ -1,4 +1,4 @@
-# authserver-lifetime-ui
+# authserver-life-ui
 
 ## Project setup
 ```

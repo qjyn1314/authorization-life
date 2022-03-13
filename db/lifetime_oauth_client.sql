@@ -1,5 +1,17 @@
 /*
-    oauth2相关登录表
+ Navicat Premium Data Transfer
+
+ Source Server         : 本地数据库-5.7-123456-3306
+ Source Server Type    : MySQL
+ Source Server Version : 50735
+ Source Host           : 127.0.0.1:3306
+ Source Schema         : authserver-lifetime
+
+ Target Server Type    : MySQL
+ Target Server Version : 50735
+ File Encoding         : 65001
+
+ Date: 06/03/2022 10:59:10
 */
 
 SET NAMES utf8mb4;
@@ -27,7 +39,7 @@ CREATE TABLE `lifetime_oauth_client`  (
   `updated_by_emp` bigint(20) NULL DEFAULT 0 COMMENT '最后更新员工',
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   PRIMARY KEY (`oauth_client_id`) USING BTREE,
-  UNIQUE INDEX `ziam_oauth_client_u1`(`client_id`) USING BTREE
+  UNIQUE INDEX `lifetime_oauth_client_u1`(`client_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'oauth客户端表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -63,9 +75,9 @@ CREATE TABLE `lifetime_user`  (
   `updated_by_emp` bigint(20) NULL DEFAULT 0 COMMENT '最后更新员工',
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   PRIMARY KEY (`user_id`) USING BTREE,
-  UNIQUE INDEX `ziam_user_u1`(`username`) USING BTREE,
-  UNIQUE INDEX `ziam_user_u2`(`phone`) USING BTREE,
-  UNIQUE INDEX `ziam_user_u3`(`email`) USING BTREE
+  UNIQUE INDEX `lifetime_user_u1`(`username`) USING BTREE,
+  UNIQUE INDEX `lifetime_user_u2`(`phone`) USING BTREE,
+  UNIQUE INDEX `lifetime_user_u3`(`email`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -84,7 +96,7 @@ CREATE TABLE `lifetime_user_group`  (
   `updated_by_emp` bigint(20) NULL DEFAULT 0 COMMENT '最后更新员工',
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   PRIMARY KEY (`user_group_id`) USING BTREE,
-  UNIQUE INDEX `ziam_user_group_u1`(`user_id`, `user_group_code`) USING BTREE
+  UNIQUE INDEX `lifetime_user_group_u1`(`user_id`, `user_group_code`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户组表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

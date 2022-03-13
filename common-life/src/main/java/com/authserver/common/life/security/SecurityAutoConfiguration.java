@@ -17,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -73,12 +72,16 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/druid/**").permitAll()
+                //密码登录
+                .antMatchers("/auth/login").permitAll()
+                //短信登录
+                .antMatchers("/login/sms").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN_URL));
-        // 过滤器顺序为 sessionFilter -> wechatFilter -> jwtFilter -> UsernamePasswordFilter
+        // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加CORS filter
@@ -111,13 +114,16 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
         }
 
         /**
-         * 强散列哈希加密实现
+         * 使用推荐密码策略
          */
         @Bean
         public BCryptPasswordEncoder bCryptPasswordEncoder() {
             return new BCryptPasswordEncoder();
         }
 
+        /**
+         * 此处将配置每次只执行一次的filter
+         */
         @Bean
         public JwtAuthenticationFilter jwtAuthenticationFilter(){
             return new JwtAuthenticationFilter();

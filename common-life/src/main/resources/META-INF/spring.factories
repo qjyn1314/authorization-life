@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.authserver.common.life.security.SecurityAutoConfiguration,\
+  com.authserver.common.life.redis.RedisAutoConfiguration

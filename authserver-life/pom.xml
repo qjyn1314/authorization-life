@@ -20,7 +20,7 @@
             <groupId>com.authserver.lifetime</groupId>
             <artifactId>common-life</artifactId>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
         </dependency>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
-        </dependency>-->
+        </dependency>
         <!--以上为security+oauth2-->
     </dependencies>
 

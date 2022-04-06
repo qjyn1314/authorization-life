@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
@@ -58,6 +59,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             log.debug("User '" + username + "' not found");
             throw notFound;
         } catch (InternalAuthenticationServiceException ex) {
+            log.error("在自定义passwordAuthProvider的父类中验证失败，",ex);
             throw ex;
         }
     }

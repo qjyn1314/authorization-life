@@ -26,10 +26,12 @@ public class RedisAutoConfiguration {
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper mapper = ObjectMappers.configMapper();
         jackson2JsonRedisSerializer.setObjectMapper(mapper);
+
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         template.setKeySerializer(stringRedisSerializer);
         template.setStringSerializer(stringRedisSerializer);
         template.setHashKeySerializer(stringRedisSerializer);
+
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
         template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setConnectionFactory(connectionFactory);

@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
+        log.info("jwt密钥是：{}", secret);
         verifier = Jwts.verifier(secret);
     }
 

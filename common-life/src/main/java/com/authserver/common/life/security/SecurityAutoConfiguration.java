@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -22,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * spring security配置
+ * spring security配置  在认证服务中需要排除此配置信息。即 exclude = {SecurityAutoConfiguration.class}
  * EnableGlobalMethodSecurity 注解详解：
  * https://blog.csdn.net/chihaihai/article/details/104678864
  */
@@ -34,7 +35,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private CorsFilter corsFilter;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -95,7 +96,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder);
+                .passwordEncoder(passwordEncoder);
     }
 
     @Bean
@@ -109,7 +110,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
 
         @Bean
         @ConditionalOnMissingBean
-        public UserDetailsService userDetailsService(){
+        public UserDetailsService userDetailsService() {
             return new UserDetailsServiceImpl();
         }
 
@@ -117,7 +118,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
          * 使用推荐密码策略
          */
         @Bean
-        public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        public PasswordEncoder bCryptPasswordEncoder() {
             return new BCryptPasswordEncoder();
         }
 
@@ -125,7 +126,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
          * 此处将配置每次只执行一次的filter
          */
         @Bean
-        public JwtAuthenticationFilter jwtAuthenticationFilter(){
+        public JwtAuthenticationFilter jwtAuthenticationFilter() {
             return new JwtAuthenticationFilter();
         }
 

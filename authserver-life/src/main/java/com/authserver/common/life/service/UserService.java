@@ -27,4 +27,12 @@ public interface UserService {
      */
     UserDetail createUserDetailByUser(UserDetails principal);
 
+    /**
+     * 锁定用户几小时
+     *
+     * @param userId 用户ID
+     * @param lockTime 锁定时间-单位：小时；
+     */
+    void lock(Long userId , Integer lockTime);
+
 }

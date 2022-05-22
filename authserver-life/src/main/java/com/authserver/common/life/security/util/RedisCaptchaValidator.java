@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 基于redis的验证码校验器
  */
-public class RedisCaptchaValidator {
+public final class RedisCaptchaValidator {
 
     private static final String CAPTCHA_CACHE_KEY = "auth-server:valid:captcha-code:{uuid}";
 

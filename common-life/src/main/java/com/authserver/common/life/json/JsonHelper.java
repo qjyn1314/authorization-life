@@ -17,7 +17,7 @@ public class JsonHelper {
 
     private final static ObjectMapper objectMapper = ObjectMappers.configMapper();
 
-    public static String writeValueAsString(Object value){
+    public static String writeValueAsString(Object value) {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
@@ -25,7 +25,7 @@ public class JsonHelper {
         }
     }
 
-    public static <T> T readValue(String content, Class<T> clazz){
+    public static <T> T readValue(String content, Class<T> clazz) {
         try {
             return objectMapper.readValue(content, clazz);
         } catch (IOException e) {
@@ -33,7 +33,7 @@ public class JsonHelper {
         }
     }
 
-    public static <T> T readValue(String content, JavaType valueType){
+    public static <T> T readValue(String content, JavaType valueType) {
         try {
             return objectMapper.readValue(content, valueType);
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class JsonHelper {
         }
     }
 
-    public static <T> T readValue(String content, TypeReference<T> valueTypeRef){
+    public static <T> T readValue(String content, TypeReference<T> valueTypeRef) {
         try {
             return objectMapper.readValue(content, valueTypeRef);
         } catch (IOException e) {
@@ -49,7 +49,7 @@ public class JsonHelper {
         }
     }
 
-    public static JsonNode readTree(String content){
+    public static JsonNode readTree(String content) {
         try {
             return objectMapper.readTree(content);
         } catch (JsonProcessingException e) {
@@ -57,7 +57,7 @@ public class JsonHelper {
         }
     }
 
-    public static TypeFactory getTypeFactory(){
+    public static TypeFactory getTypeFactory() {
         return objectMapper.getTypeFactory();
     }
 

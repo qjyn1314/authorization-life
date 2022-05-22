@@ -39,15 +39,15 @@ public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoin
         String query = uri.getQuery();
         String redirectUri = request.getParameter("redirect_uri");
         // 没有重定向参数则直接重定向到登录页面
-        if (StrUtil.isBlank(redirectUri)){
+        if (StrUtil.isBlank(redirectUri)) {
             redirectStrategy.sendRedirect(request, response, loginPath);
             return;
         }
         String url;
         // 存在重定向参数则拼接地址再重定向
-        if (StrUtil.isBlank(query)){
+        if (StrUtil.isBlank(query)) {
             url = loginPath + "?redirect_uri=" + URLUtil.encodeAll(redirectUri);
-        }else {
+        } else {
             url = loginPath + "&redirect_uri=" + URLUtil.encodeAll(redirectUri);
         }
         redirectStrategy.sendRedirect(request, response, url);

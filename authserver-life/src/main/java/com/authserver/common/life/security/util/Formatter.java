@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 字符串占位符拼接工具类
  */
-public class Formatter {
+public final class Formatter {
 
     private final String pattern;
     private final Map<String, Object> kvMap = new HashMap<>();

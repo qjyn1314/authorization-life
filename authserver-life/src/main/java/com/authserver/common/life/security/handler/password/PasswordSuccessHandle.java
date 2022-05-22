@@ -16,6 +16,6 @@ public class PasswordSuccessHandle implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("当前认证通过的信息是：{}", JSONUtil.toJsonStr(authentication));
+        log.debug("当前认证通过的信息是：{}", JSONUtil.toJsonStr(authentication));
     }
 }

@@ -3,6 +3,7 @@ package com.authserver.common.life.security;
 import com.authserver.common.life.filter.JwtAuthenticationFilter;
 import com.authserver.common.life.security.handler.sso.SsoFailureHandler;
 import com.authserver.common.life.security.handler.sso.SsoSuccessHandler;
+import com.authserver.common.life.security.service.RegisteredClientService;
 import com.authserver.common.life.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authserver.common.life.security.sso.UsernamePasswordAuthenticationProvider;
 import com.authserver.common.life.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -34,6 +36,8 @@ public class DefaultSecurityConfig {
     private UserService userService;
     @Autowired
     private OAuth2AuthorizationService authorizationService;
+    @Autowired
+    private RegisteredClientRepository registeredClientService;
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
@@ -72,8 +76,7 @@ public class DefaultSecurityConfig {
                 .failureHandler(new SsoFailureHandler());
         // 添加用户名密码认证
         http.authenticationProvider(usernamePasswordProvider);
-        // 过滤器顺序为 sessionFilter -> UsernamePasswordFilter
-        // 添加jwtfilter
+        // 添加jwtfilter  过滤器顺序为 jwtAuthenticationFilter -> UsernamePasswordFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -92,7 +95,7 @@ public class DefaultSecurityConfig {
     @Bean
     public AuthenticationProvider usernamePasswordProvider() {
         return new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder,
-                redisHelper, userService);
+                redisHelper, userService, registeredClientService);
     }
 
 //    @Bean

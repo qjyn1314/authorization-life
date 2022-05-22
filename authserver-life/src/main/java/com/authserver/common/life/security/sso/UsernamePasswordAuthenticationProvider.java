@@ -2,6 +2,7 @@ package com.authserver.common.life.security.sso;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import com.authserver.common.life.entity.User;
 import com.authserver.common.life.security.SecurityContant;
 import com.authserver.common.life.security.util.Formatter;
 import com.authserver.common.life.security.util.RedisCaptchaValidator;
@@ -17,9 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 用户名密码登录的校验。
@@ -37,15 +40,18 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, Object> redisHelper;
     private final UserService userService;
+    private final RegisteredClientRepository registeredClientService;
 
     public UsernamePasswordAuthenticationProvider(UserDetailsService userDetailsService,
                                                   PasswordEncoder passwordEncoder,
                                                   RedisTemplate<String, Object> redisHelper,
-                                                  UserService userService) {
+                                                  UserService userService,
+                                                  RegisteredClientRepository registeredClientService) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.redisHelper = redisHelper;
         this.userService = userService;
+        this.registeredClientService = registeredClientService;
     }
 
     @Override
@@ -59,7 +65,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             log.debug("User '" + username + "' not found");
             throw notFound;
         } catch (InternalAuthenticationServiceException ex) {
-            log.error("在自定义passwordAuthProvider的父类中验证失败，",ex);
+            log.error("在自定义passwordAuthProvider的父类中验证失败，", ex);
             throw ex;
         }
     }
@@ -99,7 +105,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             }
             if (passwordErrorCount >= 10) {
                 // 输错10次则锁定用户3小时
-//                userService.lock();
+                userService.lock(((User) userDetails).getUserId(), 3);
             } else {
                 // 未超过10次则密码错误累计次数+1
                 redisHelper.opsForValue().set(cacheKey, passwordErrorCount + 1);
@@ -107,18 +113,17 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             throw new BadCredentialsException("Bad credentials");
         }
         // 检查登录端是否与用户组匹配
-//        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails
-//                && StrUtil.isNotBlank(((CaptchaWebAuthenticationDetails) authenticationDetails).getClientId())) {
-//            CaptchaWebAuthenticationDetails clientIdDetails = (CaptchaWebAuthenticationDetails) authenticationDetails;
-//            String clientId = clientIdDetails.getClientId();
-//            RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientId);
-//            Assert.notNull(registeredClient, "未找到此 OauthClient 信息。");
-//            assert registeredClient != null;
-//            Set<String> allowedScopes = registeredClient.getScopes();
-//            boolean express = ((User) userDetails).getUserGroups().containsAll(allowedScopes);
-//            Assert.isTrue(express, () -> new InternalAuthenticationServiceException("账号或密码错误"));
-//
-//        }
+        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails
+                && StrUtil.isNotBlank(((CaptchaWebAuthenticationDetails) authenticationDetails).getClientId())) {
+            CaptchaWebAuthenticationDetails clientIdDetails = (CaptchaWebAuthenticationDetails) authenticationDetails;
+            String clientId = clientIdDetails.getClientId();
+            RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
+            Assert.notNull(registeredClient, "未找到此 OauthClient 信息。");
+            assert registeredClient != null;
+            Set<String> allowedScopes = registeredClient.getScopes();
+            boolean express = ((User) userDetails).getUserGroups().containsAll(allowedScopes);
+            Assert.isTrue(express, () -> new InternalAuthenticationServiceException("账号或密码错误"));
+        }
     }
 
     @Override

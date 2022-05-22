@@ -4,7 +4,7 @@
 //import cn.hutool.json.JSONUtil;
 //import com.authserver.common.life.Result;
 //import com.authserver.common.life.entity.UserDetail;
-//import com.authserver.common.life.entity.UserDetailHolder;
+//import com.authserver.common.life.entity.UserHelper;
 //import com.authserver.common.life.security.SecurityContant;
 //import com.authserver.common.life.security.util.Formatter;
 //import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@
 //        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 //        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 //        try {
-//            UserDetail userDetail = UserDetailHolder.getUserDetail();
+//            UserDetail userDetail = UserHelper.getUserDetail();
 //            log.debug("当前登录用户-UserDetail-是：" + userDetail);
 //            if (Objects.nonNull(userDetail)) {
 //                String userToken = userDetail.getToken();

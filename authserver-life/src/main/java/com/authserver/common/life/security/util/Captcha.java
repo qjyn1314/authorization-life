@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class Captcha {
+public final class Captcha {
 
     public static Captcha of(ShearCaptcha shearCaptcha, String uuid) {
         Captcha captcha = new Captcha();

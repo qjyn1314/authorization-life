@@ -1,13 +1,19 @@
 package com.authserver.common.life.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import com.authserver.common.life.entity.User;
 import com.authserver.common.life.entity.UserDetail;
+import com.authserver.common.life.entity.UserHelper;
 import com.authserver.common.life.mapper.UserMapper;
 import com.authserver.common.life.service.UserService;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 /**
  * 用户表
@@ -23,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 登录查询使用
+     *
      * @param username 手机号/邮箱
      */
     @Override
@@ -41,5 +48,25 @@ public class UserServiceImpl implements UserService {
     public UserDetail createUserDetailByUser(UserDetails principal) {
 
         return null;
+    }
+
+    /**
+     * 锁定用户几小时
+     *
+     * @param userId   用户ID
+     * @param lockTime 锁定时间-单位：小时；
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void lock(Long userId, Integer lockTime) {
+        User user = mapper.selectOne(Wrappers.lambdaQuery(new User()).eq(User::getUserId, userId));
+        Assert.notNull(user, "未找到该用户信息");
+        UserHelper.setUserDetail(UserDetail.systemUser());
+        LambdaUpdateWrapper<User> updateWrapper = Wrappers.lambdaUpdate(new User())
+                .eq(User::getUserId, user)
+                .set(User::getLockedFlag, Boolean.TRUE)
+                .set(User::getLockedTime, LocalDateTime.now().plusHours(lockTime));
+        mapper.update(user, updateWrapper);
+        UserHelper.setUserDetail(null);
     }
 }

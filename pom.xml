@@ -221,6 +221,11 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.basepom.maven</groupId>
+                    <artifactId>duplicate-finder-maven-plugin</artifactId>
+                    <version>1.5.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

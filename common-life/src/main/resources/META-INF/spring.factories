@@ -1,3 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.authserver.common.life.security.SecurityAutoConfiguration,\
-  com.authserver.common.life.redis.RedisAutoConfiguration
+  com.authserver.common.security.SecurityAutoConfiguration,\
+  com.authserver.common.redis.RedisAutoConfiguration,\
+  com.authserver.common.security.SecurityAutoComponent,\
+  com.authserver.common.config.MybatisPlusConfig

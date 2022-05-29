@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.authserver.common.life.mapper.OauthClientMapper">
+<mapper namespace="com.authserver.life.mapper.OauthClientMapper">
 
-    <resultMap id="oauthclientMap" type="com.authserver.common.life.entity.OauthClient">
+    <resultMap id="oauthclientMap" type="com.authserver.life.entity.OauthClient">
         <id column="oauth_client_id" property="oauthClientId"/>
         <result column="client_id" property="clientId"/>
         <result column="client_secret" property="clientSecret"/>
@@ -41,7 +41,7 @@
         ${prefix}updated_time
     </sql>
 
-    <select id="page" resultType="com.authserver.common.life.entity.OauthClient">
+    <select id="page" resultType="com.authserver.life.entity.OauthClient">
         SELECT
         <include refid="lifetime_oauth_client_column">
             <property name="prefix" value="t1."/>

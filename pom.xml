@@ -12,24 +12,25 @@
     <properties>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <duplicate-finder.version>1.5.1</duplicate-finder.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <authserver-lifetime.version>1.0.0</authserver-lifetime.version>
 
-        <spring-boot.version>2.6.1</spring-boot.version>
-        <spring-cloud.version>2021.0.0</spring-cloud.version>
-        <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
+        <spring-boot.version>2.6.3</spring-boot.version>
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
 
         <spring-security.version>5.6.1</spring-security.version>
-        <nimbus-jose-jwt.version>9.19</nimbus-jose-jwt.version>
+        <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
         <oauth2-oidc-sdk.version>9.27</oauth2-oidc-sdk.version>
-        <oauth2-authorization-server.version>0.2.2</oauth2-authorization-server.version>
+        <oauth2-authorization-server.version>0.2.3</oauth2-authorization-server.version>
 
-        <mybatis-plus.version>3.4.3.3</mybatis-plus.version>
-        <druid.version>1.2.6</druid.version>
+        <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <druid.version>1.2.9</druid.version>
 
-        <fastjson.version>1.2.75</fastjson.version>
-        <hutool.version>5.5.4</hutool.version>
+        <fastjson.version>2.0.5</fastjson.version>
+        <hutool.version>5.8.2</hutool.version>
     </properties>
 
     <modules>
@@ -213,6 +214,13 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring-boot.version}</version>
+                    <!--
+                    配置参考：
+                    https://blog.csdn.net/tian830937/article/details/119525273
+                    -->
+                    <configuration>
+                        <addResources>true</addResources>
+                    </configuration>
                     <executions>
                         <execution>
                             <goals>
@@ -224,7 +232,7 @@
                 <plugin>
                     <groupId>org.basepom.maven</groupId>
                     <artifactId>duplicate-finder-maven-plugin</artifactId>
-                    <version>1.5.1</version>
+                    <version>${duplicate-finder.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

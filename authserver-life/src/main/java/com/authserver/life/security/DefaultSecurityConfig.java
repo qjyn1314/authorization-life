@@ -45,10 +45,22 @@ public class DefaultSecurityConfig {
                                                           AuthenticationProvider usernamePasswordProvider)
             throws Exception {
         http
-                // 禁用csrf
+                // 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
                 .csrf().disable()
                 // 使用session
+                /*
+                Spring Security下的枚举SessionCreationPolicy,管理session的创建策略
+                ALWAYS
+                    总是创建HttpSession
+                IF_REQUIRED
+                    Spring Security只会在需要时创建一个HttpSession
+                NEVER
+                    Spring Security不会创建HttpSession，但如果它已经存在，将可以使用HttpSession
+                STATELESS
+                    Spring Security永远不会创建HttpSession，它不会使用HttpSession来获取SecurityContext
+                 */
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+
                 .and()
                 .authorizeRequests()
                 // 无需认证即可访问
@@ -63,17 +75,22 @@ public class DefaultSecurityConfig {
 
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
+
                 .and()
                 .logout()
                 .logoutUrl("/auth/logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
 //                .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
+
                 .and()
                 .formLogin()
                 .loginProcessingUrl(SecurityContant.SSO_LOGIN)
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())
                 .failureHandler(new SsoFailureHandler());
-        // 添加用户名密码认证
+//        http.apply()//此处可以添加短信验证码的配置。
+        // 添加自定义的用户名密码认证
         http.authenticationProvider(usernamePasswordProvider);
         // 添加jwtfilter  过滤器顺序为 jwtAuthenticationFilter -> UsernamePasswordFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

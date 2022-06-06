@@ -10,11 +10,11 @@
     <description>与 authorization-server 深度整合示例</description>
 
     <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <duplicate-finder.version>1.5.1</duplicate-finder.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
         <authserver-lifetime.version>1.0.0</authserver-lifetime.version>
 
         <spring-boot.version>2.6.3</spring-boot.version>

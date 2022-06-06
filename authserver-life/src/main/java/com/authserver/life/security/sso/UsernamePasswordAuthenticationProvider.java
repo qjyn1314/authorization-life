@@ -119,7 +119,6 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             String clientId = clientIdDetails.getClientId();
             RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
             Assert.notNull(registeredClient, "未找到此 OauthClient 信息。");
-            assert registeredClient != null;
             Set<String> allowedScopes = registeredClient.getScopes();
             boolean express = ((User) userDetails).getUserGroups().containsAll(allowedScopes);
             Assert.isTrue(express, () -> new InternalAuthenticationServiceException("账号或密码错误"));

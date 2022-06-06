@@ -31,7 +31,7 @@
 
 ## 前端工程：
 
-### authserver-lifetime-front
+### authserver-lifetime-ui
 
 #### 具体的使用authorization-server功能的页面。
 
@@ -39,6 +39,9 @@
 
 #### springboot 
 
+## oauth2.0的授权模式
 
+### OAuth 2.0 授权四种方式 ：https://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html 
+### OAuth2.0  授权模式总结 ：https://learnku.com/articles/20082 
 
 

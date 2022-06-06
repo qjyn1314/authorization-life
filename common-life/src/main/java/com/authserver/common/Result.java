@@ -21,4 +21,13 @@ public class Result<T> {
         this.desc = desc;
         this.data = data;
     }
+
+    public static <T> Result<T> ok(String desc, T data) {
+        return new Result<>(SUCCESS, desc, data);
+    }
+
+    public static <T> Result<T> ok(T data) {
+        return new Result<>(SUCCESS, SUCCESS_DESC, data);
+    }
+
 }

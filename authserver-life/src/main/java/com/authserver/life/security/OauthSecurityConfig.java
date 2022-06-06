@@ -1,12 +1,12 @@
 package com.authserver.life.security;
 
+import com.authserver.common.security.LoginUrlAuthenticationEntryPoint;
 import com.authserver.life.security.handler.password.PasswordSuccessHandle;
 import com.authserver.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authserver.life.security.service.RedisOAuth2AuthorizationService;
 import com.authserver.life.security.service.RegisteredClientService;
 import com.authserver.life.security.util.Jwks;
 import com.authserver.life.service.OauthClientService;
-import com.authserver.common.security.LoginUrlAuthenticationEntryPoint;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -17,6 +17,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -50,36 +51,37 @@ public class OauthSecurityConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        //OAuth2 配置信息
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
+        //OAuth2 配置类信息
+        OAuth2AuthorizationServerConfigurer<HttpSecurity> authServerConfig = new OAuth2AuthorizationServerConfigurer<>();
 
-
-        authorizationServerConfigurer.authorizationEndpoint(oAuth2AuthorizationEndpointConfigurer ->
-
-                        oAuth2AuthorizationEndpointConfigurer
-
+        authServerConfig
+                //配置授权
+                .authorizationEndpoint(endpointConfigurer ->
+                        endpointConfigurer
+                                //配置请求成功的处理类
                                 .authorizationResponseHandler(new PasswordSuccessHandle())
+                                //client认证授权，处理类
+//                                .authenticationProvider()
+                );
 
-                //添加
-//                        .authenticationProvider()
+        //路径匹配器
+        RequestMatcher matcher = authServerConfig.getEndpointsMatcher();
 
-        );
-
-
-        RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
-
-        http.requestMatcher(endpointsMatcher)
-
+        http.requestMatcher(matcher)
+                //所有的请求都需要认证
                 .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
-
-                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
-
-                .apply(authorizationServerConfigurer);
-
-        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+                // 跨站请求伪造 ，参考：https://www.jianshu.com/p/e825e67fcf28
+                .csrf(csrf -> csrf.ignoringRequestMatchers(matcher))
+                //将oauth2.0的配置托管给HttpSecurity
+                .apply(authServerConfig);
+        // 配置 异常处理
+        http.exceptionHandling()
+                //当未登录的情况下 该如何跳转。
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
 //        http.formLogin(Customizer.withDefaults());
-        http.formLogin();
+//        http.formLogin();
         return http.build();
     }
 

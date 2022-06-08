@@ -1,4 +1,4 @@
-package com.authserver.common.jwt;
+package com.authserver.start.jwt;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;

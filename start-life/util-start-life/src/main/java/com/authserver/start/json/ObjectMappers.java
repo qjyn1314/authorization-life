@@ -1,6 +1,6 @@
-package com.authserver.common.json;
+package com.authserver.start.json;
 
-import com.authserver.common.jwt.Jwts;
+import com.authserver.start.jwt.Jwts;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;

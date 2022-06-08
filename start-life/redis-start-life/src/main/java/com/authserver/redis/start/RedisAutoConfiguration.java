@@ -1,6 +1,6 @@
-package com.authserver.common.redis;
+package com.authserver.redis.start;
 
-import com.authserver.common.json.ObjectMappers;
+import com.authserver.start.json.ObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

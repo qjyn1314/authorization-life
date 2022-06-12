@@ -6,7 +6,7 @@ spring:
       server-addr: 127.0.0.1:8848
       username: nacos
       password: nacos
-      namespace: dev
+      namespace: public
       group: APPLICATION
       discovery:
         enabled: true

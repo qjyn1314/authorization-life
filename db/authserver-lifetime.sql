@@ -1,3 +1,7 @@
+/*
+包含初始化数据
+*/
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -24,7 +28,13 @@ CREATE TABLE `lifetime_oauth_client`  (
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   PRIMARY KEY (`oauth_client_id`) USING BTREE,
   UNIQUE INDEX `lifetime_oauth_client_u1`(`client_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'oauth客户端表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'oauth客户端表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of lifetime_oauth_client
+-- ----------------------------
+INSERT INTO `lifetime_oauth_client` VALUES (1, 'passport', '$2a$10$i/lf6pCgsuvoTacx1ZQB2u3NsutbvQay02Cnn6uyryWkxvZzJF1.S', 'password,authorization_code,refresh_token,implicit,client_credentials', 'TENANT', 'https://www.baidu.com', 86400, 108000, '', 0, 0, 0, '2021-11-11 17:44:10', 0, 0, '2021-11-11 17:44:10');
+INSERT INTO `lifetime_oauth_client` VALUES (2, 'ops', '3MMoCFo4nTNjRtGZ', 'password,authorization_code,refresh_token,implicit,client_credentials', 'OPS', 'https://music.163.com', 86400, 108000, '', 0, 0, 0, '2021-11-11 17:44:10', 0, 0, '2021-11-11 17:44:10');
 
 -- ----------------------------
 -- Table structure for lifetime_user
@@ -62,7 +72,12 @@ CREATE TABLE `lifetime_user`  (
   UNIQUE INDEX `lifetime_user_u1`(`username`) USING BTREE,
   UNIQUE INDEX `lifetime_user_u2`(`phone`) USING BTREE,
   UNIQUE INDEX `lifetime_user_u3`(`email`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of lifetime_user
+-- ----------------------------
+INSERT INTO `lifetime_user` VALUES (1, 'auth-server', 'AuthServer', 'zh_CN', 'CN', 1, '$2a$10$oLKyWtRGMkDaLXqjWOyoh.Y5K9RRwx0fL4Fvw5ejlOZ8jSz9xFuZm', '+86', '15321355715', 0, 'qjyn1314@163.com', 0, NULL, '2022-03-06 18:52:20', '2023-03-06 20:50:50', 1, 0, NULL, 1, 0, 1, 0, 0, '2022-03-06 18:52:20', 0, 0, '2022-03-06 18:52:20');
 
 -- ----------------------------
 -- Table structure for lifetime_user_group
@@ -81,6 +96,11 @@ CREATE TABLE `lifetime_user_group`  (
   `updated_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后更新时间',
   PRIMARY KEY (`user_group_id`) USING BTREE,
   UNIQUE INDEX `lifetime_user_group_u1`(`user_id`, `user_group_code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户组表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户组表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of lifetime_user_group
+-- ----------------------------
+INSERT INTO `lifetime_user_group` VALUES (1, 1, 'TENANT', 0, 0, 0, '2022-03-06 21:02:16', 0, 0, '2022-03-06 21:02:16');
 
 SET FOREIGN_KEY_CHECKS = 1;

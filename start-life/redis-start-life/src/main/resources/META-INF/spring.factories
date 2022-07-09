@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.authserver.redis.start.LifeRedisAutoConfiguration
+

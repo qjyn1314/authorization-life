@@ -18,20 +18,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>com.authserver.start</groupId>
+            <artifactId>util-start-life</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authserver.start</groupId>
             <artifactId>redis-start-life</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.authserver.start</groupId>
-            <artifactId>util-start-life</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

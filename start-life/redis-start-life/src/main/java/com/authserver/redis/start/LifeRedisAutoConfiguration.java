@@ -1,8 +1,10 @@
 package com.authserver.redis.start;
 
+import cn.hutool.json.JSONUtil;
 import com.authserver.start.json.ObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +23,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Slf4j
 @Configuration
-public class RedisAutoConfiguration {
+public class LifeRedisAutoConfiguration {
 
     @Bean
+    @Qualifier
     @ConditionalOnProperty("spring.redis.host")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, Object> lifeRedisTemplate(RedisConnectionFactory connectionFactory) {
+        log.info("RedisTemplate Init ...");
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper mapper = ObjectMappers.configMapper();
@@ -40,7 +44,7 @@ public class RedisAutoConfiguration {
         template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setConnectionFactory(connectionFactory);
         template.afterPropertiesSet();
-        log.info("RedisTemplate Init ...");
+        log.info("RedisTemplate Inited ...-{}", JSONUtil.toJsonStr(template));
         return template;
     }
 

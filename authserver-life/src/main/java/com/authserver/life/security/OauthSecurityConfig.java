@@ -79,7 +79,6 @@ public class OauthSecurityConfig {
                 //当未登录的情况下 该如何跳转。
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
 //                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
-
 //        http.formLogin(Customizer.withDefaults());
 //        http.formLogin();
         return http.build();

@@ -1,7 +1,6 @@
 package com.authserver.gateway.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authserver.gateway.service.RouteService;
 import com.authserver.start.contsant.ServerConstants;
@@ -23,8 +22,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,7 +33,6 @@ import java.util.stream.Collectors;
 public class RouteServiceImpl implements RouteDefinitionRepository, RouteService {
 
     private List<RouteDefinition> routes = Collections.emptyList();
-    private final Map<String, String> serviceMap = new ConcurrentHashMap<>(32);
     private final List<RouteDefinition> staticRoutes;
 
     @Autowired
@@ -74,14 +74,8 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
         log.debug("服务-instance-{}", JSONUtil.toJsonStr(instance.getMetadata()));
         String serviceName = instance.getMetadata().getOrDefault(ServerConstants.KEY_SERVICE_CODE, service);
         log.debug("服务-instance-serviceName-{}", serviceName);
-        String serviceId = instance.getServiceId();
-        log.debug("服务-instance-serviceId-{}", serviceId);
-
+        log.debug("服务-instance-serviceId-{}", instance.getServiceId());
         //此处将使用服务名称作为请求路径前缀进行处理请求。
-        if (StrUtil.equals(serviceId, service)){
-            log.warn("[DynamicRoute] [{}] not found serviceCode, will be use serviceName as the prefix of route", service);
-        }
-        serviceMap.put(serviceName, service);
         RouteDefinition routeDefinition = new RouteDefinition();
         routeDefinition.setId(service);
         routeDefinition.setUri(buildUri(service));

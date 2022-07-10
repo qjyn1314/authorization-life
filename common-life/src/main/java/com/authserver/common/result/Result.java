@@ -1,4 +1,4 @@
-package com.authserver.common;
+package com.authserver.common.result;
 
 import lombok.Data;
 

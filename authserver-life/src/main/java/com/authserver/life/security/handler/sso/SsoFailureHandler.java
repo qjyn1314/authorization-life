@@ -1,7 +1,7 @@
 package com.authserver.life.security.handler.sso;
 
 import cn.hutool.json.JSONUtil;
-import com.authserver.common.Result;
+import com.authserver.common.result.Result;
 import com.authserver.life.security.sso.ValiVerificationCodeException;
 import com.authserver.life.security.sso.VerificationCodeException;
 import com.authserver.life.security.vo.AuthCodeExceptionVO;

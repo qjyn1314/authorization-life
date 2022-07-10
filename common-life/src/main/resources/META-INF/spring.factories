@@ -1,4 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.authserver.common.security.SecurityAutoConfiguration,\
   com.authserver.common.security.SecurityAutoComponent,\
-  com.authserver.common.config.MybatisPlusConfig
+  com.authserver.common.config.MybatisPlusConfig,\
+  com.authserver.common.server.ServerAutoConfiguration,\
+  com.authserver.common.shutdown.ShutdownAutoConfiguration

@@ -1,6 +1,6 @@
 package com.authserver.life.security.service;
 
-import com.authserver.life.security.SecurityContant;
+import com.authserver.life.security.SecurityConstant;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
  */
 public final class RedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
-    private static final String AUTHORIZATION = SecurityContant.AUTHORIZATION;
+    private static final String AUTHORIZATION = SecurityConstant.AUTHORIZATION;
 
     private final RedisTemplate<String, String> redisTemplate;
 

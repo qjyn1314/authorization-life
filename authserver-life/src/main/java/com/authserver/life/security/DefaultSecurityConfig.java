@@ -85,7 +85,7 @@ public class DefaultSecurityConfig {
 
                 .and()
                 .formLogin()
-                .loginProcessingUrl(SecurityContant.SSO_LOGIN)
+                .loginProcessingUrl(SecurityConstant.SSO_LOGIN)
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())
                 .failureHandler(new SsoFailureHandler());

@@ -5,7 +5,7 @@ package com.authserver.life.security;
  * 权限常量类
  * </p>
  */
-public final class SecurityContant {
+public final class SecurityConstant {
     //-----------------------------------
     public static final String USER_DETAIL = "auth-server:auth:user:{token}";
     public static final String AUTH_PERM = "auth-server:auth:perm:{serviceName}:{httpMethod}";
@@ -18,7 +18,7 @@ public final class SecurityContant {
     //-----------------------------------
     public static final String AUTHORIZATION = "auth-server:auth:oauth2:authorization";
     public static final String AUTHORIZATION_CONSENT = "auth-server:auth:oauth2:authorization-consent";
-
+    //-----------------------------------
     public static final String ISSUER = "http://auth-server.com";
     public static final String IMPLICIT_REDIRECT_URI_FORMAT = "{redirectUri}" +
             "#access_token={accessToken}" +
@@ -26,6 +26,7 @@ public final class SecurityContant {
             "&expires_in={expiresIn}" +
             "&state={state}" +
             "&scope={scope}";
+    //-----------------------------------
     public static final String MOBILE_KEY = "phone";
     public static final String PHONE_LOGIN = "phone-login";
 

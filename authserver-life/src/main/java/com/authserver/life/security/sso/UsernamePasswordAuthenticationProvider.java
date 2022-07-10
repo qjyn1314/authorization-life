@@ -3,7 +3,7 @@ package com.authserver.life.security.sso;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authserver.life.entity.User;
-import com.authserver.life.security.SecurityContant;
+import com.authserver.life.security.SecurityConstant;
 import com.authserver.life.security.util.Formatter;
 import com.authserver.life.security.util.RedisCaptchaValidator;
 import com.authserver.life.service.UserService;
@@ -34,7 +34,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
     public static final String CAPTCHA_CODE = "captchaCode";
     public static final String CLIENT_ID = "client_id";
 
-    private static final String PASSWORD_ERROR_COUNT = SecurityContant.PASSWORD_ERROR_COUNT;
+    private static final String PASSWORD_ERROR_COUNT = SecurityConstant.PASSWORD_ERROR_COUNT;
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;

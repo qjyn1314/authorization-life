@@ -39,7 +39,7 @@ public class LifeRedisAutoConfiguration {
     @Order(Integer.MIN_VALUE)
     @ConditionalOnProperty("spring.redis.host")
     public RedisTemplate<String, Object> lifeRedisTemplate(RedisConnectionFactory connectionFactory) {
-        log.info("RedisTemplate Init ...");
+        log.debug("RedisTemplate Init ...");
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper mapper = ObjectMappers.configMapper();
@@ -54,7 +54,7 @@ public class LifeRedisAutoConfiguration {
         template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setConnectionFactory(connectionFactory);
         template.afterPropertiesSet();
-        log.info("RedisTemplate Inited ...-{}", JSONUtil.toJsonStr(template));
+        log.debug("RedisTemplate Inited ...-{}", JSONUtil.toJsonStr(template));
         return template;
     }
 
@@ -87,10 +87,12 @@ public class LifeRedisAutoConfiguration {
      */
     @Bean(destroyMethod = "shutdown")
     public ScheduledExecutorService scheduledRedisListenerExecutor() {
-        log.info("Init scheduledRedisListenerExecutor corePoolSize ：{}", ExecutorManager.getCpuProcessors());
-        return new ScheduledThreadPoolExecutor(ExecutorManager.getCpuProcessors(),
+        log.debug("Init scheduledRedisListenerExecutor corePoolSize ：{}", ExecutorManager.getCpuProcessors());
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(ExecutorManager.getCpuProcessors(),
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());
+        ExecutorManager.displayThreadPoolStatus(scheduledThreadPoolExecutor,SCHEDULED_TASKS_NAME);
+        return scheduledThreadPoolExecutor;
     }
 
     /**

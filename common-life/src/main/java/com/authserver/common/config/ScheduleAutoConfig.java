@@ -35,7 +35,8 @@ public class ScheduleAutoConfig implements SchedulingConfigurer {
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
-        scheduledTaskRegistrar.setScheduler(authScheduledExecutor());
+        scheduledTaskRegistrar.setScheduler(scheduledAuthExecutor());
+        log.info("Init Scheduled...");
     }
 
     /**
@@ -54,7 +55,7 @@ public class ScheduleAutoConfig implements SchedulingConfigurer {
      * 线程池中的线程名字：https://blog.csdn.net/u010648555/article/details/106137206
      */
     @Bean(destroyMethod = "shutdown")
-    public ScheduledExecutorService authScheduledExecutor() {
+    public ScheduledExecutorService scheduledAuthExecutor() {
         log.info("Init ScheduledExecutorService corePoolSize ：{}", CORE_POOL_SIZE);
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),

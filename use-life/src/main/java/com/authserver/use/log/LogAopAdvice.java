@@ -111,11 +111,11 @@ public class LogAopAdvice {
         final Signature signature = joinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         //日志注解
-//        LogAdvice logAdvice = methodSignature.getMethod().getAnnotation(LogAdvice.class);
-//        if (Objects.nonNull(logAdvice)) {
-//            String name = logAdvice.name();
-//            log.info("before advice LogAopAno = {}", name);
-//        }
+        LogAdvice logAdvice = methodSignature.getMethod().getAnnotation(LogAdvice.class);
+        if (Objects.nonNull(logAdvice)) {
+            String name = logAdvice.name();
+            log.info("before advice LogAopAno = {}", name);
+        }
     }
 
     /**

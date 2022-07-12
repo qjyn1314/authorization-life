@@ -56,7 +56,7 @@ public class ScheduleAutoConfig implements SchedulingConfigurer {
      */
     @Bean(destroyMethod = "shutdown")
     public ScheduledExecutorService scheduledAuthExecutor() {
-        log.info("Init ScheduledExecutorService corePoolSize ：{}", CORE_POOL_SIZE);
+        log.debug("Init ScheduledExecutorService corePoolSize ：{}", CORE_POOL_SIZE);
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());

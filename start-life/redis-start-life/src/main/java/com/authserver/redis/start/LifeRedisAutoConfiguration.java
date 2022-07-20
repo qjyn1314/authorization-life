@@ -58,6 +58,13 @@ public class LifeRedisAutoConfiguration {
         return template;
     }
 
+    /**
+     * 配置redis监听消息配置类
+     *
+     * @param connectionFactory   链接参数
+     * @param redisSubscriberList 监听列表
+     * @return RedisMessageListenerContainer
+     */
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        List<RedisSubscription> redisSubscriberList) {
@@ -91,7 +98,7 @@ public class LifeRedisAutoConfiguration {
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(ExecutorManager.getCpuProcessors(),
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());
-        ExecutorManager.displayThreadPoolStatus(scheduledThreadPoolExecutor,SCHEDULED_TASKS_NAME);
+        ExecutorManager.displayThreadPoolStatus(scheduledThreadPoolExecutor, SCHEDULED_TASKS_NAME);
         return scheduledThreadPoolExecutor;
     }
 

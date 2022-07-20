@@ -21,6 +21,11 @@
       <groupId>com.authserver.lifetime</groupId>
       <artifactId>common-life</artifactId>
     </dependency>
+    <!--导入jdbc的启动器-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>oauth2-oidc-sdk</artifactId>

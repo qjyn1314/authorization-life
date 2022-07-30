@@ -12,6 +12,7 @@
     <properties>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <duplicate-finder.version>1.5.1</duplicate-finder.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <authserver-lifetime.version>1.0.0</authserver-lifetime.version>

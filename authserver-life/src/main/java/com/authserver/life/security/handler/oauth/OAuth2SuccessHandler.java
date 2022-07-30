@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.stream.Collectors;
 
 /**
  * oauth授权成功之后处理器
@@ -46,7 +45,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     .add("tokenType", accessToken.getTokenType().getValue())
                     .add("expiresIn", Duration.between(Instant.now(), accessToken.getExpiresAt()).getSeconds())
                     .add("state", codeRequestAuthenticationToken.getState())
-                    .add("scope", accessToken.getScopes().stream().collect(Collectors.joining(StrUtil.COMMA)))
+                    .add("scope", String.join(StrUtil.COMMA, accessToken.getScopes()))
                     .format();
             response.sendRedirect(redirectUrl);
         }else {

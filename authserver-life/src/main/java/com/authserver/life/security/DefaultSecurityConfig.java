@@ -21,6 +21,9 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * 默认的Security配置信息
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class DefaultSecurityConfig {
@@ -38,6 +41,16 @@ public class DefaultSecurityConfig {
     @Autowired
     private RegisteredClientRepository registeredClientService;
 
+    /**
+     * 默认的过滤链信息
+     *
+     * @param http                        Security主配置
+     * @param authenticationDetailsSource 错误次数验证码的信息
+     * @param jwtAuthenticationFilter     jwt Token过滤器
+     * @param usernamePasswordProvider    用户名密码验证类
+     * @return
+     * @throws Exception
+     */
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           CaptchaAuthenticationDetailsSource authenticationDetailsSource,
@@ -89,11 +102,13 @@ public class DefaultSecurityConfig {
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())
                 .failureHandler(new SsoFailureHandler());
-//        http.apply()//此处可以添加短信验证码的配置。
-        // 添加自定义的用户名密码认证
-        http.authenticationProvider(usernamePasswordProvider);
         // 添加jwtfilter  过滤器顺序为 jwtAuthenticationFilter -> UsernamePasswordFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // 添加自定义的用户名密码认证类
+        http.authenticationProvider(usernamePasswordProvider);
+        //        http.apply()//此处可以添加短信验证码的配置。
+        // 添加手机号登录认证
+//        http.authenticationProvider(new SmsAuthenticationProvider(userDetailsService, userRepository, userGroupRepository, redisHelper,userService));
         return http.build();
     }
 
@@ -113,10 +128,5 @@ public class DefaultSecurityConfig {
         return new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder,
                 redisHelper, userService, registeredClientService);
     }
-
-//    @Bean
-//    public AuthenticationConverter authenticationConverter() {
-//        return new OAuth2ImplicitAuthenticationConverter();
-//    }
 
 }

@@ -23,6 +23,8 @@
         <dependency>
             <groupId>com.authserver.start</groupId>
             <artifactId>redis-start-life</artifactId>
+            <!--可选依赖，即不会向下传递此依赖，需要使用到redis相关的信息是才需要在工程中引入-->
+<!--            <optional>true</optional>-->
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

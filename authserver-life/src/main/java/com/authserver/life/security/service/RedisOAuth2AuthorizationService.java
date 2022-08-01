@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthorizationCode;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.OAuth2TokenType;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.util.Assert;
@@ -57,9 +58,9 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
 
     private static boolean hasToken(OAuth2Authorization authorization, String token, @Nullable OAuth2TokenType tokenType) {
         if (tokenType != null) {
-            if ("state".equals(tokenType.getValue())) {
+            if (OAuth2ParameterNames.STATE.equals(tokenType.getValue())) {
                 return matchesState(authorization, token);
-            } else if ("code".equals(tokenType.getValue())) {
+            } else if (OAuth2ParameterNames.CODE.equals(tokenType.getValue())) {
                 return matchesAuthorizationCode(authorization, token);
             } else if (OAuth2TokenType.ACCESS_TOKEN.equals(tokenType)) {
                 return matchesAccessToken(authorization, token);
@@ -67,7 +68,10 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
                 return OAuth2TokenType.REFRESH_TOKEN.equals(tokenType) && matchesRefreshToken(authorization, token);
             }
         } else {
-            return matchesState(authorization, token) || matchesAuthorizationCode(authorization, token) || matchesAccessToken(authorization, token) || matchesRefreshToken(authorization, token);
+            return matchesState(authorization, token)
+                    || matchesAuthorizationCode(authorization, token)
+                    || matchesAccessToken(authorization, token)
+                    || matchesRefreshToken(authorization, token);
         }
     }
 

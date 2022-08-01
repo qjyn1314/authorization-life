@@ -1,6 +1,6 @@
 package com.authserver.life.security;
 
-import com.authserver.life.security.handler.password.PasswordSuccessHandle;
+import com.authserver.life.security.handler.oauth.OAuth2SuccessHandler;
 import com.authserver.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authserver.life.security.service.RedisOAuth2AuthorizationService;
 import com.authserver.life.security.service.RegisteredClientService;
@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -27,6 +28,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 /**
+ * 整合 oauth2_authorization 的配置类。
+ * <p>
  * 相关教程说明
  * <p>
  * https://book-spring-security-reference.vnzmi.com/3.2_httpsecurity.html
@@ -56,11 +59,9 @@ public class OauthSecurityConfig {
         authServerConfig
                 //配置授权
                 .authorizationEndpoint(endpointConfigurer ->
-                                endpointConfigurer
-                                        //配置请求成功的处理类
-                                        .authorizationResponseHandler(new PasswordSuccessHandle())
-                        //client认证授权，处理类
-//                                .authenticationProvider()
+                        endpointConfigurer
+                                //配置请求成功的处理类
+                                .authorizationResponseHandler(new OAuth2SuccessHandler())
                 );
 
         //路径匹配器
@@ -77,9 +78,8 @@ public class OauthSecurityConfig {
         http.exceptionHandling()
                 //当未登录的情况下 该如何跳转。
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN));
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
-//        http.formLogin(Customizer.withDefaults());
-//        http.formLogin();
+        http.formLogin(Customizer.withDefaults());
+        http.formLogin();
         return http.build();
     }
 
@@ -108,6 +108,7 @@ public class OauthSecurityConfig {
 
     @Bean
     public ProviderSettings providerSettings() {
+        //此处为oauth授权服务的发行者，即此授权服务地址
         return ProviderSettings.builder().issuer(SecurityConstant.ISSUER).build();
     }
 

@@ -1,11 +1,12 @@
 server:
-  port: 8110
+  port: 8140
 spring:
   datasource:
     username: root
     password: 123456
     url: jdbc:mysql://127.0.0.1:3308/oauth_original?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
     druid:
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
       filter:
@@ -46,7 +47,6 @@ spring:
         enabled: true
         exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
         url-pattern: /*
-    type: com.alibaba.druid.pool.DruidDataSource
   redis:
     database: 1
     host: 127.0.0.1
@@ -62,4 +62,4 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath*:/mapper/*Mapper.xml
+  mapper-locations: classpath*:/mapper/*.xml

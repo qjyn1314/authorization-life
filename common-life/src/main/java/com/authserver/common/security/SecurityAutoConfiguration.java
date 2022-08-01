@@ -65,16 +65,24 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/api-docs").permitAll()
                 // 公有public路径
                 .antMatchers("/public/**").permitAll()
+                //监控服务路径
                 .antMatchers("/actuator/**").permitAll()
+                //sql监控控制台
                 .antMatchers("/druid/**").permitAll()
                 //密码登录
                 .antMatchers("/auth/login").permitAll()
                 //短信登录
                 .antMatchers("/login/sms").permitAll()
+                //邮箱登录
+                .antMatchers("/login/email").permitAll()
+                //测试接口--start
+                .antMatchers("/use/**").permitAll()
+                //测试接口--end
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
+                //未登录时请求访问接口所需要跳转的路径
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN_URL));
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter

@@ -1,12 +1,13 @@
 package com.authserver.use.controller;
 
-import com.authserver.common.Result;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import com.authserver.common.result.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * <p>
@@ -22,7 +23,7 @@ public class UseController {
 
     @GetMapping("/now-date")
     public Result<String> getCurrentUser() {
-        return Result.ok(LocalDateTime.now().format(DateTimeFormatter.ofPattern("")));
+        return Result.ok(DateUtil.format(LocalDateTime.now(), DatePattern.CHINESE_DATE_TIME_PATTERN));
     }
 
 }

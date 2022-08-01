@@ -36,17 +36,15 @@
         <module>gateway-life</module>
         <module>common-life</module>
         <module>authserver-life</module>
+        <module>oauth-life</module>
         <module>use-life</module>
         <module>start-life</module>
-        <module>start-life/redis-start-life</module>
-        <module>start-life/util-start-life</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>

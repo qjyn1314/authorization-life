@@ -17,11 +17,11 @@ public class ServerAutoConfiguration {
     @Primary
     public NacosServiceRegistry customServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties,
                                                       NacosServiceManager nacosServiceManager,
-                                                      RedisTemplate redisHelper) {
-        log.info("CustomServiceRegistry Init ......NacosDiscoveryProperties-{}", nacosDiscoveryProperties);
-        log.info("CustomServiceRegistry Init ......NacosServiceManager-{}", nacosServiceManager);
-        log.info("CustomServiceRegistry Init ......RedisTemplate-{}", redisHelper);
-        return new CustomServiceRegistry(nacosDiscoveryProperties, nacosServiceManager, redisHelper);
+                                                      RedisTemplate redisTemplate) {
+        log.debug("CustomServiceRegistry Init ......NacosDiscoveryProperties-{}", nacosDiscoveryProperties);
+        log.debug("CustomServiceRegistry Init ......NacosServiceManager-{}", nacosServiceManager);
+        log.debug("CustomServiceRegistry Init ......RedisTemplate-{}", redisTemplate);
+        return new CustomServiceRegistry(nacosDiscoveryProperties, nacosServiceManager, redisTemplate);
     }
 
 }

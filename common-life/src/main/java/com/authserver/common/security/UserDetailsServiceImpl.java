@@ -1,4 +1,4 @@
-package com.authserver.common;
+package com.authserver.common.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

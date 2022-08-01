@@ -1,6 +1,5 @@
 package com.authserver.common.security;
 
-import com.authserver.common.UserDetailsServiceImpl;
 import com.authserver.common.filter.JwtAuthenticationFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

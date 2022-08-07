@@ -39,7 +39,7 @@ service.interceptors.response.use(response => {
   //   401: 重定向到登录页
   //   403: 报错，没有权限
   // eslint-disable-next-line eqeqeq
-  if (error.response.status == '401') {
+  if (error.response.status === '401') {
     if (outCount === 0) {
       outCount++
       Message({
@@ -55,7 +55,7 @@ service.interceptors.response.use(response => {
         outCount = 0
       }, 3000)
     }
-  } else if (error.response.status == '404') {
+  } else if (error.response.status === '404') {
     Message({
       showClose: true,
       message: `资源不存在`,

@@ -47,7 +47,7 @@ import java.util.Objects;
 public class LogAopAdvice {
 
     /**
-     * 控制层的切点-拦截包或者子包中定义的方法，即 拦截 com.zhichubao.demand.api.controller 包或者子包中定义的所有方法
+     * 控制层的切点-拦截包或者子包中定义的方法，即 拦截 controller 包或者子包中定义的所有方法
      */
     @Pointcut("execution(* com.authserver.use.controller..*.*(..))")
     private void controllerPointCut() {

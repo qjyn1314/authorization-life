@@ -4,7 +4,7 @@ ENV TZ Asia/Shanghai
 #编译方式
 LABEL compile=node nginxDir=login port=80  configType=none
 # 配置初始化脚本
-ADD zcb-service.tar.gz /app
+ADD auth-server-ui-service.tar.gz /app
 ADD nginx-web.conf /usr/local/nginx/conf/conf.d
 
 # 配置Volume

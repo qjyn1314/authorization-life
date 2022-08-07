@@ -1,4 +1,4 @@
- const path = require("path");
+const path = require("path");
 const IS_DEV = ['development'].includes(process.env.NODE_ENV); 
 const CompressionWebpackPlugin = require("compression-webpack-plugin"); // 开启gzip压缩， 按需引用
 const productionGzipExtensions = ['js', 'css']; //压缩的文件类型
@@ -103,7 +103,7 @@ module.exports = {
     disableHostCheck: true,//解决127.0.0.1指向其他域名时出现"Invalid Host header"问题
     proxy: { 
       "/api": { 
-        target: "https://buyer-dev.zicber.com",
+        target: "https://dev.auth-server.com",
         changeOrigin: true,
         pathRewrite:{
           '/api':''

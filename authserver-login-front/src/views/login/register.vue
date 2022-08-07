@@ -140,7 +140,7 @@ import { getRegister, getSendCode } from '@/api/common'
 export default {
   name: 'register',
   data () {
-    var checkRealName = (rule, value, callback) => {
+    let checkRealName = (rule, value, callback) => {
       if (!value) {
         this.realName_falg = false
         return callback(new Error('请输入您的用户姓名'))
@@ -151,7 +151,7 @@ export default {
         callback()
       }
     }
-    var checkCompanyName = (rule, value, callback) => {
+    let checkCompanyName = (rule, value, callback) => {
       if (!value) {
         this.companyName_falg = false
         return callback(new Error('请输入营业执照上的企业名称'))
@@ -163,7 +163,7 @@ export default {
       }
     }
     let reg = /^[A-Za-z0-9]{18}$/
-    var checkcreditCode = (rule, value, callback) => {
+    let checkcreditCode = (rule, value, callback) => {
       if (!reg.test(value)) {
         this.creditCode_falg = false
         callback(new Error('社会信用代码是18位大小写字母、数字组成！'))
@@ -174,7 +174,7 @@ export default {
         callback()
       }
     }
-    var checkEmail = (rule, value, callback) => {
+    let checkEmail = (rule, value, callback) => {
       const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
       if (!value) {
         this.email_falg = false
@@ -192,7 +192,7 @@ export default {
         }
       }, 100)
     }
-    var checkPhone = (rule, value, callback) => {
+    let checkPhone = (rule, value, callback) => {
       // const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
       const phoneReg = /^1[0-9]{10}$/
       if (!value) {
@@ -218,7 +218,7 @@ export default {
         }
       }, 100)
     }
-    var checkcode = (rule, value, callback) => {
+    let checkcode = (rule, value, callback) => {
       const codeReg = /^[0-9]{6}$/
       if (!value) {
         this.code_falg = false
@@ -243,7 +243,7 @@ export default {
         }
       }, 100)
     }
-    var chackCampDesc = (rule, value, callback) => {
+    let chackCampDesc = (rule, value, callback) => {
       if (!value) {
         this.campDesc_falg = false
         return callback(new Error('请选择企业在本平台主要业务方向'))

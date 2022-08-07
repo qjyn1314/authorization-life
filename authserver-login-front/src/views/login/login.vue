@@ -142,7 +142,7 @@ import { clearLoginCache } from '@/utils/index'
 export default {
   name: 'login',
   data () {
-    var checkPhone = (rule, value, callback) => {
+    let checkPhone = (rule, value, callback) => {
       // const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/
       const phoneReg = /^1[0-9]{10}$/
       if (!value) {

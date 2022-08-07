@@ -5,7 +5,6 @@ import { Message } from 'element-ui'
 import { clearLoginCache } from '../utils/index'
 
 let outCount = 0
-// create an axios instance
 const service = axios.create({
   timeout: 60 * 1000, // request timeout
   baseURL: process.env.VUE_APP_URL
@@ -40,7 +39,7 @@ return response
   //   403: 报错，没有权限
   let xtr = err.response.status
   // eslint-disable-next-line eqeqeq
-  if (xtr == '401') {
+  if (xtr === '401') {
     if (outCount === 0) {
       outCount++
       Message({
@@ -55,7 +54,7 @@ return response
         outCount = 0
       }, 3000)
     }
-  } else if (xtr == '404') {
+  } else if (xtr === '404') {
     Message({
       showClose: true,
       message: `${err.response.data.desc || '资源不存在'}`,

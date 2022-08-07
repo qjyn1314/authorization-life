@@ -1,4 +1,4 @@
-# zcb-login-front
+# auth-server-login-front
 
 ## Project setup
 ```

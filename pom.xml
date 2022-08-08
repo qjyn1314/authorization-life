@@ -37,7 +37,6 @@
         <module>gateway-life</module>
         <module>common-life</module>
         <module>authserver-life</module>
-        <module>oauth-life</module>
         <module>use-life</module>
         <module>start-life</module>
     </modules>

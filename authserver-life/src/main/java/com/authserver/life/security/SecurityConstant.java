@@ -20,7 +20,7 @@ public final class SecurityConstant {
     public static final String AUTHORIZATION_CONSENT = "auth-server:auth:oauth2:authorization-consent";
     //-----------------------------------
 //    public static final String ISSUER = "http://auth-server.com";
-    public static final String ISSUER = "http://auth-server.com:8110";
+    public static final String ISSUER = "http://www.auth-server.com:8110";
     public static final String IMPLICIT_REDIRECT_URI_FORMAT = "{redirectUri}" +
             "#access_token={accessToken}" +
             "&token_type={tokenType}" +

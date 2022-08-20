@@ -12,13 +12,23 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AuthCodeExceptionVO {
 
-    private String username;
+    private ErrorVO errorVO;
 
-    private String password;
+    private Boolean showCaptchaCode;
 
-    private String phone;
+    @Data
+    @Accessors(chain = true)
+    public static class ErrorVO {
 
-    private String captchaCode;
+        private String username;
 
-    private String defaultDesc;
+        private String password;
+
+        private String phone;
+
+        private String captchaCode;
+
+        private String defaultDesc;
+    }
+
 }

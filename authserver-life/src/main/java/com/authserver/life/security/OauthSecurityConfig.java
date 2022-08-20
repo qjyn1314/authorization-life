@@ -1,10 +1,12 @@
 package com.authserver.life.security;
 
+import com.authserver.common.security.LoginUrlAuthenticationEntryPoint;
 import com.authserver.life.security.handler.oauth.OAuth2SuccessHandler;
 import com.authserver.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authserver.life.security.service.RedisOAuth2AuthorizationService;
 import com.authserver.life.security.service.RegisteredClientService;
 import com.authserver.life.security.util.Jwks;
+import com.authserver.life.security.util.OAuth2ConfigurerUtils;
 import com.authserver.life.service.OauthClientService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -20,11 +22,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.web.authentication.DelegatingAuthenticationConverter;
+import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AuthorizationCodeRequestAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -60,8 +67,13 @@ public class OauthSecurityConfig {
                 //配置授权
                 .authorizationEndpoint(endpointConfigurer ->
                         endpointConfigurer
+                                //配置传参转换类
+                                .authorizationRequestConverter(new DelegatingAuthenticationConverter(List.of(
+                                        new OAuth2AuthorizationCodeRequestAuthenticationConverter())))
                                 //配置请求成功的处理类
                                 .authorizationResponseHandler(new OAuth2SuccessHandler())
+                                //添加其他的认证方式验证实现
+                                .authenticationProvider(createOAuth2AuthorizationCodeRequestAuthenticationProvider(http))
                 );
 
         //路径匹配器
@@ -78,11 +90,15 @@ public class OauthSecurityConfig {
         http.exceptionHandling()
                 //当未登录的情况下 该如何跳转。
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN));
-        http.formLogin(Customizer.withDefaults());
-        http.formLogin();
         return http.build();
     }
 
+    private OAuth2AuthorizationCodeRequestAuthenticationProvider createOAuth2AuthorizationCodeRequestAuthenticationProvider(HttpSecurity http) {
+        return new OAuth2AuthorizationCodeRequestAuthenticationProvider(
+                OAuth2ConfigurerUtils.getRegisteredClientRepository(http),
+                OAuth2ConfigurerUtils.getAuthorizationService(http),
+                OAuth2ConfigurerUtils.getAuthorizationConsentService(http));
+    }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository(OauthClientService clientService) {

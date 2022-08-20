@@ -85,7 +85,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         }
         if (authentication.getCredentials() == null) {
             log.debug("Authentication failed: no credentials provided");
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadCredentialsException("用户名或密码错误。");
         }
         // 检查密码正确
         String presentedPassword = authentication.getCredentials().toString();
@@ -101,7 +101,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             if (passwordErrorCount >= 5 && passwordErrorCount < 10) {
                 // 未超过10次则密码错误累计次数+1
                 redisHelper.opsForValue().set(cacheKey, passwordErrorCount + 1);
-                throw new VerificationCodeException("用户名密码错误。");
+                throw new VerificationCodeException("用户名或密码错误。");
             }
             if (passwordErrorCount >= 10) {
                 // 输错10次则锁定用户3小时
@@ -110,7 +110,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
                 // 未超过10次则密码错误累计次数+1
                 redisHelper.opsForValue().set(cacheKey, passwordErrorCount + 1);
             }
-            throw new BadCredentialsException("Bad credentials");
+            throw new BadCredentialsException("用户名或密码错误。");
         }
         // 检查登录端是否与用户组匹配
         if (authenticationDetails instanceof CaptchaWebAuthenticationDetails
@@ -121,7 +121,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             Assert.notNull(registeredClient, "未找到此 OauthClient 信息。");
             Set<String> allowedScopes = registeredClient.getScopes();
             boolean express = ((User) userDetails).getUserGroups().containsAll(allowedScopes);
-            Assert.isTrue(express, () -> new InternalAuthenticationServiceException("账号或密码错误"));
+            Assert.isTrue(express, () -> new InternalAuthenticationServiceException("用户名或密码错误"));
         }
     }
 

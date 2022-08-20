@@ -56,8 +56,8 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 // 禁用csrf
                 .csrf().disable()
-                // 使用session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // 使用session 如果security需要设置sessionid则进行设置。  参考：https://blog.csdn.net/zpz_326/article/details/80901575
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authorizeRequests()
                 // 无需认证即可访问
@@ -71,6 +71,9 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/druid/**").permitAll()
                 //密码登录
                 .antMatchers("/auth/login").permitAll()
+                //密码登录
+                .antMatchers("/login").permitAll()
+                .antMatchers("/oauth2").permitAll()
                 //短信登录
                 .antMatchers("/login/sms").permitAll()
                 //邮箱登录

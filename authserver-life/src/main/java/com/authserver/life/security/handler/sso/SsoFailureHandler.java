@@ -26,12 +26,15 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class SsoFailureHandler implements AuthenticationFailureHandler {
 
+    public static final String error_message = "Bad credentials";
+    public static final String default_error_message = "用户名或密码错误。";
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         String message = exception.getMessage();
         log.error("Sso登录失败的信息是：", exception);
-        Result<AuthCodeExceptionVO> result = new Result<>(Result.ERROR, message, handleDataByException(exception));
+        Result<AuthCodeExceptionVO> result = new Result<>(Result.FORM_ERROR, message, handleDataByException(exception));
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
@@ -41,6 +44,7 @@ public class SsoFailureHandler implements AuthenticationFailureHandler {
         out.close();
     }
 
+
     /**
      * SSO登录错误异常返回数据处理
      *
@@ -49,19 +53,29 @@ public class SsoFailureHandler implements AuthenticationFailureHandler {
      */
     private AuthCodeExceptionVO handleDataByException(AuthenticationException exception) {
         String message = exception.getMessage();
-        AuthCodeExceptionVO authCodeException = new AuthCodeExceptionVO();
-        authCodeException.setUsername("").setPassword("").setPhone("").setCaptchaCode("").setDefaultDesc("");
+        if (error_message.equals(message)) {
+            message = default_error_message;
+        }
+        AuthCodeExceptionVO authCodeExceptionVO = new AuthCodeExceptionVO();
+        AuthCodeExceptionVO.ErrorVO errorVO = new AuthCodeExceptionVO.ErrorVO();
+        boolean flag = false;
+        if (exception instanceof VerificationCodeException) {
+            flag = true;
+        }
+        errorVO.setUsername("").setPassword("").setPhone("").setCaptchaCode("").setDefaultDesc("");
         if (exception instanceof ValiVerificationCodeException) {
-            authCodeException.setCaptchaCode(message);
+            errorVO.setCaptchaCode(message);
         } else if (exception instanceof UsernameNotFoundException || exception instanceof LockedException ||
                 exception instanceof DisabledException || exception instanceof AccountExpiredException ||
                 exception instanceof VerificationCodeException || exception instanceof BadCredentialsException) {
-            authCodeException.setUsername(message);
+            errorVO.setUsername(message);
         } else if (exception instanceof InternalAuthenticationServiceException) {
-            authCodeException.setPassword(message);
+            errorVO.setPassword(message);
         } else {
-            authCodeException.setDefaultDesc(message);
+            errorVO.setDefaultDesc(message);
         }
-        return authCodeException;
+        authCodeExceptionVO.setErrorVO(errorVO).setShowCaptchaCode(flag);
+        return authCodeExceptionVO;
     }
+
 }

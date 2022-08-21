@@ -11,7 +11,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>authserver-life</artifactId>
+    <artifactId>life-authserver</artifactId>
 
     <properties>
 

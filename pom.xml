@@ -2,123 +2,103 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.authserver.lifetime</groupId>
-    <artifactId>authserver-lifetime</artifactId>
-    <version>1.0.0</version>
+
+    <groupId>com.authorization.life</groupId>
+    <artifactId>authorization-life</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
-    <name>authserver-lifetime</name>
-    <description>与 authorization-server 深度整合示例</description>
+
+    <name>authorization-life</name>
+
+    <description>Authorization Engineering</description>
 
     <properties>
+        <revision>1.0.0</revision>
+        <resource.delimiter>@</resource.delimiter>
+
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <duplicate-finder.version>1.5.1</duplicate-finder.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>11</java.version>
-        <authserver-lifetime.version>1.0.0</authserver-lifetime.version>
 
+        <!--基本依赖-->
         <spring-boot.version>2.6.3</spring-boot.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
 
+        <!--权限认证依赖-->
         <spring-security.version>5.6.1</spring-security.version>
         <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
         <oauth2-oidc-sdk.version>9.27</oauth2-oidc-sdk.version>
         <oauth2-authorization-server.version>0.2.3</oauth2-authorization-server.version>
 
+        <!--数据库依赖-->
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <druid.version>1.2.9</druid.version>
-
+        <!--工具依赖-->
         <fastjson.version>2.0.5</fastjson.version>
         <hutool.version>5.8.2</hutool.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <modules>
-        <module>gateway-life</module>
-        <module>common-life</module>
-        <module>authserver-life</module>
-        <module>use-life</module>
-        <module>start-life</module>
-    </modules>
+        <module>life-parent</module>
+        <module>life-start-parent</module>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-    </dependencies>
+        <module>life-common</module>
+        <module>life-core</module>
+
+        <module>life-gateway</module>
+        <module>life-authserver</module>
+        <module>life-system</module>
+
+    </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.authserver.lifetime</groupId>
-                <artifactId>gateway-life</artifactId>
-                <version>${authserver-lifetime.version}</version>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>life-parent</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.authserver.lifetime</groupId>
-                <artifactId>common-life</artifactId>
-                <version>${authserver-lifetime.version}</version>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>life-common</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.authserver.start</groupId>
-                <artifactId>redis-start-life</artifactId>
-                <version>${authserver-lifetime.version}</version>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>life-core</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.authserver.start</groupId>
+                <groupId>com.authorization.life</groupId>
                 <artifactId>util-start-life</artifactId>
-                <version>${authserver-lifetime.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.authserver.lifetime</groupId>
-                <artifactId>use-life</artifactId>
-                <version>${authserver-lifetime.version}</version>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>mybatis-start-life</artifactId>
+                <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>com.authserver.lifetime</groupId>
-                <artifactId>authserver-life</artifactId>
-                <version>${authserver-lifetime.version}</version>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>redis-start-life</artifactId>
+                <version>${revision}</version>
             </dependency>
 
-            <!--以上为此工程中自定义模块工程-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
             <!--以上为工具包依赖-->
             <dependency>
@@ -176,10 +156,9 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!--以上为导入的依赖-->
+            <!--以上为基础的导入依赖-->
         </dependencies>
     </dependencyManagement>
-
 
     <repositories>
         <repository>

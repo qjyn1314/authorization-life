@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authorization.life.mapper.UserGroupMapper">
+
+    <sql id="lifetime_user_group_column">
+        ${prefix}user_group_id,
+        ${prefix}user_id,
+        ${prefix}user_group_code,
+        ${prefix}tenant_id,
+        ${prefix}created_by_user,
+        ${prefix}created_by_emp,
+        ${prefix}created_time,
+        ${prefix}updated_by_user,
+        ${prefix}updated_by_emp,
+        ${prefix}updated_time
+    </sql>
+
+    <select id="page" resultType="com.authorization.life.entity.UserGroup">
+        SELECT
+        <include refid="lifetime_user_group_column">
+            <property name="prefix" value="t1."/>
+        </include>
+        FROM lifetime_user_group t1
+    </select>
+
+</mapper>

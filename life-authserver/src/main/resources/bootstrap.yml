@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: auth-life
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      namespace: public
+      group: APPLICATION
+      discovery:
+        enabled: true
+        group: ${spring.cloud.nacos.group}
+        namespace: ${spring.cloud.nacos.namespace}
+      config:
+        enabled: false

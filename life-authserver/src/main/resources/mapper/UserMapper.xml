@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authorization.life.mapper.UserMapper">
+
+    <sql id="lifetime_user_column">
+        ${prefix}user_id,
+        ${prefix}username,
+        ${prefix}real_name,
+        ${prefix}lang,
+        ${prefix}locale,
+        ${prefix}gender,
+        ${prefix}hash_password,
+        ${prefix}tel_area_code,
+        ${prefix}phone,
+        ${prefix}phone_checked_flag,
+        ${prefix}email,
+        ${prefix}email_checked_flag,
+        ${prefix}birthday,
+        ${prefix}effective_start_date,
+        ${prefix}effective_end_date,
+        ${prefix}actived_flag,
+        ${prefix}locked_flag,
+        ${prefix}locked_time,
+        ${prefix}enabled_flag,
+        ${prefix}tenant_id,
+        ${prefix}version_num,
+        ${prefix}created_by_user,
+        ${prefix}created_by_emp,
+        ${prefix}created_time,
+        ${prefix}updated_by_user,
+        ${prefix}updated_by_emp,
+        ${prefix}updated_time
+    </sql>
+
+    <select id="page" resultType="com.authorization.life.entity.User">
+        SELECT
+        <include refid="lifetime_user_column">
+            <property name="prefix" value="t1."/>
+        </include>
+        FROM lifetime_user t1
+    </select>
+
+</mapper>

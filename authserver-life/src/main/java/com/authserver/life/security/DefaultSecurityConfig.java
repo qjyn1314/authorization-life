@@ -2,6 +2,7 @@ package com.authserver.life.security;
 
 import com.authserver.common.filter.JwtAuthenticationFilter;
 import com.authserver.life.security.handler.sso.SsoFailureHandler;
+import com.authserver.life.security.handler.sso.SsoLogoutHandle;
 import com.authserver.life.security.handler.sso.SsoSuccessHandler;
 import com.authserver.life.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authserver.life.security.sso.UsernamePasswordAuthenticationProvider;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -82,22 +84,21 @@ public class DefaultSecurityConfig {
                 // 公有public路径
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/oauth/**").permitAll()
                 .antMatchers("/druid/**").permitAll()
                 .antMatchers("/login/**").permitAll()
-                .antMatchers("/oauth2/**").permitAll()
 
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
 
                 .and()
                 .logout()
-                .logoutUrl("/auth/logout")
+                .logoutUrl(SecurityConstant.SSO_LOGOUT)
+                .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-//                .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
-
                 .and()
+                .formLogin(Customizer.withDefaults())
                 .formLogin()
                 .loginProcessingUrl(SecurityConstant.SSO_LOGIN)
                 .authenticationDetailsSource(authenticationDetailsSource)
@@ -107,9 +108,6 @@ public class DefaultSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加自定义的用户名密码认证类
         http.authenticationProvider(usernamePasswordProvider);
-        //        http.apply()//此处可以添加短信验证码的配置。
-        // 添加手机号登录认证
-//        http.authenticationProvider(new SmsAuthenticationProvider(userDetailsService, userRepository, userGroupRepository, redisHelper,userService));
         return http.build();
     }
 

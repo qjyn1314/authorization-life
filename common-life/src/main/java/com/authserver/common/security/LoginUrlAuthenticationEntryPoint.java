@@ -1,6 +1,6 @@
 package com.authserver.common.security;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 
 /**
- * 未授权时所需要跳转的页面
+ * 自定义的未授权时所需要跳转的页面
  */
 @Slf4j
 public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -39,15 +39,15 @@ public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoin
         String query = uri.getQuery();
         String redirectUri = request.getParameter("redirect_uri");
         // 没有重定向参数则直接重定向到登录页面
-        if (StrUtil.isBlank(redirectUri)){
+        if (CharSequenceUtil.isBlank(redirectUri)) {
             redirectStrategy.sendRedirect(request, response, loginPath);
             return;
         }
         String url;
         // 存在重定向参数则拼接地址再重定向
-        if (StrUtil.isBlank(query)){
+        if (CharSequenceUtil.isBlank(query)) {
             url = loginPath + "?redirect_uri=" + URLUtil.encodeAll(redirectUri);
-        }else {
+        } else {
             url = loginPath + "&redirect_uri=" + URLUtil.encodeAll(redirectUri);
         }
         redirectStrategy.sendRedirect(request, response, url);

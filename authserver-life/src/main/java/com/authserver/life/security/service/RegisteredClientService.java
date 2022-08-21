@@ -1,11 +1,14 @@
 package com.authserver.life.security.service;
 
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 import com.authserver.life.entity.OauthClient;
 import com.authserver.common.exception.CommonException;
 import com.authserver.life.service.OauthClientService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
@@ -59,28 +62,29 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .redirectUri(oauthClient.getRedirectUri())
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
                 .tokenSettings(TokenSettings.builder()
+                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
                         .accessTokenTimeToLive(Duration.of(oauthClient.getAccessTokenTimeout(), ChronoUnit.SECONDS))
                         .refreshTokenTimeToLive(Duration.of(oauthClient.getRefreshTokenTimeout(), ChronoUnit.SECONDS))
                         .build());
-        Arrays.stream(oauthClient.getGrantTypes().split(","))
+        //批量设置当前的授权类型
+        Arrays.stream(oauthClient.getGrantTypes().split(StrPool.COMMA))
                 .map(grantType -> {
-                    if (StrUtil.equals(grantType, "authorization_code")) {
+                    if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.AUTHORIZATION_CODE.getValue())) {
                         return AuthorizationGrantType.AUTHORIZATION_CODE;
-                    } else if (StrUtil.equals(grantType, "refresh_token")) {
+                    } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.REFRESH_TOKEN.getValue())) {
                         return AuthorizationGrantType.REFRESH_TOKEN;
-                    } else if (StrUtil.equals(grantType, "client_credentials")) {
+                    } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())) {
                         return AuthorizationGrantType.CLIENT_CREDENTIALS;
-                    } else if (StrUtil.equals(grantType, "password")) {
+                    } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.PASSWORD.getValue())) {
                         return AuthorizationGrantType.PASSWORD;
-                    } else if (StrUtil.equals(grantType, "jwt-bearer")) {
+                    } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.JWT_BEARER.getValue())) {
                         return AuthorizationGrantType.JWT_BEARER;
-                    } else if (StrUtil.equals(grantType, "implicit")) {
-                        return AuthorizationGrantType.IMPLICIT;
                     } else {
                         throw new CommonException("不支持的授权模式, [" + grantType + "]");
                     }
                 }).forEach(builder::authorizationGrantType);
-        Arrays.stream(oauthClient.getScopes().split(",")).forEach(builder::scope);
+        Arrays.stream(oauthClient.getScopes().split(StrPool.COMMA))
+                .forEach(builder::scope);
         return builder.build();
     }
 

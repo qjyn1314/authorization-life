@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -32,9 +31,6 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    public static final String LOGIN_URL = "/login";
-
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -70,14 +66,9 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 //sql监控控制台
                 .antMatchers("/druid/**").permitAll()
                 //密码登录
-                .antMatchers("/auth/login").permitAll()
+                .antMatchers("/oauth/login").permitAll()
                 //密码登录
-                .antMatchers("/login").permitAll()
-                .antMatchers("/oauth2").permitAll()
-                //短信登录
-                .antMatchers("/login/sms").permitAll()
-                //邮箱登录
-                .antMatchers("/login/email").permitAll()
+                .antMatchers("/login/**").permitAll()
                 //测试接口--start
                 .antMatchers("/use/**").permitAll()
                 //测试接口--end
@@ -85,8 +76,8 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                //未登录时请求访问接口所需要跳转的路径
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(LOGIN_URL));
+                //未登录时请求访问接口所需要跳转的自定义路径
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

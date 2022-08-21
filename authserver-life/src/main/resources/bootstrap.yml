@@ -1,6 +1,6 @@
 spring:
   application:
-    name: authserver-life
+    name: oauth-life
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848

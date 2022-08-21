@@ -1,4 +1,4 @@
-# authserver-lifetime ：权限认证的一生。
+# authorization-life ：授权的生活。
 
 ## 前后端分离：
 
@@ -6,32 +6,38 @@
 
 ## 授权中心：
 
-### authserver-life
+### life-authserver
 
 #### spring-security深度整合的模块，颁发token。
 
 
 ## 公共模块：
 
-### common-life
+### life-parent life-common  life-core
 
 #### 每个业务工程都将引用此工程，每次请求都将获取gateway中解析(前端请求头的token)过后的的jwt-token。
 
+## 自定义start模块：
+
+### life-start-parent
+
+#### 每个业务工程需要使用时，则需要引入相关依赖
+
 ## 网关：
 
-### gateway-life
+### life-gateway 
 
 #### 将鉴定并拦截token。
 
 ## 使用授权的服务：
 
-### use-life
+### life-system
 
 #### 具体业务服务。
 
 ## 前端工程：
 
-### authserver-lifetime-ui
+### life-authserver-front
 
 #### 具体的使用authorization-server功能的页面。
 

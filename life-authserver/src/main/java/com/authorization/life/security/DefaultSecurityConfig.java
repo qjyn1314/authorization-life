@@ -74,9 +74,9 @@ public class DefaultSecurityConfig {
                 STATELESS
                     Spring Security永远不会创建HttpSession，它不会使用HttpSession来获取SecurityContext
                  */
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
-                .and()
+        http
                 .authorizeRequests()
                 // 无需认证即可访问
                 // swagger文档
@@ -89,17 +89,17 @@ public class DefaultSecurityConfig {
                 .antMatchers("/login/**").permitAll()
 
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated()
+                .anyRequest().authenticated();
 
-                .and()
+        http
                 .logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
                 .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
                 .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .and()
-                .formLogin(Customizer.withDefaults())
+                .clearAuthentication(true);
+        http
                 .formLogin()
+//                .loginPage("https://password.authorization.life/login")
                 .loginProcessingUrl(SecurityConstant.SSO_LOGIN)
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())

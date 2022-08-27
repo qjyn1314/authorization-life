@@ -13,7 +13,7 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    <root level="info">
+    <root level="info,debug">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

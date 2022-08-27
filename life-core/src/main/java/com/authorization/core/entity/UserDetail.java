@@ -1,6 +1,6 @@
 package com.authorization.core.entity;
 
-import com.authorization.start.util.jwt.Jwts;
+import com.authorization.start.util.json.JsonDateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -65,14 +65,14 @@ public class UserDetail {
     /**
      * 生效开始日期
      */
-    @JsonFormat(pattern = Jwts.DATETIME)
-    @DateTimeFormat(pattern = Jwts.DATETIME)
+    @JsonFormat(pattern = JsonDateUtil.DATETIME)
+    @DateTimeFormat(pattern = JsonDateUtil.DATETIME)
     private LocalDateTime effectiveStartDate;
     /**
      * 生效截至日期
      */
-    @JsonFormat(pattern = Jwts.DATETIME)
-    @DateTimeFormat(pattern = Jwts.DATETIME)
+    @JsonFormat(pattern = JsonDateUtil.DATETIME)
+    @DateTimeFormat(pattern = JsonDateUtil.DATETIME)
     private LocalDateTime effectiveEndDate;
     /**
      * 用户是否启用

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.gateway.service.RouteService;
 import com.authorization.start.util.contsant.ServerConstants;
+import com.authorization.start.util.contsant.ServiceInfo;
 import com.authorization.start.util.json.JsonHelper;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +63,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
      */
     private RouteDefinition convert(String service) {
         // 不注册网关服务路由
-        if (Objects.equals(service, ServerConstants.GATEWAY_NAME)) {
+        if (Objects.equals(service, ServiceInfo.GateWayLife.SERVER_NAME)) {
             return null;
         }
         List<ServiceInstance> instances = discoveryClient.getInstances(service);

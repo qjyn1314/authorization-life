@@ -15,9 +15,6 @@ public class Jwts {
 
     public static final String HEADER_JWT = "Jwt-Token";
 
-    public static final String DATETIME = "yyyy-MM-dd HH:mm:ss";
-    public static final String DATE = "yyyy-MM-dd";
-
     /**
      * 默认jwt sercet, 如果要使用此当以sercet, 密码不得低于32位
      */

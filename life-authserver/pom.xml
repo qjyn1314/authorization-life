@@ -8,6 +8,10 @@
         <groupId>com.authorization.life</groupId>
         <artifactId>authorization-life</artifactId>
         <version>${revision}</version>
+        <!--
+           parent.relativePath用法：设定一个空值将始终从仓库中获取，不从本地路径获取
+           查找顺序：relativePath元素中的地址 –> 本地仓库 –> 远程仓库
+        -->
         <relativePath>../pom.xml</relativePath>
     </parent>
 

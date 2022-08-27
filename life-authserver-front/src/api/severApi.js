@@ -8,13 +8,18 @@ let LOGINTOKEN = {
     loginRedirectUrl: `${process.env.VUE_APP_API_HOST}` // 登录重定向域名
 }
 
-let AUTH_SERVER = `authserver-life`
+let AUTH_SERVER = `auth-life`
+let SYSTEM_SERVER = `system-life`
 
 window.changeRoute = function (code, route) {
     switch (code) {
-        case 'AUTH_SERVER':
+        case AUTH_SERVER:
             AUTH_SERVER = route
             console.log(AUTH_SERVER)
+            break;
+        case SYSTEM_SERVER:
+            SYSTEM_SERVER = route
+            console.log(SYSTEM_SERVER)
             break;
     }
 }
@@ -25,6 +30,7 @@ function getTenantId() {
 
 export {
     AUTH_SERVER,
+    SYSTEM_SERVER,
     LOGINTOKEN,
     getTenantId
 }

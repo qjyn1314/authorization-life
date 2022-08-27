@@ -11,6 +11,5 @@ public class ServerConstants {
 
     public static final String KEY_SERVICE_CODE = "serviceName";
 
-    public static final String GATEWAY_NAME = "gateway-life";
 
 }

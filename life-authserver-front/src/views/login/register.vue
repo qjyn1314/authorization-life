@@ -112,7 +112,7 @@
             >
               <el-checkbox label="1" name="checked">我已阅读并同意</el-checkbox>
             </el-checkbox-group>
-            <span @click="showUserAgreement" class="agreement" style="line-height: 20px">《支出宝用户协议》</span>
+            <span @click="showUserAgreement" class="agreement" style="line-height: 20px">《鉴权的一生用户协议》</span>
           </el-form-item>
           <div class="login_btn_view">
             <el-button

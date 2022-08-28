@@ -1,38 +1,38 @@
 const path = require("path");
-const IS_DEV = ['development'].includes(process.env.NODE_ENV); 
+const IS_DEV = ['development'].includes(process.env.NODE_ENV);
 const CompressionWebpackPlugin = require("compression-webpack-plugin"); // 开启gzip压缩， 按需引用
 const productionGzipExtensions = ['js', 'css']; //压缩的文件类型
 
 module.exports = {
-  // 部署应用时的基本 URL 
-  // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为 
-  publicPath: '/login/',
-  outputDir: "dist",
-  // build时放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录
-  assetsDir: "static",
+    // 部署应用时的基本 URL
+    // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
+    publicPath: '/login/',
+    outputDir: "dist",
+    // build时放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录
+    assetsDir: "static",
 
-  // 指定生成的 index.html 的输出路径 (相对于 outputDir)。也可以是一个绝对路径。
-  indexPath: "index.html",
+    // 指定生成的 index.html 的输出路径 (相对于 outputDir)。也可以是一个绝对路径。
+    indexPath: "index.html",
 
-  // 默认在生成的静态资源文件名中包含hash以控制缓存
-  filenameHashing: true,
+    // 默认在生成的静态资源文件名中包含hash以控制缓存
+    filenameHashing: true,
 
-  productionSourceMap: IS_DEV,
+    productionSourceMap: IS_DEV,
 
-  // 是否使用包含运行时编译器的 Vue 构建版本
-  runtimeCompiler: false,
+    // 是否使用包含运行时编译器的 Vue 构建版本
+    runtimeCompiler: false,
 
-  // Babel 显式转译列表
-  transpileDependencies: [],
+    // Babel 显式转译列表
+    transpileDependencies: [],
 
-  //   lintOnSave：{ type:Boolean default:true } 问你是否使用eslint
-  lintOnSave: false,
+    //   lintOnSave：{ type:Boolean default:true } 问你是否使用eslint
+    lintOnSave: false,
 
-  // 设置生成的 HTML 中 <link rel="stylesheet"> 和 <script> 标签的 crossorigin 属性（注：仅影响构建时注入的标签）
-  crossorigin: "",
+    // 设置生成的 HTML 中 <link rel="stylesheet"> 和 <script> 标签的 crossorigin 属性（注：仅影响构建时注入的标签）
+    crossorigin: "",
 
-  // 在生成的 HTML 中的 <link rel="stylesheet"> 和 <script> 标签上启用 Subresource Integrity (SRI)
-  integrity: false,
+    // 在生成的 HTML 中的 <link rel="stylesheet"> 和 <script> 标签上启用 Subresource Integrity (SRI)
+    integrity: false,
 
   // 如果这个值是一个对象，则会通过 webpack-merge 合并到最终的配置中
   // 如果你需要基于环境有条件地配置行为，或者想要直接修改配置，那就换成一个函数 (该函数会在环境变量被设置之后懒执行)。该方法的第一个参数会收到已经解析好的配置。在函数内，你可以直接修改配置，或者返回一个将会被合并的对象
@@ -101,12 +101,12 @@ module.exports = {
     //配置自动启动浏览器
     hotOnly: true,
     disableHostCheck: true,//解决127.0.0.1指向其他域名时出现"Invalid Host header"问题
-    proxy: { 
-      "/api": { 
+    proxy: {
+      "/api": {
         target: "https://www.authorization.life",
         changeOrigin: true,
         pathRewrite:{
-          '/api':''
+            '^/api': '/'
         }
       } 
     },
@@ -123,11 +123,11 @@ module.exports = {
 
 
 // 定义函数addStyleResource
-function addStyleResource (rule) {
-  rule
-    .use("style-resource")
-    .loader("style-resources-loader")
-    .options({
-      patterns: [path.resolve(__dirname, "./src/util/css/variable.styl")] //后面的路径改成你自己放公共stylus变量的路径
-    });
+function addStyleResource(rule) {
+    rule
+        .use("style-resource")
+        .loader("style-resources-loader")
+        .options({
+            patterns: [path.resolve(__dirname, "./src/util/css/variable.styl")] //后面的路径改成你自己放公共stylus变量的路径
+        });
 }

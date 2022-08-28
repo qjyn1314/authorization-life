@@ -5,8 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import com.authorization.life.entity.User;
 import com.authorization.life.security.SecurityConstant;
 import com.authorization.life.security.util.Formatter;
-import com.authorization.life.service.UserService;
 import com.authorization.life.security.util.RedisCaptchaValidator;
+import com.authorization.life.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -118,7 +118,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             CaptchaWebAuthenticationDetails clientIdDetails = (CaptchaWebAuthenticationDetails) authenticationDetails;
             String clientId = clientIdDetails.getClientId();
             RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
-            Assert.notNull(registeredClient, "未找到此 OauthClient 信息。");
+            Assert.notNull(registeredClient, () -> new RegClientException("未找到此 OauthClient 信息。"));
             Set<String> allowedScopes = registeredClient.getScopes();
             boolean express = ((User) userDetails).getUserGroups().containsAll(allowedScopes);
             Assert.isTrue(express, () -> new InternalAuthenticationServiceException("用户名或密码错误"));

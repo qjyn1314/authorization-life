@@ -1,12 +1,15 @@
 package com.authorization.life.security.service;
 
 import cn.hutool.core.lang.Assert;
+import com.authorization.core.entity.UserDetail;
+import com.authorization.core.security.UserDetailService;
 import com.authorization.life.entity.User;
 import com.authorization.life.entity.UserGroup;
 import com.authorization.life.service.UserGroupService;
 import com.authorization.life.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class AuthUserService implements UserDetailsService {
+public class SecurityAuthUserService implements UserDetailService {
 
     @Autowired
     private UserService userService;
@@ -36,4 +39,8 @@ public class AuthUserService implements UserDetailsService {
         return user;
     }
 
+    @Override
+    public UserDetail createUserDetailByUser(UserDetails userDetails) {
+        return userService.createUserDetailByUser(userDetails);
+    }
 }

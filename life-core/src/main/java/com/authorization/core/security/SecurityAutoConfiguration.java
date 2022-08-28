@@ -31,6 +31,8 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private SsoSecurityProperties ssoSecurityProperties;
 
     /**
      * anyRequest          |   匹配所有请求路径
@@ -53,7 +55,11 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 // 禁用csrf
                 .csrf().disable()
                 // 使用session 如果security需要设置sessionid则进行设置。  参考：https://blog.csdn.net/zpz_326/article/details/80901575
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                //限制同一账号只能一个用户使用
+                .sessionManagement().maximumSessions(1)
+                .expiredSessionStrategy(new TokenInformationExpiredStrategy())
+                .and()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 // 无需认证即可访问

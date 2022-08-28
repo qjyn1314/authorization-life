@@ -1,17 +1,17 @@
 server:
   port: 9000
 spring:
-#  cloud:
-#    gateway:
-#      globalcors:
-#        corsConfigurations:
-#          '[/**]':
-#            allowedOriginPatterns: '*'
-#            allowedMethods: '*'
-#            allowedHeaders: '*'
-#            allowCredentials: true
-#      default-filters:
-#        - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: '*'
+            allowedMethods: '*'
+            allowedHeaders: '*'
+            allowCredentials: true
+      default-filters:
+        - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
   redis:
     database: 1
     host: 127.0.0.1

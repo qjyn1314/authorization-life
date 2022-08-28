@@ -22,5 +22,10 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         log.info("当前登录成功的用户是：{}", JSONUtil.toJsonStr(securityContext.getAuthentication().getPrincipal()));
         log.debug("密码验证登录成功");
+        log.info("当前认证对象信息是-{}",authentication);
+        log.info("当前认证对象信息是-{}",JSONUtil.toJsonStr(authentication));
+
+        Object details = authentication.getDetails();
+
     }
 }

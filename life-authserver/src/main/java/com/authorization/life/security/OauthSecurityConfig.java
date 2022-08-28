@@ -98,7 +98,7 @@ public class OauthSecurityConfig {
         // 配置 异常处理
         http.exceptionHandling()
                 //当未登录的情况下 该如何跳转。
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN));
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         return http.formLogin(Customizer.withDefaults()).build();
     }
 

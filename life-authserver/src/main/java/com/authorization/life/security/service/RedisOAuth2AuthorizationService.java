@@ -67,16 +67,16 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
             } else {
                 return OAuth2TokenType.REFRESH_TOKEN.equals(tokenType) && matchesRefreshToken(authorization, token);
             }
-        } else {
-            return matchesState(authorization, token)
-                    || matchesAuthorizationCode(authorization, token)
-                    || matchesAccessToken(authorization, token)
-                    || matchesRefreshToken(authorization, token);
         }
+        return matchesState(authorization, token)
+                || matchesAuthorizationCode(authorization, token)
+                || matchesAccessToken(authorization, token)
+                || matchesRefreshToken(authorization, token);
+
     }
 
     private static boolean matchesState(OAuth2Authorization authorization, String token) {
-        return token.equals(authorization.getAttribute("state"));
+        return token.equals(authorization.getAttribute(OAuth2ParameterNames.STATE));
     }
 
     private static boolean matchesAuthorizationCode(OAuth2Authorization authorization, String token) {

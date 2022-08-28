@@ -26,8 +26,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class SsoFailureHandler implements AuthenticationFailureHandler {
 
-    public static final String error_message = "Bad credentials";
-    public static final String default_error_message = "用户名或密码错误。";
+    public static final String ERROR_MESSAGE = "Bad credentials";
+    public static final String DEFAULT_ERROR_MESSAGE = "用户名或密码错误。";
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -53,8 +53,8 @@ public class SsoFailureHandler implements AuthenticationFailureHandler {
      */
     private AuthCodeExceptionVO handleDataByException(AuthenticationException exception) {
         String message = exception.getMessage();
-        if (error_message.equals(message)) {
-            message = default_error_message;
+        if (ERROR_MESSAGE.equals(message)) {
+            message = DEFAULT_ERROR_MESSAGE;
         }
         AuthCodeExceptionVO authCodeExceptionVO = new AuthCodeExceptionVO();
         AuthCodeExceptionVO.ErrorVO errorVO = new AuthCodeExceptionVO.ErrorVO();

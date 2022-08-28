@@ -13,6 +13,7 @@ public final class SecurityConstant {
     public static final String TOKEN_STORE = "oauth-server:auth:token-store";
     public static final String PASSWORD_ERROR_COUNT = "oauth-server:auth:password-error-count:{username}";
     public static final String SSO_LOGIN = "/oauth/login";
+    public static final String JSESSIONID = "JSESSIONID";
     public static final String SSO_LOGOUT = "/oauth/logout";
     public static final String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
     public static final String AUTHORIZATION_CONSENT = "oauth-server:auth:oauth2:authorization-consent";

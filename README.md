@@ -43,7 +43,18 @@
 
 ### 使用的框架版本号及前端工程。
 
-#### springboot 
+### 集成过程中的参考
+前后端分离的整合SpringSecurity
+
+https://juejin.cn/post/7049604466630688804
+
+https://www.cnblogs.com/RudeCrab/p/14265273.html#%E5%89%8D%E8%A8%80
+
+https://blog.csdn.net/xiaokanfuchen86/article/details/109002266
+
+https://blog.csdn.net/chuang123/article/details/107104312
+
+https://blog.csdn.net/qq_43799161/article/details/123854833
 
 ## oauth2.0的授权模式
 

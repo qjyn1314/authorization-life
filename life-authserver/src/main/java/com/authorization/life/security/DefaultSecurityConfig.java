@@ -1,6 +1,9 @@
 package com.authorization.life.security;
 
 import com.authorization.core.filter.JwtAuthenticationFilter;
+import com.authorization.core.security.SsoSecurityProperties;
+import com.authorization.core.security.TokenInformationExpiredStrategy;
+import com.authorization.core.security.UserDetailService;
 import com.authorization.life.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.service.UserService;
 import com.authorization.life.security.handler.sso.SsoFailureHandler;
@@ -33,7 +36,7 @@ public class DefaultSecurityConfig {
     @Autowired
     private RedisTemplate<String, Object> redisHelper;
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -42,6 +45,8 @@ public class DefaultSecurityConfig {
     private OAuth2AuthorizationService authorizationService;
     @Autowired
     private RegisteredClientRepository registeredClientService;
+    @Autowired
+    private SsoSecurityProperties ssoSecurityProperties;
 
     /**
      * 默认的过滤链信息
@@ -60,8 +65,13 @@ public class DefaultSecurityConfig {
                                                           AuthenticationProvider usernamePasswordProvider)
             throws Exception {
         http
-                // 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
+                // 前后端分离工程需要 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
                 .csrf().disable()
+                .sessionManagement()
+                //限制同一账号只能一个用户使用
+                .maximumSessions(1)
+                //会话过期后的配置
+                .expiredSessionStrategy(new TokenInformationExpiredStrategy());
                 // 使用session
                 /*
                 Spring Security下的枚举SessionCreationPolicy,管理session的创建策略
@@ -74,7 +84,8 @@ public class DefaultSecurityConfig {
                 STATELESS
                     Spring Security永远不会创建HttpSession，它不会使用HttpSession来获取SecurityContext
                  */
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http
                 .authorizeRequests()
@@ -95,11 +106,12 @@ public class DefaultSecurityConfig {
                 .logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
                 .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
+                //在此处可以删除相应的cookie
+                .deleteCookies(SecurityConstant.JSESSIONID)
                 .invalidateHttpSession(true)
                 .clearAuthentication(true);
         http
                 .formLogin()
-//                .loginPage("https://password.authorization.life/login")
                 .loginProcessingUrl(SecurityConstant.SSO_LOGIN)
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())

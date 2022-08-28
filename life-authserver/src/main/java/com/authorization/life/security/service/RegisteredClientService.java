@@ -4,6 +4,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.text.StrPool;
 import com.authorization.common.exception.CommonException;
 import com.authorization.life.entity.OauthClient;
+import com.authorization.life.security.sso.RegClientException;
 import com.authorization.life.service.OauthClientService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -79,7 +80,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
                     } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.JWT_BEARER.getValue())) {
                         return AuthorizationGrantType.JWT_BEARER;
                     } else {
-                        throw new CommonException("不支持的授权模式, [" + grantType + "]");
+                        throw new RegClientException("不支持的授权模式, [" + grantType + "]");
                     }
                 }).forEach(builder::authorizationGrantType);
         Arrays.stream(oauthClient.getScopes().split(StrPool.COMMA))

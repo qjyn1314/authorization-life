@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
-import com.authorization.life.security.SecurityConstant;
+import com.authorization.core.security.SecurityConstant;
 import com.authorization.life.security.util.Formatter;
 import com.authorization.start.util.result.Res;
 import lombok.extern.slf4j.Slf4j;

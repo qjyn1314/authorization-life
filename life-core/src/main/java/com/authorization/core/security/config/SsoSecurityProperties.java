@@ -1,4 +1,4 @@
-package com.authorization.core.security;
+package com.authorization.core.security.config;
 
 import lombok.Getter;
 import lombok.Setter;

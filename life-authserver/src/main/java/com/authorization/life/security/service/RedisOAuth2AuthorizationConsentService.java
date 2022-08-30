@@ -1,6 +1,6 @@
 package com.authorization.life.security.service;
 
-import com.authorization.life.security.SecurityConstant;
+import com.authorization.core.security.SecurityConstant;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;

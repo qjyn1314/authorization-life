@@ -1,6 +1,8 @@
-package com.authorization.core.security;
+package com.authorization.core.security.config;
 
 import com.authorization.core.filter.JwtAuthenticationFilter;
+import com.authorization.core.security.SecurityConstant;
+import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -63,27 +66,13 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 无需认证即可访问
-                // swagger文档
-                .antMatchers("/v2/api-docs").permitAll()
-                // 公有public路径
-                .antMatchers("/public/**").permitAll()
-                //监控服务路径
-                .antMatchers("/actuator/**").permitAll()
-                //sql监控控制台
-                .antMatchers("/druid/**").permitAll()
-                //密码登录
-                .antMatchers("/oauth/login").permitAll()
-                //密码登录
-                .antMatchers("/login/**").permitAll()
-                //测试接口--start
-                .antMatchers("/use/**").permitAll()
-                //测试接口--end
+                .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 //未登录时请求访问接口所需要跳转的自定义路径
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

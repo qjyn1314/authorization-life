@@ -1,25 +1,24 @@
 package com.authorization.life.security;
 
 import com.authorization.core.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.SsoSecurityProperties;
-import com.authorization.core.security.TokenInformationExpiredStrategy;
+import com.authorization.core.security.SecurityConstant;
 import com.authorization.core.security.UserDetailService;
-import com.authorization.life.security.sso.CaptchaAuthenticationDetailsSource;
-import com.authorization.life.service.UserService;
+import com.authorization.core.security.config.SsoSecurityProperties;
+import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import com.authorization.life.security.handler.sso.SsoFailureHandler;
 import com.authorization.life.security.handler.sso.SsoLogoutHandle;
 import com.authorization.life.security.handler.sso.SsoSuccessHandler;
+import com.authorization.life.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.security.sso.UsernamePasswordAuthenticationProvider;
+import com.authorization.life.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -72,7 +71,7 @@ public class DefaultSecurityConfig {
                 .maximumSessions(1)
                 //会话过期后的配置
                 .expiredSessionStrategy(new TokenInformationExpiredStrategy());
-                // 使用session
+        // 使用session
                 /*
                 Spring Security下的枚举SessionCreationPolicy,管理session的创建策略
                 ALWAYS
@@ -90,15 +89,7 @@ public class DefaultSecurityConfig {
         http
                 .authorizeRequests()
                 // 无需认证即可访问
-                // swagger文档
-                .antMatchers("/v2/api-docs").permitAll()
-                // 公有public路径
-                .antMatchers("/public/**").permitAll()
-                .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/druid/**").permitAll()
-                .antMatchers("/login/**").permitAll()
-
+                .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 

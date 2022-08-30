@@ -3,7 +3,7 @@ package com.authorization.life.security.sso;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.entity.User;
-import com.authorization.life.security.SecurityConstant;
+import com.authorization.core.security.SecurityConstant;
 import com.authorization.life.security.util.Formatter;
 import com.authorization.life.security.util.RedisCaptchaValidator;
 import com.authorization.life.service.UserService;

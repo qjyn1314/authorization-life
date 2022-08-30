@@ -1,4 +1,4 @@
-package com.authorization.core.security;
+package com.authorization.core.security.handle;
 
 import cn.hutool.json.JSONUtil;
 import com.authorization.start.util.result.Res;

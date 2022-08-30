@@ -1,13 +1,14 @@
-/* eslint-disable quote-props */ 
+/* eslint-disable quote-props */
 import Vue from 'vue'
-import { getCookie, setCookie, isDevelop } from './index'
+import {getCookie, isDevelop, setCookie} from './index'
+
 Vue.prototype.goBack = () => {
-  window.history.back(-1)
+    window.history.back(-1)
 }
 
 Vue.prototype.getCookie = getCookie
 Vue.prototype.setCookie = setCookie
 Vue.prototype.isDevelop = function () {
-  return isDevelop()
+    return isDevelop()
 }
  

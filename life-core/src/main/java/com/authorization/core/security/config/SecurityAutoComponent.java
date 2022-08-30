@@ -1,6 +1,7 @@
-package com.authorization.core.security;
+package com.authorization.core.security.config;
 
 import com.authorization.core.filter.JwtAuthenticationFilter;
+import com.authorization.core.security.service.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

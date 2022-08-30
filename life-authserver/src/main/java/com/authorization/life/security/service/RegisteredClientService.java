@@ -2,10 +2,12 @@ package com.authorization.life.security.service;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.text.StrPool;
+import cn.hutool.json.JSONUtil;
 import com.authorization.common.exception.CommonException;
 import com.authorization.life.entity.OauthClient;
 import com.authorization.life.security.sso.RegClientException;
 import com.authorization.life.service.OauthClientService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2TokenFormat;
@@ -22,6 +24,7 @@ import java.util.Objects;
 /**
  * 自定义的client信息，查询后进行转化
  */
+@Slf4j
 public class RegisteredClientService implements RegisteredClientRepository {
 
     private final OauthClientService clientService;
@@ -41,6 +44,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
         if (Objects.isNull(oauthClient)) {
             return null;
         }
+        log.info("findById-{}", JSONUtil.toJsonStr(oauthClient));
         return getRegisteredClient(clientId, oauthClient);
     }
 
@@ -50,17 +54,25 @@ public class RegisteredClientService implements RegisteredClientRepository {
         if (Objects.isNull(oauthClient)) {
             return null;
         }
+        log.info("findByClientId-{}", JSONUtil.toJsonStr(oauthClient));
         return getRegisteredClient(clientId, oauthClient);
     }
-
+    ///oauth2/authorize?
+    // client_id=${this.ruleForm.client_id} passport  & client_secret = 3MMoCFo4nTNjRtGZ
+    // &response_type=${LOGINTOKEN.response_type} token &  grant_type=  authorization_code
+    // &redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`
     private RegisteredClient getRegisteredClient(String clientId, OauthClient oauthClient) {
         RegisteredClient.Builder builder = RegisteredClient.withId(clientId)
                 .clientId(oauthClient.getClientId())
                 .clientSecret(oauthClient.getClientSecret())
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .redirectUri(oauthClient.getRedirectUri())
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
+                .clientSettings(ClientSettings.builder()
+                        .requireAuthorizationConsent(false).build())
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
                         .accessTokenTimeToLive(Duration.of(oauthClient.getAccessTokenTimeout(), ChronoUnit.SECONDS))

@@ -1,6 +1,7 @@
 package com.authorization.life.security;
 
-import com.authorization.core.security.LoginUrlAuthenticationEntryPoint;
+import com.authorization.core.security.SecurityConstant;
+import com.authorization.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
 import com.authorization.life.security.service.RegisteredClientService;
 import com.authorization.life.security.util.Jwks;
@@ -10,6 +11,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -18,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -42,6 +45,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * <p>
  * https://juejin.cn/post/6985411823144615972
  */
+@Slf4j
 @Configuration(proxyBeanMethods = false)
 public class OauthSecurityConfig {
 
@@ -80,13 +84,14 @@ public class OauthSecurityConfig {
 //        // 配置 异常处理
 //        http.exceptionHandling()
 //                //当未登录的情况下 该如何跳转。
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN));
+//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
 //        return http.build();
 //    }
 
 
     /**
      * oauth2.0配置，需要托管给 HttpSecurity
+     *
      * @param http HttpSecurity
      * @return SecurityFilterChain
      * @throws Exception
@@ -95,10 +100,10 @@ public class OauthSecurityConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        // 配置 异常处理
-        http.exceptionHandling()
-                //当未登录的情况下 该如何跳转。
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+//        // 配置 异常处理
+//        http.exceptionHandling()
+//                //当未登录的情况下 该如何跳转。
+//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         return http.formLogin(Customizer.withDefaults()).build();
     }
 
@@ -119,10 +124,10 @@ public class OauthSecurityConfig {
         return new RedisOAuth2AuthorizationService(redisTemplate);
     }
 
-//    @Bean
-//    public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, String> redisTemplate) {
-//        return new RedisOAuth2AuthorizationConsentService(redisTemplate);
-//    }
+    @Bean
+    public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, String> redisTemplate) {
+        return new RedisOAuth2AuthorizationConsentService(redisTemplate);
+    }
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
@@ -134,7 +139,7 @@ public class OauthSecurityConfig {
     @Bean
     public ProviderSettings providerSettings() {
         //此处为oauth授权服务的发行者，即此授权服务地址
-        return ProviderSettings.builder().build();
+        return ProviderSettings.builder().issuer(SecurityConstant.ISSUER).build();
     }
 
 }

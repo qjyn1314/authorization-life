@@ -1,6 +1,7 @@
 package com.authorization.life.security;
 
 import com.authorization.core.security.SecurityConstant;
+import com.authorization.life.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
 import com.authorization.life.security.service.RegisteredClientService;
@@ -19,13 +20,15 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 /**
@@ -46,6 +49,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * https://juejin.cn/post/6985411823144615972
  */
 @Slf4j
+@EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
 public class OauthSecurityConfig {
 
@@ -99,7 +103,24 @@ public class OauthSecurityConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
+                new OAuth2AuthorizationServerConfigurer<>();
+
+
+        authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
+            endpointConfigurer.authorizationResponseHandler(new OAuth2SuccessHandler());
+        });
+
+        RequestMatcher endpointsMatcher = authorizationServerConfigurer
+                .getEndpointsMatcher();
+
+        http
+                .requestMatcher(endpointsMatcher)
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests.anyRequest().authenticated()
+                )
+                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+                .apply(authorizationServerConfigurer);
 //        // 配置 异常处理
 //        http.exceptionHandling()
 //                //当未登录的情况下 该如何跳转。
@@ -119,11 +140,23 @@ public class OauthSecurityConfig {
         return new RegisteredClientService(clientService);
     }
 
+    /**
+     * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
+     *
+     * @param redisTemplate redis操作类
+     * @return OAuth2AuthorizationService
+     */
     @Bean
     public OAuth2AuthorizationService authorizationService(RedisTemplate<String, String> redisTemplate) {
         return new RedisOAuth2AuthorizationService(redisTemplate);
     }
 
+    /**
+     * 如果是授权码的流程，可能客户端申请了多个权限，比如：获取用户信息，修改用户信息，此Service处理的是用户给这个客户端哪些权限，比如只给获取用户信息的权限
+     *
+     * @param redisTemplate redis操作类
+     * @return OAuth2AuthorizationConsentService
+     */
     @Bean
     public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, String> redisTemplate) {
         return new RedisOAuth2AuthorizationConsentService(redisTemplate);
@@ -139,7 +172,12 @@ public class OauthSecurityConfig {
     @Bean
     public ProviderSettings providerSettings() {
         //此处为oauth授权服务的发行者，即此授权服务地址
-        return ProviderSettings.builder().issuer(SecurityConstant.ISSUER).build();
+        return ProviderSettings.builder()
+                // 配置获取token的端点路径
+                .tokenEndpoint("/oauth2/token")
+                //发布者的url地址,一般是本系统访问的根路径
+                .issuer(SecurityConstant.ISSUER)
+                .build();
     }
 
 }

@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 会话信息过期策略
+ * 会话信息过期策略，仅允许一个用户对应一个token
  */
 public class TokenInformationExpiredStrategy implements SessionInformationExpiredStrategy {
 

@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         String jwt = request.getHeader(Jwts.HEADER_JWT);
+        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
         if (StrUtil.isBlank(jwt)) {
             chain.doFilter(request, response);
             return;

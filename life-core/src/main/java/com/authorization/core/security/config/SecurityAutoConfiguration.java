@@ -71,7 +71,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
-                //未登录时请求访问接口所需要跳转的自定义路径
+                //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter

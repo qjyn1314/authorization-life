@@ -1,9 +1,9 @@
 package com.authorization.common.util;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletResponse;
@@ -71,7 +71,7 @@ public class ResponseUtils {
             response.setHeader(HttpHeaders.PRAGMA, "public");
             response.setHeader(HttpHeaders.SET_COOKIE, "fileDownload=true; path=/");
             response.setDateHeader(HttpHeaders.EXPIRES, (System.currentTimeMillis() + 1000));
-            IOUtils.write(bytes, out);
+            IoUtil.write(out,false,bytes);
             out.flush();
         } catch (IOException e) {
             log.error("文件流写入失败", e);

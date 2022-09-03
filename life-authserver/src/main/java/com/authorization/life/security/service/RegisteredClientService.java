@@ -66,17 +66,22 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientId(oauthClient.getClientId())
                 .clientSecret(oauthClient.getClientSecret())
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT)
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_JWT)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .redirectUri(oauthClient.getRedirectUri())
                 .clientSettings(ClientSettings.builder()
+                        //是否需要用户确认一下客户端需要获取用户的哪些权限
                         .requireAuthorizationConsent(true)
                         .build())
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                        //是否可重用刷新令牌
+                        .reuseRefreshTokens(true)
+                        //accessToken 的有效期  单位：秒
                         .accessTokenTimeToLive(Duration.of(oauthClient.getAccessTokenTimeout(), ChronoUnit.SECONDS))
+                        //refreshToken 的有效期   单位：秒
                         .refreshTokenTimeToLive(Duration.of(oauthClient.getRefreshTokenTimeout(), ChronoUnit.SECONDS))
                         .build());
         //批量设置当前的授权类型

@@ -1,4 +1,4 @@
-package com.authorization.life.security.util;
+package com.authorization.start.util.format;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -8,21 +8,21 @@ import java.util.Map;
 /**
  * 字符串占位符拼接工具类
  */
-public final class Formatter {
+public final class MsgFormat {
 
     private final String pattern;
     private final Map<String, Object> kvMap = new HashMap<>();
 
 
-    public static Formatter of(String pattern) {
-        return new Formatter(pattern);
+    public static MsgFormat of(String pattern) {
+        return new MsgFormat(pattern);
     }
 
-    private Formatter(String pattern) {
+    private MsgFormat(String pattern) {
         this.pattern = pattern;
     }
 
-    public Formatter add(String key, Object value) {
+    public MsgFormat add(String key, Object value) {
         this.kvMap.put(key, value);
         return this;
     }

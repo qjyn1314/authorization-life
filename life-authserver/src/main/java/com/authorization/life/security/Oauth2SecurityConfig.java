@@ -2,11 +2,11 @@ package com.authorization.life.security;
 
 import com.authorization.core.security.SecurityConstant;
 import com.authorization.life.security.handler.oauth.OAuth2SuccessHandler;
+import com.authorization.life.security.service.CustomOAuth2TokenCustomizer;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
 import com.authorization.life.security.service.RegisteredClientService;
 import com.authorization.life.security.util.Jwks;
-import com.authorization.life.security.util.OAuth2ConfigurerUtils;
 import com.authorization.life.service.OauthClientService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -18,16 +18,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
@@ -51,7 +51,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @Slf4j
 @EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
-public class OauthSecurityConfig {
+public class Oauth2SecurityConfig {
 
     /**
      * 将oauth的配置交给 HttpSecurity
@@ -103,6 +103,10 @@ public class OauthSecurityConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        // 设置jwt token个性化
+        http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
+
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
                 new OAuth2AuthorizationServerConfigurer<>();
 
@@ -111,8 +115,7 @@ public class OauthSecurityConfig {
             endpointConfigurer.authorizationResponseHandler(new OAuth2SuccessHandler());
         });
 
-        RequestMatcher endpointsMatcher = authorizationServerConfigurer
-                .getEndpointsMatcher();
+        RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
         http
                 .requestMatcher(endpointsMatcher)
@@ -121,18 +124,12 @@ public class OauthSecurityConfig {
                 )
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 .apply(authorizationServerConfigurer);
-//        // 配置 异常处理
-//        http.exceptionHandling()
-//                //当未登录的情况下 该如何跳转。
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
-        return http.formLogin(Customizer.withDefaults()).build();
-    }
-
-    private OAuth2AuthorizationCodeRequestAuthenticationProvider createOAuth2AuthorizationCodeRequestAuthenticationProvider(HttpSecurity http) {
-        return new OAuth2AuthorizationCodeRequestAuthenticationProvider(
-                OAuth2ConfigurerUtils.getRegisteredClientRepository(http),
-                OAuth2ConfigurerUtils.getAuthorizationService(http),
-                OAuth2ConfigurerUtils.getAuthorizationConsentService(http));
+        http.formLogin();
+        // 配置 异常处理
+        http.exceptionHandling()
+                //当未登录的情况下 该如何跳转。
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
+        return http.build();
     }
 
     @Bean

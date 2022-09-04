@@ -75,8 +75,6 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .redirectUri(oauthClient.getRedirectUri())
-                .redirectUri("http://127.0.0.1:9030/login/oauth2/code/messaging-client-oidc")
-                .redirectUri("http://127.0.0.1:9030/authorized")
                 .clientSettings(ClientSettings.builder()
                         //是否需要用户确认一下客户端需要获取用户的哪些权限
                         .requireAuthorizationConsent(true)

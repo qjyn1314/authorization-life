@@ -109,7 +109,6 @@ public class Oauth2SecurityConfig {
 
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
-        
         authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
             //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
             endpointConfigurer
@@ -132,6 +131,12 @@ public class Oauth2SecurityConfig {
         return http.build();
     }
 
+    /**
+     * 注册client
+     *
+     * @param clientService 自定义的client端信息
+     * @return RegisteredClientRepository
+     */
     @Bean
     public RegisteredClientRepository registeredClientRepository(OauthClientService clientService) {
         return new RegisteredClientService(clientService);

@@ -107,18 +107,18 @@ public class Oauth2SecurityConfig {
         // 设置jwt token个性化
         http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
 
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
-                new OAuth2AuthorizationServerConfigurer<>();
+        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
-
+        
         authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
-            endpointConfigurer.authorizationResponseHandler(new OAuth2SuccessHandler());
+            //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+            endpointConfigurer
+                    .authorizationResponseHandler(new OAuth2SuccessHandler());
         });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
-
-        http
-                .requestMatcher(endpointsMatcher)
+        // 配置请求拦截
+        http.requestMatcher(endpointsMatcher)
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests.anyRequest().authenticated()
                 )
@@ -159,6 +159,11 @@ public class Oauth2SecurityConfig {
         return new RedisOAuth2AuthorizationConsentService(redisTemplate);
     }
 
+    /**
+     * JWT的加密算法，说明：https://www.rfc-editor.org/rfc/rfc7515
+     *
+     * @return JWKSource
+     */
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
         RSAKey rsaKey = Jwks.generateRsa();
@@ -166,6 +171,11 @@ public class Oauth2SecurityConfig {
         return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
     }
 
+    /**
+     * AccessToken的提供者
+     *
+     * @return ProviderSettings
+     */
     @Bean
     public ProviderSettings providerSettings() {
         //此处为oauth授权服务的发行者，即此授权服务地址

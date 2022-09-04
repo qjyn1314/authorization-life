@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -72,7 +71,6 @@ public class DefaultSecurityConfig {
                 .maximumSessions(1)
                 //会话过期后的配置
                 .expiredSessionStrategy(new TokenInformationExpiredStrategy());
-        // 使用session
                 /*
                 Spring Security下的枚举SessionCreationPolicy,管理session的创建策略
                 ALWAYS
@@ -84,26 +82,25 @@ public class DefaultSecurityConfig {
                 STATELESS
                     Spring Security永远不会创建HttpSession，它不会使用HttpSession来获取SecurityContext
                  */
+        // 使用session
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http
-                .authorizeRequests()
+        // 设置无需认证的路径
+        http.authorizeRequests()
                 // 无需认证即可访问
                 .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
-
-        http
-                .logout()
+        // 配置退出登录配置
+        http.logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
                 .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
                 //在此处可以删除相应的cookie
                 .deleteCookies(SecurityConstant.JSESSIONID)
                 .invalidateHttpSession(true)
                 .clearAuthentication(true);
-        http
-                .formLogin()
+        // 配置表单登录配置
+        http.formLogin()
                 .loginProcessingUrl(SecurityConstant.SSO_LOGIN)
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())

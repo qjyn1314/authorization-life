@@ -57,10 +57,14 @@ public class RegisteredClientService implements RegisteredClientRepository {
         log.info("findByClientId-{}", JSONUtil.toJsonStr(oauthClient));
         return getRegisteredClient(clientId, oauthClient);
     }
-    ///oauth2/authorize?
-    // client_id=${this.ruleForm.client_id} passport  & client_secret = 3MMoCFo4nTNjRtGZ
-    // &response_type=${LOGINTOKEN.response_type} token &  grant_type=  authorization_code
-    // &redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`
+
+    /**
+     * 根据数据库中的client信息转换
+     *
+     * @param clientId    clientId
+     * @param oauthClient 数据库client
+     * @return RegisteredClient
+     */
     private RegisteredClient getRegisteredClient(String clientId, OauthClient oauthClient) {
         RegisteredClient.Builder builder = RegisteredClient.withId(clientId)
                 .clientId(oauthClient.getClientId())
@@ -71,6 +75,8 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .redirectUri(oauthClient.getRedirectUri())
+                .redirectUri("http://127.0.0.1:9030/login/oauth2/code/messaging-client-oidc")
+                .redirectUri("http://127.0.0.1:9030/authorized")
                 .clientSettings(ClientSettings.builder()
                         //是否需要用户确认一下客户端需要获取用户的哪些权限
                         .requireAuthorizationConsent(true)

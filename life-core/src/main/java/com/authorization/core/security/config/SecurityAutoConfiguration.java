@@ -6,6 +6,7 @@ import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -73,6 +74,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
+        httpSecurity.formLogin(Customizer.withDefaults());
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

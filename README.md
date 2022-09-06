@@ -61,4 +61,9 @@ https://blog.csdn.net/qq_43799161/article/details/123854833
 ### OAuth 2.0 授权四种方式 ：https://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html 
 ### OAuth2.0  授权模式总结 ：https://learnku.com/articles/20082 
 
+## 使用流程
+
+在用户名密码登录成功之后，将直接请求：
+
+https://www.authorization.life/oauth2/authorize?response_type=authorization_code&client_id=password&redirect_uri=https://www.baidu.com
 

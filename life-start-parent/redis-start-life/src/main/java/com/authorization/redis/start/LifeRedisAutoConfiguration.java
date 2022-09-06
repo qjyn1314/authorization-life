@@ -6,6 +6,7 @@ import com.authorization.start.util.json.ObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -38,9 +39,10 @@ public class LifeRedisAutoConfiguration {
     @Primary
     @Order(Integer.MIN_VALUE)
     @ConditionalOnProperty("spring.redis.host")
-    public RedisTemplate<String, Object> lifeRedisTemplate(RedisConnectionFactory connectionFactory) {
-        log.debug("RedisTemplate Init ...");
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+    public RedisTemplate<String, String> lifeRedisTemplate(RedisConnectionFactory connectionFactory) {
+        log.info("RedisTemplate Init ...");
+        RedisTemplate<String, String> template = new RedisTemplate<>();
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper mapper = ObjectMappers.configMapper();
         jackson2JsonRedisSerializer.setObjectMapper(mapper);
@@ -54,7 +56,7 @@ public class LifeRedisAutoConfiguration {
         template.setValueSerializer(jackson2JsonRedisSerializer);
         template.setConnectionFactory(connectionFactory);
         template.afterPropertiesSet();
-        log.debug("RedisTemplate Inited ...-{}", JSONUtil.toJsonStr(template));
+        log.info("RedisTemplate Init ...-{}", JSONUtil.toJsonStr(template));
         return template;
     }
 
@@ -66,8 +68,10 @@ public class LifeRedisAutoConfiguration {
      * @return RedisMessageListenerContainer
      */
     @Bean
+    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        List<RedisSubscription> redisSubscriberList) {
+        log.info("初始化-redisMessageListenerContainer-connectionFactory-{}", JSONUtil.toJsonStr(connectionFactory));
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setTaskExecutor(scheduledRedisListenerExecutor());

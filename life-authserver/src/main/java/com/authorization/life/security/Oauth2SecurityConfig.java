@@ -102,30 +102,40 @@ public class Oauth2SecurityConfig {
      */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                      RegisteredClientRepository registeredClientRepository,
+                                                                      OAuth2AuthorizationService authorizationService,
+                                                                      OAuth2AuthorizationConsentService auth2AuthorizationConsentService,
+                                                                      ProviderSettings providerSettings) throws Exception {
 
         // 设置jwt token个性化
         http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
 
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
-        authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
-            //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-            endpointConfigurer
-                    .authorizationResponseHandler(new OAuth2SuccessHandler());
-        });
+        authorizationServerConfigurer
+                .registeredClientRepository(registeredClientRepository)
+                .authorizationService(authorizationService)
+                .authorizationConsentService(auth2AuthorizationConsentService)
+                .providerSettings(providerSettings)
+                .authorizationEndpoint(endpointConfigurer -> {
+                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+                    endpointConfigurer
+                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
         http.requestMatcher(endpointsMatcher)
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().authenticated()
-                )
+
+                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+
                 .apply(authorizationServerConfigurer);
         http.formLogin();
         // 配置 异常处理
-        http.exceptionHandling()
+        http
+                .exceptionHandling()
                 //当未登录的情况下 该如何跳转。
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
         return http.build();
@@ -185,10 +195,22 @@ public class Oauth2SecurityConfig {
     public ProviderSettings providerSettings() {
         //此处为oauth授权服务的发行者，即此授权服务地址
         return ProviderSettings.builder()
-                // 配置获取token的端点路径
-                .tokenEndpoint("/oauth2/token")
                 //发布者的url地址,一般是本系统访问的根路径
                 .issuer(SecurityConstant.ISSUER)
+                //授权端点
+                .authorizationEndpoint("/oauth2/authorize")
+                // 配置获取token的端点路径
+                .tokenEndpoint("/oauth2/token")
+                //令牌自省端点
+                .tokenIntrospectionEndpoint("/oauth2/introspect")
+                //令牌撤销端点
+                .tokenRevocationEndpoint("/oauth2/revoke")
+                //jwk 设置端点
+                .jwkSetEndpoint("/oauth2/jwks")
+                //oidc 用户信息端点
+                .oidcUserInfoEndpoint("/userinfo")
+                //oidc 客户端注册端点
+                .oidcClientRegistrationEndpoint("/connect/register")
                 .build();
     }
 

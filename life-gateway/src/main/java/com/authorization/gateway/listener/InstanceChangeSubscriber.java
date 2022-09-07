@@ -1,7 +1,7 @@
 package com.authorization.gateway.listener;
 
 import com.authorization.gateway.service.RouteService;
-import com.authorization.redis.start.RedisSubscription;
+import com.authorization.redis.start.listener.RedisSubscription;
 import com.authorization.start.util.contsant.ServerConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

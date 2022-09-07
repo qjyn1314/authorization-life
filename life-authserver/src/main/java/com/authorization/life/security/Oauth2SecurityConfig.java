@@ -102,27 +102,19 @@ public class Oauth2SecurityConfig {
      */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                      RegisteredClientRepository registeredClientRepository,
-                                                                      OAuth2AuthorizationService authorizationService,
-                                                                      OAuth2AuthorizationConsentService auth2AuthorizationConsentService,
-                                                                      ProviderSettings providerSettings) throws Exception {
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
         // 设置jwt token个性化
         http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
 
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
-        authorizationServerConfigurer
-                .registeredClientRepository(registeredClientRepository)
-                .authorizationService(authorizationService)
-                .authorizationConsentService(auth2AuthorizationConsentService)
-                .providerSettings(providerSettings)
-                .authorizationEndpoint(endpointConfigurer -> {
-                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-                    endpointConfigurer
-                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-                });
+//        authorizationServerConfigurer
+//                .authorizationEndpoint(endpointConfigurer -> {
+//                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+//                    endpointConfigurer
+//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+//                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截

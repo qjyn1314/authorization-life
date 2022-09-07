@@ -8,7 +8,7 @@ let LOGINTOKEN = {
     loginRedirectUrl: `${process.env.VUE_APP_API_HOST}` // 登录重定向域名
 }
 
-let AUTH_SERVER = `auth-life`
+let AUTH_SERVER = ``
 let SYSTEM_SERVER = `system-life`
 
 window.changeRoute = function (code, route) {

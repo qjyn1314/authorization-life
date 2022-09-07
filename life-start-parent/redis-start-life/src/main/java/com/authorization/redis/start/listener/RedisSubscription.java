@@ -1,4 +1,4 @@
-package com.authorization.redis.start;
+package com.authorization.redis.start.listener;
 
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;

@@ -47,6 +47,7 @@ spring:
         exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
         url-pattern: /*
     type: com.alibaba.druid.pool.DruidDataSource
+#mica:
   redis:
     database: 1
     host: 127.0.0.1

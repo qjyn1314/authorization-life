@@ -1,21 +1,22 @@
-package com.authorization.redis.start;
+package com.authorization.redis.start.config;
 
 import cn.hutool.json.JSONUtil;
+import com.authorization.redis.start.util.RedisHelper;
+import com.authorization.redis.start.listener.RedisSubscription;
 import com.authorization.start.util.excutor.ExecutorManager;
-import com.authorization.start.util.json.ObjectMappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.List;
@@ -33,31 +34,22 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 @Configuration
+@AutoConfiguration(before = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfiguration {
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Bean
-    @Primary
-    @Order(Integer.MIN_VALUE)
-    @ConditionalOnProperty("spring.redis.host")
     @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-    public RedisTemplate<String, String> lifeRedisTemplate(RedisConnectionFactory connectionFactory) {
-        log.info("RedisTemplate Init ...");
-        RedisTemplate<String, String> template = new RedisTemplate<>();
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-        ObjectMapper mapper = ObjectMappers.configMapper();
-        jackson2JsonRedisSerializer.setObjectMapper(mapper);
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        return new StringRedisTemplate(redisConnectionFactory);
+    }
 
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        template.setKeySerializer(stringRedisSerializer);
-        template.setStringSerializer(stringRedisSerializer);
-        template.setHashKeySerializer(stringRedisSerializer);
-
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
-        template.setValueSerializer(jackson2JsonRedisSerializer);
-        template.setConnectionFactory(connectionFactory);
-        template.afterPropertiesSet();
-        log.info("RedisTemplate Init ...-{}", JSONUtil.toJsonStr(template));
-        return template;
+    @Bean
+    public RedisHelper redisHelper(RedisTemplate<String, Object> redisTemplate,
+                                   RedisTemplate<String, String> stringRedisTemplate) {
+        return new RedisHelper(redisTemplate, stringRedisTemplate, objectMapper);
     }
 
     /**

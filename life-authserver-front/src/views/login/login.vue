@@ -321,6 +321,7 @@ export default {
       })
     },
     getRedirectUri () {
+      console.log("已登录成功...")
       window.location.href = `${LOGINTOKEN.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?client_id=${this.ruleForm.client_id}&response_type=${LOGINTOKEN.response_type}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`
     },
     getAuthCaptcha () { // 账号登录 -在登录失败10次之后，获取验证码图片接口

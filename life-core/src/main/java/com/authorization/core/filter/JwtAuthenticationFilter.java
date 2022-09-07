@@ -1,6 +1,7 @@
 package com.authorization.core.filter;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.start.util.json.JsonHelper;
 import com.authorization.start.util.jwt.Jwts;
@@ -38,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
 //        String jwt = request.getHeader(Jwts.HEADER_JWT);
 //        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
 //        if (StrUtil.isBlank(jwt)) {

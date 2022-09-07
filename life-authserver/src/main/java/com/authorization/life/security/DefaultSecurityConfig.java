@@ -89,6 +89,7 @@ public class DefaultSecurityConfig {
         // 设置无需认证的路径
         http.authorizeRequests()
                 // 无需认证即可访问
+                .antMatchers("/oauth2/**").permitAll()
                 .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
@@ -106,7 +107,7 @@ public class DefaultSecurityConfig {
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .successHandler(new SsoSuccessHandler())
                 .failureHandler(new SsoFailureHandler());
-        http.formLogin(Customizer.withDefaults());
+//        http.formLogin(Customizer.withDefaults());
         // 添加jwtfilter  过滤器顺序为 jwtAuthenticationFilter -> UsernamePasswordFilter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加自定义的用户名密码认证类

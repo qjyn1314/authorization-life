@@ -6,17 +6,23 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.WebProperties;
+import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
+import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
+import org.springframework.cloud.gateway.config.conditional.ConditionalOnEnabledFilter;
+import org.springframework.cloud.gateway.filter.factory.DedupeResponseHeaderGatewayFilterFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
@@ -31,12 +37,33 @@ import java.util.stream.Collectors;
  * 网关配置类
  */
 @Configuration
+@AutoConfiguration(after = WebFluxAutoConfiguration.EnableWebFluxConfiguration.class)
 public class GatewayConfiguration {
 
-    private final ServerProperties serverProperties;
+    private ServerProperties serverProperties;
 
     public GatewayConfiguration(ServerProperties serverProperties) {
         this.serverProperties = serverProperties;
+    }
+
+    @Bean
+    public ErrorAttributes errorAttributes() {
+        return new DefaultErrorAttributes();
+    }
+
+    @Bean
+    public ServerCodecConfigurer serverCodecConfigurer() {
+        return new DefaultServerCodecConfigurer();
+    }
+
+    @Bean
+    public ServerProperties serverProperties() {
+        return new ServerProperties();
+    }
+
+    @Bean
+    public WebProperties webProperties() {
+        return new WebProperties();
     }
 
     @Bean

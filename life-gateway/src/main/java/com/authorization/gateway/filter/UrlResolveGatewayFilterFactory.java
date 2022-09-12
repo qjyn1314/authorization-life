@@ -25,6 +25,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.a
 @Component
 public class UrlResolveGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
 
+    public static final String URL_RESOLVE = "UrlResolve";
+
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
@@ -51,4 +53,8 @@ public class UrlResolveGatewayFilterFactory extends AbstractGatewayFilterFactory
         };
     }
 
+    @Override
+    public String name() {
+        return URL_RESOLVE;
+    }
 }

@@ -1,4 +1,3 @@
-
 spring:
   application:
     name: auth-life
@@ -15,6 +14,3 @@ spring:
         namespace: ${spring.cloud.nacos.namespace}
       config:
         enabled: false
-server:
-  servlet:
-    context-path: /auth-life

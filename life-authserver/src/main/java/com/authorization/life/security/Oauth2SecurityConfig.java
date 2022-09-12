@@ -1,7 +1,6 @@
 package com.authorization.life.security;
 
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.life.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.security.service.CustomOAuth2TokenCustomizer;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
@@ -124,7 +124,7 @@ public class Oauth2SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
 
                 .apply(authorizationServerConfigurer);
-        http.formLogin();
+        http.formLogin(Customizer.withDefaults());
         // 配置 异常处理
         http
                 .exceptionHandling()

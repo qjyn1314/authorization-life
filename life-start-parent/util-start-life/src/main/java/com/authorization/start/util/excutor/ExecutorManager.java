@@ -126,7 +126,7 @@ public class ExecutorManager {
      * @param threadPool     线程池
      * @param threadPoolName 线程池名称
      */
-    public static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName) {
+    private static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName) {
         displayThreadPoolStatus(threadPool, threadPoolName, RandomUtil.randomInt(600), TimeUnit.SECONDS);
     }
 
@@ -138,7 +138,7 @@ public class ExecutorManager {
      * @param period         周期
      * @param unit           时间单位
      */
-    public static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName, long period, TimeUnit unit) {
+    private static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName, long period, TimeUnit unit) {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             String payload = "[ExecutorManager] Executor Status:[ThreadPool Name: [{}], Pool Status: [shutdown={}, Terminated={}], Pool Thread Size: {}, Largest Pool Size: {}, Active Thread Count: {}, Task Count: {}, Tasks Completed: {}, Tasks in Queue: {}]";
             Object[] params = new Object[]{threadPoolName,
@@ -164,7 +164,7 @@ public class ExecutorManager {
      * @param threadPool     线程池
      * @param threadPoolName 线程池名称
      */
-    public static void hookShutdownThreadPool(ExecutorService threadPool, String threadPoolName) {
+    private static void hookShutdownThreadPool(ExecutorService threadPool, String threadPoolName) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("[ExecutorManager.ShutdownHook] Start to shutdown the thead pool: [{}]", threadPoolName);
             // 使新任务无法提交
@@ -211,7 +211,7 @@ public class ExecutorManager {
      * @param threadPoolName 线程池名称
      * @param executor       ThreadPoolExecutor
      */
-    public static void registerThreadPoolExecutor(String threadPoolName, ThreadPoolExecutor executor) {
+    private static void registerThreadPoolExecutor(String threadPoolName, ThreadPoolExecutor executor) {
         EXECUTORS.put(threadPoolName, executor);
     }
 
@@ -241,7 +241,7 @@ public class ExecutorManager {
      *
      * @return ThreadPoolExecutor
      */
-    public static Map<String, ThreadPoolExecutor> getAllThreadPoolExecutor() {
+    private static Map<String, ThreadPoolExecutor> getAllThreadPoolExecutor() {
         return ImmutableMap.copyOf(EXECUTORS);
     }
 
@@ -250,7 +250,7 @@ public class ExecutorManager {
      *
      * @param threadPoolName 线程池名称
      */
-    public static void removeThreadPoolExecutor(String threadPoolName) {
+    private static void removeThreadPoolExecutor(String threadPoolName) {
         EXECUTORS.remove(threadPoolName);
     }
 

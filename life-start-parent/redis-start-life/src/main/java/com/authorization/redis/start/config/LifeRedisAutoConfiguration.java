@@ -115,7 +115,7 @@ public class LifeRedisAutoConfiguration {
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(ExecutorManager.getCpuProcessors(),
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());
-        ExecutorManager.displayThreadPoolStatus(scheduledThreadPoolExecutor, SCHEDULED_TASKS_NAME);
+        ExecutorManager.registerAndMonitorThreadPoolExecutor(SCHEDULED_TASKS_NAME, scheduledThreadPoolExecutor);
         return scheduledThreadPoolExecutor;
     }
 

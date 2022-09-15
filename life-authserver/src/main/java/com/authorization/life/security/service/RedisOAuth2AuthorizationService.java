@@ -1,7 +1,8 @@
 package com.authorization.life.security.service;
 
 import com.authorization.core.security.SecurityConstant;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.authorization.redis.start.util.StrRedisHelper;
+import com.authorization.start.util.json.JsonHelper;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthorizationCode;
@@ -12,6 +13,9 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.util.Assert;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * 使用redis进行缓存  OAuth2Authorization
  */
@@ -19,40 +23,41 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
 
     private static final String AUTHORIZATION = SecurityConstant.AUTHORIZATION;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final StrRedisHelper strRedisHelper;
 
-    public RedisOAuth2AuthorizationService(RedisTemplate<String, String> jdkHashValueRedisTemplate) {
-        this.redisTemplate = jdkHashValueRedisTemplate;
+    public RedisOAuth2AuthorizationService(StrRedisHelper strRedisHelper) {
+        this.strRedisHelper = strRedisHelper;
     }
 
     @Override
     public void save(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
-        redisTemplate.opsForHash().put(AUTHORIZATION, authorization.getId(), authorization);
+        String authorizationStr = JsonHelper.writeValueAsString(authorization);
+        strRedisHelper.hashPut(AUTHORIZATION, authorization.getId(), authorizationStr);
     }
 
     @Override
     public void remove(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
-        redisTemplate.opsForHash().delete(AUTHORIZATION, authorization.getId());
+        strRedisHelper.hashDelete(AUTHORIZATION, authorization.getId());
     }
 
     @Override
     @Nullable
     public OAuth2Authorization findById(String id) {
         Assert.hasText(id, "id cannot be empty");
-        return (OAuth2Authorization) redisTemplate.opsForHash().get(AUTHORIZATION, id);
+        return JsonHelper.readValue(strRedisHelper.hashGet(AUTHORIZATION, id),OAuth2Authorization.class);
     }
 
     @Override
     @Nullable
     public OAuth2Authorization findByToken(String token, @Nullable OAuth2TokenType tokenType) {
         Assert.hasText(token, "token cannot be empty");
-        for (Object authorization : redisTemplate.opsForHash().values(AUTHORIZATION)) {
-            if (hasToken((OAuth2Authorization) authorization, token, tokenType)) {
-                return (OAuth2Authorization) authorization;
-            }
-        }
+//        for (Object authorization : redisTemplate.opsForHash().values(AUTHORIZATION)) {
+//            if (hasToken((OAuth2Authorization) authorization, token, tokenType)) {
+//                return (OAuth2Authorization) authorization;
+//            }
+//        }
         return null;
     }
 

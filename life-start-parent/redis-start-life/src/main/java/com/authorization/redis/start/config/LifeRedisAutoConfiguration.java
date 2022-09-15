@@ -1,22 +1,25 @@
 package com.authorization.redis.start.config;
 
 import cn.hutool.json.JSONUtil;
-import com.authorization.redis.start.util.RedisHelper;
 import com.authorization.redis.start.listener.RedisSubscription;
+import com.authorization.redis.start.util.ObjRedisHelper;
+import com.authorization.redis.start.util.StrRedisHelper;
 import com.authorization.start.util.excutor.ExecutorManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.authorization.start.util.json.ObjectMappers;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.List;
@@ -37,9 +40,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @AutoConfiguration(before = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfiguration {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Bean
     @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
@@ -47,10 +47,31 @@ public class LifeRedisAutoConfiguration {
     }
 
     @Bean
-    public RedisHelper redisHelper(RedisTemplate<String, Object> redisTemplate,
-                                   RedisTemplate<String, String> stringRedisTemplate) {
-        return new RedisHelper(redisTemplate, stringRedisTemplate, objectMapper);
+    public StrRedisHelper strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
+        return new StrRedisHelper(stringRedisTemplate, ObjectMappers.configMapper());
     }
+
+    @Bean
+    public ObjRedisHelper objRedisHelper(RedisTemplate<String, Object> stringRedisTemplate) {
+        return new ObjRedisHelper(stringRedisTemplate);
+    }
+
+    @Bean
+    @Primary
+    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        // key 序列化
+        RedisSerializer<String> keySerializer = RedisSerializer.string();
+        redisTemplate.setKeySerializer(keySerializer);
+        redisTemplate.setHashKeySerializer(keySerializer);
+        // value 序列化
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        return redisTemplate;
+    }
+
 
     /**
      * 配置redis监听消息配置类

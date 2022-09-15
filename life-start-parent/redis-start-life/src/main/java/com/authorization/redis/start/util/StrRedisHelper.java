@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import net.dreamlu.mica.redis.cache.MicaRedisCache;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.Assert;
@@ -15,17 +14,15 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * redis工具类
+ * 存储存字符传的redis工具类，
  */
 @Slf4j
-public class RedisHelper extends MicaRedisCache {
-
+public class StrRedisHelper {
 
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
 
-    public RedisHelper(RedisTemplate<String, Object> redisTemplateObj,RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
-        super(redisTemplateObj);
+    public StrRedisHelper(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
@@ -919,7 +916,6 @@ public class RedisHelper extends MicaRedisCache {
      * @param pattern 表达式
      * @return object 匹配的所有key
      */
-    @Override
     public Set<String> keys(String pattern) {
         return this.currentRestTemplate().keys(pattern);
     }

@@ -37,7 +37,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 @Configuration
-@AutoConfiguration(before = RedisAutoConfiguration.class)
+@AutoConfiguration(after = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfiguration {
 
     @Bean
@@ -52,8 +52,8 @@ public class LifeRedisAutoConfiguration {
     }
 
     @Bean
-    public ObjRedisHelper objRedisHelper(RedisTemplate<String, Object> stringRedisTemplate) {
-        return new ObjRedisHelper(stringRedisTemplate);
+    public ObjRedisHelper objRedisHelper(RedisTemplate<String, Object> redisTemplate) {
+        return new ObjRedisHelper(redisTemplate);
     }
 
     @Bean

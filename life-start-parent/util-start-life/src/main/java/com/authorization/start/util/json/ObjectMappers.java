@@ -53,6 +53,8 @@ public class ObjectMappers {
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATETIME)));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATETIME)));
 
+
+
         objectMapper.registerModule(javaTimeModule);
         // 默认开启，将Date类型序列化为数字时间戳(毫秒表示)。关闭后，序列化为文本表现形式(2019-10-23T01:58:58.308+0000)，若设置时间格式化。那么均输出格式化的时间类型。
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

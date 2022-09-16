@@ -159,14 +159,14 @@ public class Oauth2SecurityConfig {
      * @return OAuth2AuthorizationService
      */
     @Bean
-    public OAuth2AuthorizationService authorizationService(StrRedisHelper objRedisHelper) {
+    public OAuth2AuthorizationService authorizationService(ObjRedisHelper objRedisHelper) {
         return new RedisOAuth2AuthorizationService(objRedisHelper);
     }
 
     /**
      * 如果是授权码的流程，可能客户端申请了多个权限，比如：获取用户信息，修改用户信息，此Service处理的是用户给这个客户端哪些权限，比如只给获取用户信息的权限
      *
-     * @param strRedisHelper redis操作类
+     * @param redisTemplate redis操作类
      * @return OAuth2AuthorizationConsentService
      */
     @Bean

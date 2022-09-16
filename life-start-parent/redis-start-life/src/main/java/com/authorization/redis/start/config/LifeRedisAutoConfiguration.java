@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 @Slf4j
 @Configuration
-@AutoConfiguration(after = RedisAutoConfiguration.class)
+@AutoConfiguration(before = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfiguration {
 
     @Bean
@@ -62,13 +63,16 @@ public class LifeRedisAutoConfiguration {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         // key 序列化
-        RedisSerializer<String> keySerializer = RedisSerializer.string();
-        redisTemplate.setKeySerializer(keySerializer);
-        redisTemplate.setHashKeySerializer(keySerializer);
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        redisTemplate.setKeySerializer(stringRedisSerializer);
+        redisTemplate.setStringSerializer(stringRedisSerializer);
+        redisTemplate.setDefaultSerializer(stringRedisSerializer);
+        redisTemplate.setHashKeySerializer(stringRedisSerializer);
         // value 序列化
         redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 

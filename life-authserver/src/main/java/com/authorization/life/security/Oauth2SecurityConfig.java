@@ -165,7 +165,7 @@ public class Oauth2SecurityConfig {
      * @return OAuth2AuthorizationConsentService
      */
     @Bean
-    public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, String> redisTemplate) {
+    public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisOAuth2AuthorizationConsentService(redisTemplate);
     }
 

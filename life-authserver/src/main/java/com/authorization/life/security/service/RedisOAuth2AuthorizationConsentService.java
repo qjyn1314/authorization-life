@@ -13,9 +13,9 @@ public final class RedisOAuth2AuthorizationConsentService implements OAuth2Autho
 
     private static final String AUTHORIZATION = SecurityConstant.AUTHORIZATION_CONSENT;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public RedisOAuth2AuthorizationConsentService(RedisTemplate<String, String> redisTemplate) {
+    public RedisOAuth2AuthorizationConsentService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -38,12 +38,12 @@ public final class RedisOAuth2AuthorizationConsentService implements OAuth2Autho
         return (OAuth2AuthorizationConsent) redisTemplate.opsForHash().get(AUTHORIZATION, getId(registeredClientId, principalName));
     }
 
-    private static String getId(String registeredClientId, String principalName) {
-        return registeredClientId + principalName;
-    }
-
     private static String getId(OAuth2AuthorizationConsent authorizationConsent) {
         return getId(authorizationConsent.getRegisteredClientId(), authorizationConsent.getPrincipalName());
+    }
+
+    private static String getId(String registeredClientId, String principalName) {
+        return registeredClientId + principalName;
     }
 
 }

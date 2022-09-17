@@ -56,8 +56,7 @@ public class LifeRedisAutoConfiguration {
 
     @Bean
     @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-    public RedisTemplate<String, Object> authRedisTemplate(RedisConnectionFactory redisConnectionFactory,
-                                                           ObjectMapper objectMapper) {
+    public RedisTemplate<String, Object> authRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(RedisSerializer.string());

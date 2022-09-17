@@ -2,13 +2,17 @@ package com.authorization.start.util.json;
 
 import com.authorization.start.util.json.convert.DateDeserializer;
 import com.authorization.start.util.json.convert.DateSerializer;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -34,7 +38,7 @@ public class ObjectMappers {
     /**
      * @return 标准配置新objectMapper
      */
-    public static ObjectMapper configMapper() {
+    protected static ObjectMapper configMapper() {
         return configMapper(new ObjectMapper());
     }
 
@@ -52,8 +56,6 @@ public class ObjectMappers {
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATE)));
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATETIME)));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATETIME)));
-
-
 
         objectMapper.registerModule(javaTimeModule);
         // 默认开启，将Date类型序列化为数字时间戳(毫秒表示)。关闭后，序列化为文本表现形式(2019-10-23T01:58:58.308+0000)，若设置时间格式化。那么均输出格式化的时间类型。
@@ -78,6 +80,10 @@ public class ObjectMappers {
         objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
         // 序列化结果格式化，美化输出
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        //设置可见度
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        //启动默认的类型
+        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_ARRAY);
         return objectMapper;
     }
 }

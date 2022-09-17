@@ -2,13 +2,11 @@ package com.authorization.redis.start.config;
 
 import cn.hutool.json.JSONUtil;
 import com.authorization.redis.start.listener.RedisSubscription;
-import com.authorization.redis.start.util.ObjRedisHelper;
 import com.authorization.redis.start.util.StrRedisHelper;
 import com.authorization.start.util.excutor.ExecutorManager;
-import com.authorization.start.util.json.ObjectMappers;
+import com.authorization.start.util.json.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -49,30 +47,20 @@ public class LifeRedisAutoConfiguration {
 
     @Bean
     public StrRedisHelper strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
-        return new StrRedisHelper(stringRedisTemplate, ObjectMappers.configMapper());
-    }
-
-    @Bean
-    public ObjRedisHelper objRedisHelper(RedisTemplate<String, Object> redisTemplate) {
-        return new ObjRedisHelper(redisTemplate);
+        return new StrRedisHelper(stringRedisTemplate, JsonHelper.getObjectMapper());
     }
 
     @Bean
     @Primary
     @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> authRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        // key 序列化
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        redisTemplate.setKeySerializer(stringRedisSerializer);
-        redisTemplate.setStringSerializer(stringRedisSerializer);
-        redisTemplate.setDefaultSerializer(stringRedisSerializer);
-        redisTemplate.setHashKeySerializer(stringRedisSerializer);
-        // value 序列化
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(RedisSerializer.string());
         redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.afterPropertiesSet();
+        log.info("Init redis-start-life RedisTemplate");
         return redisTemplate;
     }
 

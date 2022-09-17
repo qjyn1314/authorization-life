@@ -7,7 +7,6 @@ import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
 import com.authorization.life.security.service.RegisteredClientService;
 import com.authorization.life.security.util.Jwks;
 import com.authorization.life.service.OauthClientService;
-import com.authorization.redis.start.util.ObjRedisHelper;
 import com.authorization.redis.start.util.StrRedisHelper;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
@@ -125,7 +125,7 @@ public class Oauth2SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
 
                 .apply(authorizationServerConfigurer);
-//        http.formLogin(Customizer.withDefaults());
+        http.formLogin(Customizer.withDefaults());
         // 配置 异常处理
         http
                 .exceptionHandling()
@@ -133,13 +133,6 @@ public class Oauth2SecurityConfig {
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
         return http.build();
     }
-
-//    @Bean
-//    @Order(Ordered.HIGHEST_PRECEDENCE)
-//    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-//        return http.formLogin(Customizer.withDefaults()).build();
-//    }
 
     /**
      * 注册client
@@ -155,12 +148,14 @@ public class Oauth2SecurityConfig {
     /**
      * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
      *
-     * @param objRedisHelper redis操作类
+     * @param redisTemplate  redis操作类
+     * @param strRedisHelper redis字符串的操作类
      * @return OAuth2AuthorizationService
      */
     @Bean
-    public OAuth2AuthorizationService authorizationService(ObjRedisHelper objRedisHelper) {
-        return new RedisOAuth2AuthorizationService(objRedisHelper);
+    public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate,
+                                                           StrRedisHelper strRedisHelper) {
+        return new RedisOAuth2AuthorizationService(redisTemplate, strRedisHelper);
     }
 
     /**

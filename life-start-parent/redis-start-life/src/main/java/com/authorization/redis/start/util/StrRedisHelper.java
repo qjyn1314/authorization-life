@@ -22,6 +22,10 @@ public class StrRedisHelper {
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
     public StrRedisHelper(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;

@@ -39,7 +39,7 @@ public class SecurityAutoComponent {
     }
 
     /**
-     * 此处将配置每次只执行一次的filter
+     * 此处将配置每次只执行一次的filter，需要对gateway中jwt进行解析为内部的当前登录用户信息
      */
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {

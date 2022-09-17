@@ -84,11 +84,10 @@ public class DefaultSecurityConfig {
                  */
         // 使用session
         http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS                     );
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         // 设置无需认证的路径
         http.authorizeRequests()
                 // 无需认证即可访问
-                .antMatchers("/oauth2/**").permitAll()
                 .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

@@ -15,7 +15,15 @@ import java.io.IOException;
  */
 public class JsonHelper {
 
-    private final static ObjectMapper objectMapper = ObjectMappers.configMapper();
+    private static ObjectMapper objectMapper = ObjectMappers.configMapper();
+
+    /**
+     * 为ObjectMapper重新设置值
+     */
+    public static void setNewObjectMapper(ObjectMapper newObjectMapper) {
+        objectMapper = newObjectMapper;
+    }
+
 
     public static String writeValueAsString(Object value) {
         try {

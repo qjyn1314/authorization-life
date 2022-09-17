@@ -66,5 +66,7 @@ https://blog.csdn.net/qq_43799161/article/details/123854833
 在用户名密码登录成功之后，将直接请求：
 
 1、授权码模式：
+
 跳转到转发的地址并设置code
+
 https://www.authorization.life/auth-life/oauth2/authorize?client_id=passport&response_type=code&scope=TENANT&redirect_uri=https%3A%2F%2Fwww.baidu.com

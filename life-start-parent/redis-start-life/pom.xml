@@ -27,10 +27,6 @@
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.dreamlu</groupId>
-            <artifactId>mica-redis</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

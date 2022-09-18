@@ -46,6 +46,11 @@ export default new Router({
     {
       path: '/404', component: () => import('@/views/system/404.vue'), meta: { title: '404' }
     },
+    {
+      path: '/home', // 首页
+      name: 'home',
+      component: () => import('@/views/home/home.vue'), meta: { title: 'home' }
+    },
     // {
     //   path: '/',
     //   component: () => import('@/views/AdminLayout/index.vue'),

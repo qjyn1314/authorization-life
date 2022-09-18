@@ -122,10 +122,17 @@
             class="login_bottom login_bottom_cur"
             :class="loginCur != 0 ? 'login_bottom_cur' : ''"
           >
-            <!-- <div class="login_bottom_l" v-if="loginCur == 0">忘记密码</div> -->
+<!--            <div class="login_bottom_l" v-if="loginCur == 0" >忘记密码</div>-->
             <div class="login_bottom_r" @click="goRegister">
               暂无账号
               <span>去注册</span>
+            </div>
+            <div class="login_bottom_r" >
+              <span><br/></span>
+            </div>
+            <div class="login_bottom_r" @click="goHome">
+              先预览->
+              <span>首页</span>
             </div>
           </div>
         </div>
@@ -324,7 +331,7 @@ export default {
       console.log("已登录成功...")
       console.log("授权码模式...")
       console.log("请求授权确认..."+`${LOGINTOKEN.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?client_id=${this.ruleForm.client_id}&response_type=${LOGINTOKEN.response_type}&scope=${LOGINTOKEN.scope}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`)
-      // window.location.href = `${LOGINTOKEN.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?client_id=${this.ruleForm.client_id}&response_type=${LOGINTOKEN.response_type}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`
+      window.location.href = `${LOGINTOKEN.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?client_id=${this.ruleForm.client_id}&response_type=${LOGINTOKEN.response_type}&scope=${LOGINTOKEN.scope}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`
     },
     getAuthCaptcha () { // 账号登录 -在登录失败10次之后，获取验证码图片接口
       getAuthCaptcha().then(res => {
@@ -338,6 +345,11 @@ export default {
     goRegister () {
       this.$router.push({
         name: 'register'
+      })
+    },
+    goHome () {
+      this.$router.push({
+        name: 'home'
       })
     }
   }

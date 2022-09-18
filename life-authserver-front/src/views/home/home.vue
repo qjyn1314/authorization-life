@@ -9,9 +9,7 @@
 
 <div id="app">
     <h1>{{ message }}</h1>
-    <h2>{{ name }}</h2>
-    <h3>{{ age }}</h3>
-    <h3><a v-bind:href="url">点击我即可跳转至百度首页。</a></h3>
+    <h1>{{ login_message }}</h1>
     <h3><a :href="url">点击我即可跳转至百度首页。</a></h3>
 </div>
 
@@ -23,9 +21,7 @@
         el: '#app',
         data: {
             message: 'Vue Hello World!!!',
-            name: '张三',
-            age: 25,
-            url: 'https://www.baidu.com'
+          login_message: '登陆成功。',
         }
     })
 </script>

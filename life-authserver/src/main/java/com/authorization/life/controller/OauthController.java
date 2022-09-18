@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022-02-21 20:21:01
  */
 @RestController
-@RequestMapping("/oauth")
+@RequestMapping("/v1/oauth")
 public class OauthController {
 
     @Autowired

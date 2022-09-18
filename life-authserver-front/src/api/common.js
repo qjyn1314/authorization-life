@@ -12,7 +12,7 @@ export function getlovoptions (tenantId, data) {
 // 查询当前登录用户的信息
 export function getUserSelf () {
   return request({
-    url: `/${AUTH_SERVER}/v1/user/self`,
+    url: `/${AUTH_SERVER}/v1/oauth/self-user`,
     method: 'GET'
   })
 }
@@ -20,7 +20,7 @@ export function getUserSelf () {
 export function getRegister (data) {
   return request({
     url: `/${AUTH_SERVER}/v1/company/register`,
-    method: 'POST', 
+    method: 'POST',
     data: data
   })
 }

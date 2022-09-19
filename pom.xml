@@ -52,6 +52,7 @@
         <!--数据库依赖-->
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <druid.version>1.2.9</druid.version>
+        <pagehelper.version>1.4.5</pagehelper.version>
         <!--工具依赖-->
         <hutool.version>5.8.2</hutool.version>
         <guava.version>31.1-jre</guava.version>
@@ -123,6 +124,11 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
             </dependency>
             <!--以上为数据库连接-->
             <dependency>

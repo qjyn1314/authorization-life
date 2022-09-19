@@ -22,5 +22,5 @@ spring:
         max-wait: 10000
         min-idle: 3
     password: 123456
-    port: 7777
+    port: 6379
     timeout: 50000

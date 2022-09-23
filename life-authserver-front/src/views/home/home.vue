@@ -1,30 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>vue-初体验</title>
-    <script src="../js/vue.js"></script>
-</head>
-<body>
+<template>
+  <content-layout :showSearch="false" v-loading="loading">
+    <template slot="title">系统首页</template>
+    <template slot="body">
 
-<div id="app">
-    <h1>{{ message }}</h1>
-    <h1>{{ login_message }}</h1>
-    <h3><a :href="url">点击我即可跳转至百度首页。</a></h3>
-</div>
+      <h2>恭喜你登录成功了。</h2>
+      <h3>此处可以为系统首页的内容，并做一些统计工作。</h3>
+      <h4>我们将在这里完成对 accessToken 的获取。</h4>
+      <h4>获取的accessToken对象是：{{ accessToken }}</h4>
+    </template>
+  </content-layout>
+</template>
 
 <script>
-    Vue.config.productionTip = false;
-    // let 变量； const 常量；
-    const app = new Vue({
-        // 选项
-        el: '#app',
-        data: {
-            message: 'Vue Hello World!!!',
-          login_message: '登陆成功。',
-        }
-    })
-</script>
+import {ContentLayout} from '@/components'
+import {getOauth2TokenByCode} from '@/api/common'
 
-</body>
-</html>
+export default {
+  name: 'home',
+  components: {
+    ContentLayout,
+  },
+  data() {
+    return {
+      loading: false,
+      tokenByCode: {
+
+      },
+      accessToken: {
+
+      }
+    }
+  },
+  computed: {},
+  mounted() {
+
+  },
+  methods: {
+    getAccessToken() {
+      console.log(tokenByCode)
+      getOauth2TokenByCode(tokenByCode).then(res => {
+        console.log(res);
+      })
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+</style>

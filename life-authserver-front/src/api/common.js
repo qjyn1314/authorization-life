@@ -54,4 +54,12 @@ export function getOauth2Token (data) {
     url: `/${AUTH_SERVER}/oauth2/token?${Qs.stringify(data)}`,
     method: 'POST'
   })
-} 
+}
+// 通过code获取access token
+export function getOauth2TokenByCode (data) {
+  return request({
+    url: `/${AUTH_SERVER}/oauth2/token`,
+    method: 'POST',
+    data: data
+  })
+}

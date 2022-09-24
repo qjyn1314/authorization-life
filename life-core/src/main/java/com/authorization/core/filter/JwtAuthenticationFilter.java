@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,6 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        log.info("authentication-{}",JSONUtil.toJsonStr(authentication));
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
 //        String jwt = request.getHeader(Jwts.HEADER_JWT);
 //        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);

@@ -44,11 +44,8 @@ public interface SecurityConstant {
             "/oauth/login/**",
             //退出登录接口
             "/oauth/revoke",
-            //aouth2授权accesstoken接口
+            //aouth2接口
             "/oauth2/**",
-            //获取token接口
-//            "/oauth2/token",
-
     };
 
 

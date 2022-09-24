@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { AUTH_SERVER, LOGINTOKEN } from '@/api/severApi'
+import { AUTH_SERVER, LOGINCODE } from '@/api/severApi'
 import { getAuthLogin, getLoginSms } from '@/api/login'
 import { getAuthCaptchaCode, getAuthCaptcha } from '@/api/common'
 import { clearLoginCache } from '@/utils/index'
@@ -181,9 +181,9 @@ export default {
         telAreaCode: '+86',
         captchaCode: '',
         captchaUuid: '',
-        client_id: LOGINTOKEN.client_id,
-        client_secret: LOGINTOKEN.client_secret,
-        redirect_uri: LOGINTOKEN.redirect_uri
+        client_id: LOGINCODE.client_id,
+        client_secret: LOGINCODE.client_secret,
+        redirect_uri: LOGINCODE.redirect_uri
       },
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
@@ -330,8 +330,8 @@ export default {
     getRedirectUri () {
       console.log("已登录成功...")
       console.log("授权码模式...")
-      console.log("请求授权确认..."+`${LOGINTOKEN.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?client_id=${this.ruleForm.client_id}&response_type=${LOGINTOKEN.response_type}&scope=${LOGINTOKEN.scope}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`)
-      window.location.href = `${LOGINTOKEN.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?client_id=${this.ruleForm.client_id}&response_type=${LOGINTOKEN.response_type}&scope=${LOGINTOKEN.scope}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINTOKEN.redirect_uri)}`
+      console.log("请求授权确认..."+`${LOGINCODE.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?response_type=${LOGINCODE.response_type}&client_id=${this.ruleForm.client_id}&scope=${LOGINCODE.scope}&state=${LOGINCODE.state}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINCODE.redirect_uri)}`)
+      window.location.href = `${LOGINCODE.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?response_type=${LOGINCODE.response_type}&client_id=${this.ruleForm.client_id}&scope=${LOGINCODE.scope}&state=${LOGINCODE.state}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINCODE.redirect_uri)}`
     },
     getAuthCaptcha () { // 账号登录 -在登录失败10次之后，获取验证码图片接口
       getAuthCaptcha().then(res => {

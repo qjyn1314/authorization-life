@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>life-core</artifactId>
+            <artifactId>life-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>

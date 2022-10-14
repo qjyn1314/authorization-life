@@ -45,22 +45,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         Authentication authentication = context.getAuthentication();
         log.info("authentication-{}",JSONUtil.toJsonStr(authentication));
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
-//        String jwt = request.getHeader(Jwts.HEADER_JWT);
-//        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
-//        if (StrUtil.isBlank(jwt)) {
-//            chain.doFilter(request, response);
-//            return;
-//        }
-//        JWSObject jwsObject = Jwts.parse(jwt);
-//        if (!Jwts.verify(jwsObject, verifier)) {
-//            log.error("Jwt verify failed! JWT: [{}]", jwt);
-//            chain.doFilter(request, response);
-//            return;
-//        }
-//        UserDetail userDetail = jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
-//                UserDetail.anonymous() : JsonHelper.readValue(payload.toString(), UserDetail.class));
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
-//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        String jwt = request.getHeader(Jwts.HEADER_JWT);
+        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
+        if (StrUtil.isBlank(jwt)) {
+            chain.doFilter(request, response);
+            return;
+        }
+        JWSObject jwsObject = Jwts.parse(jwt);
+        if (!Jwts.verify(jwsObject, verifier)) {
+            log.error("Jwt verify failed! JWT: [{}]", jwt);
+            chain.doFilter(request, response);
+            return;
+        }
+        UserDetail userDetail = jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
+                UserDetail.anonymous() : JsonHelper.readValue(payload.toString(), UserDetail.class));
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request, response);
 
     }

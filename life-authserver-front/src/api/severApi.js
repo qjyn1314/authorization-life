@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-//授权码模式的第一步，获取授权码code。
+//授权码模式的第一步，获取授权码code，传参示例。
 let LOGINCODE = {
     grant_type: 'authorization_code',
     response_type: 'code',
@@ -11,7 +11,7 @@ let LOGINCODE = {
     loginRedirectUrl: `${process.env.VUE_APP_API_HOST}` // 登录重定向域名
 }
 
-//授权码模式的第二步，通过临时授权码code获取accessToken信息。
+//授权码模式的第二步，通过临时授权码code获取accessToken信息，传参示例。
 let CODE_ACCESS_TOKEN = {
     grant_type: 'authorization_code',
     client_id: 'passport',
@@ -19,8 +19,9 @@ let CODE_ACCESS_TOKEN = {
     redirect_uri: `${process.env.VUE_APP_API_HOST}/login/home`, // 默认登录跳转的链接
     loginRedirectUrl: `${process.env.VUE_APP_API_HOST}` // 登录重定向域名
 }
-
+//认证服务和授权服务
 let AUTH_SERVER = `auth-life`
+//使用token的服务
 let SYSTEM_SERVER = `system-life`
 
 window.changeRoute = function (code, route) {

@@ -115,8 +115,4 @@ public class LifeRedisAutoConfiguration {
     private static final String SCHEDULED_TASKS_NAME = "REDIS-LISTENER-TASK-";
 
 
-    @Bean
-    public RedissionConfig redissionConfig() {
-        return new RedissionConfig();
-    }
 }

@@ -12,7 +12,7 @@ public class OauthServerTest {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         //明文
-        String encode = passwordEncoder.encode("123456");
+        String encode = passwordEncoder.encode("3MMoCFo4nTNjRtGZ");
 
         log.info("密文-{}",encode);
 

@@ -8,21 +8,21 @@ import java.util.Map;
 /**
  * 字符串占位符拼接工具类
  */
-public final class MsgFormat {
+public final class KvpFormat {
 
     private final String pattern;
     private final Map<String, Object> kvMap = new HashMap<>();
 
 
-    public static MsgFormat of(String pattern) {
-        return new MsgFormat(pattern);
+    public static KvpFormat of(String pattern) {
+        return new KvpFormat(pattern);
     }
 
-    private MsgFormat(String pattern) {
+    private KvpFormat(String pattern) {
         this.pattern = pattern;
     }
 
-    public MsgFormat add(String key, Object value) {
+    public KvpFormat add(String key, Object value) {
         this.kvMap.put(key, value);
         return this;
     }

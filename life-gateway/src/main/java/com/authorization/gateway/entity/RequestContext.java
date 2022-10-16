@@ -1,4 +1,4 @@
-package com.authorization.start.util.contsant;
+package com.authorization.gateway.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +18,7 @@ public class RequestContext {
     private String serviceName;
     private String httpMethod;
     private String uri;
+    private UserDetail userDetail;
     private boolean isAuthed;
 
     @Override

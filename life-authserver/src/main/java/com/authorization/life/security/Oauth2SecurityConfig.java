@@ -1,6 +1,8 @@
 package com.authorization.life.security;
 
 import com.authorization.core.security.SecurityConstant;
+import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
+import com.authorization.life.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.security.service.CustomOAuth2TokenCustomizer;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationConsentService;
 import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
@@ -28,7 +30,6 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
@@ -113,8 +114,8 @@ public class Oauth2SecurityConfig {
         authorizationServerConfigurer
                 .authorizationEndpoint(endpointConfigurer -> {
                     //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-//                    endpointConfigurer
-//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+                    endpointConfigurer
+                            .authorizationResponseHandler(new OAuth2SuccessHandler());
                 });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
@@ -130,7 +131,7 @@ public class Oauth2SecurityConfig {
         http
                 .exceptionHandling()
                 //当未登录的情况下 该如何跳转。
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         return http.build();
     }
 

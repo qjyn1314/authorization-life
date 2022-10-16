@@ -13,7 +13,9 @@
     <description>Authorization Engineering</description>
 
     <properties>
+        <!--当前工程中的所有模块，版本统一进行控制-->
         <revision>1.0.0</revision>
+        <!-- resource.delimiter 标签参考：https://www.jianshu.com/p/4410613bb36f -->
         <resource.delimiter>@</resource.delimiter>
 
         <java.version>17</java.version>
@@ -54,7 +56,7 @@
         <druid.version>1.2.9</druid.version>
         <pagehelper.version>1.4.5</pagehelper.version>
         <!--工具依赖-->
-        <hutool.version>5.8.2</hutool.version>
+        <hutool.version>5.8.8</hutool.version>
         <guava.version>31.1-jre</guava.version>
     </properties>
 
@@ -153,13 +155,6 @@
                 <version>${jackson-bom.version}</version>
                 <type>pom</type>
             </dependency>
-                <dependency>
-                    <groupId>net.dreamlu</groupId>
-                    <artifactId>mica-bom</artifactId>
-                    <version>${mica.version}</version>
-                    <type>pom</type>
-                    <scope>import</scope>
-                </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>

@@ -1,7 +1,7 @@
 package com.authorization.gateway.filter;
 
 
-import com.authorization.start.util.contsant.RequestContext;
+import com.authorization.gateway.entity.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;

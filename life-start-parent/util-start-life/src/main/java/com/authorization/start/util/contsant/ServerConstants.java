@@ -10,7 +10,7 @@ public class ServerConstants {
 
 
     public static final String KEY_SERVICE_CODE = "serviceName";
-    public static final String SECURITY_DOMAIN = "www.authorization.life";
+    public static final String SECURITY_DOMAIN = "authorization.life";
 
 
 }

@@ -3,7 +3,7 @@ package com.authorization.life.security.handler.oauth;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.start.util.format.MsgFormat;
+import com.authorization.start.util.format.KvpFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -39,7 +39,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         if (authentication.getPrincipal() instanceof OAuth2AccessTokenAuthenticationToken){
             OAuth2AccessTokenAuthenticationToken token = (OAuth2AccessTokenAuthenticationToken)authentication.getPrincipal();
             OAuth2AccessToken accessToken = token.getAccessToken();
-            String redirectUrl = MsgFormat.of(SecurityConstant.IMPLICIT_REDIRECT_URI_FORMAT)
+            String redirectUrl = KvpFormat.of(SecurityConstant.IMPLICIT_REDIRECT_URI_FORMAT)
                     .add("redirectUri",codeRequestAuthenticationToken.getRedirectUri())
                     .add("accessToken", accessToken.getTokenValue())
                     .add("tokenType", accessToken.getTokenType().getValue())

@@ -2,6 +2,7 @@ package com.authorization.core.security.config;
 
 import com.authorization.core.filter.JwtAuthenticationFilter;
 import com.authorization.core.security.SecurityConstant;
+import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -73,7 +73,7 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityConstant.SSO_LOGIN_FORM_PAGE));
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         httpSecurity.formLogin(Customizer.withDefaults());
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter

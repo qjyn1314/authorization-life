@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.start.util.format.MsgFormat;
+import com.authorization.start.util.format.KvpFormat;
 import com.authorization.start.util.result.Res;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,9 +52,9 @@ public class SsoLogoutHandle implements LogoutHandler {
             if (Objects.nonNull(userDetail)) {
                 String userToken = userDetail.getToken();
                 log.debug("当前登录用户的token-是：" + userToken);
-                String cacheUserToken = MsgFormat.of(SecurityConstant.USER_DETAIL).add("token", userToken).format();
+                String cacheUserToken = KvpFormat.of(SecurityConstant.USER_DETAIL).add("token", userToken).format();
                 redisHelper.delete(cacheUserToken);
-                redisHelper.delete(MsgFormat.of(SecurityConstant.TOKEN_STORE).add("userId", userDetail.getUserId().toString()).format());
+                redisHelper.delete(KvpFormat.of(SecurityConstant.TOKEN_STORE).add("userId", userDetail.getUserId().toString()).format());
             }
             SecurityContextHolder.clearContext();
             String token = request.getHeader(HttpHeaders.AUTHORIZATION);

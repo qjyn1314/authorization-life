@@ -7,7 +7,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.start.util.format.MsgFormat;
+import com.authorization.start.util.format.KvpFormat;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Objects;
@@ -152,7 +152,7 @@ public final class RedisCaptchaValidator {
         ShearCaptcha shearCaptcha = new ShearCaptcha(width, height);
         shearCaptcha.setGenerator(codeGenerator);
         uuid = StrUtil.isBlank(uuid) ? UUID.fastUUID().toString(true) : uuid;
-        redisHelper.opsForValue().set(MsgFormat.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format(), shearCaptcha.getCode(),
+        redisHelper.opsForValue().set(KvpFormat.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format(), shearCaptcha.getCode(),
                 expire, TimeUnit.MINUTES);
         return Captcha.of(shearCaptcha, uuid);
     }
@@ -166,7 +166,7 @@ public final class RedisCaptchaValidator {
      * @return 通过验证为true，未通过为false
      */
     public static boolean verify(RedisTemplate<String, Object> redisHelper, String uuid, String code) {
-        String okValue = (String) redisHelper.opsForValue().get(MsgFormat.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format());
+        String okValue = (String) redisHelper.opsForValue().get(KvpFormat.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format());
         return StrUtil.equalsIgnoreCase(code, okValue);
     }
 }

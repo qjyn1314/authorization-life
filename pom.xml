@@ -58,6 +58,7 @@
         <!--工具依赖-->
         <hutool.version>5.8.8</hutool.version>
         <guava.version>31.1-jre</guava.version>
+        <easyexcel.version>3.1.1</easyexcel.version>
     </properties>
 
     <modules>
@@ -105,7 +106,7 @@
                 <artifactId>redis-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            <!--以上为工程内部的子工程-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
@@ -115,6 +116,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
             </dependency>
             <!--以上为工具包依赖-->
             <dependency>

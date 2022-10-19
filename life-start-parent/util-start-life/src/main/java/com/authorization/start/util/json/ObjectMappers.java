@@ -1,5 +1,6 @@
 package com.authorization.start.util.json;
 
+import cn.hutool.core.date.DateUtil;
 import com.authorization.start.util.json.convert.DateDeserializer;
 import com.authorization.start.util.json.convert.DateSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -58,6 +59,8 @@ public class ObjectMappers {
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATETIME)));
 
         objectMapper.registerModule(javaTimeModule);
+        // 设置时间格式
+        objectMapper.setDateFormat(JsonDateUtil.newSimpleFormat(JsonDateUtil.DATETIME));
         // 默认开启，将Date类型序列化为数字时间戳(毫秒表示)。关闭后，序列化为文本表现形式(2019-10-23T01:58:58.308+0000)，若设置时间格式化。那么均输出格式化的时间类型。
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         // 关闭属性为 "" （空字符串）或者 为 NULL 进行序列化功能，默认是开启，此处需将设置为 JsonInclude.Include.NON_EMPTY。

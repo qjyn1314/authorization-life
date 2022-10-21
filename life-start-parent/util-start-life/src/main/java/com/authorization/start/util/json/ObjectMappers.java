@@ -85,8 +85,6 @@ public class ObjectMappers {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         //设置可见度
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        //启动默认的类型
-        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.WRAPPER_ARRAY);
         return objectMapper;
     }
 }

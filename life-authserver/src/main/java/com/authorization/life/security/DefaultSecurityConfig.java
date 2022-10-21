@@ -4,6 +4,7 @@ import com.authorization.core.filter.JwtAuthenticationFilter;
 import com.authorization.core.security.SecurityConstant;
 import com.authorization.core.security.UserDetailService;
 import com.authorization.core.security.config.SsoSecurityProperties;
+import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import com.authorization.life.security.handler.sso.SsoFailureHandler;
 import com.authorization.life.security.handler.sso.SsoLogoutHandle;
@@ -91,7 +92,11 @@ public class DefaultSecurityConfig {
                 // 无需认证即可访问
                 .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         // 配置退出登录配置
         http.logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)

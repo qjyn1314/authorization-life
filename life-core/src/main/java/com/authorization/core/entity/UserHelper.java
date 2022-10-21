@@ -21,6 +21,5 @@ public class UserHelper {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userInfo, (Object)null);
             securityContext.setAuthentication(usernamePasswordAuthenticationToken);
         }
-
     }
 }

@@ -1,12 +1,10 @@
-package com.authorization.start.util.excel;
+package com.authorization.common.excel;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.poi.excel.style.StyleUtil;
 import lombok.Getter;
@@ -26,7 +24,6 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -180,8 +177,7 @@ public class ExcelViewDecorate extends AbstractXlsxView {
 
                         exportField.setFieldNotes(excelAnnotation.fieldNotes());
                         return exportField;
-                    }).sorted(ExportField::compareTo)
-                    .collect(Collectors.toList());
+                    }).sorted(ExportField::compareTo).toList();
             sheet.setFields(decorateColumnFieldList);
         }
 
@@ -189,7 +185,7 @@ public class ExcelViewDecorate extends AbstractXlsxView {
          * 自定义标题头
          */
         private static void fillCustomizeTitles(ExcelSheet sheet, List<ExportField> fields) {
-            fields = fields.stream().sorted(ExportField::compareTo).collect(Collectors.toList());
+            fields = fields.stream().sorted(ExportField::compareTo).toList();
             sheet.setFields(fields);
         }
 
@@ -648,7 +644,7 @@ public class ExcelViewDecorate extends AbstractXlsxView {
     private void setDataTypeValue(Cell cell, Object item, BeanMap beanMap, String fieldCode, ExcelSheet param) {
         Object obj = beanMap.get(fieldCode);
         if (obj == null) {
-            cell.setCellValue(StrUtil.EMPTY);
+            cell.setCellValue(CharSequenceUtil.EMPTY);
             return;
         }
         Class<?> propertyType = beanMap.getPropertyType(fieldCode);
@@ -657,7 +653,6 @@ public class ExcelViewDecorate extends AbstractXlsxView {
         } else if (Integer.class.isAssignableFrom(propertyType)
                 || Long.class.isAssignableFrom(propertyType)
                 || BigDecimal.class.isAssignableFrom(propertyType)
-                || Integer.class.isAssignableFrom(propertyType)
         ) {
             cell.setCellValue(Double.parseDouble(obj.toString()));
         } else if (Boolean.class.isAssignableFrom(propertyType)) {
@@ -700,22 +695,6 @@ public class ExcelViewDecorate extends AbstractXlsxView {
     }
 
     /**
-     * 将excel上传到文件服务器中
-     */
-    public String upLoadExcel(String brokerUrl) {
-        String url = null;
-        try {
-            ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(excelBytes);
-            String fileName = IdUtil.objectId() + XLSX_SUFFIX;
-            url = fileName;
-        } catch (Exception file) {
-            log.warn("The failed excel upload error!, error msg: [{}]", file.getMessage());
-        }
-        log.info("生成的文件名...—— {}", url);
-        return url;
-    }
-
-    /**
      * 指定本地文件目录生成文件信息
      *
      * @param fileAbsolutePath D:/gen_excel
@@ -731,14 +710,11 @@ public class ExcelViewDecorate extends AbstractXlsxView {
         FileUtil.mkdir(FileUtil.file(fileAbsolutePath));
         fileAbsolutePath = fileAbsolutePath + "\\" + filename;
         fileAbsolutePath = fileAbsolutePath.replaceAll("\\\\", "/");
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(fileAbsolutePath);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(fileAbsolutePath)) {
             IoUtil.write(fileOutputStream, Boolean.TRUE, excelBytes);
+            IoUtil.close(fileOutputStream);
         } catch (Exception e) {
             log.error("生成本地文件失败，请检查文件路径是否正确。", e);
-        } finally {
-            IoUtil.close(fileOutputStream);
         }
         log.info("生成的文件名...- file:///{}", fileAbsolutePath);
         return fileAbsolutePath;

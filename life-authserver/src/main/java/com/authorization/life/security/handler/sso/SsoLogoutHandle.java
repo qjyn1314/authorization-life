@@ -5,7 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.start.util.format.KvpFormat;
+import com.authorization.start.util.kvp.KvpFormat;
 import com.authorization.start.util.result.Res;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

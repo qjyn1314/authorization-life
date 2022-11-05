@@ -3,10 +3,7 @@ package com.authorization.life.security;
 import com.authorization.core.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.security.handler.oauth.OAuth2SuccessHandler;
-import com.authorization.life.security.service.CustomOAuth2TokenCustomizer;
-import com.authorization.life.security.service.RedisOAuth2AuthorizationConsentService;
-import com.authorization.life.security.service.RedisOAuth2AuthorizationService;
-import com.authorization.life.security.service.RegisteredClientService;
+import com.authorization.life.security.service.*;
 import com.authorization.life.security.util.Jwks;
 import com.authorization.life.service.OauthClientService;
 import com.authorization.redis.start.util.StrRedisHelper;
@@ -28,6 +25,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -56,47 +54,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class Oauth2SecurityConfig {
 
     /**
-     * 将oauth的配置交给 HttpSecurity
-     */
-//    @Bean
-//    @Order(Ordered.HIGHEST_PRECEDENCE)
-//    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-//        //OAuth2 配置类信息
-//        OAuth2AuthorizationServerConfigurer<HttpSecurity> authServerConfig = new OAuth2AuthorizationServerConfigurer<>();
-//
-//        authServerConfig
-//                //配置授权
-//                .authorizationEndpoint(endpointConfigurer ->
-//                        endpointConfigurer
-//                                //配置传参转换类
-//                                .authorizationRequestConverter(new DelegatingAuthenticationConverter(List.of(
-//                                        new OAuth2AuthorizationCodeRequestAuthenticationConverter())))
-//                                //配置请求成功的处理类
-//                                .authorizationResponseHandler(new OAuth2SuccessHandler())
-//                                //添加其他的认证方式验证实现
-//                                .authenticationProvider(createOAuth2AuthorizationCodeRequestAuthenticationProvider(http))
-//                );
-//
-//        //路径匹配器
-//        RequestMatcher matcher = authServerConfig.getEndpointsMatcher();
-//
-//        http.requestMatcher(matcher)
-//                //所有的请求都需要认证
-//                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
-//                // 跨站请求伪造 ，参考：https://www.jianshu.com/p/e825e67fcf28
-//                .csrf(csrf -> csrf.ignoringRequestMatchers(matcher))
-//                //将oauth2.0的配置托管给HttpSecurity
-//                .apply(authServerConfig);
-//        // 配置 异常处理
-//        http.exceptionHandling()
-//                //当未登录的情况下 该如何跳转。
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
-//        return http.build();
-//    }
-
-
-    /**
      * oauth2.0配置，需要托管给 HttpSecurity
+     * <p>
+     * 详解： https://blog.51cto.com/u_14558366/5605065
      *
      * @param http HttpSecurity
      * @return SecurityFilterChain
@@ -104,10 +64,8 @@ public class Oauth2SecurityConfig {
      */
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-
-        // 设置jwt token个性化
-//        http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                      OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
 
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
@@ -115,6 +73,7 @@ public class Oauth2SecurityConfig {
                 .authorizationEndpoint(endpointConfigurer -> {
                     //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
                     endpointConfigurer
+                            //配置自定义的请求成功的处理器
                             .authorizationResponseHandler(new OAuth2SuccessHandler());
                 });
 
@@ -128,16 +87,44 @@ public class Oauth2SecurityConfig {
                         //除以上的请求之外，都需要accessToken 
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
-
+                //将oauth2.0的配置托管给 SpringSecurity
                 .apply(authorizationServerConfigurer);
+
+        // 设置accesstoken为jwt形式
+        http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
+
         http.formLogin(Customizer.withDefaults());
         // 配置 异常处理
         http
                 .exceptionHandling()
                 //当未登录的情况下 该如何跳转。
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+
         return http.build();
     }
+
+    /**
+     * 自定义accessToken的实现为 jwtToken
+     */
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
+                                                                        OauthClientService oauthClientService,
+                                                                        StrRedisHelper strRedisHelper) {
+        return new CustomizerOAuth2Token(securityAuthUserService,oauthClientService,strRedisHelper);
+    }
+
+    /**
+     * JWT的加密算法，说明：https://www.rfc-editor.org/rfc/rfc7515
+     *
+     * @return JWKSource
+     */
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() {
+        RSAKey rsaKey = Jwks.generateRsa();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+    }
+
 
     /**
      * 注册client
@@ -172,18 +159,6 @@ public class Oauth2SecurityConfig {
     @Bean
     public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisOAuth2AuthorizationConsentService(redisTemplate);
-    }
-
-    /**
-     * JWT的加密算法，说明：https://www.rfc-editor.org/rfc/rfc7515
-     *
-     * @return JWKSource
-     */
-    @Bean
-    public JWKSource<SecurityContext> jwkSource() {
-        RSAKey rsaKey = Jwks.generateRsa();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
     }
 
     /**

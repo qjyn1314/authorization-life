@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.entity.User;
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.start.util.format.KvpFormat;
+import com.authorization.start.util.kvp.KvpFormat;
 import com.authorization.life.security.util.RedisCaptchaValidator;
 import com.authorization.life.service.UserService;
 import lombok.extern.slf4j.Slf4j;

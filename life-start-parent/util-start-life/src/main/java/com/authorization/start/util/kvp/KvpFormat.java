@@ -1,4 +1,4 @@
-package com.authorization.start.util.format;
+package com.authorization.start.util.kvp;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 字符串占位符拼接工具类
+ * @author wangjunming
  */
 public final class KvpFormat {
 

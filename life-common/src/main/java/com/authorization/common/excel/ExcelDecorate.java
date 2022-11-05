@@ -4,6 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * 解析excel用到的注解。
+ * @author wangjunming
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

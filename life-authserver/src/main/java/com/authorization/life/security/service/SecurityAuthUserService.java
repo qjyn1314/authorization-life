@@ -41,6 +41,27 @@ public class SecurityAuthUserService implements UserDetailService {
 
     @Override
     public UserDetail createUserDetailByUser(UserDetails userDetails) {
-        return userService.createUserDetailByUser(userDetails);
+        User user = (User)userDetails;
+        UserDetail userDetail = createUserDetail(user);
+
+        //此处将获取到当前已登录用户所关联的员工、或者关联的当前登录的授权信息中所需要的其他信息，作为扩展。
+
+        return userDetail;
     }
+    private UserDetail createUserDetail(User user){
+        UserDetail userDetail = new UserDetail();
+        userDetail.setUserId(user.getUserId());
+        userDetail.setUsername(user.getUsername());
+        userDetail.setUserEmail(user.getEmail());
+        userDetail.setUserGender(user.getGender());
+        userDetail.setUserActivedFlag(user.getActivedFlag());
+        userDetail.setUserPhone(user.getPhone());
+        userDetail.setUserEnabledFlag(user.getEnabledFlag());
+        userDetail.setUserLockedFlag(user.getLockedFlag());
+        userDetail.setRealName(user.getRealName());
+        userDetail.setLanguage(user.getLang());
+        userDetail.setUserGroups(user.getUserGroups());
+        return userDetail;
+    }
+
 }

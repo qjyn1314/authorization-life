@@ -3,7 +3,7 @@ package com.authorization.gateway.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.gateway.service.RouteService;
-import com.authorization.start.util.contsant.ServerConstants;
+import com.authorization.start.util.contsant.ServerOnlineConstants;
 import com.authorization.start.util.contsant.ServiceInfo;
 import com.authorization.start.util.json.JsonHelper;
 import com.google.common.collect.ImmutableList;
@@ -73,7 +73,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
             return null;
         }
         log.debug("服务-instance-{}", JSONUtil.toJsonStr(instance.getMetadata()));
-        String serviceName = instance.getMetadata().getOrDefault(ServerConstants.KEY_SERVICE_CODE, service);
+        String serviceName = instance.getMetadata().getOrDefault(ServerOnlineConstants.KEY_SERVICE_CODE, service);
         log.debug("服务-instance-serviceName-{}", serviceName);
         log.debug("服务-instance-serviceId-{}", instance.getServiceId());
         //此处将使用服务名称作为请求路径前缀进行处理请求。

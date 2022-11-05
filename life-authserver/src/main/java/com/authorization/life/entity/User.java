@@ -49,7 +49,7 @@ public class User implements Serializable, UserDetails {
     /**
      * 用户性别:1:男 2:女 3：未知
      */
-    private Boolean gender;
+    private Integer gender;
     /**
      * 密码
      */

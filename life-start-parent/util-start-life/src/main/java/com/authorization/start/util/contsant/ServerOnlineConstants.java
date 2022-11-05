@@ -1,6 +1,11 @@
 package com.authorization.start.util.contsant;
 
-public class ServerConstants {
+/**
+ * 服务的上线的订阅常量信息
+ *
+ * @author wangjunming
+ */
+public class ServerOnlineConstants {
 
     public static final String INSTANCE_CHANNEL = "auth-server.service.instance.*";
 

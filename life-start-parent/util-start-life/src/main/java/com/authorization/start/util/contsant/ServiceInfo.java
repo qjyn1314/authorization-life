@@ -1,5 +1,10 @@
 package com.authorization.start.util.contsant;
 
+/**
+ * 各个服务的常量定义
+ *
+ * @author wangjunming
+ */
 public class ServiceInfo {
 
     public static class GateWayLife {

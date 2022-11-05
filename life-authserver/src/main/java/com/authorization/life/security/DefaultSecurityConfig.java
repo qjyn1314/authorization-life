@@ -12,7 +12,7 @@ import com.authorization.life.security.handler.sso.SsoSuccessHandler;
 import com.authorization.life.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.security.sso.UsernamePasswordAuthenticationProvider;
 import com.authorization.life.service.UserService;
-import com.authorization.start.util.contsant.LifeConstants;
+import com.authorization.start.util.contsant.LifeSecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -124,14 +124,14 @@ public class DefaultSecurityConfig {
                 //form表单中的记住我input框的name属性值
 //                .rememberMeCookieName(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
                 //需要配置跨域的域名
-                .rememberMeCookieDomain(LifeConstants.SECURITY_DOMAIN)
+                .rememberMeCookieDomain(LifeSecurityConstants.SECURITY_DOMAIN)
                 //配置用户service，用于在关闭浏览器再次打开时，使用此service型数据库中根据名称查询用户数据，
                 .userDetailsService(userDetailsService);
         return http.build();
     }
 
     /**
-     * 输入错误密码三次将需要输入验证码
+     * 输入错误密码三次将需要输入的验证码参数
      */
     @Bean
     public CaptchaAuthenticationDetailsSource authenticationDetailsSource() {

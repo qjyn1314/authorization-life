@@ -107,7 +107,7 @@ public class Oauth2SecurityConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
         // 设置jwt token个性化
-        http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
+//        http.setSharedObject(OAuth2TokenCustomizer.class, new CustomOAuth2TokenCustomizer());
 
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
@@ -122,7 +122,11 @@ public class Oauth2SecurityConfig {
         // 配置请求拦截
         http.requestMatcher(endpointsMatcher)
 
-                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
+                .authorizeRequests(authorizeRequests -> authorizeRequests
+//                        // 无需认证即可访问
+                        .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                        //除以上的请求之外，都需要accessToken 
+                        .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
 
                 .apply(authorizationServerConfigurer);

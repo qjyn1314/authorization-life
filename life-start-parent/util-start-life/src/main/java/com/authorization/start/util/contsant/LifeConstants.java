@@ -14,12 +14,12 @@ public class LifeConstants {
     /**
      * saas体系http头文件
      */
-    public class Header {
+    public static class Header {
         public static final String AUTH_POSITION = "Z-Auth-Position";
         public static final String TYPE_BEARER = "bearer";
     }
 
     public static final String ACCESS_TOKEN = "access_token";
     public static final String TOKEN = "token";
-
+    public static final String SECURITY_DOMAIN = "authorization.life";
 }

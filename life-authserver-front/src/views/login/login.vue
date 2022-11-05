@@ -182,7 +182,6 @@ export default {
         captchaCode: '',
         captchaUuid: '',
         client_id: LOGINCODE.client_id,
-        client_secret: LOGINCODE.client_secret,
         redirect_uri: LOGINCODE.redirect_uri
       },
       rules: {

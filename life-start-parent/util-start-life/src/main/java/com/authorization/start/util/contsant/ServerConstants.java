@@ -8,9 +8,6 @@ public class ServerConstants {
 
     public static final String INSTANCE_DOWN_TOPIC = "auth-server.service.instance.down";
 
-
     public static final String KEY_SERVICE_CODE = "serviceName";
-    public static final String SECURITY_DOMAIN = "authorization.life";
-
 
 }

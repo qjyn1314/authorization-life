@@ -2,15 +2,13 @@
   <content-layout :showSearch="true" v-loading="loading">
     <template slot="title">系统首页</template>
     <template slot="body">
-
       <h2>恭喜你，已成功实现第一步，获取到了授权码code。</h2>
-      <h3>此处可以为系统首页的内容，并做一些统计工作。</h3>
-      <h4>我们将在这里完成对 accessToken 的获取。</h4>
-      <h4>路径中的参数是：{{ this.$route.query }}</h4>
+      <h3>路径中的参数是：{{ this.$route.query }}</h3>
+      <h2>接下来我们将实现第二步，通过这个临时授权码code获取accesstoken。</h2>
       <h4>获取的accessToken对象传参：{{ tokenByCode }}</h4>
-      <h2>恭喜你，已成功实现第二步，通过授权码code获取到了accesstoken的所有信息。</h2>
-      <h4>获取的accessToken对象是：{{ accessToken }}</h4>
-      <h2>恭喜你，登录成功了，可以将此信息保存至 cookie 、localStorage，为系统后续而做请求使用。</h2>
+      <h2>请求路径是：https://www.authorization.life/auth-life/oauth2/token</h2>
+      <h4>请求成功后，获取的accessToken对象是：{{ accessToken }}</h4>
+      <h2>恭喜你，已成功实现第二步，通过授权码code获取到了accesstoken的所有信息，登录成功了，可以将此accesstoken信息保存至 cookie 、localStorage，为系统后续而做请求使用。</h2>
     </template>
   </content-layout>
 </template>
@@ -48,7 +46,9 @@ export default {
     console.log(this.tokenByCode)
     getOauth2TokenByCode(this.tokenByCode).then(res => {
       this.accessToken = res.data;
-      console.log("获取的accesstoken对象信息是："+res);
+      console.log("获取的accessToken对象信息是："+res);
+      //开始通过accessToken获取当前登录用户的信息
+
     })
   },
   methods: {}

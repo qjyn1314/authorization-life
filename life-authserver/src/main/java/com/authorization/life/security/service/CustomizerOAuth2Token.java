@@ -8,6 +8,7 @@ import com.authorization.life.service.OauthClientService;
 import com.authorization.redis.start.util.StrRedisHelper;
 import com.authorization.start.util.contsant.LifeSecurityConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.server.authorization.context.Provider
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -69,6 +71,13 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
             //如果当前登录的是系统用户，则进行封装userDetail
             userDetail = securityAuthUserService.createUserDetailByUser((UserDetails) principal.getPrincipal());
         }
+        //如果解析失败，则抛出异常信息。
+        if (Objects.isNull(userDetail)) {
+            throw new BadCredentialsException("用户信息解析异常。");
+        }
+
+        //也需要将此token存放到当前登录用户中，为了在退出登录时进行获取redis中的信息并将其删除
+        userDetail.setToken(token);
         //将用户信息放置到redis中，并设置其过期时间为 client中的过期时间
         strRedisHelper.strSet(LifeSecurityConstants.getUserTokenKey(token), userDetail,
                 registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds(), TimeUnit.SECONDS);

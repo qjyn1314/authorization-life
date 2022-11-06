@@ -87,7 +87,7 @@ public class DefaultSecurityConfig {
         // 使用session
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-        // 设置无需认证的路径
+        // 设置认证的路径
         http.authorizeRequests()
                 // 无需认证即可访问
                 .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
@@ -115,18 +115,18 @@ public class DefaultSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加自定义的用户名密码认证类
         http.authenticationProvider(usernamePasswordProvider);
-        //开启记住我的功能，默认时间是两周
-        http.rememberMe()
-                .alwaysRemember(Boolean.TRUE)
-//                .rememberMeParameter(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
-                //cookie的过期秒数
-//                .tokenValiditySeconds(AuthUserUtil.AUTH_COOKIE_TIME)
-                //form表单中的记住我input框的name属性值
-//                .rememberMeCookieName(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
-                //需要配置跨域的域名
-                .rememberMeCookieDomain(LifeSecurityConstants.SECURITY_DOMAIN)
-                //配置用户service，用于在关闭浏览器再次打开时，使用此service型数据库中根据名称查询用户数据，
-                .userDetailsService(userDetailsService);
+//        //开启记住我的功能，默认时间是两周
+//        http.rememberMe()
+//                .alwaysRemember(Boolean.TRUE)
+////                .rememberMeParameter(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
+//                //cookie的过期秒数
+////                .tokenValiditySeconds(AuthUserUtil.AUTH_COOKIE_TIME)
+//                //form表单中的记住我input框的name属性值
+////                .rememberMeCookieName(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
+//                //需要配置跨域的域名
+//                .rememberMeCookieDomain(LifeSecurityConstants.SECURITY_DOMAIN)
+//                //配置用户service，用于在关闭浏览器再次打开时，使用此service型数据库中根据名称查询用户数据，
+//                .userDetailsService(userDetailsService);
         return http.build();
     }
 

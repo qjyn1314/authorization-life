@@ -18,7 +18,7 @@ public interface SecurityConstant {
     String SSO_LOGOUT = "/oauth/logout";
     String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
     String AUTHORIZATION_CONSENT = "oauth-server:auth:oauth2:authorization-consent";
-    String ISSUER = "https://www.authorization.life";
+    String ISSUER = "https://authorization.life";
     String IMPLICIT_REDIRECT_URI_FORMAT = "{redirectUri}" +
             "#access_token={accessToken}" +
             "&token_type={tokenType}" +

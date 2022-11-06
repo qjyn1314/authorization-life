@@ -87,13 +87,13 @@ public class Oauth2SecurityConfig {
                         //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+                .formLogin(Customizer.withDefaults())
                 //将oauth2.0的配置托管给 SpringSecurity
                 .apply(authorizationServerConfigurer);
 
         // 设置accesstoken为jwt形式
-//        http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
+        http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
-//        http.formLogin(Customizer.withDefaults());
         // 配置 异常处理
         http
                 .exceptionHandling()

@@ -4,6 +4,7 @@ package com.authorization.life.security.service;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
+import com.authorization.life.entity.User;
 import com.authorization.life.service.OauthClientService;
 import com.authorization.redis.start.util.StrRedisHelper;
 import com.authorization.start.util.contsant.LifeSecurityConstants;
@@ -67,9 +68,14 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         if (principal instanceof OAuth2ClientAuthenticationToken) {
             //如果当前登录的是client，则进行封装client
 //            userDetail = securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
-        } else if (principal.getPrincipal() instanceof UserDetail) {
+        }
+//        else if (principal.getPrincipal() instanceof UserDetail) {
+//            //如果当前登录的是系统用户，则进行封装userDetail
+//            userDetail = securityAuthUserService.createUserDetailByUser((UserDetails) principal.getPrincipal());
+//        }
+        else if (principal.getPrincipal() instanceof User) {
             //如果当前登录的是系统用户，则进行封装userDetail
-            userDetail = securityAuthUserService.createUserDetailByUser((UserDetails) principal.getPrincipal());
+            userDetail = securityAuthUserService.createUserDetailByUser((User) principal.getPrincipal());
         }
         //如果解析失败，则抛出异常信息。
         if (Objects.isNull(userDetail)) {
@@ -81,7 +87,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         //将用户信息放置到redis中，并设置其过期时间为 client中的过期时间
         strRedisHelper.strSet(LifeSecurityConstants.getUserTokenKey(token), userDetail,
                 registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds(), TimeUnit.SECONDS);
-        log.info("生成的用户-token是-{}", token);
+        log.info("生成的用户-token是-{}，此token作为key，用户信息作为value存储到redis中", token);
         context.getClaims().claim(LifeSecurityConstants.TOKEN, token).build();
     }
 }

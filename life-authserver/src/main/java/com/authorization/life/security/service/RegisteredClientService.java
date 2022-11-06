@@ -76,13 +76,14 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .redirectUri(oauthClient.getRedirectUri())
                 // JWT的配置项 包括TTL  是否复用refreshToken等等
-//                .tokenSettings(TokenSettings.builder().build())
-//                .clientSettings(ClientSettings.builder()
-//                        //是否需要用户确认一下客户端需要获取用户的哪些权限
-//                        .requireAuthorizationConsent(true)
-//                        .build())
+                .tokenSettings(TokenSettings.builder().build())
+                .clientSettings(ClientSettings.builder()
+                        //是否需要用户确认一下客户端需要获取用户的哪些权限
+                        .requireAuthorizationConsent(false)
+                        .build())
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                        //配置使用自定义的jwtToken格式化，配置此处才会使用到 CustomizerOAuth2Token ， 或者不配置此格式化的配置，将默认使用
+//                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                         //是否可重用刷新令牌
                         .reuseRefreshTokens(true)
                         //accessToken 的有效期  单位：秒

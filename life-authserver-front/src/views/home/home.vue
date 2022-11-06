@@ -17,6 +17,7 @@
 import {CODE_ACCESS_TOKEN} from '@/api/severApi'
 import {ContentLayout} from '@/components'
 import {getOauth2TokenByCode} from '@/api/login'
+import {setCookie} from '@/utils/index'
 
 export default {
   name: 'home',
@@ -34,7 +35,10 @@ export default {
         client_id: CODE_ACCESS_TOKEN.client_id,
         client_secret: CODE_ACCESS_TOKEN.client_secret
       },
-      accessToken: {}
+      accessToken: {
+        access_token: '',
+        token_type: ''
+      }
     }
   },
   computed: {},
@@ -46,9 +50,11 @@ export default {
     console.log(this.tokenByCode)
     getOauth2TokenByCode(this.tokenByCode).then(res => {
       this.accessToken = res.data;
-      console.log("获取的accessToken对象信息是："+res);
-      //开始通过accessToken获取当前登录用户的信息
-
+      console.log("获取的accessToken对象信息是：" + res);
+      //将accessToken缓存到当前二级域名的cookie中，开始通过accessToken获取当前登录用户的信息
+      setCookie('accessToken', accessToken.access_token)
+      setCookie('tokenType', accessToken.token_type)
+      //一旦将access_token 存储到cookie中之后将跳转到正确的路径中。
     })
   },
   methods: {}

@@ -82,8 +82,8 @@ public class RegisteredClientService implements RegisteredClientRepository {
                         .requireAuthorizationConsent(false)
                         .build())
                 .tokenSettings(TokenSettings.builder()
-                        //配置使用自定义的jwtToken格式化，配置此处才会使用到 CustomizerOAuth2Token ， 或者不配置此格式化的配置，将默认使用
-//                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                        //配置使用自定义的jwtToken格式化，配置此处才会使用到 CustomizerOAuth2Token ， 或者不配置此格式化的配置，将默认生成jwt的形式
+                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                         //是否可重用刷新令牌
                         .reuseRefreshTokens(true)
                         //accessToken 的有效期  单位：秒

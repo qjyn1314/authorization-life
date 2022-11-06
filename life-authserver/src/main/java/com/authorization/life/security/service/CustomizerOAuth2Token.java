@@ -87,6 +87,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         strRedisHelper.strSet(LifeSecurityConstants.getUserTokenKey(token), userDetail,
                 registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds(), TimeUnit.SECONDS);
         log.info("生成的用户-token是-{}，此token作为key，用户信息作为value存储到redis中", token);
+        //也可以在此处将当前登录用户的信息存放到jwt中，但是这样就不再安全。
         context.getClaims().claim(LifeSecurityConstants.TOKEN, token).build();
     }
 }

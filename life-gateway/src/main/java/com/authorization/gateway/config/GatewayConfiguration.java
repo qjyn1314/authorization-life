@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 /**
  * 网关配置类
  */
+@Slf4j
 @Configuration
 @AutoConfiguration(after = WebFluxAutoConfiguration.EnableWebFluxConfiguration.class)
 public class GatewayConfiguration {
@@ -90,7 +92,10 @@ public class GatewayConfiguration {
     public RouterFunction<ServerResponse> routerFunction() {
         return RouterFunctions.route(
                 RequestPredicates.GET("/"),
-                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build());
+                request -> {
+                    log.info("请求的uri是————{}",request.uri());
+                    return ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build();
+                });
     }
 
     /**

@@ -43,7 +43,7 @@ public class UrlResolveGatewayFilterFactory extends AbstractGatewayFilterFactory
             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR,
                     newRequest.getURI());
             return chain.filter(exchange.mutate().request(newRequest).build())
-                    .subscriberContext(ctx -> ctx.put(RequestContext.CTX_KEY,
+                    .contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY,
                             ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY)
                                     .orElse(new RequestContext())
                                     .setServiceCode(serviceName)

@@ -26,7 +26,9 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -66,7 +68,6 @@ public class Oauth2SecurityConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
-
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
         authorizationServerConfigurer
@@ -80,20 +81,19 @@ public class Oauth2SecurityConfig {
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
         http.requestMatcher(endpointsMatcher)
-
                 .authorizeRequests(authorizeRequests -> authorizeRequests
 //                        // 无需认证即可访问
-                        .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
-                        //除以上的请求之外，都需要accessToken 
+//                        .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                        //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 //将oauth2.0的配置托管给 SpringSecurity
                 .apply(authorizationServerConfigurer);
 
         // 设置accesstoken为jwt形式
-        http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
+//        http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
-        http.formLogin(Customizer.withDefaults());
+//        http.formLogin(Customizer.withDefaults());
         // 配置 异常处理
         http
                 .exceptionHandling()

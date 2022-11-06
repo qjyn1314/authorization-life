@@ -34,6 +34,8 @@ import java.util.Optional;
 @Component
 public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> implements InitializingBean {
 
+    public static final String JWT_TOKEN = "JwtToken";
+
     @Value(Jwts.SECRET_EXPRESS)
     private String secret;
     private JWSSigner signer;
@@ -74,12 +76,13 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
     }
 
     /**
-     * 获取accessToken
+     * 获取jwtToken，并解析获取其中的token信息
      *
      * @param request request
      * @return token
      */
     private String getToken(ServerHttpRequest request) {
+        log.info("进入到JwtTokenFilter中进行解析请求头中的token信息。");
         String authorization = Optional.ofNullable(request.getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION)).orElse(null);
         String accessToken = null;
@@ -102,5 +105,9 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             throw new UnauthorizedException();
         }
         return token;
+    }
+    @Override
+    public String name() {
+        return JWT_TOKEN;
     }
 }

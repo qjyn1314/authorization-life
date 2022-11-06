@@ -2,6 +2,8 @@ package com.authorization.gateway.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.authorization.gateway.filter.JwtTokenGatewayFilterFactory;
+import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
 import com.authorization.start.util.contsant.ServerOnlineConstants;
 import com.authorization.start.util.contsant.ServiceInfo;
@@ -98,7 +100,8 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
 
     private List<FilterDefinition> buildFilters() {
         return CollUtil.newArrayList(
-                new FilterDefinition("UrlResolve"));
+                new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
+                new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN));
     }
 
     @Override

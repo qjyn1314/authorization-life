@@ -13,7 +13,7 @@ spring:
       default-filters:
         - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
   redis:
-    database: 1
+    database: 0
     host: 127.0.0.1
     lettuce:
       pool:

@@ -70,23 +70,24 @@ public class Oauth2SecurityConfig {
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
 
-        authorizationServerConfigurer
-                .authorizationEndpoint(endpointConfigurer -> {
-                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-                    endpointConfigurer
-                            //配置自定义的请求成功的处理器
-                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-                });
+//        authorizationServerConfigurer
+//                .authorizationEndpoint(endpointConfigurer -> {
+//                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+//                    endpointConfigurer
+//                            //配置自定义的请求成功的处理器
+//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+//                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
         http.requestMatcher(endpointsMatcher)
                 .authorizeRequests(authorizeRequests -> authorizeRequests
 //                        // 无需认证即可访问
-//                        .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                        .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                         //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+                //配置formLogin
                 .formLogin(Customizer.withDefaults())
                 //将oauth2.0的配置托管给 SpringSecurity
                 .apply(authorizationServerConfigurer);

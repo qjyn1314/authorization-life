@@ -48,7 +48,7 @@ spring:
         url-pattern: /*
     type: com.alibaba.druid.pool.DruidDataSource
   redis:
-    database: 1
+    database: 0
     host: 127.0.0.1
     lettuce:
       pool:

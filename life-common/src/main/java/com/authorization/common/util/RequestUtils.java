@@ -13,16 +13,12 @@ public class RequestUtils {
 
     /**
      * 工具类防止被初始化
-     *
-     * @since 1.0 Created by lipangeng on 2017/11/20 下午5:42. Email:lipg@outlook.com
      */
     private RequestUtils() {
     }
 
     /**
      * 从当前线程中获取Request
-     *
-     * @since 1.0 Created by lipangeng on 2017/11/20 下午5:42. Email:lipg@outlook.com
      */
     public static HttpServletRequest getRequest() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -30,8 +26,6 @@ public class RequestUtils {
 
     /**
      * 获取ContextPath路径
-     *
-     * @since 1.0 Created by lipangeng on 2017/12/5 下午12:13. Email:lipg@outlook.com
      */
     public static String getContextPath() {
         return getRequest().getContextPath();
@@ -39,8 +33,6 @@ public class RequestUtils {
 
     /**
      * 获取服务器地址
-     *
-     * @since 1.0 Created by lipangeng on 2017/12/19 下午12:12. Email:lipg@outlook.com
      */
     public static String getServerUrl() {
         return getScheme() + "://" + getHost() + (getPort() == null ? "" : (":" + getPort()));
@@ -48,8 +40,6 @@ public class RequestUtils {
 
     /**
      * 获取服务器地址
-     *
-     * @since 1.0 Created by lipangeng on 2017/12/19 下午12:12. Email:lipg@outlook.com
      */
     public static String getServerAndContextUrl() {
         HttpServletRequest request = getRequest();
@@ -59,8 +49,6 @@ public class RequestUtils {
 
     /**
      * 获取争取的Scheme
-     *
-     * @since 1.0 Created by lipangeng on 2018/1/11 下午9:02. Email:lipg@outlook.com
      */
     public static String getScheme() {
         HttpServletRequest request = getRequest();
@@ -76,8 +64,6 @@ public class RequestUtils {
 
     /**
      * 获取请求的真实的Port
-     *
-     * @since 1.0 Created by lipangeng on 2018/1/18 下午5:54. Email:lipg@outlook.com
      */
     public static String getPort() {
         HttpServletRequest request = getRequest();
@@ -99,8 +85,6 @@ public class RequestUtils {
 
     /**
      * 获取请求的真实的serverName
-     *
-     * @since 1.0 Created by lipangeng on 2018/1/18 下午5:54. Email:lipg@outlook.com
      */
     public static String getHost() {
         HttpServletRequest request = getRequest();

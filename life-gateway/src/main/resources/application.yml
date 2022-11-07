@@ -10,8 +10,10 @@ spring:
             allowedMethods: '*'
             allowedHeaders: '*'
             allowCredentials: true
+            max-age: 3600
       default-filters:
         - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+        - StripPrefix=1
   redis:
     database: 0
     host: 127.0.0.1

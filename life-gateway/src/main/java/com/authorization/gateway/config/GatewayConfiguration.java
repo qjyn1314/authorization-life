@@ -16,6 +16,8 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -82,22 +84,8 @@ public class GatewayConfiguration {
     }
 
     /**
-     * 访问根目录重定向到登录模块
-     *
-     * @return 登录模块
-     */
-    @Bean
-    public RouterFunction<ServerResponse> loginRouterFunction() {
-        return RouterFunctions.route(
-                RequestPredicates.GET("/"),
-                request -> {
-                    log.info("request.uri()-{}", request.uri());
-                    return ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build();
-                });
-    }
-
-    /**
      * 配置断路器
+     * 参考：https://www.cnblogs.com/bolingcavalry/p/15575336.html
      *
      * @return ReactiveResilience4JCircuitBreakerFactory
      */
@@ -121,18 +109,17 @@ public class GatewayConfiguration {
                 // 断路器打开状态转换为半开状态需要等待60秒
                 .waitDurationInOpenState(Duration.ofSeconds(60))
                 // 当作失败处理的异常类型
-                // .recordExceptions(SocketException.class)
+                .recordExceptions(Throwable.class)
                 .build();
         // 超时配置
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
                 // 设置超时时间为60s
                 .timeoutDuration(Duration.ofSeconds(60))
                 .build();
-        ReactiveResilience4JCircuitBreakerFactory reactiveResilience4JCircuitBreakerFactory =
-                new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry);
-        reactiveResilience4JCircuitBreakerFactory.configureDefault(id -> new Resilience4JConfigBuilder(id)
+        ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory = new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry);
+        circuitBreakerFactory.configureDefault(id -> new Resilience4JConfigBuilder(id)
                 .timeLimiterConfig(timeLimiterConfig)
                 .circuitBreakerConfig(circuitBreakerConfig).build());
-        return reactiveResilience4JCircuitBreakerFactory;
+        return circuitBreakerFactory;
     }
 }

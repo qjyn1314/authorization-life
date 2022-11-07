@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -15,8 +16,6 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
-import org.springframework.cloud.gateway.config.conditional.ConditionalOnEnabledFilter;
-import org.springframework.cloud.gateway.filter.factory.DedupeResponseHeaderGatewayFilterFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +35,7 @@ import java.util.stream.Collectors;
 /**
  * 网关配置类
  */
+@Slf4j
 @Configuration
 @AutoConfiguration(after = WebFluxAutoConfiguration.EnableWebFluxConfiguration.class)
 public class GatewayConfiguration {
@@ -87,10 +87,13 @@ public class GatewayConfiguration {
      * @return 登录模块
      */
     @Bean
-    public RouterFunction<ServerResponse> routerFunction() {
+    public RouterFunction<ServerResponse> loginRouterFunction() {
         return RouterFunctions.route(
                 RequestPredicates.GET("/"),
-                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "/login")).build());
+                request -> {
+                    log.info("request.uri()-{}", request.uri());
+                    return ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build();
+                });
     }
 
     /**

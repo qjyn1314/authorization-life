@@ -77,7 +77,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         }
         //如果解析失败，则抛出异常信息。
         if (Objects.isNull(userDetail)) {
-            log.error("在用户信息解析异常。");
+            log.error("在自定义token实现中, 用户信息解析异常。");
             userDetail = new UserDetail();
         }
 

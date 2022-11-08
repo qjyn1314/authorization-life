@@ -76,7 +76,6 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .redirectUri(oauthClient.getRedirectUri())
                 // JWT的配置项 包括TTL  是否复用refreshToken等等
-                .tokenSettings(TokenSettings.builder().build())
                 .clientSettings(ClientSettings.builder()
                         //是否需要用户确认一下客户端需要获取用户的哪些权限
                         .requireAuthorizationConsent(false)

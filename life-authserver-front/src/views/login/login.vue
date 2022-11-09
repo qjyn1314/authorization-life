@@ -173,6 +173,7 @@ export default {
       // logintab: ['账号登录', '短信登录', '扫码登录'],
       logintab: ['账号登录', '短信登录'],
       imageBase64: '../../assets/imgs/backupsCode.png',
+      // 授权码模式使用的登录参数
       ruleForm: {
         needToastErr: 0,
         username: '',

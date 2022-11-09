@@ -99,8 +99,6 @@ public class RegisteredClientService implements RegisteredClientRepository {
                         return AuthorizationGrantType.REFRESH_TOKEN;
                     } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())) {
                         return AuthorizationGrantType.CLIENT_CREDENTIALS;
-                    } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.PASSWORD.getValue())) {
-                        return AuthorizationGrantType.PASSWORD;
                     } else if (CharSequenceUtil.equals(grantType, AuthorizationGrantType.JWT_BEARER.getValue())) {
                         return AuthorizationGrantType.JWT_BEARER;
                     } else {

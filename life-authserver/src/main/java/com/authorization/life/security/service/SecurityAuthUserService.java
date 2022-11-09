@@ -3,8 +3,10 @@ package com.authorization.life.security.service;
 import cn.hutool.core.lang.Assert;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.security.UserDetailService;
+import com.authorization.life.entity.OauthClient;
 import com.authorization.life.entity.User;
 import com.authorization.life.entity.UserGroup;
+import com.authorization.life.service.OauthClientService;
 import com.authorization.life.service.UserGroupService;
 import com.authorization.life.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ public class SecurityAuthUserService implements UserDetailService {
     private UserService userService;
     @Autowired
     private UserGroupService groupService;
+    @Autowired
+    private OauthClientService oauthClientService;
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -64,4 +68,12 @@ public class SecurityAuthUserService implements UserDetailService {
         return userDetail;
     }
 
+
+    public UserDetail createUserDetailByClientId(String clientId) {
+        OauthClient oauthClient = oauthClientService.selectClientByClientId(clientId);
+        UserDetail userDetail = new UserDetail();
+        userDetail.setUsername(oauthClient.getClientId());
+        userDetail.setTenantId(oauthClient.getTenantId());
+        return userDetail;
+    }
 }

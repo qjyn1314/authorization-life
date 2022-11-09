@@ -65,11 +65,11 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         // 目的是为了定制jwt 的header 和 claims
         if (principal instanceof OAuth2ClientAuthenticationToken) {
             //如果当前登录的是client，则进行封装client
-//            userDetail = securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
-        }
-        else if (principal.getPrincipal() instanceof User) {
+            userDetail = securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
+        } else if (principal.getPrincipal() instanceof User) {
             //如果当前登录的是系统用户，则进行封装userDetail
             userDetail = securityAuthUserService.createUserDetailByUser((User) principal.getPrincipal());
+            userDetail.setAuthorizationId(authorization.getId());
         }
         //如果解析失败，则抛出异常信息。
         if (Objects.isNull(userDetail)) {

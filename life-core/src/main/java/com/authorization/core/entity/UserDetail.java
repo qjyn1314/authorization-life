@@ -150,4 +150,9 @@ public class UserDetail {
      * 当前用户使用token
      */
     private String token;
+
+    /**
+     * 当前登录用户的 authorizationId 即， RedisOAuth2AuthorizationService 进行存储的key
+     */
+    private String authorizationId;
 }

@@ -134,4 +134,7 @@
     5. 部署nginx , 或者 windows中安装nginx , 进行配置 nginx的 的代理. 
     6. 部署和启动 nacos 单机模式, 部署后端网关- 启动 life-gateway 服务, 部署认证中心和鉴权服务- 启动 life-authserver 服务. 
     7. 部署前端, 进入 life-authserver-front 文件后 , npm install , npm run dev 启动 vue工程.
+    注意: 其中 每个springboot服务中,redis的配置是一致的, 使用  0号  数据库. 
+
+
 

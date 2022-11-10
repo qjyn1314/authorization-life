@@ -87,7 +87,7 @@
 
     https://blog.csdn.net/qq_38046739/category_12090398.html
 
-## 授权码模式
+## 授权码模式（authorization-code）
 
 ### 博文：
 
@@ -104,3 +104,34 @@
 ### 结果：
 
 ![img.png](image/authorization-code.png)
+
+
+## 客户端凭证（client credentials）
+
+博文:
+    
+    https://blog.csdn.net/qq_38046739/article/details/127774901
+
+流程:
+
+    1.post请求接口
+        https://www.authorization.life/auth-life/oauth2/token
+    传参:
+        grant_type： client_credentials – 验证方式.
+        client_id： passport – 申请时的 client信息
+        client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
+
+
+![img.png](image/client_credentials.png)
+
+
+## 部署(windows)
+
+    1. git clone https://github.com/qjyn1314/authorization-life.git
+    2. 执行 db文件夹下的 MySQL文件,创建表, 更改 life-authserver 链接的数据库名和密码. 
+    3. docker 部署redis ,或者 windows安装redis, 需要redis服务支持, 更改端口号为 : 7777 
+    4. 在 阿里云平台中申请域名, 下载 ssl 证书. 
+    5. 部署nginx , 或者 windows中安装nginx , 进行配置 nginx的 的代理. 
+    6. 部署和启动 nacos 单机模式, 部署后端网关- 启动 life-gateway 服务, 部署认证中心和鉴权服务- 启动 life-authserver 服务. 
+    7. 部署前端, 进入 life-authserver-front 文件后 , npm install , npm run dev 启动 vue工程.
+

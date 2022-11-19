@@ -50,6 +50,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
     @Override
     @EventListener(RefreshRoutesEvent.class)
     public void refreshRoutes(RefreshRoutesEvent refreshRoutesEvent) {
+        log.info("开始主动的刷新路由......");
         List<String> services = discoveryClient.getServices();
         List<RouteDefinition> mergeRoutes = CollUtil.newArrayList(services.stream()
                 .map(this::convert)

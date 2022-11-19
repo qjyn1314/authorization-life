@@ -13,7 +13,7 @@ public class ShutdownAutoConfiguration {
 
     @Bean
     public GracefulShutdownTomcat gracefulShutdownTomcat(NacosAutoServiceRegistration nacosRegistration,
-                                                         RedisTemplate redisTemplate) {
-        return new GracefulShutdownTomcat(nacosRegistration, redisTemplate);
+                                                         RedisTemplate stringRedisTemplate) {
+        return new GracefulShutdownTomcat(nacosRegistration, stringRedisTemplate);
     }
 }

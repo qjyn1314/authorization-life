@@ -93,7 +93,7 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>util-start-life</artifactId>
+                <artifactId>utils-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

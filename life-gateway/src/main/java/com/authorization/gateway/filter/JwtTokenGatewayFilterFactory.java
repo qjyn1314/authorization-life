@@ -6,9 +6,9 @@ import com.authorization.gateway.entity.RequestContext;
 import com.authorization.gateway.entity.UserDetail;
 import com.authorization.gateway.execption.UnauthorizedException;
 import com.authorization.redis.start.util.StrRedisHelper;
-import com.authorization.start.util.contsant.LifeSecurityConstants;
-import com.authorization.start.util.json.JsonHelper;
-import com.authorization.start.util.jwt.Jwts;
+import com.authorization.start.utils.contsant.LifeSecurityConstants;
+import com.authorization.start.utils.json.JsonHelper;
+import com.authorization.start.utils.jwt.Jwts;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSSigner;
@@ -64,8 +64,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             // 签名并序列化转换为真正存储用户信息的jwtToken
             String jwtToken = Jwts.signAndSerialize(jwsObject, signer);
             ServerWebExchange jwtExchange = exchange.mutate()
-                    .request(request.mutate()
-                            .header(Jwts.HEADER_JWT, jwtToken).build())
+                    .request(request.mutate().header(Jwts.HEADER_JWT, jwtToken).build())
                     .build();
             return chain.filter(jwtExchange)
                     .contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY,

@@ -3,8 +3,10 @@ package com.authorization.core.filter;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
-import com.authorization.start.util.json.JsonHelper;
-import com.authorization.start.util.jwt.Jwts;
+import com.authorization.core.security.SecurityConstant;
+import com.authorization.redis.start.util.StrRedisHelper;
+import com.authorization.start.utils.json.JsonHelper;
+import com.authorization.start.utils.jwt.Jwts;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     private String secret;
     private JWSVerifier verifier;
 
+    @Resource
+    private StrRedisHelper strRedisHelper;
+
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
@@ -43,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        log.info("authentication-{}",JSONUtil.toJsonStr(authentication));
+        log.info("authentication-{}", JSONUtil.toJsonStr(authentication));
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwt = request.getHeader(Jwts.HEADER_JWT);
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
@@ -59,6 +65,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         }
         UserDetail userDetail = jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
                 UserDetail.anonymous() : JsonHelper.readValue(payload.toString(), UserDetail.class));
+
+        String authenticationIdKey = SecurityConstant.AUTHORIZATION + "_" + userDetail.getAuthorizationId();
+
+        String strGet = strRedisHelper.strGet(authenticationIdKey);
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         chain.doFilter(request, response);

@@ -4,11 +4,13 @@ package com.authorization.life.security.service;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
+import com.authorization.core.security.SecurityConstant;
 import com.authorization.life.entity.User;
 import com.authorization.life.service.OauthClientService;
 import com.authorization.redis.start.util.StrRedisHelper;
-import com.authorization.start.util.contsant.LifeSecurityConstants;
+import com.authorization.start.utils.contsant.LifeSecurityConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
@@ -30,14 +32,14 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
     private final SecurityAuthUserService securityAuthUserService;
     private final OauthClientService oauthClientService;
     private final StrRedisHelper strRedisHelper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-
-    public CustomizerOAuth2Token(SecurityAuthUserService securityAuthUserService,
-                                 OauthClientService oauthClientService,
-                                 StrRedisHelper strRedisHelper) {
+    public CustomizerOAuth2Token(SecurityAuthUserService securityAuthUserService, OauthClientService oauthClientService,
+                                 StrRedisHelper strRedisHelper, RedisTemplate<String, Object> redisTemplate) {
         this.securityAuthUserService = securityAuthUserService;
         this.oauthClientService = oauthClientService;
         this.strRedisHelper = strRedisHelper;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -70,6 +72,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
             //如果当前登录的是系统用户，则进行封装userDetail
             userDetail = securityAuthUserService.createUserDetailByUser((User) principal.getPrincipal());
             userDetail.setAuthorizationId(authorization.getId());
+            userDetail.setAuthorizationIdToken(SecurityConstant.AUTHORIZATION + "_" + authorization.getId());
         }
         //如果解析失败，则抛出异常信息。
         if (Objects.isNull(userDetail)) {

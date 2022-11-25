@@ -1,7 +1,7 @@
 package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
-import com.authorization.start.util.contsant.ServerOnlineConstants;
+import com.authorization.start.utils.contsant.ServerOnlineConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;

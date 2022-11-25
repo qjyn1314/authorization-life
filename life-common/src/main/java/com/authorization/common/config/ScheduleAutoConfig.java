@@ -1,6 +1,6 @@
 package com.authorization.common.config;
 
-import com.authorization.start.util.excutor.ExecutorManager;
+import com.authorization.start.utils.excutor.ExecutorManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

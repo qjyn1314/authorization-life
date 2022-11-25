@@ -1,7 +1,7 @@
 package com.authorization.core.security.handle;
 
 import cn.hutool.json.JSONUtil;
-import com.authorization.start.util.result.Res;
+import com.authorization.start.utils.result.Res;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;

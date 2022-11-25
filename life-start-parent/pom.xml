@@ -17,7 +17,7 @@
     </properties>
 
     <modules>
-        <module>util-start-life</module>
+        <module>utils-start-life</module>
         <module>redis-start-life</module>
         <module>mybatis-start-life</module>
     </modules>

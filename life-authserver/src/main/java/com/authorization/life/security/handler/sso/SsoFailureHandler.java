@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.life.security.sso.ValiVerificationCodeException;
 import com.authorization.life.security.sso.VerificationCodeException;
 import com.authorization.life.security.vo.AuthCodeExceptionVO;
-import com.authorization.start.util.result.Res;
+import com.authorization.start.utils.result.Res;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.*;

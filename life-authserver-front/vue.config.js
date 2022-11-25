@@ -96,9 +96,9 @@ module.exports = {
     },
     devServer: {
         host: '0.0.0.0',
-        port: 8080,
+        port: 8145,
         https: false,
-        public: 'http://127.0.0.1:8080',
+        public: 'http://127.0.0.1:8145',
         // open: true,
         //配置自动启动浏览器
         hotOnly: true,

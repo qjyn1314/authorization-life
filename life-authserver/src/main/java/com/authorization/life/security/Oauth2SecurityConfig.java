@@ -110,8 +110,9 @@ public class Oauth2SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
                                                                         OauthClientService oauthClientService,
-                                                                        StrRedisHelper strRedisHelper) {
-        return new CustomizerOAuth2Token(securityAuthUserService,oauthClientService,strRedisHelper);
+                                                                        StrRedisHelper strRedisHelper,
+                                                                        RedisTemplate<String, Object> redisTemplate) {
+        return new CustomizerOAuth2Token(securityAuthUserService,oauthClientService,strRedisHelper,redisTemplate);
     }
 
     /**

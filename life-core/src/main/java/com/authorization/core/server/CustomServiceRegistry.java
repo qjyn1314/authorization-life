@@ -3,7 +3,7 @@ package com.authorization.core.server;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistry;
-import com.authorization.start.util.contsant.ServerOnlineConstants;
+import com.authorization.start.utils.contsant.ServerOnlineConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.serviceregistry.Registration;

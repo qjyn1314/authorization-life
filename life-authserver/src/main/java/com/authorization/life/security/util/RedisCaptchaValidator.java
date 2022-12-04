@@ -7,7 +7,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.start.utils.kvp.KvpFormat;
+import com.authorization.utils.kvp.KvpFormat;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Objects;

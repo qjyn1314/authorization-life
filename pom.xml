@@ -19,11 +19,13 @@
         <resource.delimiter>@</resource.delimiter>
 
         <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <duplicate-finder.version>1.5.1</duplicate-finder.version>
         <!--
             查看版本依赖关系:
@@ -59,14 +61,13 @@
         <hutool.version>5.8.8</hutool.version>
         <guava.version>31.1-jre</guava.version>
         <easyexcel.version>3.1.1</easyexcel.version>
+        <jasypt.version>3.0.4</jasypt.version>
     </properties>
 
     <modules>
         <module>life-parent</module>
         <module>life-start-parent</module>
-
-        <module>life-common</module>
-        <module>life-core</module>
+        <module>life-base</module>
 
         <module>life-gateway</module>
         <module>life-authserver</module>
@@ -93,7 +94,7 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>utils-start-life</artifactId>
+                <artifactId>life-utils</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -121,6 +122,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
                 <version>${easyexcel.version}</version>
+            </dependency>
+            <!--配置文件加解密-->
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt.version}</version>
             </dependency>
             <!--以上为工具包依赖-->
             <dependency>
@@ -208,23 +215,16 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <pluginManagement>
             <plugins>
-                <!--源码包-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven-source-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <!--jar包-->
+                <!--maven-compiler-plugin插件可以指定项目源码的jdk版本，编译后的jdk版本，以及编码。-->
+                <!-- 参考: https://blog.csdn.net/liupeifeng3514/article/details/80236077 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -234,6 +234,49 @@
                         <target>${java.version}</target>
                         <testSource>${java.version}</testSource>
                         <testTarget>${java.version}</testTarget>
+                    </configuration>
+                </plugin>
+                <!--maven-source-plugin 这个插件专门负责将项目源文件打成包的-->
+                <!--参考: https://blog.csdn.net/liaowenxiong/article/details/124879376 -->
+                <!--提供项目自动将源码打包并发布的功能, maven会自动将source install到repository -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <!-- 执行生命周期阶段 verify 时会调用该插件的目标 jar-no-fork，该目标会将 jar 文件安装到本地的 Maven 仓库中。 -->
+                            <phase>verify</phase>
+                            <goals>
+                                <!--在生命周期后执行绑定的source插件的goals -->
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <!-- 生成的jar中，包含pom.xml和pom.properties这两个文件 -->
+                            <addMavenDescriptor>true</addMavenDescriptor>
+                            <!-- 生成MANIFEST.MF的设置 -->
+                            <manifest>
+                                <!--这个属性特别关键，如果没有这个属性，有时候我们引用的包maven库
+                                下面可能会有多个包，并且只有一个是正确的，其余的可能是带时间戳的，
+                                此时会在classpath下面把那个带时间戳的给添加上去，
+                                然后我们 在依赖打包的时候，打的是正确的，所以两头会对不上，报错。 -->
+                                <useUniqueVersions>false</useUniqueVersions>
+                                <!-- 为依赖包添加路径, 这些路径会写在MANIFEST文件的Class-Path下 -->
+                                <addClasspath>true</addClasspath>
+                                <!-- 这个jar所依赖的jar包添加classPath的时候的前缀，如果这个jar本身
+                                和依赖包在同一级目录，则不需要添加 -->
+                                <classpathPrefix>lib/</classpathPrefix>
+                            </manifest>
+                        </archive>
                     </configuration>
                 </plugin>
                 <!--springboot启动类的jar包-->
@@ -255,11 +298,6 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.basepom.maven</groupId>
-                    <artifactId>duplicate-finder-maven-plugin</artifactId>
-                    <version>${duplicate-finder.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

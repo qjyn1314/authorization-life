@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>utils-start-life</artifactId>
+            <artifactId>life-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,6 +41,7 @@
         <!--此处自定义引入redisson相关依赖-->
     </dependencies>
 
+
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -53,6 +54,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

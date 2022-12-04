@@ -3,7 +3,7 @@ package com.authorization.life.security.handler.oauth;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.start.utils.kvp.KvpFormat;
+import com.authorization.utils.kvp.KvpFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;

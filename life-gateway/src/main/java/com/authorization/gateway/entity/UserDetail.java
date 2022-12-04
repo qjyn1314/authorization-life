@@ -1,6 +1,6 @@
 package com.authorization.gateway.entity;
 
-import com.authorization.start.utils.json.JsonDateUtil;
+import com.authorization.utils.json.JsonDateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

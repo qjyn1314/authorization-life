@@ -1,0 +1,54 @@
+{
+  "name": "life-login-front",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve --mode dev",
+    "prod": "vue-cli-service serve --mode prod",
+    "build": "vue-cli-service build --mode dev"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "compression-webpack-plugin": "^5.0.0",
+    "core-js": "^3.21.1",
+    "element-ui": "^2.15.6",
+    "i18next": "^21.6.13",
+    "normalize.css": "^8.0.1",
+    "qs": "^6.10.1",
+    "sass": "^1.45.0",
+    "vue": "^2.6.11",
+    "vue-i18n": "^8.26.7",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "nprogress": "^0.2.0",
+    "sass-loader": "^8.0.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

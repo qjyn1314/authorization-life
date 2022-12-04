@@ -893,7 +893,6 @@ public class StrRedisHelper {
      *
      * @param key    key 键
      * @param object object
-     * @author cuijiaxu@zhichubao.com 2018-06-11 13:46
      */
     public <T> void objectSet(String key, T object) {
         this.strSet(key, this.toJson(object));

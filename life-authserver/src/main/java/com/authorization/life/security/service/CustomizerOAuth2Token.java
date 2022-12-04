@@ -8,7 +8,7 @@ import com.authorization.core.security.SecurityConstant;
 import com.authorization.life.entity.User;
 import com.authorization.life.service.OauthClientService;
 import com.authorization.redis.start.util.StrRedisHelper;
-import com.authorization.start.utils.contsant.LifeSecurityConstants;
+import com.authorization.utils.contsant.LifeSecurityConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;

@@ -4,11 +4,11 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.entity.User;
 import com.authorization.core.security.SecurityConstant;
+import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.kvp.KvpFormat;
 import com.authorization.life.security.util.RedisCaptchaValidator;
 import com.authorization.life.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,18 +38,18 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final RedisTemplate<String, Object> redisHelper;
+    private final StringRedisService stringRedisService;
     private final UserService userService;
     private final RegisteredClientRepository registeredClientService;
 
     public UsernamePasswordAuthenticationProvider(UserDetailsService userDetailsService,
                                                   PasswordEncoder passwordEncoder,
-                                                  RedisTemplate<String, Object> redisHelper,
+                                                  StringRedisService stringRedisService,
                                                   UserService userService,
                                                   RegisteredClientRepository registeredClientService) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
-        this.redisHelper = redisHelper;
+        this.stringRedisService = stringRedisService;
         this.userService = userService;
         this.registeredClientService = registeredClientService;
     }
@@ -80,7 +80,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             // 检查验证码正确
 
             CaptchaWebAuthenticationDetails captcha = (CaptchaWebAuthenticationDetails) authenticationDetails;
-            boolean verify = RedisCaptchaValidator.verify(redisHelper, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
+            boolean verify = RedisCaptchaValidator.verify(stringRedisService, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
             Assert.isTrue(verify, () -> new ValiVerificationCodeException("验证码输入错误。"));
         }
         if (authentication.getCredentials() == null) {
@@ -92,15 +92,15 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         if (passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
             // 清除密码错误次数累计
             String cacheKey = KvpFormat.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
-            redisHelper.delete(cacheKey);
+            stringRedisService.delKey(cacheKey);
         } else {
             log.debug("Authentication failed: password does not match stored value");
             // 检查密码错误次数
             String cacheKey = KvpFormat.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
-            int passwordErrorCount = Optional.ofNullable(redisHelper.opsForValue().get(cacheKey)).map(count -> Integer.parseInt(count.toString())).orElse(0);
+            int passwordErrorCount = Optional.ofNullable(stringRedisService.strGet(cacheKey)).map(count -> Integer.parseInt(count.toString())).orElse(0);
             if (passwordErrorCount >= 5 && passwordErrorCount < 10) {
                 // 未超过10次则密码错误累计次数+1
-                redisHelper.opsForValue().set(cacheKey, passwordErrorCount + 1);
+                stringRedisService.strSet(cacheKey, passwordErrorCount + 1);
                 throw new VerificationCodeException("用户名或密码错误。");
             }
             if (passwordErrorCount >= 10) {
@@ -108,14 +108,13 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
                 userService.lock(((User) userDetails).getUserId(), 3);
             } else {
                 // 未超过10次则密码错误累计次数+1
-                redisHelper.opsForValue().set(cacheKey, passwordErrorCount + 1);
+                stringRedisService.strSet(cacheKey, passwordErrorCount + 1);
             }
             throw new BadCredentialsException("用户名或密码错误。");
         }
         // 检查登录端是否与用户组匹配
-        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails
+        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails clientIdDetails
                 && StrUtil.isNotBlank(((CaptchaWebAuthenticationDetails) authenticationDetails).getClientId())) {
-            CaptchaWebAuthenticationDetails clientIdDetails = (CaptchaWebAuthenticationDetails) authenticationDetails;
             String clientId = clientIdDetails.getClientId();
             RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
             Assert.notNull(registeredClient, () -> new RegClientException("未找到此 OauthClient 信息。"));

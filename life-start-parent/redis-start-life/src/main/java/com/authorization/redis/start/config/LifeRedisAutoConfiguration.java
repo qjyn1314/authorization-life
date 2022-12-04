@@ -2,19 +2,17 @@ package com.authorization.redis.start.config;
 
 import cn.hutool.json.JSONUtil;
 import com.authorization.redis.start.listener.RedisSubscription;
-import com.authorization.redis.start.util.StrRedisHelper;
+import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.excutor.ExecutorManager;
 import com.authorization.utils.json.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -38,16 +36,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 @AutoConfiguration(after = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean(name = "redisTemplate")
-    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        return new StringRedisTemplate(redisConnectionFactory);
-    }
+//    @Bean
+//    @ConditionalOnMissingBean(name = "redisTemplate")
+//    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+//    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+//        return new StringRedisTemplate(redisConnectionFactory);
+//    }
 
     @Bean
-    public StrRedisHelper strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
-        return new StrRedisHelper(stringRedisTemplate, JsonHelper.getObjectMapper());
+    public StringRedisService strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
+        return new StringRedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
     }
 
     @Bean

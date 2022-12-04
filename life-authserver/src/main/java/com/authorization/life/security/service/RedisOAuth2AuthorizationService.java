@@ -4,8 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.authorization.core.security.SecurityConstant;
-import com.authorization.redis.start.util.RedisConsts;
-import com.authorization.redis.start.util.StrRedisHelper;
+import com.authorization.redis.start.service.RedisConstant;
+import com.authorization.redis.start.service.StringRedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,11 +33,11 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
     private final static String AUTHORIZATION_UNDERSCORE = AUTHORIZATION + UNDERSCORE;
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final StrRedisHelper strRedisHelper;
+    private final StringRedisService stringRedisService;
 
-    public RedisOAuth2AuthorizationService(RedisTemplate<String, Object> redisTemplate, StrRedisHelper strRedisHelper) {
+    public RedisOAuth2AuthorizationService(RedisTemplate<String, Object> redisTemplate, StringRedisService stringRedisService) {
         this.redisTemplate = redisTemplate;
-        this.strRedisHelper = strRedisHelper;
+        this.stringRedisService = stringRedisService;
     }
 
 
@@ -56,26 +56,26 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
         //判断该授权信息中4个类型的token是否不为空，如果有值，则需要把对应token类型+MD5(token)为key,授权id为value的set格式放入缓存(摘要算法可能重复)，过期时间为一天
         if (StrUtil.isNotBlank(accessToken)) {
             String accessTokenKey = AUTHORIZATION_UNDERSCORE + OAuth2TokenType.ACCESS_TOKEN.getValue() + UNDERSCORE + DigestUtil.md5Hex(accessToken);
-            strRedisHelper.setAdd(accessTokenKey, authId);
-            strRedisHelper.setExpire(accessTokenKey, RedisConsts.DEFAULT_EXPIRE);
+            stringRedisService.setAdd(accessTokenKey, authId);
+            stringRedisService.setExpire(accessTokenKey, RedisConstant.DEFAULT_EXPIRE);
         }
         String refreshToken = getTokenByAuth(authorization, OAuth2RefreshToken.class);
         if (StrUtil.isNotBlank(refreshToken)) {
             String refreshTokenKey = AUTHORIZATION_UNDERSCORE + OAuth2TokenType.REFRESH_TOKEN.getValue() + UNDERSCORE + DigestUtil.md5Hex(refreshToken);
-            strRedisHelper.setAdd(refreshTokenKey, authId);
-            strRedisHelper.setExpire(refreshTokenKey, RedisConsts.DEFAULT_EXPIRE);
+            stringRedisService.setAdd(refreshTokenKey, authId);
+            stringRedisService.setExpire(refreshTokenKey, RedisConstant.DEFAULT_EXPIRE);
         }
         String authCodeToken = getTokenByAuth(authorization, OAuth2AuthorizationCode.class);
         if (StrUtil.isNotBlank(authCodeToken)) {
             String authCodeTokenKey = AUTHORIZATION_UNDERSCORE + OAuth2ParameterNames.CODE + UNDERSCORE + DigestUtil.md5Hex(authCodeToken);
-            strRedisHelper.setAdd(authCodeTokenKey, authId);
-            strRedisHelper.setExpire(authCodeTokenKey, RedisConsts.DEFAULT_EXPIRE);
+            stringRedisService.setAdd(authCodeTokenKey, authId);
+            stringRedisService.setExpire(authCodeTokenKey, RedisConstant.DEFAULT_EXPIRE);
         }
         String state = getTokenByAuth(authorization, OAuth2ParameterNames.STATE);
         if (StrUtil.isNotBlank(state)) {
             String stateKey = AUTHORIZATION_UNDERSCORE + OAuth2ParameterNames.STATE + UNDERSCORE + DigestUtil.md5Hex(state);
-            strRedisHelper.setAdd(stateKey, authId);
-            strRedisHelper.setExpire(stateKey, RedisConsts.DEFAULT_EXPIRE);
+            stringRedisService.setAdd(stateKey, authId);
+            stringRedisService.setExpire(stateKey, RedisConstant.DEFAULT_EXPIRE);
         }
     }
 
@@ -83,7 +83,7 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
     @Override
     public void remove(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
-        strRedisHelper.delKey(AUTHORIZATION_UNDERSCORE + authorization.getId());
+        stringRedisService.delKey(AUTHORIZATION_UNDERSCORE + authorization.getId());
         //删除以token为key的数据
         removeTokenToCache(authorization);
     }
@@ -93,19 +93,19 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
         String accessToken = getTokenByAuth(authorization, OAuth2AccessToken.class);
         //判断该授权信息中4个类型的token是否不为空，如果有值，则需要把对应token类型+MD5(token)为key,授权id为value的set结构中将对应value值删除
         if (StrUtil.isNotBlank(accessToken)) {
-            strRedisHelper.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2TokenType.ACCESS_TOKEN.getValue() + DigestUtil.md5Hex(accessToken), authId);
+            stringRedisService.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2TokenType.ACCESS_TOKEN.getValue() + DigestUtil.md5Hex(accessToken), authId);
         }
         String refreshToken = getTokenByAuth(authorization, OAuth2RefreshToken.class);
         if (StrUtil.isNotBlank(refreshToken)) {
-            strRedisHelper.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2TokenType.REFRESH_TOKEN.getValue() + DigestUtil.md5Hex(refreshToken), authId);
+            stringRedisService.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2TokenType.REFRESH_TOKEN.getValue() + DigestUtil.md5Hex(refreshToken), authId);
         }
         String authCodeToken = getTokenByAuth(authorization, OAuth2AuthorizationCode.class);
         if (StrUtil.isNotBlank(authCodeToken)) {
-            strRedisHelper.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2ParameterNames.CODE + DigestUtil.md5Hex(authCodeToken), authId);
+            stringRedisService.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2ParameterNames.CODE + DigestUtil.md5Hex(authCodeToken), authId);
         }
         String attribute = getTokenByAuth(authorization, OAuth2ParameterNames.STATE);
         if (StrUtil.isNotBlank(attribute)) {
-            strRedisHelper.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2ParameterNames.STATE + DigestUtil.md5Hex(attribute), authId);
+            stringRedisService.hashDelete(AUTHORIZATION_UNDERSCORE + OAuth2ParameterNames.STATE + DigestUtil.md5Hex(attribute), authId);
         }
     }
 
@@ -195,7 +195,7 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
             type = (String) tokenType;
         }
         //从set集合中取出值,因为key为摘要算法生产，可能存在相同key，所以值可能有多个
-        Set<String> authIdSet = strRedisHelper.setMembers(AUTHORIZATION_UNDERSCORE + type + UNDERSCORE + DigestUtil.md5Hex(token));
+        Set<String> authIdSet = stringRedisService.setMembers(AUTHORIZATION_UNDERSCORE + type + UNDERSCORE + DigestUtil.md5Hex(token));
         if (CollUtil.isEmpty(authIdSet)) {
             return null;
         }

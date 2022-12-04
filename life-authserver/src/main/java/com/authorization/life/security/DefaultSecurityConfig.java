@@ -12,9 +12,9 @@ import com.authorization.life.security.handler.sso.SsoSuccessHandler;
 import com.authorization.life.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.security.sso.UsernamePasswordAuthenticationProvider;
 import com.authorization.life.service.UserService;
+import com.authorization.redis.start.service.StringRedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,7 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class DefaultSecurityConfig {
 
     @Autowired
-    private RedisTemplate<String, Object> redisHelper;
+    private StringRedisService stringRedisService;
     @Autowired
     private UserDetailService userDetailsService;
     @Autowired
@@ -99,7 +99,7 @@ public class DefaultSecurityConfig {
         // 配置退出登录配置
         http.logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
-                .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisHelper))
+                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService))
                 //在此处可以删除相应的cookie
                 .deleteCookies(SecurityConstant.JSESSIONID)
                 .invalidateHttpSession(true)
@@ -143,7 +143,7 @@ public class DefaultSecurityConfig {
     @Bean
     public AuthenticationProvider usernamePasswordProvider() {
         return new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder,
-                redisHelper, userService, registeredClientService);
+                stringRedisService, userService, registeredClientService);
     }
 
 }

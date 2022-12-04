@@ -5,10 +5,10 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
 import com.authorization.core.security.SecurityConstant;
+import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.kvp.KvpFormat;
 import com.authorization.utils.result.Res;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,11 +33,11 @@ import java.util.Objects;
 public class SsoLogoutHandle implements LogoutHandler {
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
-    private final RedisTemplate<String, Object> redisHelper;
+    private final StringRedisService stringRedisService;
 
-    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, RedisTemplate<String, Object> redisHelper) {
+    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, StringRedisService stringRedisService) {
         this.oAuth2AuthorizationService = oAuth2AuthorizationService;
-        this.redisHelper = redisHelper;
+        this.stringRedisService = stringRedisService;
     }
 
     @Override
@@ -53,8 +53,8 @@ public class SsoLogoutHandle implements LogoutHandler {
                 String userToken = userDetail.getToken();
                 log.debug("当前登录用户的token-是：" + userToken);
                 String cacheUserToken = KvpFormat.of(SecurityConstant.USER_DETAIL).add("token", userToken).format();
-                redisHelper.delete(cacheUserToken);
-                redisHelper.delete(KvpFormat.of(SecurityConstant.TOKEN_STORE).add("userId", userDetail.getUserId().toString()).format());
+                stringRedisService.delKey(cacheUserToken);
+                stringRedisService.delKey(KvpFormat.of(SecurityConstant.TOKEN_STORE).add("userId", userDetail.getUserId().toString()).format());
             }
             SecurityContextHolder.clearContext();
             String token = request.getHeader(HttpHeaders.AUTHORIZATION);

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.authorization.gateway.entity.RequestContext;
 import com.authorization.gateway.entity.UserDetail;
 import com.authorization.gateway.execption.UnauthorizedException;
-import com.authorization.redis.start.util.StrRedisHelper;
+import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.contsant.LifeSecurityConstants;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
@@ -42,7 +42,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
     private final JWSHeader jwsHeader = Jwts.header();
 
     @Autowired
-    private StrRedisHelper redisHelper;
+    private StringRedisService stringRedisService;
 
     @Override
     public void afterPropertiesSet() {
@@ -55,7 +55,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             ServerHttpRequest request = exchange.getRequest();
             String token = getToken(request);
             // 获取当前用户的信息
-            String userDetailStr = StrUtil.isBlank(token) ? null : redisHelper.strGet(LifeSecurityConstants.getUserTokenKey(token));
+            String userDetailStr = StrUtil.isBlank(token) ? null : stringRedisService.strGet(LifeSecurityConstants.getUserTokenKey(token));
             // 若jwt不存在，则封入一个空字符串，到权限拦截器处理。因为有些api是不需要登录的，故在此不处理。
             UserDetail userDetail = StrUtil.isNotBlank(userDetailStr) ? JsonHelper.readValue(userDetailStr, UserDetail.class) : null;
             userDetailStr = Optional.ofNullable(userDetailStr).orElse(StrUtil.EMPTY);

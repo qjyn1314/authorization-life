@@ -3,8 +3,6 @@ package com.authorization.core.filter;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
-import com.authorization.core.security.SecurityConstant;
-import com.authorization.redis.start.util.StrRedisHelper;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
 import com.nimbusds.jose.JWSObject;
@@ -18,7 +16,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,9 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     @Value(Jwts.SECRET_EXPRESS)
     private String secret;
     private JWSVerifier verifier;
-
-    @Resource
-    private StrRedisHelper strRedisHelper;
 
     @Override
     public void afterPropertiesSet() throws ServletException {
@@ -65,10 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         }
         UserDetail userDetail = jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
                 UserDetail.anonymous() : JsonHelper.readValue(payload.toString(), UserDetail.class));
-
-        String authenticationIdKey = SecurityConstant.AUTHORIZATION + "_" + userDetail.getAuthorizationId();
-
-        String strGet = strRedisHelper.strGet(authenticationIdKey);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

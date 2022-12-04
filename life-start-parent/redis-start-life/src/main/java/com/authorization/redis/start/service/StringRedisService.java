@@ -1,4 +1,4 @@
-package com.authorization.redis.start.util;
+package com.authorization.redis.start.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * 存储存字符传的redis工具类，
  */
 @Slf4j
-public class StrRedisHelper {
+public class StringRedisService {
 
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
@@ -26,7 +26,7 @@ public class StrRedisHelper {
         return objectMapper;
     }
 
-    public StrRedisHelper(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
+    public StringRedisService(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
@@ -47,7 +47,7 @@ public class StrRedisHelper {
      * @return object Boolean
      */
     public Boolean setExpire(String key) {
-        return this.setExpire(key, RedisConsts.DEFAULT_EXPIRE, TimeUnit.SECONDS);
+        return this.setExpire(key, RedisConstant.DEFAULT_EXPIRE, TimeUnit.SECONDS);
     }
 
     /**
@@ -144,7 +144,7 @@ public class StrRedisHelper {
      */
     public String strGet(String key, long expire, TimeUnit timeUnit) {
         String value = this.getValueOpr().get(key);
-        if (!Objects.equals(expire, RedisConsts.NOT_EXPIRE)) {
+        if (!Objects.equals(expire, RedisConstant.NOT_EXPIRE)) {
             this.setExpire(key, expire, timeUnit == null ? TimeUnit.SECONDS : timeUnit);
         }
         return value;
@@ -172,7 +172,7 @@ public class StrRedisHelper {
      */
     public <T> T strGet(String key, Class<T> clazz, long expire, TimeUnit timeUnit) {
         String value = this.getValueOpr().get(key);
-        if (!Objects.equals(expire, RedisConsts.NOT_EXPIRE)) {
+        if (!Objects.equals(expire, RedisConstant.NOT_EXPIRE)) {
             this.setExpire(key, expire, timeUnit == null ? TimeUnit.SECONDS : timeUnit);
         }
         return value == null ? null : fromJson(value, clazz);
@@ -835,7 +835,7 @@ public class StrRedisHelper {
      */
     public <T> String toJson(T object) {
         if (object == null) {
-            return RedisConsts.STR_EMPTY;
+            return RedisConstant.STR_EMPTY;
         }
         if (object instanceof Integer || object instanceof Long || object instanceof Float || object instanceof Double
                 || object instanceof Boolean || object instanceof String) {
@@ -844,7 +844,7 @@ public class StrRedisHelper {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            return RedisConsts.STR_EMPTY;
+            return RedisConstant.STR_EMPTY;
         }
     }
 

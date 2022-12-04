@@ -1,6 +1,7 @@
 package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
+import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.contsant.ServerOnlineConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,14 +23,14 @@ public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, Applic
     private volatile Connector connector;
     private final int waitTime = 30;
     private final NacosAutoServiceRegistration nacosAutoServiceRegistration;
-    private final RedisTemplate redisTemplate;
+    private final StringRedisService stringRedisService;
 
     @Value("${spring.application.name}")
     private String applicationName;
 
-    public GracefulShutdownTomcat(NacosAutoServiceRegistration nacosAutoServiceRegistration, RedisTemplate redisTemplate) {
+    public GracefulShutdownTomcat(NacosAutoServiceRegistration nacosAutoServiceRegistration, StringRedisService stringRedisService) {
         this.nacosAutoServiceRegistration = nacosAutoServiceRegistration;
-        this.redisTemplate = redisTemplate;
+        this.stringRedisService = stringRedisService;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, Applic
         // nacos解除注册
         nacosAutoServiceRegistration.stop();
         // 发送服务下线事件
-        redisTemplate.convertAndSend(ServerOnlineConstants.INSTANCE_DOWN_TOPIC, applicationName);
+        stringRedisService.convertAndSend(ServerOnlineConstants.INSTANCE_DOWN_TOPIC, applicationName);
         log.info("[Tomcat] Run shutdown hook now.");
         this.connector.pause();
         Executor executor = this.connector.getProtocolHandler().getExecutor();

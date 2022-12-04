@@ -1,9 +1,9 @@
-package com.authorization.redis.start.util;
+package com.authorization.redis.start.service;
 
 /**
  * redis的常量类
  */
-public class RedisConsts {
+public class RedisConstant {
 
     /**
      * 默认时间格式

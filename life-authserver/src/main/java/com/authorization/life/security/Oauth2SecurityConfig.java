@@ -2,11 +2,10 @@ package com.authorization.life.security;
 
 import com.authorization.core.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
-import com.authorization.life.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.security.service.*;
 import com.authorization.life.security.util.Jwks;
 import com.authorization.life.service.OauthClientService;
-import com.authorization.redis.start.util.StrRedisHelper;
+import com.authorization.redis.start.service.StringRedisService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -26,9 +25,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
-import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -110,9 +107,8 @@ public class Oauth2SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
                                                                         OauthClientService oauthClientService,
-                                                                        StrRedisHelper strRedisHelper,
-                                                                        RedisTemplate<String, Object> redisTemplate) {
-        return new CustomizerOAuth2Token(securityAuthUserService,oauthClientService,strRedisHelper,redisTemplate);
+                                                                        StringRedisService stringRedisService) {
+        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService);
     }
 
     /**
@@ -143,13 +139,13 @@ public class Oauth2SecurityConfig {
      * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
      *
      * @param redisTemplate  redis操作类
-     * @param strRedisHelper redis字符串的操作类
+     * @param stringRedisService redis字符串的操作类
      * @return OAuth2AuthorizationService
      */
     @Bean
     public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate,
-                                                           StrRedisHelper strRedisHelper) {
-        return new RedisOAuth2AuthorizationService(redisTemplate, strRedisHelper);
+                                                           StringRedisService stringRedisService) {
+        return new RedisOAuth2AuthorizationService(redisTemplate, stringRedisService);
     }
 
     /**

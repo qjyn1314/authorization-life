@@ -16,4 +16,7 @@ public class SsoSecurityProperties {
 
     private String ssoLoginPage;
 
+
+
+
 }

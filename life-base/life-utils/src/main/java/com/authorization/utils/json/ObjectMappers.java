@@ -34,7 +34,7 @@ public class ObjectMappers {
     /**
      * @return 标准配置新objectMapper
      */
-    protected static ObjectMapper configMapper() {
+    public static ObjectMapper configMapper() {
         return configMapper(new ObjectMapper());
     }
 

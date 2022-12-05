@@ -13,7 +13,7 @@
 
 	<artifactId>life-parent</artifactId>
 	<version>${revision}</version>
-
+	<!--将规定默认引入的依赖有哪些-->
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -60,22 +60,6 @@
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
-		<plugins>
-			<!--源码包-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<!--jar包-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-		</plugins>
 	</build>
 
 

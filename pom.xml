@@ -19,14 +19,11 @@
         <resource.delimiter>@</resource.delimiter>
 
         <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        <duplicate-finder.version>1.5.1</duplicate-finder.version>
         <!--
             查看版本依赖关系:
             spring-cloud 官网：  https://spring.io/projects/spring-cloud
@@ -41,26 +38,25 @@
             authorization-server：0.3.1
         -->
         <!--基本依赖-->
-        <mica.version>2.7.3</mica.version>
-        <spring-boot.version>2.7.3</spring-boot.version>
-        <spring-cloud.version>2021.0.3</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.2.8.RELEASE</spring-cloud-alibaba.version>
-        <jackson-bom.version>2.13.3</jackson-bom.version>
+        <spring-boot.version>2.7.6</spring-boot.version>
+        <spring-cloud.version>2021.0.5</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
+        <jackson-bom.version>2.14.1</jackson-bom.version>
 
         <!--权限认证依赖-->
-        <spring-security.version>5.7.3</spring-security.version>
-        <nimbus-jose-jwt.version>9.23</nimbus-jose-jwt.version>
-        <oauth2-oidc-sdk.version>9.27</oauth2-oidc-sdk.version>
-        <oauth2-authorization-server.version>0.3.0</oauth2-authorization-server.version>
+        <spring-security.version>5.8.0</spring-security.version>
+        <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
+        <oauth2-oidc-sdk.version>10.1</oauth2-oidc-sdk.version>
+        <oauth2-authorization-server.version>0.4.0</oauth2-authorization-server.version>
 
         <!--数据库依赖-->
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
-        <druid.version>1.2.9</druid.version>
-        <pagehelper.version>1.4.5</pagehelper.version>
+        <druid.version>1.2.15</druid.version>
+        <pagehelper.version>1.4.6</pagehelper.version>
         <!--工具依赖-->
-        <hutool.version>5.8.8</hutool.version>
+        <hutool.version>5.8.10</hutool.version>
         <guava.version>31.1-jre</guava.version>
-        <easyexcel.version>3.1.1</easyexcel.version>
+        <easyexcel.version>3.1.3</easyexcel.version>
         <jasypt.version>3.0.4</jasypt.version>
     </properties>
 
@@ -215,12 +211,6 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <pluginManagement>
             <plugins>
                 <!--maven-compiler-plugin插件可以指定项目源码的jdk版本，编译后的jdk版本，以及编码。-->

@@ -7,6 +7,7 @@
         <groupId>com.authorization.life</groupId>
         <artifactId>authorization-life</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>life-start-parent</artifactId>

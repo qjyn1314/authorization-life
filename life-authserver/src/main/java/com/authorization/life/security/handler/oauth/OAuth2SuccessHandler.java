@@ -36,8 +36,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         log.info("重定向default auth令牌");
         OAuth2AuthorizationCodeRequestAuthenticationToken codeRequestAuthenticationToken =
                 (OAuth2AuthorizationCodeRequestAuthenticationToken) authentication;
-        if (authentication.getPrincipal() instanceof OAuth2AccessTokenAuthenticationToken){
-            OAuth2AccessTokenAuthenticationToken token = (OAuth2AccessTokenAuthenticationToken)authentication.getPrincipal();
+        if (authentication.getPrincipal() instanceof OAuth2AccessTokenAuthenticationToken token){
             OAuth2AccessToken accessToken = token.getAccessToken();
             String redirectUrl = KvpFormat.of(SecurityConstant.IMPLICIT_REDIRECT_URI_FORMAT)
                     .add("redirectUri",codeRequestAuthenticationToken.getRedirectUri())

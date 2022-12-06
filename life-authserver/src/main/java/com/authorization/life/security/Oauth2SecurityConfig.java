@@ -19,11 +19,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -65,7 +65,7 @@ public class Oauth2SecurityConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
 
 //        authorizationServerConfigurer
 //                .authorizationEndpoint(endpointConfigurer -> {
@@ -165,9 +165,9 @@ public class Oauth2SecurityConfig {
      * @return ProviderSettings
      */
     @Bean
-    public ProviderSettings providerSettings() {
+    public AuthorizationServerSettings providerSettings() {
         //此处为oauth授权服务的发行者，即此授权服务地址
-        return ProviderSettings.builder()
+        return AuthorizationServerSettings.builder()
                 //发布者的url地址,一般是本系统访问的根路径
                 .issuer(SecurityConstant.ISSUER)
                 //授权端点

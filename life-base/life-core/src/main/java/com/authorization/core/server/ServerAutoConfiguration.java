@@ -19,9 +19,8 @@ public class ServerAutoConfiguration {
                                                       NacosServiceManager nacosServiceManager,
                                                       StringRedisService stringRedisService) {
         log.debug("CustomServiceRegistry Init ......NacosDiscoveryProperties-{}", nacosDiscoveryProperties);
-        log.debug("CustomServiceRegistry Init ......NacosServiceManager-{}", nacosServiceManager);
         log.debug("CustomServiceRegistry Init ......RedisTemplate-{}", stringRedisService);
-        return new CustomServiceRegistry(nacosDiscoveryProperties, nacosServiceManager, stringRedisService);
+        return new CustomServiceRegistry(nacosDiscoveryProperties, stringRedisService);
     }
 
 }

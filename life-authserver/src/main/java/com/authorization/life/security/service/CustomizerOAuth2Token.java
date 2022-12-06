@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.context.ProviderContext;
+import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContext;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
@@ -52,13 +52,13 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         Authentication authorizationGrant = context.getAuthorizationGrant();
         OAuth2Authorization authorization = context.getAuthorization();
         Set<String> authorizedScopes = context.getAuthorizedScopes();
-        ProviderContext providerContext = context.getProviderContext();
+        AuthorizationServerContext authorizationServerContext = context.getAuthorizationServerContext();
         RegisteredClient registeredClient = context.getRegisteredClient();
         log.info("principal-{}", JSONUtil.toJsonStr(principal));
         log.info("authorization-{}", JSONUtil.toJsonStr(authorization));
         log.info("authorizedScopes-{}", JSONUtil.toJsonStr(authorizedScopes));
         log.info("authorizationGrant-{}", JSONUtil.toJsonStr(authorizationGrant));
-        log.info("providerContext-{}", JSONUtil.toJsonStr(providerContext));
+        log.info("authorizationServerContext-{}", JSONUtil.toJsonStr(authorizationServerContext));
         log.info("registeredClient-{}", JSONUtil.toJsonStr(registeredClient));
         UserDetail userDetail = null;
         // 目的是为了定制jwt 的header 和 claims

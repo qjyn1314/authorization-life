@@ -14,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,19 +46,19 @@ public class SsoLogoutHandle implements LogoutHandler {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        UserDetail userDetail = UserHelper.getUserDetail();
+        log.debug("当前登录用户-UserDetail-是：" + userDetail);
+        if (Objects.nonNull(userDetail)) {
+            String userToken = userDetail.getToken();
+            log.debug("当前登录用户的token-是：" + userToken);
+            String cacheUserToken = KvpFormat.of(SecurityConstant.USER_DETAIL).add("token", userToken).format();
+            stringRedisService.delKey(cacheUserToken);
+            stringRedisService.delKey(KvpFormat.of(SecurityConstant.TOKEN_STORE).add("userId", userDetail.getUserId().toString()).format());
+        }
+        SecurityContextHolder.clearContext();
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.debug("请求头-Authorization-是：" + token);
         try {
-            UserDetail userDetail = UserHelper.getUserDetail();
-            log.debug("当前登录用户-UserDetail-是：" + userDetail);
-            if (Objects.nonNull(userDetail)) {
-                String userToken = userDetail.getToken();
-                log.debug("当前登录用户的token-是：" + userToken);
-                String cacheUserToken = KvpFormat.of(SecurityConstant.USER_DETAIL).add("token", userToken).format();
-                stringRedisService.delKey(cacheUserToken);
-                stringRedisService.delKey(KvpFormat.of(SecurityConstant.TOKEN_STORE).add("userId", userDetail.getUserId().toString()).format());
-            }
-            SecurityContextHolder.clearContext();
-            String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-            log.debug("请求头-Authorization-是：" + token);
             if (StrUtil.isBlank(token)) {
                 PrintWriter out = response.getWriter();
                 out.write(JSONUtil.toJsonStr(new Res<>(Res.ERROR, "未找到token，请确认已登录。", null)));

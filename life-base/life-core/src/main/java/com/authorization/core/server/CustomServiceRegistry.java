@@ -19,9 +19,8 @@ public class CustomServiceRegistry extends NacosServiceRegistry {
     private String applicationName;
 
     public CustomServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties,
-                                 NacosServiceManager nacosServiceManager,
                                  StringRedisService stringRedisService) {
-        super(nacosServiceManager, nacosDiscoveryProperties);
+        super(nacosDiscoveryProperties);
         this.stringRedisService = stringRedisService;
     }
 

@@ -8,6 +8,7 @@
         <groupId>com.authorization.life</groupId>
         <artifactId>life-start-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>mybatis-start-life</artifactId>
@@ -22,8 +23,8 @@
             <artifactId>life-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

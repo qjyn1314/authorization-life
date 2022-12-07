@@ -6,6 +6,7 @@
         <groupId>com.authorization.life</groupId>
         <artifactId>life-start-parent</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>redis-start-life</artifactId>

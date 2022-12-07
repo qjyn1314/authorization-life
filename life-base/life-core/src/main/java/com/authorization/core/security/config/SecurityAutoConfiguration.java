@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -25,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
  * https://blog.csdn.net/chihaihai/article/details/104678864
  */
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityAutoConfiguration {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -53,8 +54,10 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
      * rememberMe          |   允许通过remember-me登录的用户访问
      * authenticated       |   用户登录后可访问
      */
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    @Bean
+    public SecurityFilterChain defaultSpringSecurityFilterChain(HttpSecurity httpSecurity,
+                                                                AuthenticationManager authenticationManager,
+                                                                UserDetailsService userDetailsService) throws Exception {
         httpSecurity
                 // 禁用csrf
                 .csrf().disable()
@@ -74,6 +77,9 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+
+        httpSecurity.authenticationManager(authenticationManager);
+
         httpSecurity.formLogin(Customizer.withDefaults());
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter
@@ -81,21 +87,22 @@ public class SecurityAutoConfiguration extends WebSecurityConfigurerAdapter {
         // 添加CORS filter
         httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationFilter.class);
         httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
+        return httpSecurity.build();
     }
 
-    /**
-     * 身份认证接口
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+//    /**
+//     * 身份认证接口
+//     */
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailsService)
+//                .passwordEncoder(passwordEncoder);
+//    }
+//
+//    @Bean
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
 
 }

@@ -2,11 +2,12 @@ package com.authorization.gateway.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.authorization.gateway.filter.AuthGatewayFilterFactory;
 import com.authorization.gateway.filter.JwtTokenGatewayFilterFactory;
 import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
 import com.authorization.utils.contsant.ServerOnlineConstants;
-import com.authorization.utils.contsant.ServiceInfo;
+import com.authorization.utils.contsant.ServerInfo;
 import com.authorization.utils.json.JsonHelper;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +68,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
      */
     private RouteDefinition convert(String service) {
         // 不注册网关服务路由
-        if (Objects.equals(service, ServiceInfo.GateWayLife.SERVER_NAME)) {
+        if (Objects.equals(service, ServerInfo.GateWayLife.SERVER_NAME)) {
             return null;
         }
         List<ServiceInstance> instances = discoveryClient.getInstances(service);
@@ -104,6 +105,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
         return CollUtil.newArrayList(
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
+                new FilterDefinition(AuthGatewayFilterFactory.AUTH),
                 new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME));
     }
 

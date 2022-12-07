@@ -8,7 +8,7 @@ import com.authorization.core.security.SecurityConstant;
 import com.authorization.life.entity.User;
 import com.authorization.life.service.OauthClientService;
 import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.contsant.LifeSecurityConstants;
+import com.authorization.utils.contsant.SecurityConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -80,10 +80,10 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         //也需要将此token存放到当前登录用户中，为了在退出登录时进行获取redis中的信息并将其删除
         userDetail.setToken(token);
         //将用户信息放置到redis中，并设置其过期时间为 client中的过期时间
-        stringRedisService.strSet(LifeSecurityConstants.getUserTokenKey(token), userDetail,
+        stringRedisService.strSet(SecurityConstants.getUserTokenKey(token), userDetail,
                 registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds(), TimeUnit.SECONDS);
         log.info("生成的用户-token是-{}，此token作为key，用户信息作为value存储到redis中", token);
         //也可以在此处将当前登录用户的信息存放到jwt中，但是这样就不再安全。
-        context.getClaims().claim(LifeSecurityConstants.TOKEN, token).build();
+        context.getClaims().claim(SecurityConstants.TOKEN, token).build();
     }
 }

@@ -7,7 +7,7 @@ import com.authorization.utils.kvp.KvpFormat;
  *
  * @author wangjunming
  */
-public class LifeSecurityConstants {
+public class SecurityConstants {
 
     /**
      * 前端的jwtToken中claim 的key
@@ -23,8 +23,8 @@ public class LifeSecurityConstants {
      * redis中存储的用户tokenKey信息
      */
     public static String getUserTokenKey(String token) {
-        return KvpFormat.of(LifeSecurityConstants.USER_DETAIL)
-                .add(LifeSecurityConstants.TOKEN, token).format();
+        return KvpFormat.of(SecurityConstants.USER_DETAIL)
+                .add(SecurityConstants.TOKEN, token).format();
     }
 
     /**

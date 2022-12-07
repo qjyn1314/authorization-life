@@ -5,7 +5,7 @@ package com.authorization.utils.contsant;
  *
  * @author wangjunming
  */
-public class ServiceInfo {
+public class ServerInfo {
 
     public static class GateWayLife {
         public static final String SERVER_NAME = "gway-life";

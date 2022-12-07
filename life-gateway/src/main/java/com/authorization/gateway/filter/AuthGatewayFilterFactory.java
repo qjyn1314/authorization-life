@@ -29,8 +29,7 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<Objec
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
-            ServerHttpRequest request = exchange.getRequest();
-            return null;
+            return chain.filter(exchange);
         };
     }
 

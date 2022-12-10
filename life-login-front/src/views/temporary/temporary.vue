@@ -17,10 +17,10 @@
 import {CODE_ACCESS_TOKEN} from '@/api/severApi'
 import {ContentLayout} from '@/components'
 import {getOauth2TokenByCode} from '@/api/login'
-import {setCookie} from '@/utils/index'
+import {setCookie} from '@/utils'
 
 export default {
-  name: 'home',
+  name: 'temporary',
   components: {
     ContentLayout,
   },

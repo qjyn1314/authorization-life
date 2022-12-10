@@ -1,4 +1,4 @@
-import request from '../utils/request'
+import request from '../utils/defaultAxios'
 import {AUTH_SERVER} from './severApi'
 import Qs from 'qs' // 表单提交 data序列化 
 // 值集-行值集查询-公用接口*******************************

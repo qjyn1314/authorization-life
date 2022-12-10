@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Router from 'vue-router' 
+import Router from 'vue-router'
 
 Vue.use(Router) // 需求设置
 // 获取原型对象上的push函数
@@ -18,7 +18,7 @@ Router.prototype.replace = function push (location, onResolve, onReject) {
 export default new Router({
   mode: 'history',
   base: '/login',
-  routes: [ 
+  routes: [
     {
       path: '/', // 登录
       name: 'login',
@@ -34,7 +34,7 @@ export default new Router({
       meta: {
         title: 'register'
       }
-    }, 
+    },
     {
       path: '/mailboxVerification', // 邮箱验证成功失败页面
       name: 'mailboxVerification',
@@ -44,27 +44,18 @@ export default new Router({
       }
     },
     {
-      path: '/404', component: () => import('@/views/system/404.vue'), meta: { title: '404' }
+      path: '/404', component: () => import('@/views/system/404.vue'),
+      meta: {
+          title: '404'
+      }
     },
     {
-      path: '/home', // 首页
-      name: 'home',
-      component: () => import('@/views/home/home.vue'), meta: { title: 'home' }
-    },
-    // {
-    //   path: '/',
-    //   component: () => import('@/views/AdminLayout/index.vue'),
-    //   meta: { title: '自述文件' },
-    //   children: [
-    //     {
-    //       path: 'index',
-    //       name: 'index',
-    //       component: () => import('@/views/Index.vue'),
-    //       meta: { title: '系统首页' }
-    //     },
-    //     // 基础设置部分
-    //     ...basicSettings,
-    //   ]
-    // },
+      path: '/temporary', // 临时页面,仅仅用于获取access_token
+      name: 'temporary',
+      component: () => import('@/views/temporary/temporary.vue'),
+      meta: {
+          title: 'temporary'
+      }
+    }
   ]
 })

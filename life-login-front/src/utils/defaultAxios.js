@@ -15,6 +15,11 @@ service.interceptors.request.use(config => {
     let accessToken = getCookie('accessToken') || ''
     let tokenType = getCookie('tokenType') || ''
     config.headers['Authorization'] = `${tokenType} ${accessToken}`
+    // 如果没有特别声明，application/json是Axios默认的Content-Type, 所以在此处不需要显示的声明 Content-Type 为 application/json
+    // 参考:
+    // https://www.cnblogs.com/jdWu-d/p/12036528.html
+    // https://www.cnblogs.com/dreamcc/p/10752604.html
+    // config.headers['Content-Type'] = 'application/json'
     return config
 }, err => {
     Promise.reject(err)

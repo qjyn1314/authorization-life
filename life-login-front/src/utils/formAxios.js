@@ -9,20 +9,22 @@ const service = axios.create({
     baseURL: process.env.VUE_APP_URL
 })
 service.interceptors.request.use(config => {
+    // 普通表单请求类型
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     if (config.data) {
         config.data = Qs.stringify(config.data)
     }
     return config
 }, err => {
-    Promise.reject(err)
+    // 此处如果 再请求阶段时,前端一旦报错就会抛出异常.
+    return Promise.reject(err)
 })
 // 添加响应拦截
 service.interceptors.response.use(response => {
     // eslint-disable-next-line eqeqeq
     // isMessage 是否错误提示 默认提示可以不传  不提示时config.isMessage：'ok'
     // code 0 成功 -1 吐报错Message  -2是表单行内报错
-    if (response.data && response.data.code == '-1' && !response.config.isMessage) {
+    if (response.data && response.data.code === '-1' && !response.config.isMessage) {
         Message({
             showClose: true,
             message: `${response.data.desc}`,

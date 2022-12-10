@@ -1,4 +1,4 @@
-import request from '../utils/loginAxios'
+import request from '../utils/formAxios'
 import { AUTH_SERVER } from './severApi'
 import Qs from "qs";
 

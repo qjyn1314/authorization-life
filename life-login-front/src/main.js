@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Element from 'element-ui' // 引入elementui主库
+import Element from 'element-ui' // 引入element主库
 import App from './App'
 
 /* css库 */

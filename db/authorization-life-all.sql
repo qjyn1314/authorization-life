@@ -29,7 +29,7 @@ CREATE TABLE `lifetime_oauth_client`  (
 -- ----------------------------
 -- Records of lifetime_oauth_client
 -- ----------------------------
-INSERT INTO `lifetime_oauth_client` VALUES (1, 'passport', '$2a$10$XZFsvonUZ79RR9/9z8wZv.i7TkmYL0Xjed3U590k6vNCmMHKoy9Iu', 'authorization_code,refresh_token,client_credentials', 'TENANT', 'https://www.authorization.life/login/home', 86400, 108000, '', 0, 0, 0, '2021-11-11 17:44:10', 0, 0, '2021-11-11 17:44:10');
+INSERT INTO `lifetime_oauth_client` VALUES (1, 'passport', '$2a$10$XZFsvonUZ79RR9/9z8wZv.i7TkmYL0Xjed3U590k6vNCmMHKoy9Iu', 'authorization_code,refresh_token,client_credentials', 'TENANT', 'https://www.authorization.life/login/temporary', 86400, 108000, '', 0, 0, 0, '2021-11-11 17:44:10', 0, 0, '2021-11-11 17:44:10');
 INSERT INTO `lifetime_oauth_client` VALUES (2, 'ops', '3MMoCFo4nTNjRtGZ', 'authorization_code,refresh_token,client_credentials', 'OPS', 'https://music.163.com', 86400, 108000, '', 0, 0, 0, '2021-11-11 17:44:10', 0, 0, '2021-11-11 17:44:10');
 
 -- ----------------------------

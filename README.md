@@ -99,7 +99,7 @@
     2、输入用户名密码
         用户名：qjyn1314@163.com
         密码：admin
-    3、用户名密码验证通过之后，将重定向到：https://www.authorization.life/login/home?code=gyLKC_d06yIPo-69hbKuVOFfFjps3F-EPRbAwilmQZPYO0TBkY2GORjhyZ1CXxeUeeC8d5rHY8g8j3Wykhiv_T17P-QYsbFDWvBzJcvfKk0oF8Z8Nj_CgLhSLFiIskL4&state=authorization-life
+    3、用户名密码验证通过之后，将重定向到：https://www.authorization.life/login/home[temporary](life-login-front%2Fsrc%2Fviews%2Ftemporary)?code=gyLKC_d06yIPo-69hbKuVOFfFjps3F-EPRbAwilmQZPYO0TBkY2GORjhyZ1CXxeUeeC8d5rHY8g8j3Wykhiv_T17P-QYsbFDWvBzJcvfKk0oF8Z8Nj_CgLhSLFiIskL4&state=authorization-life
     4、login-front前端工程中的 home 页面中做一些操作，通过 网址中的 code 请求 /oauth2/token 接口 ，获取自定义的 jwt形式的 accessToken，然后将其保存到cookie中，为下一次请求接口使用。
 ### 结果：
 

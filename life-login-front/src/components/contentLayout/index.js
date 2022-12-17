@@ -1,4 +1,5 @@
 import ContentLayout from './ContentLayout'
+import Vue from "vue";
 
 const install = function (Vue) {
   Vue.component('ContentLayout', ContentLayout)

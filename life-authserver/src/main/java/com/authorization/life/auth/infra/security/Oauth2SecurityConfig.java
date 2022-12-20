@@ -4,8 +4,6 @@ import com.authorization.core.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.service.*;
-import com.authorization.life.infra.security.service.*;
-import com.authorization.life.security.service.*;
 import com.authorization.life.auth.infra.security.util.Jwks;
 import com.authorization.redis.start.service.StringRedisService;
 import com.nimbusds.jose.jwk.JWKSet;

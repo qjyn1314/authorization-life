@@ -3,7 +3,7 @@ package com.authorization.life.system.test_redis;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
-import com.authorization.life.system.log.LogAdvice;
+import com.authorization.common.log.LogAdvice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

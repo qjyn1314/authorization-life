@@ -1,6 +1,6 @@
 package com.authorization.life.system.test_redis;
 
-import com.authorization.life.system.log.LogAdvice;
+import com.authorization.common.log.LogAdvice;
 import com.authorization.redis.start.listener.RedisSubscription;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.listener.PatternTopic;

@@ -22,7 +22,7 @@ service.interceptors.request.use(config => {
     // config.headers['Content-Type'] = 'application/json'
     return config
 }, err => {
-    Promise.reject(err)
+    return Promise.reject(err)
 })
 
 service.interceptors.response.use(response => {

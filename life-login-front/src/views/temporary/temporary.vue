@@ -48,9 +48,9 @@ export default {
     this.tokenByCode.state = this.$route.query.state;
     console.log("开始请求 oauth/token 接口，参数信息是：")
     console.log(this.tokenByCode)
-    getOauth2TokenByCode(this.tokenByCode).then(res => {
-      this.accessToken = res.data;
-      console.log("获取的accessToken对象信息是：" + res);
+    getOauth2TokenByCode(this.tokenByCode).then(r => {
+      this.accessToken = r.data;
+      console.log("获取的accessToken对象信息是：" + r);
       //将accessToken缓存到当前二级域名的cookie中，开始通过accessToken获取当前登录用户的信息
       setCookie('accessToken', accessToken.access_token)
       setCookie('tokenType', accessToken.token_type)

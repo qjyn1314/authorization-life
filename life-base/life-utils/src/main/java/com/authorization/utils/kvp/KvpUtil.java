@@ -19,6 +19,10 @@ import java.math.RoundingMode;
  */
 public final class KvpUtil {
 
+    private KvpUtil() {
+        throw new UnsupportedOperationException("此处不允许创建对象");
+    }
+
     /**
      * 两个数相加
      */
@@ -33,24 +37,7 @@ public final class KvpUtil {
     public static final java.util.function.Function<BigDecimal, java.util.function.Function<BigDecimal, BigDecimal>> MULTIPLY = x -> x::multiply;
 
     /**
-     * 两个数相除，默认结果向上取整并保留两位小数
-     * <p>
-     * 即，小学时代的四舍五入，此处包含五，也会进一位。
-     * <p>
-     * Kvp<K,V>，即，K是除数，V是被除数。
-     * <p>
-     * 示例：
-     * <p>
-     * KvpUtil.DIV_HALF_UP.apply(Kvp.of(new BigDecimal("10"),new BigDecimal("3"))) = 3.33
-     */
-    public static final java.util.function.Function<Kvp<BigDecimal, BigDecimal>, BigDecimal> DIV_HALF_UP = x -> {
-        BigDecimal key = x.getKey();
-        BigDecimal value = x.getValue();
-        return divideHalfUp(key, value, "2");
-    };
-
-    /**
-     * 两个数相除，默认结果向上取整并保留两位小数
+     * 两个数相除，默认结果向上取整并默认保留两位小数,也可自定义保留的位数
      * <p>
      * 即，小学时代的四舍五入，此处包含五，也会进一位。
      *
@@ -69,6 +56,23 @@ public final class KvpUtil {
     }
 
     /**
+     * 两个数相除，默认结果向上取整并保留两位小数
+     * <p>
+     * 即，小学时代的四舍五入，此处包含五，也会进一位。
+     * <p>
+     * Kvp<K,V>，即，K是除数，V是被除数。
+     * <p>
+     * 示例：
+     * <p>
+     * KvpUtil.DIVIDE_UP.apply(Kvp.of(new BigDecimal("10"),new BigDecimal("3"))) = 3.33
+     */
+    public static final java.util.function.Function<Kvp<BigDecimal, BigDecimal>, BigDecimal> DIVIDE_UP = x -> {
+        BigDecimal key = x.getKey();
+        BigDecimal value = x.getValue();
+        return divideHalfUp(key, value, "2");
+    };
+
+    /**
      * 将 BigDecimal 数值向上取整，并可以自定义保留几位小数
      * <p>
      * Kvp<K,V>，即，K是被操作数值，V是 自定义保留小数位。
@@ -77,7 +81,7 @@ public final class KvpUtil {
      * <p>
      * KvpUtil.HALF_UP.apply(Kvp.of(new BigDecimal("5000.355"), 2)) = 5000.36
      */
-    public static java.util.function.Function<Kvp<BigDecimal, Integer>, BigDecimal> HALF_UP = decimal -> {
+    public static final java.util.function.Function<Kvp<BigDecimal, Integer>, BigDecimal> HALF_UP = decimal -> {
         BigDecimal key = decimal.getKey();
         Integer value = decimal.getValue();
         return key.setScale(value, RoundingMode.HALF_UP);
@@ -98,7 +102,7 @@ public final class KvpUtil {
      * <p>
      * KvpUtil.STR_TO_INT.apply(Kvp.ofVal("3", 2)) = 3
      */
-    public static java.util.function.Function<Kvp<String, Integer>, Integer> STR_TO_INT = decimal -> {
+    public static final java.util.function.Function<Kvp<String, Integer>, Integer> STR_TO_INT = decimal -> {
         String key = decimal.getKey();
         Integer value = decimal.getValue();
         if (StrUtil.isBlank(key)) {

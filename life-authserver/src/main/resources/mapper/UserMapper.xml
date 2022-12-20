@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.authorization.life.mapper.UserMapper">
+<mapper namespace="com.authorization.life.auth.infra.mapper.UserMapper">
 
     <sql id="lifetime_user_column">
         ${prefix}user_id,
@@ -32,7 +32,7 @@
         ${prefix}updated_time
     </sql>
 
-    <select id="page" resultType="com.authorization.life.entity.User">
+    <select id="page" resultType="com.authorization.life.auth.entity.User">
         SELECT
         <include refid="lifetime_user_column">
             <property name="prefix" value="t1."/>

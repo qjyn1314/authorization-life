@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * 对objectMapper进行时间转换等配置改造
@@ -54,15 +55,19 @@ public class ObjectMappers {
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(JsonDateUtil.DATETIME)));
 
         objectMapper.registerModule(javaTimeModule);
+        // 设置时间的时区
+        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         // 设置时间格式
         objectMapper.setDateFormat(JsonDateUtil.newSimpleFormat(JsonDateUtil.DATETIME));
         // 默认开启，将Date类型序列化为数字时间戳(毫秒表示)。关闭后，序列化为文本表现形式(2019-10-23T01:58:58.308+0000)，若设置时间格式化。那么均输出格式化的时间类型。
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        // 关闭属性为 "" （空字符串）或者 为 NULL 进行序列化功能，默认是开启，此处需将设置为 JsonInclude.Include.NON_EMPTY。
+        // 关闭属性为 为 NULL 进行序列化功能，默认是开启，此处需将设置为 JsonInclude.Include.NON_NULL。
         // 对于 Include 枚举类的说明参考： https://blog.csdn.net/qq_31960623/article/details/120438533
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // 忽略未知字段 DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES默认是true，此处需将设置为false。
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        // 该特性指定上下文提供的时区（DeserializationContext.getTimeZone()）是否应该用于调整反序列化时的日期/时间值，即使值本身包含时区信息。
+        objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
         // 关闭空对象(没有任何字段)不让序列化功能
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         // 开启属性名没有双引号的非标准json字符串
@@ -77,7 +82,7 @@ public class ObjectMappers {
         // 允许出现特殊字符和转义符
         objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
         // 序列化结果格式化，美化输出
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+//        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         return objectMapper;
     }
 }

@@ -338,8 +338,8 @@ export default {
         this.$message.error('请输入正确的手机号')
         return
       }
-      getSendCode({ telephone: this.ruleForm.telephone }).then((res) => {
-        if (Number(res.data.code) === 0) {
+      getSendCode({ telephone: this.ruleForm.telephone }).then((r) => {
+        if (Number(r.data.code) === 0) {
           this.isDisabled = false
           this.$message.success('短信发送成功')
         }
@@ -381,15 +381,15 @@ export default {
       }
       self.$refs[formName].validate((valid) => {
         if (valid) {
-          getRegister(self.ruleForm).then((res) => {
-            if (Number(res.data.code) === 0) {
+          getRegister(self.ruleForm).then((r) => {
+            if (Number(r.data.code) === 0) {
               self.$message.success('注册成功')
               self.$router.replace({
                 name: 'login',
                 query: {}
               })
-            } else if (res.data.code == '-2') {
-              self.formRules = res.data.data || {}
+            } else if (r.data.code == '-2') {
+              self.formRules = r.data.data || {}
               self.setformRules(self.formRules)
             }
           })

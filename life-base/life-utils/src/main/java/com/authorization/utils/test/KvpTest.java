@@ -13,7 +13,7 @@ public class KvpTest {
 
     public static void main(String[] args) {
 
-        BigDecimal divideApply = KvpUtil.DIV_HALF_UP.apply(Kvp.of(new BigDecimal("10"), new BigDecimal("3")));
+        BigDecimal divideApply = KvpUtil.DIVIDE_UP.apply(Kvp.of(new BigDecimal("10"), new BigDecimal("3")));
         System.out.println(divideApply);
         Integer integer = KvpUtil.STR_TO_INT.apply(Kvp.ofVal("", 2));
         BigDecimal bigDecimal = KvpUtil.divideHalfUp(new BigDecimal("0"), new BigDecimal("212"), null);

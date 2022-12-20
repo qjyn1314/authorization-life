@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.authorization.life.mapper.OauthClientMapper">
+<mapper namespace="com.authorization.life.auth.infra.mapper.OauthClientMapper">
 
     <sql id="lifetime_oauth_client_column">
         ${prefix}oauth_client_id,
@@ -21,7 +21,7 @@
         ${prefix}updated_time
     </sql>
 
-    <select id="page" resultType="com.authorization.life.entity.OauthClient">
+    <select id="page" resultType="com.authorization.life.auth.entity.OauthClient">
         SELECT
         <include refid="lifetime_oauth_client_column">
             <property name="prefix" value="t1."/>

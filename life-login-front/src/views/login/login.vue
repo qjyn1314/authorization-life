@@ -247,10 +247,10 @@ export default {
         return
       }
       // 请求后台发送验证码至手机
-      getAuthCaptchaCode({ telephone: this.ruleForm.phone }).then((res) => {
-        if (Number(res.data.code) === 0) {
+      getAuthCaptchaCode({ telephone: this.ruleForm.phone }).then((r) => {
+        if (Number(r.data.code) === 0) {
           this.isDisabled = false
-          this.ruleForm.captchaUuid = res.data.data || ''
+          this.ruleForm.captchaUuid = r.data.data || ''
           this.$message.success('短信发送成功')
         }
       })
@@ -291,16 +291,16 @@ export default {
           // eslint-disable-next-line eqeqeq
           if (self.loginCur == 0) {
             getAuthLogin(self.ruleForm).then(resdata => {
-              let res = resdata.data
+              let r = resdata.data
               // eslint-disable-next-line eqeqeq
-              if (res.code == '-2') { 
-                self.formRules = res.data.errorVO || {} // 后台返回的错误信息赋值给变量errorMsg
+              if (r.code == '-2') {
+                self.formRules = r.data.errorVO || {} // 后台返回的错误信息赋值给变量errorMsg
                 if (self.formRules.defaultDesc) {
                   self.$message.error(self.formRules.defaultDesc)
                 }
 
                 // eslint-disable-next-line eqeqeq
-                if (res.data.showCaptchaCode) {
+                if (r.data.showCaptchaCode) {
                   self.getAuthCaptcha()
                 }
               } else {
@@ -310,10 +310,10 @@ export default {
             // eslint-disable-next-line eqeqeq
           } else if (self.loginCur == 1) {
             getLoginSms(self.ruleForm).then(resdata => {
-               let res = resdata.data
+               let r = resdata.data
               // eslint-disable-next-line eqeqeq
-              if (res.code == '-2') {
-                self.formRules = res.data.errorVO || {} // 后台返回的错误信息赋值给变量errorMsg
+              if (r.code == '-2') {
+                self.formRules = r.data.errorVO || {} // 后台返回的错误信息赋值给变量errorMsg
                 if (self.formRules.defaultDesc) {
                   self.$message.error(self.formRules.defaultDesc)
                 }
@@ -334,10 +334,10 @@ export default {
       window.location.href = `${LOGINCODE.loginRedirectUrl}/${AUTH_SERVER}/oauth2/authorize?response_type=${LOGINCODE.response_type}&client_id=${this.ruleForm.client_id}&scope=${LOGINCODE.scope}&state=${LOGINCODE.state}&redirect_uri=${this.redirect_uri ? encodeURIComponent(this.redirect_uri) : encodeURIComponent(LOGINCODE.redirect_uri)}`
     },
     getAuthCaptcha () { // 账号登录 -在登录失败10次之后，获取验证码图片接口
-      getAuthCaptcha().then(res => {
-        if (Number(res.data.code) === 0) {
-          this.ruleForm.captchaUuid = res.data.data.uuid
-          this.imageBase64 = res.data.data.imageBase64
+      getAuthCaptcha().then(r => {
+        if (Number(r.data.code) === 0) {
+          this.ruleForm.captchaUuid = r.data.data.uuid
+          this.imageBase64 = r.data.data.imageBase64
           this.captchaCode_falg = true
         }
       })

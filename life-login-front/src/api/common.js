@@ -8,7 +8,7 @@ export function getlovoptions (tenantId, data) {
     method: 'GET',
     params: data
   })
-} 
+}
 // 查询当前登录用户的信息
 export function getUserSelf () {
   return request({

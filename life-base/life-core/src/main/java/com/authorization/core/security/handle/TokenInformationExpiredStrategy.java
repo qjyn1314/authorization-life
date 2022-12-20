@@ -1,7 +1,7 @@
 package com.authorization.core.security.handle;
 
 import cn.hutool.json.JSONUtil;
-import com.authorization.utils.result.Res;
+import com.authorization.utils.result.R;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -26,7 +26,7 @@ public class TokenInformationExpiredStrategy implements SessionInformationExpire
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         PrintWriter out = response.getWriter();
-        out.write(JSONUtil.toJsonStr(Res.fail(EXPIRED_STRATEGY_MSG, null)));
+        out.write(JSONUtil.toJsonStr(R.failMsg(EXPIRED_STRATEGY_MSG)));
         out.flush();
         out.close();
     }

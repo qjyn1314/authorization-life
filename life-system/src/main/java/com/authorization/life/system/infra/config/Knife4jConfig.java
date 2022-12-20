@@ -34,7 +34,7 @@ public class Knife4jConfig {
     @Bean
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder()
-                .group("系统配置模块")
+                .group(applicationName)
                 .pathsToMatch(PATHS_TO_MATCH)
                 .packagesToScan(PACKAGED_TO_MATCH)
                 .build();

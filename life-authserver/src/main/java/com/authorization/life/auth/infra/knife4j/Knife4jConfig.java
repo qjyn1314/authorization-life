@@ -33,7 +33,7 @@ public class Knife4jConfig {
     @Bean
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder()
-                .group("认证授权及注册模块")
+                .group(applicationName)
                 .pathsToMatch(PATHS_TO_MATCH)
                 .packagesToScan(PACKAGED_TO_MATCH)
                 .build();

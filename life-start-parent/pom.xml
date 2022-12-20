@@ -20,7 +20,7 @@
     <modules>
         <module>redis-start-life</module>
         <module>mybatis-start-life</module>
-        <module>swagger-start-life</module>
+        <module>knife4j-start-life</module>
     </modules>
 
     <dependencies>

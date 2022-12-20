@@ -35,6 +35,10 @@
             <artifactId>redis-start-life</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>knife4j-start-life</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
         </dependency>

@@ -107,7 +107,7 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>swagger-start-life</artifactId>
+                <artifactId>knife4j-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--以上为工程内部的子工程-->

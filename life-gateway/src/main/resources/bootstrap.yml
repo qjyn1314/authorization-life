@@ -14,3 +14,8 @@ spring:
         namespace: ${spring.cloud.nacos.namespace}
       config:
         enabled: false
+
+# 聚合swagger文档
+knife4j:
+  gateway:
+    enable: true

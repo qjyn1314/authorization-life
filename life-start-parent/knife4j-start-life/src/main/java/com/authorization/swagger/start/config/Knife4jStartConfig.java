@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
  * @date 2022/12/20 16:49
  */
 @Configuration
-public class Knife4jConfig {
+public class Knife4jStartConfig {
 
 }

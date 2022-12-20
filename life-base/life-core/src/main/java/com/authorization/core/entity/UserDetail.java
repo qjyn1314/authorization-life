@@ -16,6 +16,11 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDetail {
 
+    /**
+     * 匿名用户
+     *
+     * @return UserDetail
+     */
     public static UserDetail anonymous() {
         UserDetail userDetail = new UserDetail();
         userDetail.setUserId(0L);
@@ -25,6 +30,11 @@ public class UserDetail {
         return userDetail;
     }
 
+    /**
+     * 系统用户
+     *
+     * @return UserDetail
+     */
     public static UserDetail systemUser() {
         UserDetail userDetail = new UserDetail();
         userDetail.setUserId(-1L);

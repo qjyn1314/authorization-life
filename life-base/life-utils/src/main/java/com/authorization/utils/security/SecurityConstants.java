@@ -1,4 +1,4 @@
-package com.authorization.utils.contsant;
+package com.authorization.utils.security;
 
 import com.authorization.utils.kvp.KvpFormat;
 

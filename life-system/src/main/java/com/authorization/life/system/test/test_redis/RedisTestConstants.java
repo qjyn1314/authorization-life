@@ -1,4 +1,4 @@
-package com.authorization.life.system.test_redis;
+package com.authorization.life.system.test.test_redis;
 
 public class RedisTestConstants {
 

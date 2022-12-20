@@ -1,4 +1,4 @@
-package com.authorization.life.system.test_redis;
+package com.authorization.life.system.test.test_redis;
 
 import com.authorization.common.log.LogAdvice;
 import com.authorization.redis.start.listener.RedisSubscription;

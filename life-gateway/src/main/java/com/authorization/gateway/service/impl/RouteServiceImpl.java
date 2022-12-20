@@ -6,7 +6,7 @@ import com.authorization.gateway.filter.AuthGatewayFilterFactory;
 import com.authorization.gateway.filter.JwtTokenGatewayFilterFactory;
 import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
-import com.authorization.utils.contsant.ServerOnlineConstants;
+import com.authorization.utils.contsant.ServerUpDown;
 import com.authorization.utils.contsant.ServerInfo;
 import com.authorization.utils.json.JsonHelper;
 import com.google.common.collect.ImmutableList;
@@ -77,7 +77,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
             return null;
         }
         log.debug("服务-instance-{}", JSONUtil.toJsonStr(instance.getMetadata()));
-        String serviceName = instance.getMetadata().getOrDefault(ServerOnlineConstants.KEY_SERVICE_CODE, service);
+        String serviceName = instance.getMetadata().getOrDefault(ServerUpDown.KEY_SERVICE_CODE, service);
         log.debug("服务-instance-serviceName-{}", serviceName);
         log.debug("服务-instance-serviceId-{}", instance.getServiceId());
         //此处将使用服务名称作为请求路径前缀进行处理请求。

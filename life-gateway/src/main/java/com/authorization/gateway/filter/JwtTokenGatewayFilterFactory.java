@@ -6,9 +6,10 @@ import com.authorization.gateway.entity.RequestContext;
 import com.authorization.gateway.entity.UserDetail;
 import com.authorization.gateway.execption.UnauthorizedException;
 import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.contsant.SecurityConstants;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
+import com.authorization.utils.security.SecurityConstants;
+import com.authorization.utils.security.SsoSecurityProperties;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSSigner;
@@ -16,7 +17,6 @@ import com.nimbusds.jose.Payload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -36,8 +36,8 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
 
     public static final String JWT_TOKEN = "JwtToken";
 
-    @Value(Jwts.SECRET_EXPRESS)
-    private String secret;
+    @Autowired
+    private SsoSecurityProperties ssoSecurityProperties;
     private JWSSigner signer;
     private final JWSHeader jwsHeader = Jwts.header();
 
@@ -46,6 +46,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
 
     @Override
     public void afterPropertiesSet() {
+        String secret = ssoSecurityProperties.getSecret();
         signer = Jwts.signer(secret);
     }
 
@@ -63,14 +64,8 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             JWSObject jwsObject = new JWSObject(jwsHeader, new Payload(userDetailStr));
             // 签名并序列化转换为真正存储用户信息的jwtToken
             String jwtToken = Jwts.signAndSerialize(jwsObject, signer);
-            ServerWebExchange jwtExchange = exchange.mutate()
-                    .request(request.mutate().header(Jwts.HEADER_JWT, jwtToken).build())
-                    .build();
-            return chain.filter(jwtExchange)
-                    .contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY,
-                            ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY)
-                                    .orElse(new RequestContext())
-                                    .setUserDetail(userDetail)));
+            ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate().header(Jwts.HEADER_JWT, jwtToken).build()).build();
+            return chain.filter(jwtExchange).contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY, ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY).orElse(new RequestContext()).setUserDetail(userDetail)));
         };
     }
 
@@ -82,8 +77,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
      */
     private String getToken(ServerHttpRequest request) {
         log.info("进入到JwtTokenFilter中进行解析请求头中的token信息。");
-        String authorization = Optional.ofNullable(request.getHeaders()
-                .getFirst(HttpHeaders.AUTHORIZATION)).orElse(null);
+        String authorization = Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).orElse(null);
         String accessToken = null;
         // 先检查header中有没有accessToken
         if (StrUtil.startWithIgnoreCase(authorization, SecurityConstants.Header.TYPE_BEARER)) {
@@ -91,8 +85,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
         }
         // 如果header中没有，则检查url参数并赋值
         if (StrUtil.isBlank(accessToken)) {
-            accessToken = Optional.of(request.getQueryParams())
-                    .map(param -> param.getFirst(SecurityConstants.ACCESS_TOKEN)).orElse(null);
+            accessToken = Optional.of(request.getQueryParams()).map(param -> param.getFirst(SecurityConstants.ACCESS_TOKEN)).orElse(null);
         }
         if (StrUtil.isBlank(accessToken)) {
             return null;
@@ -105,6 +98,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
         }
         return token;
     }
+
     @Override
     public String name() {
         return JWT_TOKEN;

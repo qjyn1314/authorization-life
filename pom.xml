@@ -42,6 +42,7 @@
         <spring-cloud.version>2021.0.5</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
         <jackson-bom.version>2.13.4</jackson-bom.version>
+        <knife4j.version>4.0.0</knife4j.version>
 
         <!--权限认证依赖-->
         <spring-security.version>5.8.0</spring-security.version>
@@ -104,6 +105,11 @@
                 <artifactId>redis-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>swagger-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!--以上为工程内部的子工程-->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -164,11 +170,20 @@
                 <version>${oauth2-authorization-server.version}</version>
             </dependency>
             <!--以上为security+oauth2-->
+            <!--引入Knife4j的官方ui包,OpenAPI3建议使用springdoc-openapi项目-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>${knife4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
                 <version>${jackson-bom.version}</version>
                 <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -201,19 +216,6 @@
             <!--以上为基础的导入依赖-->
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>aliyun-repos</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <finalName>${project.artifactId}</finalName>

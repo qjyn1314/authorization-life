@@ -5,7 +5,7 @@ package com.authorization.utils.contsant;
  *
  * @author wangjunming
  */
-public class ServerOnlineConstants {
+public class ServerUpDown {
 
     public static final String INSTANCE_CHANNEL = "auth-server.service.instance.*";
 

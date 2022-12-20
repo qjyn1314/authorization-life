@@ -1,10 +1,9 @@
 package com.authorization.core.server;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistry;
 import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.contsant.ServerOnlineConstants;
+import com.authorization.utils.contsant.ServerUpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.serviceregistry.Registration;
@@ -29,7 +28,7 @@ public class CustomServiceRegistry extends NacosServiceRegistry {
         super.register(registration);
         log.debug("上线的工程名是-{}", applicationName);
         // 发送服务上线事件
-        stringRedisService.convertAndSend(ServerOnlineConstants.INSTANCE_UP_TOPIC, applicationName);
+        stringRedisService.convertAndSend(ServerUpDown.INSTANCE_UP_TOPIC, applicationName);
     }
 
     @Override
@@ -37,6 +36,6 @@ public class CustomServiceRegistry extends NacosServiceRegistry {
         super.deregister(registration);
         log.debug("下线的工程名是-{}", applicationName);
         // 发送服务下线事件
-        stringRedisService.convertAndSend(ServerOnlineConstants.INSTANCE_DOWN_TOPIC, applicationName);
+        stringRedisService.convertAndSend(ServerUpDown.INSTANCE_DOWN_TOPIC, applicationName);
     }
 }

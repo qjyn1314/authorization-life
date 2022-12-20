@@ -3,5 +3,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.authorization.core.shutdown.ShutdownAutoConfiguration,\
   com.authorization.core.security.config.SecurityAutoComponent,\
   com.authorization.core.security.config.SecurityAutoConfiguration,\
-  com.authorization.core.security.config.SsoSecurityProperties,\
   com.authorization.core.LifeCoreAutoConfig

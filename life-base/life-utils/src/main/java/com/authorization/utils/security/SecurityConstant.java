@@ -1,4 +1,4 @@
-package com.authorization.core.security;
+package com.authorization.utils.security;
 
 /**
  * <p>
@@ -33,7 +33,9 @@ public interface SecurityConstant {
      */
     String[] IGNORE_PERM_URLS = {
             //swagger文档
-            "/v2/api-docs",
+            "/v3/api-docs",
+            "/doc.html",
+            "/webjars/**",
             //公有public路径
             "/public/**",
             //监控服务路径

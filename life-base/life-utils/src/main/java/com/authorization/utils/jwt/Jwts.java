@@ -19,7 +19,6 @@ public class Jwts {
      * 默认jwt sercet, 如果要使用此当以sercet, 密码不得低于32位
      */
     public static final String DEFAULT_SECRET = "3mvVp3~MrWae_r1sen36j93u_zcFJsMf";
-    public static final String SECRET_EXPRESS = "${auth-server.jwt.secret:" + DEFAULT_SECRET + "}";
 
     /**
      * 创建jwt头，默认hs256算法，类型为jwt

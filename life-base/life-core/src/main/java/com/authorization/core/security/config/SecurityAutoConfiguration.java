@@ -1,7 +1,7 @@
 package com.authorization.core.security.config;
 
-import com.authorization.core.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.SecurityConstant;
+import com.authorization.core.security.filter.JwtAuthenticationFilter;
+import com.authorization.utils.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import org.springframework.beans.factory.annotation.Autowired;

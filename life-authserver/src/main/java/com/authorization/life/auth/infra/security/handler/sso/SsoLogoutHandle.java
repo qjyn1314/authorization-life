@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
-import com.authorization.core.security.SecurityConstant;
+import com.authorization.utils.security.SecurityConstant;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.kvp.KvpFormat;
 import com.authorization.utils.result.R;

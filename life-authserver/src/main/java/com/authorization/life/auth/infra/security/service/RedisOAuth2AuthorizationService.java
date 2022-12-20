@@ -3,7 +3,7 @@ package com.authorization.life.auth.infra.security.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import com.authorization.core.security.SecurityConstant;
+import com.authorization.utils.security.SecurityConstant;
 import com.authorization.redis.start.service.RedisConstant;
 import com.authorization.redis.start.service.StringRedisService;
 import lombok.extern.slf4j.Slf4j;

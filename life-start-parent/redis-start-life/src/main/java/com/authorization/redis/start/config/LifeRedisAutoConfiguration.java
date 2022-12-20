@@ -36,13 +36,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @AutoConfiguration(after = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfiguration {
 
-//    @Bean
-//    @ConditionalOnMissingBean(name = "redisTemplate")
-//    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-//    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-//        return new StringRedisTemplate(redisConnectionFactory);
-//    }
-
     @Bean
     public StringRedisService strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
         return new StringRedisService(stringRedisTemplate, JsonHelper.getObjectMapper());

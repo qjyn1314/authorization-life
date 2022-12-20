@@ -2,7 +2,7 @@ package com.authorization.core.security.handle;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.URLUtil;
-import com.authorization.core.security.SecurityConstant;
+import com.authorization.utils.security.SecurityConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

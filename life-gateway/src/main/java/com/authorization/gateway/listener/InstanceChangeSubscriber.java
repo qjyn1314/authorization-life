@@ -2,7 +2,7 @@ package com.authorization.gateway.listener;
 
 import com.authorization.gateway.service.RouteService;
 import com.authorization.redis.start.listener.RedisSubscription;
-import com.authorization.utils.contsant.ServerOnlineConstants;
+import com.authorization.utils.contsant.ServerUpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -44,7 +44,7 @@ public class InstanceChangeSubscriber implements RedisSubscription {
 
     @Override
     public String topicName() {
-        return ServerOnlineConstants.INSTANCE_CHANNEL;
+        return ServerUpDown.INSTANCE_CHANNEL;
     }
 
     @Override

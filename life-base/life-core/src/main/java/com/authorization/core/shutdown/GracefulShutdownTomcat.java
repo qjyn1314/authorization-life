@@ -2,7 +2,7 @@ package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
 import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.contsant.ServerOnlineConstants;
+import com.authorization.utils.contsant.ServerUpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, Applic
         // nacos解除注册
         nacosAutoServiceRegistration.stop();
         // 发送服务下线事件
-        stringRedisService.convertAndSend(ServerOnlineConstants.INSTANCE_DOWN_TOPIC, applicationName);
+        stringRedisService.convertAndSend(ServerUpDown.INSTANCE_DOWN_TOPIC, applicationName);
         log.info("[Tomcat] Run shutdown hook now.");
         this.connector.pause();
         Executor executor = this.connector.getProtocolHandler().getExecutor();

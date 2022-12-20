@@ -1,4 +1,4 @@
-package com.authorization.life.system.test_java;
+package com.authorization.life.system.test.test_java;
 
 public class JavaTest {
 

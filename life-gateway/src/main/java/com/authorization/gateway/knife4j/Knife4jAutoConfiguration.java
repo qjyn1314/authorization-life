@@ -18,9 +18,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
  */
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(Knife4jGatewayProperties.class)
+@EnableConfigurationProperties(Knife4jProperties.class)
 @ConditionalOnProperty(name = "knife4j.gateway.enable", havingValue = "true")
-public class Knife4jGatewayAutoConfiguration {
+public class Knife4jAutoConfiguration {
 
     /**
      * 分组url
@@ -28,10 +28,10 @@ public class Knife4jGatewayAutoConfiguration {
     public static final String GATEWAY_SWAGGER_GROUP_URL = "/swagger-resources";
 
     @Bean
-    public RouterFunction<ServerResponse> gatewaySwaggerRoute(Knife4jGatewayProperties knife4jGatewayProperties) {
+    public RouterFunction<ServerResponse> gatewaySwaggerRouteFunc(Knife4jProperties knife4jProperties) {
         log.info("init gateway swagger resources.");
         return RouterFunctions.route().GET(GATEWAY_SWAGGER_GROUP_URL, request ->
-                ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(knife4jGatewayProperties.build())).build();
+                ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(knife4jProperties.build())).build();
     }
 
 }

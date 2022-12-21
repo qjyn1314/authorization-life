@@ -5,13 +5,17 @@ import com.authorization.utils.contsant.ServerInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,20 +27,16 @@ import java.util.stream.Collectors;
 @Slf4j
 @Getter
 @Setter
+@Configuration
 @ConfigurationProperties(prefix = "knife4j.gateway")
-public class Knife4jGatewayProperties {
+public class Knife4jProperties {
 
     /**
      * 是否启用聚合Swagger组件
      */
     private boolean enable = false;
 
-    /**
-     * 聚合分组名称
-     */
-    private List<Knife4jGatewayRoute> routes;
-
-    @Autowired
+    @Resource
     private DiscoveryClient discoveryClient;
 
     /**
@@ -49,9 +49,7 @@ public class Knife4jGatewayProperties {
         if (CollectionUtils.isEmpty(services)) {
             return new ArrayList<>();
         }
-        return services.stream()
-                .filter(service -> !ServerInfo.GateWayLife.SERVER_NAME.equals(service))
-                .map(this::convert).collect(Collectors.toList());
+        return services.stream().filter(service -> !ServerInfo.GateWayLife.SERVER_NAME.equals(service)).map(this::convert).collect(Collectors.toList());
     }
 
     private Map<String, String> convert(String service) {
@@ -59,8 +57,8 @@ public class Knife4jGatewayProperties {
         String source = service + url + service;
         return MapUtil.builder("name", service)
                 .put("url", url)
-                .put("id", Base64.getEncoder().encodeToString(source.getBytes(StandardCharsets.UTF_8)))
-                .build();
+                .put("context-path", service)
+                .put("id", Base64.getEncoder().encodeToString(source.getBytes(StandardCharsets.UTF_8))).build();
     }
 
 }

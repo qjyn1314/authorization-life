@@ -34,12 +34,7 @@
         <!--knife4j-start-->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-ui</artifactId>
+            <artifactId>knife4j-openapi2-ui</artifactId>
         </dependency>
         <!--knife4j-end-->
         <dependency>

@@ -110,6 +110,16 @@
                 <artifactId>knife4j-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>dubbo-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>valid-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!--以上为工程内部的子工程-->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -169,7 +179,15 @@
                 <artifactId>spring-security-oauth2-authorization-server</artifactId>
                 <version>${oauth2-authorization-server.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-bom</artifactId>
+                <version>${spring-security.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!--以上为security+oauth2-->
+
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-dependencies</artifactId>
@@ -202,13 +220,6 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring-cloud-alibaba.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-bom</artifactId>
-                <version>${spring-security.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

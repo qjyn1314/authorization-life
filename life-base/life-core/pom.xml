@@ -15,13 +15,23 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>life-common</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>life-utils</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>valid-start-life</artifactId>
+            <optional>true</optional>
         </dependency>
         <!--以上为权限认证框架引用-->
         <dependency>

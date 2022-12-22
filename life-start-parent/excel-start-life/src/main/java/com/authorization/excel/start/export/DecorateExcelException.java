@@ -1,4 +1,4 @@
-package com.authorization.common.excel;
+package com.authorization.excel.start.export;
 
 
 public class DecorateExcelException extends RuntimeException {

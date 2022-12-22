@@ -29,6 +29,10 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
+            <artifactId>valid-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
             <artifactId>mybatis-start-life</artifactId>
         </dependency>
         <dependency>

@@ -21,6 +21,9 @@
         <module>redis-start-life</module>
         <module>mybatis-start-life</module>
         <module>knife4j-start-life</module>
+        <module>dubbo-start-life</module>
+        <module>excel-start-life</module>
+        <module>valid-start-life</module>
     </modules>
 
     <dependencies>

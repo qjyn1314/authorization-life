@@ -29,4 +29,5 @@ knife4j:
   setting:
     custom-code: 500
     enable-footer-custom: false
-    footer-custom-content: System服务
+    footer-custom-content: System-life-服务
+

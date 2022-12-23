@@ -42,7 +42,17 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>knife4j-start-life</artifactId>
         </dependency>
-         <!--以下为security+oauth2-->
+
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>dubbo-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>system-remote-api</artifactId>
+        </dependency>
+
+        <!--以下为security+oauth2-->
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>

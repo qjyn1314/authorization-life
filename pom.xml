@@ -71,6 +71,7 @@
         <module>life-gateway</module>
         <module>life-authserver</module>
         <module>life-system</module>
+        <module>life-remote-api</module>
 
     </modules>
 
@@ -113,12 +114,22 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
+                <artifactId>valid-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>excel-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
                 <artifactId>dubbo-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>valid-start-life</artifactId>
+                <artifactId>system-remote-api</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!--以上为工程内部的子工程-->
@@ -223,8 +234,8 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!--dubbo依赖一定要在-->
-             <dependency>
+            <!-- dubbo依赖一定要在spring-boot 依赖之后 , 不然会有报错情况 -->
+            <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-bom</artifactId>
                 <version>${dubbo.version}</version>

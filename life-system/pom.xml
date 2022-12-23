@@ -29,10 +29,6 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>valid-start-life</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
             <artifactId>mybatis-start-life</artifactId>
         </dependency>
         <dependency>
@@ -41,7 +37,19 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
+            <artifactId>valid-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
             <artifactId>knife4j-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>dubbo-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>system-remote-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

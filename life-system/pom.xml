@@ -21,11 +21,11 @@
     <dependencies>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>life-common</artifactId>
+            <artifactId>life-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>life-core</artifactId>
+            <artifactId>life-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>

@@ -31,7 +31,7 @@ public class Knife4jConfig {
      * @return GroupedOpenApi
      */
     @Bean
-    public GroupedOpenApi userApi() {
+    public GroupedOpenApi groupedOpenApi() {
         return GroupedOpenApi.builder()
                 .group(applicationName)
                 .pathsToMatch(PATHS_TO_MATCH)
@@ -45,7 +45,7 @@ public class Knife4jConfig {
      * @return OpenAPI
      */
     @Bean
-    public OpenAPI systemOpenApi() {
+    public OpenAPI openApi() {
         return new OpenAPI().info(new Info()
                 .title(applicationName + "API")
                 .description(applicationName + "服务")

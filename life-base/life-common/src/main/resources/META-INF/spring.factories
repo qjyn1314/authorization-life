@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.authorization.common.config.ScheduleAutoConfig,\
   com.authorization.common.log.LogAopAdvice

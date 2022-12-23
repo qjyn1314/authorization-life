@@ -1,5 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.authorization.utils.EnhanceAutoBeanConfig,\
-  com.authorization.utils.valid.ValidAutoConfig,\
   com.authorization.utils.security.SsoSecurityProperties
 

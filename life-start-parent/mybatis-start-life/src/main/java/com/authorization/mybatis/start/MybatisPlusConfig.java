@@ -48,12 +48,12 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
-    @Bean
-    @Order(200)
-    public Interceptor pageInterceptor() {
-        // 配置分页插件
-        return new PageInterceptor();
-    }
+//    @Bean
+//    @Order(200)
+//    public Interceptor pageInterceptor() {
+//        // 配置分页插件
+//        return new PageInterceptor();
+//    }
 
 
 }

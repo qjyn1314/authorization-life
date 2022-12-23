@@ -1,4 +1,4 @@
-package com.authorization.common.config;
+package com.authorization.core.schedule;
 
 import com.authorization.utils.excutor.ExecutorManager;
 import lombok.extern.slf4j.Slf4j;

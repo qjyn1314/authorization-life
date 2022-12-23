@@ -55,8 +55,10 @@ public class SecurityAutoComponent {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
+
         // 设置访问源地址
-        config.addAllowedOriginPattern("*");
+//        config.addAllowedOriginPattern("*");
+        config.addAllowedOrigin("*");
         // 设置访问源请求头
         config.addAllowedHeader("*");
         // 设置访问源请求方法

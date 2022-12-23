@@ -76,7 +76,6 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
      * @return token
      */
     private String getToken(ServerHttpRequest request) {
-        log.info("进入到JwtTokenFilter中进行解析请求头中的token信息。");
         String authorization = Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).orElse(null);
         String accessToken = null;
         // 先检查header中有没有accessToken

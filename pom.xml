@@ -221,6 +221,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-bom</artifactId>
+                <version>${dubbo.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
@@ -234,14 +241,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- dubbo依赖一定要在spring-boot 依赖之后 , 不然会有报错情况 -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+
             <!--以上为基础的导入依赖-->
         </dependencies>
     </dependencyManagement>

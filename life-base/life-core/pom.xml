@@ -18,6 +18,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!--以上为权限认证框架引用-->
         <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>life-common</artifactId>
@@ -26,23 +27,21 @@
         <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>life-utils</artifactId>
-            <optional>true</optional>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>valid-start-life</artifactId>
-            <optional>true</optional>
         </dependency>
-        <!--以上为权限认证框架引用-->
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>redis-start-life</artifactId>
+            <artifactId>mybatis-start-life</artifactId>
             <!--可选依赖，即不会向下传递此依赖，(引入了life-core之后是不会在工程中间接依赖到redis-start，需要使用到redis相关的信息是才需要在工程中引入）-->
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>mybatis-start-life</artifactId>
+            <artifactId>redis-start-life</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>

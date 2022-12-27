@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import com.authorization.remote.system.service.SystemRemoteService;
 import com.authorization.utils.result.R;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  * @author wangjunming
  * @date 2022/12/23 14:16
  */
+@Service
 @DubboService
 public class SystemRemoteServiceImpl implements SystemRemoteService {
 

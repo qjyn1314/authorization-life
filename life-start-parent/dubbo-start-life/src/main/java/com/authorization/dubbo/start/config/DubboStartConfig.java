@@ -20,7 +20,7 @@ import java.util.Map;
  * @date 2022/12/22 14:40
  */
 @EnableDubbo
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class DubboStartConfig {
 
     public static final String NAMESPACE = "namespace";
@@ -28,19 +28,22 @@ public class DubboStartConfig {
     @Value("${spring.application.name}")
     private String applicationName;
 
+    @Value("${dubbo.protocol.port:-1}")
+    private Integer protocolPort;
+
     public static final String OWNER = "authorization";
 
-    public static final String GROUP_DUBBO = "DUBBO";
+    public static final String GROUP_DUBBO = "dubbo";
 
     public static final String GROUP_DUBBO_ = "-" + GROUP_DUBBO;
+
+    public static final String REG_ID = "nacos";
 
     public static final String REG_PROTOCOL_NACOS = "nacos";
 
     public static final String PROTOCOL_DUBBO = "dubbo";
 
     public static final Integer TIMEOUT = 60000;
-
-    public static final String USERNAME_PASSWORD = "nacos";
 
     /**
      * 每个应用必须要有且只有一个 application 配置，对应的配置类：org.apache.dubbo.config.ApplicationConfig
@@ -50,23 +53,8 @@ public class DubboStartConfig {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         applicationConfig.setName(applicationName + GROUP_DUBBO_);
         applicationConfig.setOwner(OWNER);
+        applicationConfig.setQosEnable(Boolean.FALSE);
         return applicationConfig;
-    }
-
-    /**
-     * 配置中心。对应的配置类：org.apache.dubbo.config.ConfigCenterConfig
-     */
-    @Bean
-    public ConfigCenterConfig dubboConfigCenterConfig(NacosDiscoveryProperties nacosDiscoveryProperties) {
-        ConfigCenterConfig configCenterConfig = new ConfigCenterConfig();
-        configCenterConfig.setGroup(GROUP_DUBBO);
-        configCenterConfig.setProtocol(REG_PROTOCOL_NACOS);
-        configCenterConfig.setUsername(USERNAME_PASSWORD);
-        configCenterConfig.setPassword(USERNAME_PASSWORD);
-        configCenterConfig.setNamespace(nacosDiscoveryProperties.getNamespace());
-        configCenterConfig.setAddress(nacosDiscoveryProperties.getServerAddr());
-        configCenterConfig.setCheck(Boolean.FALSE);
-        return configCenterConfig;
     }
 
     /**
@@ -78,16 +66,29 @@ public class DubboStartConfig {
     public RegistryConfig dubboRegistryConfig(NacosDiscoveryProperties nacosDiscoveryProperties) {
         RegistryConfig registryConfig = new RegistryConfig();
         // 注册中心引用BeanId，可以在<dubbo:service registry="">或<dubbo:reference registry="">中引用此ID
-        registryConfig.setId(GROUP_DUBBO);
+        registryConfig.setId(REG_ID);
         registryConfig.setGroup(GROUP_DUBBO);
         registryConfig.setProtocol(REG_PROTOCOL_NACOS);
         registryConfig.setAddress(nacosDiscoveryProperties.getServerAddr());
-        registryConfig.setUsername(USERNAME_PASSWORD);
-        registryConfig.setPassword(USERNAME_PASSWORD);
         registryConfig.setParameters(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
-        registryConfig.setEnableEmptyProtection(true);
+        registryConfig.setEnableEmptyProtection(Boolean.TRUE);
         registryConfig.setCheck(Boolean.FALSE);
         return registryConfig;
+    }
+
+
+    /**
+     * 配置中心。对应的配置类：org.apache.dubbo.config.ConfigCenterConfig
+     */
+    @Bean
+    public ConfigCenterConfig dubboConfigCenterConfig(NacosDiscoveryProperties nacosDiscoveryProperties) {
+        ConfigCenterConfig configCenterConfig = new ConfigCenterConfig();
+        configCenterConfig.setGroup(GROUP_DUBBO);
+        configCenterConfig.setProtocol(REG_PROTOCOL_NACOS);
+        configCenterConfig.setNamespace(nacosDiscoveryProperties.getNamespace());
+        configCenterConfig.setAddress(nacosDiscoveryProperties.getServerAddr());
+        configCenterConfig.setCheck(Boolean.FALSE);
+        return configCenterConfig;
     }
 
     /**
@@ -96,9 +97,10 @@ public class DubboStartConfig {
     @Bean
     public MetadataReportConfig dubboMetadataReportConfig(NacosDiscoveryProperties nacosDiscoveryProperties) {
         MetadataReportConfig metadataReportConfig = new MetadataReportConfig();
+        metadataReportConfig.setGroup(GROUP_DUBBO);
         metadataReportConfig.setProtocol(REG_PROTOCOL_NACOS);
         metadataReportConfig.setAddress(nacosDiscoveryProperties.getServerAddr());
-        metadataReportConfig.setGroup(GROUP_DUBBO);
+        metadataReportConfig.setParameters(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
         return metadataReportConfig;
     }
 
@@ -111,7 +113,7 @@ public class DubboStartConfig {
         ProtocolConfig protocolConfig = new ProtocolConfig();
         protocolConfig.setName(PROTOCOL_DUBBO);
         // 如果配置为-1，则会分配一个没有被占用的端口。Dubbo 2.4.0+，分配的端口在协议缺省端口的基础上增长，确保端口段可控。
-        protocolConfig.setPort(-1);
+        protocolConfig.setPort(protocolPort);
         // 设为true，将向logger中输出访问日志，
         protocolConfig.setAccesslog("true");
         return protocolConfig;
@@ -125,7 +127,6 @@ public class DubboStartConfig {
     public ProviderConfig dubboProviderConfig() {
         ProviderConfig providerConfig = new ProviderConfig();
         providerConfig.setTimeout(TIMEOUT);
-        providerConfig.setGroup(GROUP_DUBBO);
         return providerConfig;
     }
 
@@ -137,7 +138,6 @@ public class DubboStartConfig {
     public ConsumerConfig dubboConsumerConfig() {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setTimeout(TIMEOUT);
-        consumerConfig.setGroup(GROUP_DUBBO);
         return consumerConfig;
     }
 

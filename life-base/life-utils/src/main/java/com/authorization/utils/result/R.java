@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * 公共返回参数信息
  */
@@ -12,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class R<T> {
+public class R<T> implements Serializable {
 
     public static final String FORM_ERROR = "-2";
     public static final String ERROR = "-1";

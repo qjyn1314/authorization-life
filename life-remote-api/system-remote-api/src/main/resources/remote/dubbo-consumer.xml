@@ -6,11 +6,12 @@
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <dubbo:reference
-            check="${remote.checked}"
-            timeout="${remote.timeout}"
-            version="${remote.version}"
-            id="systemRemoteService"
             interface="com.authorization.remote.system.service.SystemRemoteService"
+            id="systemRemoteService"
+            version="${remote.version}"
+            timeout="${remote.timeout}"
+            check="${remote.checked}"
+            group="${remote.consumer.group}"
     />
 
 </beans>

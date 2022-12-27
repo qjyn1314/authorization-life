@@ -47,7 +47,7 @@ public class Knife4jConfig {
     @Bean
     public OpenAPI openApi() {
         return new OpenAPI().info(new Info()
-                .title(applicationName + "API")
+                .title(applicationName + "-api")
                 .description(applicationName + "服务")
                 .contact(new Contact().name("wangjunming"))
                 .version("1.0")

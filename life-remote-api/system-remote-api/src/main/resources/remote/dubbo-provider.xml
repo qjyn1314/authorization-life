@@ -8,10 +8,11 @@
     <dubbo:provider token="true"/>
 
     <dubbo:service
-            timeout="${remote.timeout}"
-            version="${remote.version}"
-            ref="systemRemoteServiceImpl"
             interface="com.authorization.remote.system.service.SystemRemoteService"
+            ref="systemRemoteServiceImpl"
+            version="${remote.version}"
+            timeout="${remote.timeout}"
+            group="${remote.provider.group}"
     />
 
 </beans>

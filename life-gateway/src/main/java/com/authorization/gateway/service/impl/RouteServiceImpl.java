@@ -5,10 +5,9 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.gateway.filter.AuthGatewayFilterFactory;
 import com.authorization.gateway.filter.JwtTokenGatewayFilterFactory;
 import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
-import com.authorization.gateway.knife4j.Knife4jGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
-import com.authorization.utils.contsant.ServerUpDown;
 import com.authorization.utils.contsant.ServerInfos;
+import com.authorization.utils.contsant.ServerUpDown;
 import com.authorization.utils.json.JsonHelper;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
@@ -106,7 +105,6 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
                 new FilterDefinition(AuthGatewayFilterFactory.AUTH),
-//                new FilterDefinition(Knife4jGatewayFilterFactory.KNIFE4J),
                 new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME));
     }
 

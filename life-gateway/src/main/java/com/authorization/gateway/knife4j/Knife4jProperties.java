@@ -57,7 +57,7 @@ public class Knife4jProperties {
         String source = service + url + service;
         return MapUtil.builder("name", service)
                 .put("url", url)
-                .put("context-path", service)
+                .put("contextPath", service)
                 .put("id", Base64.getEncoder().encodeToString(source.getBytes(StandardCharsets.UTF_8))).build();
     }
 

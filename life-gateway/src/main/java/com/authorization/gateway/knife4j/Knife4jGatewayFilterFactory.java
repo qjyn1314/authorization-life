@@ -39,7 +39,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.a
  * 文档过滤器, 针对 /v3/api-docs/ 的请求返回值做处理.
  */
 @Slf4j
-@Component
 public class Knife4jGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> implements InitializingBean {
 
     public static final String KNIFE4J = "Knife4j";

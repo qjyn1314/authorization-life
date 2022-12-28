@@ -106,7 +106,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
                 new FilterDefinition(AuthGatewayFilterFactory.AUTH),
-                new FilterDefinition(Knife4jGatewayFilterFactory.KNIFE4J),
+//                new FilterDefinition(Knife4jGatewayFilterFactory.KNIFE4J),
                 new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME));
     }
 

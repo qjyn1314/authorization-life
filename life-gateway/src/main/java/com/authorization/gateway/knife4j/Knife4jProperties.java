@@ -1,7 +1,7 @@
 package com.authorization.gateway.knife4j;
 
 import cn.hutool.core.map.MapUtil;
-import com.authorization.utils.contsant.ServerInfo;
+import com.authorization.utils.contsant.ServerInfos;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class Knife4jProperties {
         if (CollectionUtils.isEmpty(services)) {
             return new ArrayList<>();
         }
-        return services.stream().filter(service -> !ServerInfo.GateWayLife.SERVER_NAME.equals(service)).map(this::convert).collect(Collectors.toList());
+        return services.stream().filter(service -> !ServerInfos.GateWayLife.SERVER_NAME.equals(service)).map(this::convert).collect(Collectors.toList());
     }
 
     private Map<String, String> convert(String service) {

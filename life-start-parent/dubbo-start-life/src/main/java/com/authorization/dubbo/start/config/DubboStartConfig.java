@@ -28,8 +28,8 @@ public class DubboStartConfig {
     @Value("${spring.application.name}")
     private String applicationName;
 
-    @Value("${dubbo.protocol.port:-1}")
-    private Integer protocolPort;
+    @Value("${server.port}")
+    private Integer serverPort;
 
     public static final String OWNER = "authorization";
 
@@ -49,11 +49,16 @@ public class DubboStartConfig {
      * 每个应用必须要有且只有一个 application 配置，对应的配置类：org.apache.dubbo.config.ApplicationConfig
      */
     @Bean
-    public ApplicationConfig dubboApplicationConfig(NacosDiscoveryProperties nacosDiscoveryProperties) {
+    public ApplicationConfig dubboApplicationConfig() {
+        // QosPort 等于当前服务的端口号 + 3
+        Integer qosPort = serverPort + 3;
         ApplicationConfig applicationConfig = new ApplicationConfig();
         applicationConfig.setName(applicationName + GROUP_DUBBO_);
         applicationConfig.setOwner(OWNER);
-        applicationConfig.setQosEnable(Boolean.FALSE);
+        applicationConfig.setQosEnable(Boolean.TRUE);
+        applicationConfig.setQosPort(qosPort);
+        applicationConfig.setQosAcceptForeignIp(Boolean.TRUE);
+        applicationConfig.setMetadataType("remote");
         return applicationConfig;
     }
 
@@ -70,7 +75,9 @@ public class DubboStartConfig {
         registryConfig.setGroup(GROUP_DUBBO);
         registryConfig.setProtocol(REG_PROTOCOL_NACOS);
         registryConfig.setAddress(nacosDiscoveryProperties.getServerAddr());
-        registryConfig.setParameters(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
+        Map<String, String> parameters = new java.util.HashMap<>(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
+        parameters.put("register-consumer-url","true");
+        registryConfig.setParameters(parameters);
         registryConfig.setEnableEmptyProtection(Boolean.TRUE);
         registryConfig.setCheck(Boolean.FALSE);
         return registryConfig;
@@ -110,6 +117,9 @@ public class DubboStartConfig {
      */
     @Bean
     public ProtocolConfig dubboProtocolConfig() {
+
+        Integer protocolPort = serverPort + 5;
+
         ProtocolConfig protocolConfig = new ProtocolConfig();
         protocolConfig.setName(PROTOCOL_DUBBO);
         // 如果配置为-1，则会分配一个没有被占用的端口。Dubbo 2.4.0+，分配的端口在协议缺省端口的基础上增长，确保端口段可控。

@@ -8,7 +8,7 @@ import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
 import com.authorization.gateway.knife4j.Knife4jGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
 import com.authorization.utils.contsant.ServerUpDown;
-import com.authorization.utils.contsant.ServerInfo;
+import com.authorization.utils.contsant.ServerInfos;
 import com.authorization.utils.json.JsonHelper;
 import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +68,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
      */
     private RouteDefinition convert(String service) {
         // 不注册网关服务路由
-        if (Objects.equals(service, ServerInfo.GateWayLife.SERVER_NAME)) {
+        if (Objects.equals(service, ServerInfos.GateWayLife.SERVER_NAME)) {
             return null;
         }
         List<ServiceInstance> instances = discoveryClient.getInstances(service);

@@ -99,7 +99,6 @@ public class Knife4jGatewayFilterFactory extends AbstractGatewayFilterFactory<Ob
                             return Mono.just(originalBody);
                         }
                         Map pathsMap = JsonHelper.readValue(JsonHelper.writeValueAsString(paths), Map.class);
-                        log.info("pathsMap-{}", pathsMap);
                         LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
                         pathsMap.forEach((k, v) -> linkedHashMap.put("/" + serviceName + k, v));
                         map.put("paths", linkedHashMap);

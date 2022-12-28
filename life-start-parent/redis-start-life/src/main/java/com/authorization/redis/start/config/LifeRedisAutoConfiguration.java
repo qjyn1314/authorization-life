@@ -50,7 +50,7 @@ public class LifeRedisAutoConfiguration {
         redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.afterPropertiesSet();
-        log.info("Init redis-start-life RedisTemplate");
+        log.info("initialed redis-start-life RedisTemplate");
         return redisTemplate;
     }
 
@@ -65,7 +65,7 @@ public class LifeRedisAutoConfiguration {
     @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        List<RedisSubscription> redisSubscriberList) {
-        log.info("初始化-redisMessageListenerContainer-connectionFactory-{}", JSONUtil.toJsonStr(connectionFactory));
+        log.info("initialed-redisMessageListenerContainer-connectionFactory-{}", JSONUtil.toJsonStr(connectionFactory));
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setTaskExecutor(scheduledRedisListenerExecutor());
@@ -92,7 +92,7 @@ public class LifeRedisAutoConfiguration {
      */
     @Bean(destroyMethod = "shutdown")
     public ScheduledExecutorService scheduledRedisListenerExecutor() {
-        log.debug("Init scheduledRedisListenerExecutor corePoolSize ：{}", ExecutorManager.getCpuProcessors());
+        log.debug("initialed scheduledRedisListenerExecutor corePoolSize ：{}", ExecutorManager.getCpuProcessors());
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(ExecutorManager.getCpuProcessors(),
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());

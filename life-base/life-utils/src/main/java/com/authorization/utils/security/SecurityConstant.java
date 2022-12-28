@@ -1,5 +1,7 @@
 package com.authorization.utils.security;
 
+import com.authorization.utils.kvp.KvpFormat;
+
 /**
  * <p>
  * 权限常量类
@@ -50,5 +52,41 @@ public interface SecurityConstant {
             "/oauth2/**",
     };
 
+
+    /**
+     * 前端的jwtToken中claim 的key
+     */
+    String TOKEN = "token";
+
+    /**
+     * 用户信息缓存
+     */
+    String USER_TOKEN_DETAIL = "authorization:auth-server:user:{token}";
+
+    /**
+     * redis中存储的用户tokenKey信息
+     */
+    static String getUserTokenKey(String token) {
+        return KvpFormat.of(USER_TOKEN_DETAIL)
+                .add(TOKEN, token).format();
+    }
+
+    /**
+     * 前端传参的accessToken参数名称
+     */
+    String ACCESS_TOKEN = "access_token";
+
+    /**
+     * 开启记住我的功能中所使用的域名
+     */
+    String SECURITY_DOMAIN = "authorization.life";
+
+    /**
+     * saas体系模块中所有的http头文件
+     */
+    class Header {
+        public static final String AUTH_POSITION = "Z-Auth-Position";
+        public static final String TYPE_BEARER = "bearer";
+    }
 
 }

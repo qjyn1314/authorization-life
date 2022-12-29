@@ -3,7 +3,7 @@ package com.authorization.life.auth.infra.security.sso;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.entity.User;
+import com.authorization.life.auth.entity.LifeUser;
 import com.authorization.utils.security.SecurityConstant;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.kvp.KvpFormat;
@@ -105,7 +105,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             }
             if (passwordErrorCount >= 10) {
                 // 输错10次则锁定用户3小时
-                userService.lock(((User) userDetails).getUserId(), 3);
+                userService.lock(((LifeUser) userDetails).getUserId(), 3);
             } else {
                 // 未超过10次则密码错误累计次数+1
                 stringRedisService.strSet(cacheKey, passwordErrorCount + 1);
@@ -119,7 +119,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
             Assert.notNull(registeredClient, () -> new RegClientException("未找到此 OauthClient 信息。"));
             Set<String> allowedScopes = registeredClient.getScopes();
-            boolean express = ((User) userDetails).getUserGroups().containsAll(allowedScopes);
+            boolean express = ((LifeUser) userDetails).getUserGroups().containsAll(allowedScopes);
             Assert.isTrue(express, () -> new InternalAuthenticationServiceException("用户名或密码错误"));
         }
     }

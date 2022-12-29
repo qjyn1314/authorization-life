@@ -21,7 +21,7 @@ import java.util.*;
  */
 @Data
 @TableName("lifetime_user")
-public class User implements Serializable, UserDetails {
+public class LifeUser implements Serializable, UserDetails {
 
     private static final long serialVersionUID = 1L;
 

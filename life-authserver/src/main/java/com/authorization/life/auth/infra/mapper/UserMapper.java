@@ -2,7 +2,7 @@ package com.authorization.life.auth.infra.mapper;
 
 import java.util.List;
 
-import com.authorization.life.auth.entity.User;
+import com.authorization.life.auth.entity.LifeUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
  * @author code@code.com 2022-02-21 20:23:16
  */
 @Repository
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper extends BaseMapper<LifeUser> {
 
-    List<User> page(User user);
+    List<LifeUser> page(LifeUser lifeUser);
 
 }

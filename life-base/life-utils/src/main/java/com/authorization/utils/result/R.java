@@ -40,6 +40,10 @@ public class R<T> implements Serializable {
         return new R<>(SUCCESS, SUCCESS_DESC, data);
     }
 
+    public static <T> R<T> ok() {
+        return new R<>(SUCCESS, SUCCESS_DESC, null);
+    }
+
     public static <T> R<T> fail(String desc, T data) {
         return new R<>(ERROR, desc, data);
     }

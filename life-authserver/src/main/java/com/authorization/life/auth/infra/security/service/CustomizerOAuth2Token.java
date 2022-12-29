@@ -5,7 +5,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.entity.User;
+import com.authorization.life.auth.entity.LifeUser;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.security.SecurityConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -64,9 +64,9 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         if (principal instanceof OAuth2ClientAuthenticationToken) {
             //如果当前登录的是client，则进行封装client
             userDetail = securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
-        } else if (principal.getPrincipal() instanceof User) {
+        } else if (principal.getPrincipal() instanceof LifeUser) {
             //如果当前登录的是系统用户，则进行封装userDetail
-            userDetail = securityAuthUserService.createUserDetailByUser((User) principal.getPrincipal());
+            userDetail = securityAuthUserService.createUserDetailByUser((LifeUser) principal.getPrincipal());
             userDetail.setAuthorizationId(authorization.getId());
             userDetail.setAuthorizationIdToken(SecurityConstant.AUTHORIZATION + "_" + authorization.getId());
         }

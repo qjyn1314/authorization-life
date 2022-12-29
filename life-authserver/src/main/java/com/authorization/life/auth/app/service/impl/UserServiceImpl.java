@@ -4,10 +4,13 @@ import cn.hutool.core.lang.Assert;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.entity.User;
+import com.authorization.life.auth.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
  * @author code@code.com
  * @date 2022-02-21 20:23:16
  */
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -33,10 +37,10 @@ public class UserServiceImpl implements UserService {
      * @param username 手机号/邮箱
      */
     @Override
-    public User selectByUsername(String username) {
-        return mapper.selectOne(Wrappers.lambdaQuery(User.class)
-                .or().eq(User::getPhone, username)
-                .or().eq(User::getEmail, username));
+    public LifeUser selectByUsername(String username) {
+        return mapper.selectOne(Wrappers.lambdaQuery(LifeUser.class)
+                .or().eq(LifeUser::getPhone, username)
+                .or().eq(LifeUser::getEmail, username));
     }
 
     /**
@@ -59,14 +63,21 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void lock(Long userId, Integer lockTime) {
-        User user = mapper.selectOne(Wrappers.lambdaQuery(new User()).eq(User::getUserId, userId));
-        Assert.notNull(user, "未找到该用户信息");
+        LifeUser lifeUser = mapper.selectOne(Wrappers.lambdaQuery(new LifeUser()).eq(LifeUser::getUserId, userId));
+        Assert.notNull(lifeUser, "未找到该用户信息");
         UserHelper.setUserDetail(UserDetail.systemUser());
-        LambdaUpdateWrapper<User> updateWrapper = Wrappers.lambdaUpdate(new User())
-                .eq(User::getUserId, user)
-                .set(User::getLockedFlag, Boolean.TRUE)
-                .set(User::getLockedTime, LocalDateTime.now().plusHours(lockTime));
-        mapper.update(user, updateWrapper);
+        LambdaUpdateWrapper<LifeUser> updateWrapper = Wrappers.lambdaUpdate(new LifeUser())
+                .eq(LifeUser::getUserId, lifeUser)
+                .set(LifeUser::getLockedFlag, Boolean.TRUE)
+                .set(LifeUser::getLockedTime, LocalDateTime.now().plusHours(lockTime));
+        mapper.update(lifeUser, updateWrapper);
         UserHelper.setUserDetail(null);
+    }
+
+    @Override
+    public PageInfo<LifeUser> page(LifeUser lifeUser) {
+        return PageHelper.startPage(1, 10).doSelectPageInfo(() -> {
+            mapper.page(lifeUser);
+        });
     }
 }

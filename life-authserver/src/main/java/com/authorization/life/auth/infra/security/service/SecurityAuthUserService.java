@@ -6,8 +6,8 @@ import com.authorization.core.security.UserDetailService;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserGroupService;
 import com.authorization.life.auth.app.service.UserService;
+import com.authorization.life.auth.entity.LifeUser;
 import com.authorization.life.auth.entity.OauthClient;
-import com.authorization.life.auth.entity.User;
 import com.authorization.life.auth.entity.UserGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,37 +33,37 @@ public class SecurityAuthUserService implements UserDetailService {
     private OauthClientService oauthClientService;
 
     @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+    public LifeUser loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("登录时查询用户[{}]信息。", username);
-        User user = userService.selectByUsername(username);
-        Assert.notNull(user, () -> new UsernameNotFoundException("user [" + username + "] not found"));
-        List<UserGroup> userGroups = groupService.selectByUserId(user.getUserId());
-        user.setUserGroups(userGroups.stream().map(UserGroup::getUserGroupCode).collect(Collectors.toSet()));
-        return user;
+        LifeUser lifeUser = userService.selectByUsername(username);
+        Assert.notNull(lifeUser, () -> new UsernameNotFoundException("user [" + username + "] not found"));
+        List<UserGroup> userGroups = groupService.selectByUserId(lifeUser.getUserId());
+        lifeUser.setUserGroups(userGroups.stream().map(UserGroup::getUserGroupCode).collect(Collectors.toSet()));
+        return lifeUser;
     }
 
     @Override
     public UserDetail createUserDetailByUser(UserDetails userDetails) {
-        User user = (User)userDetails;
-        UserDetail userDetail = createUserDetail(user);
+        LifeUser lifeUser = (LifeUser)userDetails;
+        UserDetail userDetail = createUserDetail(lifeUser);
 
         //此处将获取到当前已登录用户所关联的员工、或者关联的当前登录的授权信息中所需要的其他信息，作为扩展。
 
         return userDetail;
     }
-    private UserDetail createUserDetail(User user){
+    private UserDetail createUserDetail(LifeUser lifeUser){
         UserDetail userDetail = new UserDetail();
-        userDetail.setUserId(user.getUserId());
-        userDetail.setUsername(user.getUsername());
-        userDetail.setUserEmail(user.getEmail());
-        userDetail.setUserGender(user.getGender());
-        userDetail.setUserActivedFlag(user.getActivedFlag());
-        userDetail.setUserPhone(user.getPhone());
-        userDetail.setUserEnabledFlag(user.getEnabledFlag());
-        userDetail.setUserLockedFlag(user.getLockedFlag());
-        userDetail.setRealName(user.getRealName());
-        userDetail.setLanguage(user.getLang());
-        userDetail.setUserGroups(user.getUserGroups());
+        userDetail.setUserId(lifeUser.getUserId());
+        userDetail.setUsername(lifeUser.getUsername());
+        userDetail.setUserEmail(lifeUser.getEmail());
+        userDetail.setUserGender(lifeUser.getGender());
+        userDetail.setUserActivedFlag(lifeUser.getActivedFlag());
+        userDetail.setUserPhone(lifeUser.getPhone());
+        userDetail.setUserEnabledFlag(lifeUser.getEnabledFlag());
+        userDetail.setUserLockedFlag(lifeUser.getLockedFlag());
+        userDetail.setRealName(lifeUser.getRealName());
+        userDetail.setLanguage(lifeUser.getLang());
+        userDetail.setUserGroups(lifeUser.getUserGroups());
         return userDetail;
     }
 

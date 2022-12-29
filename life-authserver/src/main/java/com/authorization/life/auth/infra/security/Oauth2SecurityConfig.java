@@ -1,5 +1,6 @@
 package com.authorization.life.auth.infra.security;
 
+import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.utils.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
@@ -67,20 +68,20 @@ public class Oauth2SecurityConfig {
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
 
-//        authorizationServerConfigurer
-//                .authorizationEndpoint(endpointConfigurer -> {
-//                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-//                    endpointConfigurer
-//                            //配置自定义的请求成功的处理器
-//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-//                });
+        authorizationServerConfigurer
+                .authorizationEndpoint(endpointConfigurer -> {
+                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+                    endpointConfigurer
+                            //配置自定义的请求成功的处理器
+                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
-        http.requestMatcher(endpointsMatcher)
-                .authorizeRequests(authorizeRequests -> authorizeRequests
+        http.securityMatcher(endpointsMatcher)
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
 //                        // 无需认证即可访问
-                        .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                        .requestMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                         //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
@@ -89,7 +90,7 @@ public class Oauth2SecurityConfig {
                 //将oauth2.0的配置托管给 SpringSecurity
                 .apply(authorizationServerConfigurer);
 
-        // 设置accesstoken为jwt形式
+        // 自定义设置accesstoken为jwt形式
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
         // 配置 异常处理

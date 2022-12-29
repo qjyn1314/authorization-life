@@ -15,8 +15,10 @@ import com.authorization.life.auth.infra.security.sso.UsernamePasswordAuthentica
 import com.authorization.redis.start.service.StringRedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,12 +27,14 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 默认的Security配置信息
  */
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class DefaultSecurityConfig {
 
     @Autowired
@@ -85,11 +89,11 @@ public class DefaultSecurityConfig {
                  */
         // 使用session
         http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // 设置认证的路径
-        http.authorizeRequests()
+        http.authorizeHttpRequests()
                 // 无需认证即可访问
-                .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                .requestMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

@@ -1,14 +1,13 @@
 package com.authorization.core.security.config;
 
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.utils.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
+import com.authorization.utils.security.SecurityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,7 +23,6 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityAutoConfiguration {
     @Autowired
     private CorsFilter corsFilter;
@@ -58,9 +56,9 @@ public class SecurityAutoConfiguration {
                 .and()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
+                .authorizeHttpRequests()
                 // 无需认证即可访问
-                .antMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                .requestMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

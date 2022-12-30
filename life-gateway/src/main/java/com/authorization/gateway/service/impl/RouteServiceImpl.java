@@ -104,8 +104,10 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
         return CollUtil.newArrayList(
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
-                new FilterDefinition(AuthGatewayFilterFactory.AUTH),
-                new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME));
+                new FilterDefinition(AuthGatewayFilterFactory.AUTH)
+//                ,
+//                new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
+        );
     }
 
     @Override

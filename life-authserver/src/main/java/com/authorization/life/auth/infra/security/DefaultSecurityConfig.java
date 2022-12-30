@@ -1,9 +1,7 @@
 package com.authorization.life.auth.infra.security;
 
-import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.utils.security.SecurityConstant;
 import com.authorization.core.security.UserDetailService;
-import com.authorization.utils.security.SsoSecurityProperties;
+import com.authorization.core.security.filter.JwtAuthenticationFilter;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import com.authorization.life.auth.app.service.UserService;
@@ -13,12 +11,14 @@ import com.authorization.life.auth.infra.security.handler.sso.SsoSuccessHandler;
 import com.authorization.life.auth.infra.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.auth.infra.security.sso.UsernamePasswordAuthenticationProvider;
 import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SsoSecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,14 +27,12 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * 默认的Security配置信息
  */
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class DefaultSecurityConfig {
 
     @Autowired
@@ -148,6 +146,17 @@ public class DefaultSecurityConfig {
     public AuthenticationProvider usernamePasswordProvider() {
         return new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder,
                 stringRedisService, userService, registeredClientService);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http)
+            throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .authenticationProvider(usernamePasswordProvider())
+                .build();
     }
 
 }

@@ -24,6 +24,7 @@ import java.util.Map;
 public class DubboStartConfig {
 
     public static final String NAMESPACE = "namespace";
+    public static final String CONSUMER_URL_SHOW_FLAG = "register-consumer-url";
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -76,7 +77,9 @@ public class DubboStartConfig {
         registryConfig.setProtocol(REG_PROTOCOL_NACOS);
         registryConfig.setAddress(nacosDiscoveryProperties.getServerAddr());
         Map<String, String> parameters = new java.util.HashMap<>(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
-        parameters.put("register-consumer-url","true");
+        // 消费者的url是否展示在nacos的服务列表中,默认不展示
+        // 其服务名称示例(consumers:com.authorization.remote.system.service.SystemRemoteService:1.0.0:system-life-dubbo)为null
+//        parameters.put(CONSUMER_URL_SHOW_FLAG, "true");
         registryConfig.setParameters(parameters);
         registryConfig.setEnableEmptyProtection(Boolean.TRUE);
         registryConfig.setCheck(Boolean.FALSE);

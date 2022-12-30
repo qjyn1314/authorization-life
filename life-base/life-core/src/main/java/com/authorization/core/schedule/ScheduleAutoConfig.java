@@ -27,7 +27,7 @@ public class ScheduleAutoConfig implements SchedulingConfigurer {
     /**
      * 定时任务的线程池名称
      */
-    private static final String SCHEDULED_TASKS_NAME = "AUTH-SERVER-SCHEDULED-TASK-";
+    public static final String SCHEDULED_TASKS_NAME = "AUTH-SERVER-SCHEDULED-TASK-";
     /**
      * 核心线程数:设置核心线程数为 CPU 核数，获取不到时，将创建默认核心线程数为 8 个。
      */
@@ -56,7 +56,7 @@ public class ScheduleAutoConfig implements SchedulingConfigurer {
      */
     @Bean(destroyMethod = "shutdown")
     public ScheduledExecutorService scheduledAuthExecutor() {
-        log.debug("Init ScheduledExecutorService corePoolSize ：{}", CORE_POOL_SIZE);
+        log.info("Init ScheduledExecutorService corePoolSize ：{}", CORE_POOL_SIZE);
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(CORE_POOL_SIZE,
                 new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());

@@ -57,7 +57,6 @@ public class SecurityAutoComponent {
         config.setAllowCredentials(true);
 
         // 设置访问源地址
-//        config.addAllowedOriginPattern("*");
         config.addAllowedOrigin("*");
         // 设置访问源请求头
         config.addAllowedHeader("*");

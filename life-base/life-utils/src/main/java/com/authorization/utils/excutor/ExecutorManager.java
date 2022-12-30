@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
+import java.io.Serial;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -25,8 +26,13 @@ public class ExecutorManager {
      */
     private static final ThreadPoolExecutor DEFAULT_EXECUTOR;
 
+    /**
+     * 默认线程池的名字
+     */
+    public static final String DEFAULT_EXECUTOR_NAME = "DefaultExecutor";
+
     static {
-        DEFAULT_EXECUTOR = buildThreadFirstExecutor("DefaultExecutor");
+        DEFAULT_EXECUTOR = buildThreadFirstExecutor(DEFAULT_EXECUTOR_NAME);
     }
 
     /**
@@ -61,10 +67,9 @@ public class ExecutorManager {
     /**
      * 构建线程优先的线程池
      * <p>
-     * 线程池默认是当核心线程数满了后，将任务添加到工作队列中，当工作队列满了之后，再创建线程直到达到最大线程数。
-     *
+     * jdk线程池默认是当核心线程数满了后，将任务添加到工作队列中，当工作队列满了之后，再创建线程直到达到最大线程数。
      * <p>
-     * 线程优先的线程池，就是在核心线程满了之后，继续创建线程，直到达到最大线程数之后，再把任务添加到工作队列中。
+     * 线程优先的线程池，就是在核心线程满了之后，继续创建线程，直到达到最大线程数之后，再把任务添加到工作队列中,进入拒绝策略的时候也将任务放入队列。
      *
      * @param corePoolSize    核心线程数
      * @param maximumPoolSize 最大线程数
@@ -81,7 +86,8 @@ public class ExecutorManager {
                                                               int workQueueSize,
                                                               String poolName) {
         // 自定义队列，优先开启更多线程，而不是放入队列
-        LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(workQueueSize) {
+        LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(workQueueSize) {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -127,7 +133,8 @@ public class ExecutorManager {
      * @param threadPoolName 线程池名称
      */
     private static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName) {
-        displayThreadPoolStatus(threadPool, threadPoolName, RandomUtil.randomInt(600), TimeUnit.SECONDS);
+        // 每60*3秒输出一下线程池的状态
+        displayThreadPoolStatus(threadPool, threadPoolName, RandomUtil.randomInt(1800), TimeUnit.SECONDS);
     }
 
     /**
@@ -148,7 +155,8 @@ public class ExecutorManager {
                     threadPool.getActiveCount(), // 工作线程数
                     threadPool.getTaskCount(), // 总任务数
                     threadPool.getCompletedTaskCount(), // 已完成的任务数
-                    threadPool.getQueue().size()};
+                    threadPool.getQueue().size()// 队列数量
+            };
 
             if (threadPool.getQueue().remainingCapacity() < 64) {
                 log.warn(payload, params);
@@ -222,7 +230,7 @@ public class ExecutorManager {
      * @param executor       ThreadPoolExecutor
      */
     public static void registerAndMonitorThreadPoolExecutor(String threadPoolName, ThreadPoolExecutor executor) {
-        EXECUTORS.put(threadPoolName, executor);
+        registerThreadPoolExecutor(threadPoolName, executor);
         ExecutorManager.displayThreadPoolStatus(executor, threadPoolName);
         ExecutorManager.hookShutdownThreadPool(executor, threadPoolName);
     }

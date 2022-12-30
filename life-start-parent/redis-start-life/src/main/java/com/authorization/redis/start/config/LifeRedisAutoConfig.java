@@ -34,7 +34,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @Configuration
 @AutoConfiguration(after = RedisAutoConfiguration.class)
-public class LifeRedisAutoConfiguration {
+public class LifeRedisAutoConfig {
 
     @Bean
     public StringRedisService strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
@@ -92,18 +92,18 @@ public class LifeRedisAutoConfiguration {
      */
     @Bean(destroyMethod = "shutdown")
     public ScheduledExecutorService scheduledRedisListenerExecutor() {
-        log.debug("initialed scheduledRedisListenerExecutor corePoolSize ：{}", ExecutorManager.getCpuProcessors());
+        log.info("initialed scheduledRedisListenerExecutor corePoolSize ：{}", ExecutorManager.getCpuProcessors());
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(ExecutorManager.getCpuProcessors(),
-                new CustomizableThreadFactory(SCHEDULED_TASKS_NAME),
+                new CustomizableThreadFactory(REDIS_LISTENER_TASKS_NAME),
                 new ThreadPoolExecutor.CallerRunsPolicy());
-        ExecutorManager.registerAndMonitorThreadPoolExecutor(SCHEDULED_TASKS_NAME, scheduledThreadPoolExecutor);
+        ExecutorManager.registerAndMonitorThreadPoolExecutor(REDIS_LISTENER_TASKS_NAME, scheduledThreadPoolExecutor);
         return scheduledThreadPoolExecutor;
     }
 
     /**
      * 定时任务的线程池名称
      */
-    private static final String SCHEDULED_TASKS_NAME = "REDIS-LISTENER-TASK-";
+    public static final String REDIS_LISTENER_TASKS_NAME = "REDIS-LISTENER-TASK-";
 
 
 }

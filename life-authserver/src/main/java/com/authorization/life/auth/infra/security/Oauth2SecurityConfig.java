@@ -1,12 +1,12 @@
 package com.authorization.life.auth.infra.security;
 
-import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
-import com.authorization.utils.security.SecurityConstant;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
 import com.authorization.life.auth.infra.security.util.Jwks;
 import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.utils.security.SecurityConstant;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -68,13 +68,13 @@ public class Oauth2SecurityConfig {
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
 
-        authorizationServerConfigurer
-                .authorizationEndpoint(endpointConfigurer -> {
-                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-                    endpointConfigurer
-                            //配置自定义的请求成功的处理器
-                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-                });
+//        authorizationServerConfigurer
+//                .authorizationEndpoint(endpointConfigurer -> {
+//                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+//                    endpointConfigurer
+//                            //配置自定义的请求成功的处理器
+//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+//                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
@@ -139,7 +139,7 @@ public class Oauth2SecurityConfig {
     /**
      * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
      *
-     * @param redisTemplate  redis操作类
+     * @param redisTemplate      redis操作类
      * @param stringRedisService redis字符串的操作类
      * @return OAuth2AuthorizationService
      */

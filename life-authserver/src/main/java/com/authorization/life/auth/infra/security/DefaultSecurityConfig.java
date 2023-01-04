@@ -87,7 +87,7 @@ public class DefaultSecurityConfig {
                  */
         // 使用session
         http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         // 设置认证的路径
         http.authorizeHttpRequests()
                 // 无需认证即可访问

@@ -54,6 +54,7 @@ public class SecurityAutoConfiguration {
                 .sessionManagement().maximumSessions(1)
                 .expiredSessionStrategy(new TokenInformationExpiredStrategy())
                 .and()
+                // 对于全局的配置项中将设置 为不需要 使用session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()

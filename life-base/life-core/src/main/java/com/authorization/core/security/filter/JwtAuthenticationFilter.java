@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 每一次请求将从gateway中获取前端的token，gateway解析为每一个服务所使用的JWT-token请求头中获取token，并解析为当前登录用户信息。
@@ -46,36 +47,62 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwt = request.getHeader(Jwts.HEADER_JWT);
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
-
+        // 开启登录但是没有jwt,则直接返回.
         Boolean authEnable = ssoSecurityProperties.getEnable();
-        if (!authEnable && StrUtil.isBlank(jwt)) {
-            //如果配置中不需要登录, 则设置访客用户为当前登录用户
-            handleAnonymousUser(request, response, chain);
-            return;
-        }
+        if (authEnable) {
+            UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
+            if (Objects.isNull(userDetail)) {
+               // 抛出异常 todo
 
-        if (StrUtil.isBlank(jwt)) {
+            }
             chain.doFilter(request, response);
-            return;
+        } else {
+            //如果有 jwt, 则进行设置当前登录用户信息.
+            if (StrUtil.isNotBlank(jwt)) {
+                UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
+                //如果给到的jwt不能解析出用户信息则设置匿名用户
+                if (Objects.isNull(userDetail)) {
+                    handleAnonymousUser(request, response, chain);
+                }
+            } else {
+                //如果配置中不需要登录, 则设置访客用户为当前登录用户
+                handleAnonymousUser(request, response, chain);
+            }
+            chain.doFilter(request, response);
         }
+    }
+
+    /**
+     * 设置当前登录用户
+     *
+     * @param request
+     * @param response
+     * @param chain
+     * @param jwt
+     */
+    private UserDetail handleLoginUser(HttpServletRequest request, HttpServletResponse response, FilterChain chain, String jwt) {
         JWSObject jwsObject = Jwts.parse(jwt);
         if (!Jwts.verify(jwsObject, verifier)) {
             log.error("Jwt verify failed! JWT: [{}]", jwt);
-            chain.doFilter(request, response);
-            return;
+            return null;
+        }
+        if (StrUtil.isBlank(jwsObject.getPayload().toString())) {
+            log.error("Jwt token fail! no user info");
+            return null;
         }
         // 如果此处的jwt信息解析不出来, 则设置访客用户为当前登录用户信息.
         UserDetail userDetail = jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
                 UserDetail.anonymous() : JsonHelper.readValue(payload.toString(), UserDetail.class));
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        chain.doFilter(request, response);
+        return userDetail;
     }
 
+    /**
+     * 设置匿名用户
+     */
     private void handleAnonymousUser(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(UserDetail.anonymous(), null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        chain.doFilter(request, response);
     }
 }

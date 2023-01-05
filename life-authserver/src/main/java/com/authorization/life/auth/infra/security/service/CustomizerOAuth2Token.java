@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.server.authorization.context.Authoriz
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -30,12 +31,14 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
     private final SecurityAuthUserService securityAuthUserService;
     private final OauthClientService oauthClientService;
     private final StringRedisService stringRedisService;
+    private final HttpServletRequest servletRequest;
 
     public CustomizerOAuth2Token(SecurityAuthUserService securityAuthUserService, OauthClientService oauthClientService,
-                                 StringRedisService stringRedisService) {
+                                 StringRedisService stringRedisService,HttpServletRequest servletRequest) {
         this.securityAuthUserService = securityAuthUserService;
         this.oauthClientService = oauthClientService;
         this.stringRedisService = stringRedisService;
+        this.servletRequest = servletRequest;
     }
 
     /**

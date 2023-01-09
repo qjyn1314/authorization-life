@@ -8,6 +8,7 @@
     <dubbo:reference
             interface="com.authorization.remote.system.service.SystemRemoteService"
             id="systemRemoteService"
+            protocol="dubbo"
             version="${remote.version}"
             timeout="${remote.timeout}"
             check="${remote.checked}"

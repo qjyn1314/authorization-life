@@ -36,14 +36,19 @@ public class DubboStartConfig {
 
     public static final String OWNER = "authorization";
 
+    /**所有dubbo服务, 接口, 需要在 dubbo分组中,与应用分组区分出来*/
     public static final String GROUP_DUBBO = "dubbo";
 
+    /**注册dubbo应用时的名称后缀, 需要与当前服务名称拼接*/
     public static final String GROUP_DUBBO_ = "-" + GROUP_DUBBO;
 
+    /**注册时指定注册的id,*/
     public static final String REG_ID = "nacos";
 
+    /**服务注册到nacos使用nacos协议*/
     public static final String REG_PROTOCOL_NACOS = "nacos";
 
+    /**服务之间调用使用dubbo协议*/
     public static final String PROTOCOL_DUBBO = "dubbo";
 
     public static final Integer TIMEOUT = 60000;
@@ -81,7 +86,7 @@ public class DubboStartConfig {
         Map<String, String> parameters = new java.util.HashMap<>(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
         // 消费者的url是否展示在nacos的服务列表中,默认不展示
         // 其服务名称示例(consumers:com.authorization.remote.system.service.SystemRemoteService:1.0.0:system-life-dubbo)为null
-//        parameters.put(CONSUMER_URL_SHOW_FLAG, "true");
+        parameters.put(CONSUMER_URL_SHOW_FLAG, "true");
         registryConfig.setParameters(parameters);
         registryConfig.setEnableEmptyProtection(Boolean.TRUE);
         registryConfig.setCheck(Boolean.FALSE);

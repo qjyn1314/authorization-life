@@ -27,7 +27,7 @@ public class ScheduleAutoConfig implements SchedulingConfigurer {
     /**
      * 定时任务的线程池名称
      */
-    public static final String SCHEDULED_TASKS_NAME = "AUTH-SERVER-SCHEDULED-TASK-";
+    public static final String SCHEDULED_TASKS_NAME = "AUTHORIZATION-LIFE-SCHEDULED-TASK-";
     /**
      * 核心线程数:设置核心线程数为 CPU 核数，获取不到时，将创建默认核心线程数为 8 个。
      */

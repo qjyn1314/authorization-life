@@ -1,0 +1,2 @@
+com.authorization.common.log.LogAopAdvice
+com.authorization.common.config.RestTemplateConfig

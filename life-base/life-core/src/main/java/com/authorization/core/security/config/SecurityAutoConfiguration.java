@@ -5,8 +5,8 @@ import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import com.authorization.utils.security.SecurityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,8 +20,10 @@ import org.springframework.web.filter.CorsFilter;
  * spring security配置  在认证服务中需要排除此配置信息。即 exclude = {SecurityAutoConfiguration.class}
  * EnableGlobalMethodSecurity 注解详解：
  * https://blog.csdn.net/chihaihai/article/details/104678864
+ *
+ * @author wangjunming
  */
-@Configuration
+@AutoConfiguration
 @EnableWebSecurity
 public class SecurityAutoConfiguration {
     @Autowired

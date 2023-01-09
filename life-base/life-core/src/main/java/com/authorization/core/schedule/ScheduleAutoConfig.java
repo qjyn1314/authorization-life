@@ -2,8 +2,8 @@ package com.authorization.core.schedule;
 
 import com.authorization.utils.excutor.ExecutorManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 2022/5/13 14:08
  */
 @Slf4j
-@Configuration
+@AutoConfiguration
 @EnableScheduling
 public class ScheduleAutoConfig implements SchedulingConfigurer {
 

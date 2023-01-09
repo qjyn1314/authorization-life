@@ -1,7 +1,7 @@
 package com.authorization.core;
 
 import cn.hutool.extra.spring.EnableSpringUtil;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  *
  * @author wangjunming
  */
-@Configuration
+@AutoConfiguration
 @EnableSpringUtil
 @EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
 public class LifeCoreAutoConfig {

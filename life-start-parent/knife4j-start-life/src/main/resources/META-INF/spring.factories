@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.authorization.swagger.start.config.Knife4jStartConfig
-

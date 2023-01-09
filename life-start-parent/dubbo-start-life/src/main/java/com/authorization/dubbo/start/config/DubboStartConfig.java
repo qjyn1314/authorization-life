@@ -4,6 +4,7 @@ import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import org.apache.dubbo.config.*;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 @EnableDubbo
 @Configuration(proxyBeanMethods = false)
+@AutoConfiguration
 public class DubboStartConfig {
 
     public static final String NAMESPACE = "namespace";

@@ -3,9 +3,9 @@ package com.authorization.core.security.config;
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
 import com.authorization.core.security.service.UserDetailsServiceImpl;
 import com.authorization.utils.security.SsoSecurityProperties;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +21,7 @@ import org.springframework.web.filter.CorsFilter;
  * @author wangjunming
  * @since 2022/5/29 11:13
  */
-@Configuration
+@AutoConfiguration
 public class SecurityAutoComponent {
 
 

@@ -153,6 +153,7 @@ public class DubboStartConfig {
     public ConsumerConfig dubboConsumerConfig() {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setTimeout(TIMEOUT);
+        consumerConfig.setCheck(Boolean.FALSE);
         return consumerConfig;
     }
 

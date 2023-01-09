@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
  * @date 2022/12/23 14:16
  */
 @Service
-@DubboService
 public class SystemRemoteServiceImpl implements SystemRemoteService {
 
     @LogAdvice(name = "获取远程接口中的当前时间")

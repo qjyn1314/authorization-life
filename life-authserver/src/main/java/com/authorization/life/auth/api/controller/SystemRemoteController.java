@@ -1,20 +1,15 @@
 package com.authorization.life.auth.api.controller;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
 import com.authorization.common.log.LogAdvice;
 import com.authorization.remote.system.service.SystemRemoteService;
 import com.authorization.utils.result.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 
 /**
  * 测试system-dubbo接口

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
  * @date 2022/12/23 14:28
  */
 @Configuration
-@ImportResource("classpath:/remote/dubbo-consumer.xml")
+@ImportResource("classpath:/remote/system-dubbo-consumer.xml")
 @PropertySource("classpath:/remote/system.properties")
 public class SystemConsumerConfiguration {
 

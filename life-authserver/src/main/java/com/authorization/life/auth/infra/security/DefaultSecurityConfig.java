@@ -101,7 +101,7 @@ public class DefaultSecurityConfig {
         // 配置退出登录配置
         http.logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
-                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService))
+                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService, ssoSecurityProperties))
                 //在此处可以删除相应的cookie
                 .deleteCookies(SecurityConstant.JSESSIONID)
                 .invalidateHttpSession(true)

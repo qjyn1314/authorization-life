@@ -927,7 +927,7 @@ public class StringRedisService {
         return this.currentRestTemplate().opsForValue();
     }
 
-    private HashOperations<String, String, String> getHashOpr() {
+    public HashOperations<String, String, String> getHashOpr() {
         return this.currentRestTemplate().opsForHash();
     }
 

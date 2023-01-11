@@ -18,7 +18,13 @@ public interface SecurityConstant {
     String SSO_LOGIN_FORM_PAGE = "/login";
     String JSESSIONID = "JSESSIONID";
     String SSO_LOGOUT = "/oauth/logout";
-    String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
+    String AUTHORIZATION_2 = "oauth-server:auth:oauth2";
+    String AUTHORIZATION = AUTHORIZATION_2 + ":authorization";
+
+    static String getAuthorizationId(String authorizationId) {
+        return AUTHORIZATION + "_" + authorizationId;
+    }
+
     String AUTHORIZATION_CONSENT = "oauth-server:auth:oauth2:authorization-consent";
     String ISSUER = "https://authorization.life";
     String IMPLICIT_REDIRECT_URI_FORMAT = "{redirectUri}" +
@@ -88,5 +94,14 @@ public interface SecurityConstant {
         public static final String AUTH_POSITION = "Z-Auth-Position";
         public static final String TYPE_BEARER = "bearer";
     }
+
+    /**
+     * accessToken 过期时间, 单位:秒(24小时)
+     */
+    long ACCESS_TOKEN_TIME_TO_LIVE = 86400;
+    /**
+     * refreshToken 过期时间, 单位:秒(30小时)
+     */
+    long REFRESH_TOKEN_TIME_TO_LIVE = 108000;
 
 }

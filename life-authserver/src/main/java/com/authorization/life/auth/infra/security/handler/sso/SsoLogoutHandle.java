@@ -12,7 +12,8 @@ import com.authorization.utils.security.SsoSecurityProperties;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,11 +40,13 @@ public class SsoLogoutHandle implements LogoutHandler {
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
     private final StringRedisService stringRedisService;
     private final JWSVerifier verifier;
+    private final RedisTemplate redisTemplate;
 
-    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, StringRedisService stringRedisService, SsoSecurityProperties ssoSecurityProperties) {
+    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, StringRedisService stringRedisService, SsoSecurityProperties ssoSecurityProperties, RedisTemplate redisTemplate) {
         this.oAuth2AuthorizationService = oAuth2AuthorizationService;
         this.stringRedisService = stringRedisService;
         this.verifier = Jwts.verifier(ssoSecurityProperties.getSecret());
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -67,6 +70,7 @@ public class SsoLogoutHandle implements LogoutHandler {
                 log.error("退出登录处理器处理失败，获取不到请求头-Authorization的值", e);
             }
         }
+        // 此处重新解析是由于 SsoLogoutHandle 在  JwtAuthenticationFilter 之前执行,此时并没有将当前登录用户设置到 SecurityContextHolder 中.
         UserDetail userDetail = getUserDetailByInteriorJwt(interiorJwt);
         log.debug("当前登录用户-UserDetail-是：" + userDetail);
         if (Objects.nonNull(userDetail)) {
@@ -92,8 +96,10 @@ public class SsoLogoutHandle implements LogoutHandler {
             //删除 refrenToken, authorizationCode, OAuth2AuthorizationConsent
             String authorizationId = auth2Authorization.getId();
             // 查询出包含此 authorizationId 的 key信息, 并将其删除
-            List<String> prefixAndValue = getKeysByKeyPrefixAndValue(null, authorizationId);
-
+            List<String> authorizationIdValueKeys = getOtherKeysByValue(SecurityConstant.AUTHORIZATION, authorizationId);
+            for (String valueKey : authorizationIdValueKeys) {
+                stringRedisService.delKey(valueKey);
+            }
             oAuth2AuthorizationService.remove(auth2Authorization);
         }
         try {
@@ -122,12 +128,28 @@ public class SsoLogoutHandle implements LogoutHandler {
                 null : JsonHelper.readValue(payload.toString(), UserDetail.class));
     }
 
-    public List<String> getKeysByKeyPrefixAndValue(String keyPrefix, String value) {
-        Map<String, String> entriesMaps = stringRedisService.getHashOpr().entries(SecurityConstant.AUTHORIZATION_2);
+    public List<String> getOtherKeysByValue(String keyPrefix, String value) {
+        Set<String> authorizationKeys = stringRedisService.keys(keyPrefix + "*");
         List<String> delKeys = new ArrayList<>();
-        for (String val : entriesMaps.keySet()) {
-            if (value.equals(val)) {
-                delKeys.add(val);
+        for (String authorizationKey : authorizationKeys) {
+            DataType dataType = stringRedisService.keyType(authorizationKey);
+            switch (dataType) {
+                case SET -> {
+                    Set<String> setValue = stringRedisService.setMembers(authorizationKey);
+                    for (String setVal : setValue) {
+                        if (value.equals(setVal)) {
+                            delKeys.add(authorizationKey);
+                        }
+                    }
+                }
+                case STRING -> {
+                    String strVal = stringRedisService.strGet(authorizationKey);
+                    if (value.equals(strVal)) {
+                        delKeys.add(authorizationKey);
+                    }
+                }
+                default -> {
+                }
             }
         }
         return delKeys;

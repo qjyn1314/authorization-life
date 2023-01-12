@@ -18,8 +18,7 @@ public interface SecurityConstant {
     String SSO_LOGIN_FORM_PAGE = "/login";
     String JSESSIONID = "JSESSIONID";
     String SSO_LOGOUT = "/oauth/logout";
-    String AUTHORIZATION_2 = "oauth-server:auth:oauth2";
-    String AUTHORIZATION = AUTHORIZATION_2 + ":authorization";
+    String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
 
     static String getAuthorizationId(String authorizationId) {
         return AUTHORIZATION + "_" + authorizationId;

@@ -47,6 +47,8 @@
     spring-security 5.7.3
 
     spring-security-oauth2-authorization-server 0.3.1
+    
+    dubbo 3.2.0 
 
 前端：
     

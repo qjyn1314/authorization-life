@@ -2,8 +2,8 @@ package com.authorization.core.schedule;
 
 import com.authorization.utils.excutor.ExecutorManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
@@ -20,14 +20,14 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 2022/5/13 14:08
  */
 @Slf4j
-@Configuration
+@AutoConfiguration
 @EnableScheduling
 public class ScheduleAutoConfig implements SchedulingConfigurer {
 
     /**
      * 定时任务的线程池名称
      */
-    public static final String SCHEDULED_TASKS_NAME = "AUTH-SERVER-SCHEDULED-TASK-";
+    public static final String SCHEDULED_TASKS_NAME = "AUTHORIZATION-LIFE-SCHEDULED-TASK-";
     /**
      * 核心线程数:设置核心线程数为 CPU 核数，获取不到时，将创建默认核心线程数为 8 个。
      */

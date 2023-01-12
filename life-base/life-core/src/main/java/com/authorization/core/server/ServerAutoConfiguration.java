@@ -5,12 +5,17 @@ import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.registry.NacosServiceRegistry;
 import com.authorization.redis.start.service.StringRedisService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/**
+ * 服务注册到nacos类
+ *
+ * @author wangjunming
+ */
 @Slf4j
-@Configuration
+@AutoConfiguration
 public class ServerAutoConfiguration {
 
     @Bean

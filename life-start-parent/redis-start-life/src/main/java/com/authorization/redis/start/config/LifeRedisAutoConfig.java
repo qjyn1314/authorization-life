@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -32,7 +31,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 2022/2/28 10:26
  */
 @Slf4j
-@Configuration
 @AutoConfiguration(after = RedisAutoConfiguration.class)
 public class LifeRedisAutoConfig {
 

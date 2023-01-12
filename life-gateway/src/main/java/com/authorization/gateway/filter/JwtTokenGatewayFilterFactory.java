@@ -64,6 +64,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             JWSObject jwsObject = new JWSObject(jwsHeader, new Payload(userDetailStr));
             // 签名并序列化转换为真正存储用户信息的jwtToken
             String jwtToken = Jwts.signAndSerialize(jwsObject, signer);
+            log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
             ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate().header(Jwts.HEADER_JWT, jwtToken).build()).build();
             return chain.filter(jwtExchange).contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY, ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY).orElse(new RequestContext()).setUserDetail(userDetail)));
         };

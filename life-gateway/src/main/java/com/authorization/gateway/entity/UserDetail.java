@@ -133,8 +133,11 @@ public class UserDetail {
      */
     private String token;
     /**
-     * 当前登录用户的 authorizationId 即， RedisOAuth2AuthorizationService 进行存储的key
+     * 当前登录用户的 authorizationId 即， RedisOAuth2AuthorizationService 进行存储的 OAuth2Authorization 中的id
      */
     private String authorizationId;
-
+    /**
+     * 当前登录用户的 authorizationId 即， RedisOAuth2AuthorizationService 进行存储的key
+     */
+    private String authorizationIdToken;
 }

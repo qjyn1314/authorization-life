@@ -5,13 +5,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <dubbo:reference
-            interface="com.authorization.remote.system.service.SystemRemoteService"
-            id="systemRemoteService"
+    <dubbo:provider token="true"/>
+
+    <dubbo:service
+            interface="com.authorization.remote.authserver.service.AuthServerRemoteService"
+            ref="authServerRemoteServiceImpl"
             version="${remote.version}"
             timeout="${remote.timeout}"
-            check="${remote.checked}"
-            group="${remote.consumer.group}"
+            group="${remote.provider.group}"
     />
 
 </beans>

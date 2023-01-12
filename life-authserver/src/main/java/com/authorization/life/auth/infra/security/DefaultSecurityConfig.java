@@ -16,6 +16,7 @@ import com.authorization.utils.security.SsoSecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,6 +31,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * 默认的Security配置信息
+ *
+ * @author wangjunming
  */
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
@@ -49,6 +52,9 @@ public class DefaultSecurityConfig {
     private RegisteredClientRepository registeredClientService;
     @Autowired
     private SsoSecurityProperties ssoSecurityProperties;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 默认的过滤链信息
@@ -101,7 +107,7 @@ public class DefaultSecurityConfig {
         // 配置退出登录配置
         http.logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
-                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService))
+                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService, ssoSecurityProperties, redisTemplate))
                 //在此处可以删除相应的cookie
                 .deleteCookies(SecurityConstant.JSESSIONID)
                 .invalidateHttpSession(true)

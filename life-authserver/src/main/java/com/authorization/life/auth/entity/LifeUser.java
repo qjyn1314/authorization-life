@@ -5,7 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,7 +24,11 @@ import java.util.*;
  * @author code@code.com
  * @date 2022-02-21 20:23:16
  */
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName("lifetime_user")
 public class LifeUser implements Serializable, UserDetails {
 

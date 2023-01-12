@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.authorization.common.log.LogAopAdvice,\
-  com.authorization.common.config.RestTemplateConfig

@@ -1,0 +1,2 @@
+com.authorization.utils.EnhanceAutoBeanConfig
+com.authorization.utils.security.SsoSecurityProperties

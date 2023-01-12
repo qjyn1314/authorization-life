@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.authorization.redis.start.config.LifeRedisAutoConfig
-

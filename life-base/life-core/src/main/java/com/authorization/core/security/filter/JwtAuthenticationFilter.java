@@ -52,9 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         if (authEnable) {
             UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
             if (Objects.isNull(userDetail)) {
-               // 抛出异常 todo
+                // 抛出异常 todo
 
             }
+            log.info("解析jwt后的用户信息是-{}", JsonHelper.writeValueAsString(userDetail));
             chain.doFilter(request, response);
         } else {
             //如果有 jwt, 则进行设置当前登录用户信息.
@@ -81,9 +82,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
      * @param jwt
      */
     private UserDetail handleLoginUser(HttpServletRequest request, HttpServletResponse response, FilterChain chain, String jwt) {
-        JWSObject jwsObject = Jwts.parse(jwt);
+        // 如果此处的jwt信息解析不出来, 则设置访客用户为当前登录用户信息.
+        UserDetail userDetail = getUserDetailByInteriorJwt(jwt);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        return userDetail;
+    }
+
+    public UserDetail getUserDetailByInteriorJwt(String interiorJwt) {
+        JWSObject jwsObject = Jwts.parse(interiorJwt);
         if (!Jwts.verify(jwsObject, verifier)) {
-            log.error("Jwt verify failed! JWT: [{}]", jwt);
+            log.error("Jwt verify failed! JWT: [{}]", interiorJwt);
             return null;
         }
         if (StrUtil.isBlank(jwsObject.getPayload().toString())) {
@@ -91,11 +100,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             return null;
         }
         // 如果此处的jwt信息解析不出来, 则设置访客用户为当前登录用户信息.
-        UserDetail userDetail = jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
+        return jwsObject.getPayload().toType(payload -> StrUtil.isBlank(payload.toString()) ?
                 UserDetail.anonymous() : JsonHelper.readValue(payload.toString(), UserDetail.class));
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        return userDetail;
     }
 
     /**

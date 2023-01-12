@@ -2,7 +2,13 @@ package com.authorization.life.auth.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -12,7 +18,11 @@ import java.time.LocalDateTime;
  * @author code@code.com
  * @date 2022-02-21 20:24:00
  */
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@Accessors(chain = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName("lifetime_user_group")
 public class UserGroup implements Serializable {
 

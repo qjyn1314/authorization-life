@@ -30,27 +30,6 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>life-utils</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>mybatis-start-life</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>redis-start-life</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>knife4j-start-life</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>dubbo-start-life</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>system-remote-api</artifactId>
-        </dependency>
 
         <!--以下为security+oauth2-->
         <dependency>
@@ -70,6 +49,35 @@
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
         </dependency>
         <!--以上为security+oauth2-->
+
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>mybatis-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>redis-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>knife4j-start-life</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>dubbo-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>authserver-remote-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>system-remote-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
 

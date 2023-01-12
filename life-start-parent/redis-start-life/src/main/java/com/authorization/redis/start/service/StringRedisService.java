@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.Assert;
@@ -922,6 +923,15 @@ public class StringRedisService {
     public Set<String> keys(String pattern) {
         return this.currentRestTemplate().keys(pattern);
     }
+
+    /**
+     * 根据key获取此key存储的数据类型
+     * @return
+     */
+    public DataType keyType(String key){
+       return this.currentRestTemplate().type(key);
+    }
+
 
     private ValueOperations<String, String> getValueOpr() {
         return this.currentRestTemplate().opsForValue();

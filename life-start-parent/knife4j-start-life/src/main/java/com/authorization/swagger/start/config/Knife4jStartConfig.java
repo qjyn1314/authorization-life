@@ -1,6 +1,6 @@
 package com.authorization.swagger.start.config;
 
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 
 /**
  * 文档配置类
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * @author wangjunming
  * @since 2022/12/20 16:49
  */
-@Configuration
+@AutoConfiguration
 public class Knife4jStartConfig {
 
 }

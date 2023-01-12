@@ -2,13 +2,14 @@ package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
 import com.authorization.redis.start.service.StringRedisService;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * 服务关闭配置
  */
-@Configuration
+@AutoConfiguration
 public class ShutdownAutoConfiguration {
 
     @Bean

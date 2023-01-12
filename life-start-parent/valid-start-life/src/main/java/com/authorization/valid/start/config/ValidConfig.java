@@ -1,8 +1,8 @@
 package com.authorization.valid.start.config;
 
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -14,7 +14,7 @@ import javax.validation.ValidatorFactory;
  * @author wangjunming
  * @date 2022/12/22 17:39
  */
-@Configuration
+@AutoConfiguration
 public class ValidConfig {
 
     /**

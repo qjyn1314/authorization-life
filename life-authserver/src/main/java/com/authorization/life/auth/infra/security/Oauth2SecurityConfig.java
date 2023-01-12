@@ -30,6 +30,8 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * 整合 oauth2_authorization 的配置类。
@@ -108,8 +110,9 @@ public class Oauth2SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
                                                                         OauthClientService oauthClientService,
-                                                                        StringRedisService stringRedisService) {
-        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService);
+                                                                        StringRedisService stringRedisService,
+                                                                        HttpServletRequest servletRequest) {
+        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService,servletRequest);
     }
 
     /**

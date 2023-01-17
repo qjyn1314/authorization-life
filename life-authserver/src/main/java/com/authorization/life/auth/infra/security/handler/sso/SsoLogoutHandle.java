@@ -13,7 +13,6 @@ import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.DataType;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,13 +39,11 @@ public class SsoLogoutHandle implements LogoutHandler {
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
     private final StringRedisService stringRedisService;
     private final JWSVerifier verifier;
-    private final RedisTemplate redisTemplate;
 
-    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, StringRedisService stringRedisService, SsoSecurityProperties ssoSecurityProperties, RedisTemplate redisTemplate) {
+    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, StringRedisService stringRedisService, SsoSecurityProperties ssoSecurityProperties) {
         this.oAuth2AuthorizationService = oAuth2AuthorizationService;
         this.stringRedisService = stringRedisService;
         this.verifier = Jwts.verifier(ssoSecurityProperties.getSecret());
-        this.redisTemplate = redisTemplate;
     }
 
     @Override

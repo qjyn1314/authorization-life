@@ -2,7 +2,6 @@ package com.authorization.life.auth.infra.security;
 
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
 import com.authorization.life.auth.infra.security.util.Jwks;
 import com.authorization.redis.start.service.StringRedisService;
@@ -49,6 +48,8 @@ import javax.servlet.http.HttpServletRequest;
  * oauth2 security 的配置信息，关键是将配置信息托管给 HttpSecurity
  * <p>
  * https://juejin.cn/post/6985411823144615972
+ *
+ * @author wangjunming
  */
 @Slf4j
 @EnableWebSecurity
@@ -112,7 +113,7 @@ public class Oauth2SecurityConfig {
                                                                         OauthClientService oauthClientService,
                                                                         StringRedisService stringRedisService,
                                                                         HttpServletRequest servletRequest) {
-        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService,servletRequest);
+        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService, servletRequest);
     }
 
     /**

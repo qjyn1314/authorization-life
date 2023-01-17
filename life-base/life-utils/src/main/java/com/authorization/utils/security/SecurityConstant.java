@@ -19,6 +19,8 @@ public interface SecurityConstant {
     String JSESSIONID = "JSESSIONID";
     String SSO_LOGOUT = "/oauth/logout";
     String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
+    String REMEMBER_ME_PARAM = "remember_me";
+    int COOKIE_TIMEOUT = 86400;
 
     static String getAuthorizationId(String authorizationId) {
         return AUTHORIZATION + "_" + authorizationId;

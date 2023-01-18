@@ -4,6 +4,7 @@
 
     <sql id="lifetime_oauth_client_column">
         ${prefix}oauth_client_id,
+        ${prefix}domain_name,
         ${prefix}client_id,
         ${prefix}client_secret,
         ${prefix}grant_types,

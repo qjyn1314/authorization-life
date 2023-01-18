@@ -10,6 +10,7 @@ import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -52,8 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         if (authEnable) {
             UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
             if (Objects.isNull(userDetail)) {
-                // 抛出异常 todo
-
+                SecurityContextHolder.clearContext();
             }
             log.info("解析jwt后的用户信息是-{}", JsonHelper.writeValueAsString(userDetail));
             chain.doFilter(request, response);
@@ -90,6 +90,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     }
 
     public UserDetail getUserDetailByInteriorJwt(String interiorJwt) {
+        if (StrUtil.isBlank(interiorJwt)) {
+            return null;
+        }
         JWSObject jwsObject = Jwts.parse(interiorJwt);
         if (!Jwts.verify(jwsObject, verifier)) {
             log.error("Jwt verify failed! JWT: [{}]", interiorJwt);

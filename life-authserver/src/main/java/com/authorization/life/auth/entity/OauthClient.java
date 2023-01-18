@@ -34,6 +34,10 @@ public class OauthClient implements Serializable {
     @TableId
     private Long oauthClientId;
     /**
+     * 客户端域名
+     */
+    private String domainName;
+    /**
      * 客户端ID
      */
     private String clientId;

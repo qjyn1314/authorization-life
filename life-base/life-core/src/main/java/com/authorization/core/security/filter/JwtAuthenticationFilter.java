@@ -10,7 +10,6 @@ import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -55,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             if (Objects.isNull(userDetail)) {
                 SecurityContextHolder.clearContext();
             }
-            log.info("解析jwt后的用户信息是-{}", JsonHelper.writeValueAsString(userDetail));
+            log.info("登录成功之后解析jwt后的用户信息是-{}", JsonHelper.toJson(userDetail));
             chain.doFilter(request, response);
         } else {
             //如果有 jwt, 则进行设置当前登录用户信息.

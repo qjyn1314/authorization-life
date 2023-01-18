@@ -3,14 +3,14 @@ package com.authorization.utils.test;
 import com.authorization.utils.jasypt.JasyptUtils;
 
 /**
- * TODO 请填写类描述
+ * Jasypt 对密码的加解密的测试类
  *
  * @author wangjunming
  * @date 2022/12/20 15:39
  */
 public class JasyptTest {
 
-      public static void main(String[] args) {
+    public static void main(String[] args) {
         String message = "123456";
         String password = JasyptUtils.SECRET_KEY;
 

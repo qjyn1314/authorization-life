@@ -1,11 +1,13 @@
 package com.authorization.life.auth.app.service.impl;
 
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.entity.OauthClient;
+import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.mapper.OauthClientMapper;
+import com.authorization.utils.converter.BeanConverter;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * oauth客户端表
@@ -20,7 +22,14 @@ public class OauthClientServiceImpl implements OauthClientService {
     private OauthClientMapper mapper;
 
     @Override
-    public OauthClient selectClientByClientId(String id) {
-        return mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getClientId,id));
+    public OauthClientVO selectClientByClientId(String id) {
+        OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getClientId, id));
+        return BeanConverter.convert(oauthClient, OauthClientVO.class);
+    }
+
+    @Override
+    public OauthClientVO clientByDomain(String domainName) {
+        OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, domainName));
+        return BeanConverter.convert(oauthClient, OauthClientVO.class);
     }
 }

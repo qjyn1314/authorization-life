@@ -2,11 +2,16 @@ package com.authorization.life.auth.api.controller;
 
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
+import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserService;
+import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.authorization.utils.result.R;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,10 +30,21 @@ public class OauthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OauthClientService oauthClientService;
+
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("/self-user")
-    public UserDetail getCurrentUser() {
-        return UserHelper.getUserDetail();
+    public R<UserDetail> getCurrentUser() {
+        return R.ok(UserHelper.getUserDetail());
     }
+
+    @Operation(summary = "通过请求的域名获取client信息.")
+    @GetMapping("/client/{domainName}")
+    public R<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
+                                           @PathVariable String domainName) {
+        return R.ok(oauthClientService.clientByDomain(domainName));
+    }
+
 
 }

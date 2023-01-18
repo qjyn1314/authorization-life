@@ -4,7 +4,7 @@ package com.authorization.life.auth.infra.security.service;
 import cn.hutool.core.lang.UUID;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.entity.LifeUser;
+import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.security.SecurityConstant;
@@ -80,6 +80,6 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         log.info("生成gateway中解析redis中jwtToken的key是:{},过期时间是:{}秒,默认是 86400秒(24小时) ,此token作为key，用户信息作为value存储到redis中", userTokenKey, tokenOverdueSeconds);
         stringRedisService.strSet(userTokenKey, userDetail, tokenOverdueSeconds, TimeUnit.SECONDS);
         //也可以在此处将当前登录用户的信息存放到jwt中，但是这样就不再安全。
-        context.getClaims().claim(SecurityConstant.TOKEN, token).build();
+        context.getClaims().claim(SecurityConstant.CLAIM_TOKEN_KEY, token).build();
     }
 }

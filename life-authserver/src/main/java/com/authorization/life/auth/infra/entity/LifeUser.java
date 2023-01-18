@@ -1,4 +1,4 @@
-package com.authorization.life.auth.entity;
+package com.authorization.life.auth.infra.entity;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;

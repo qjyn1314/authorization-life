@@ -15,7 +15,7 @@
         ${prefix}updated_time
     </sql>
 
-    <select id="page" resultType="com.authorization.life.auth.entity.UserGroup">
+    <select id="page" resultType="com.authorization.life.auth.infra.entity.UserGroup">
         SELECT
         <include refid="lifetime_user_group_column">
             <property name="prefix" value="t1."/>

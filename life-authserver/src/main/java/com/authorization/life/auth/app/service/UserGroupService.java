@@ -1,6 +1,6 @@
 package com.authorization.life.auth.app.service;
 
-import com.authorization.life.auth.entity.UserGroup;
+import com.authorization.life.auth.infra.entity.UserGroup;
 
 import java.util.List;
 

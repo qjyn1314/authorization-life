@@ -1,4 +1,4 @@
-package com.authorization.life.auth.entity;
+package com.authorization.life.auth.infra.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;

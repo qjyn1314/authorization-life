@@ -22,7 +22,7 @@
         ${prefix}updated_time
     </sql>
 
-    <select id="page" resultType="com.authorization.life.auth.entity.OauthClient">
+    <select id="page" resultType="com.authorization.life.auth.infra.entity.OauthClient">
         SELECT
         <include refid="lifetime_oauth_client_column">
             <property name="prefix" value="t1."/>

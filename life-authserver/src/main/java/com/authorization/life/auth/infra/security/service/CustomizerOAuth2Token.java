@@ -77,7 +77,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         String userTokenKey = SecurityConstant.getUserTokenKey(token);
         // token过期的秒数
         long tokenOverdueSeconds = registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds();
-        log.info("生成gateway中解析redis中jwtToken的key是:{},过期时间是:{}秒,默认是 86400秒(24小时) ,此token作为key，用户信息作为value存储到redis中", userTokenKey, tokenOverdueSeconds);
+        log.info("生成gateway服务解析redis存储jwtToken的key是:{},过期时间是:{}秒,默认是 86400秒(24小时) ,此token作为key，用户信息作为value存储到redis中", userTokenKey, tokenOverdueSeconds);
         stringRedisService.strSet(userTokenKey, userDetail, tokenOverdueSeconds, TimeUnit.SECONDS);
         //也可以在此处将当前登录用户的信息存放到jwt中，但是这样就不再安全。
         context.getClaims().claim(SecurityConstant.CLAIM_TOKEN_KEY, token).build();

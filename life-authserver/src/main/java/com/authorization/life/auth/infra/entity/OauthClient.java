@@ -3,7 +3,6 @@ package com.authorization.life.auth.infra.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +13,8 @@ import java.time.LocalDateTime;
 
 /**
  * oauth客户端表
+ * <p>
+ * 表中的 domainName 与 clientId 分别独立为唯一索引
  *
  * @author code@code.com
  * @date 2022-02-21 20:21:01

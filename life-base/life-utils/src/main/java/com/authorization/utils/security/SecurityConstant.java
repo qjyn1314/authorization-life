@@ -9,6 +9,7 @@ import com.authorization.utils.kvp.KvpFormat;
  */
 public interface SecurityConstant {
 
+    String DEFAULT_DOMAIN = "www.authorization.life";
     /**
      * token在签发的时候使用的发行域名
      */

@@ -40,7 +40,7 @@ public class OauthController {
     }
 
     @Operation(summary = "通过请求的域名获取client信息.")
-    @GetMapping("/client/{domainName}")
+    @GetMapping("/client-domain/{domainName}")
     public R<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
                                            @PathVariable String domainName) {
         return R.ok(oauthClientService.clientByDomain(domainName));

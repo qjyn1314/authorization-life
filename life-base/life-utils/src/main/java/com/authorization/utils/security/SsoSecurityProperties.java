@@ -6,6 +6,9 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 登录配置信息
  */
@@ -21,8 +24,18 @@ public class SsoSecurityProperties {
     private Boolean enable = true;
 
     /**
-     * gateway与后续服务签署用户信息jwt使用的密钥, 如果没有则使用默认的
+     * gateway与后续服务签署用户信息jwt时使用的密钥, 如果没有则使用默认的
      */
     private String secret = Jwts.DEFAULT_SECRET;
 
+    /**
+     * 忽略认证的url
+     */
+    private List<String> ignorePermUrls = new ArrayList<>();
+
+    public List<String> getIgnorePermUrls() {
+        List<String> permUrls = ignorePermUrls;
+        permUrls.addAll(List.of(SecurityConstant.IGNORE_PERM_URLS));
+        return permUrls;
+    }
 }

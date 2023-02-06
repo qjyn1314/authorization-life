@@ -58,11 +58,11 @@ public class SecurityAutoComponent {
         config.setAllowCredentials(true);
 
         // 设置访问源地址
-        config.addAllowedOrigin("*");
+        config.addAllowedOrigin(CorsConfiguration.ALL);
         // 设置访问源请求头
-        config.addAllowedHeader("*");
+        config.addAllowedHeader(CorsConfiguration.ALL);
         // 设置访问源请求方法
-        config.addAllowedMethod("*");
+        config.addAllowedMethod(CorsConfiguration.ALL);
         // 对接口配置跨域设置
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

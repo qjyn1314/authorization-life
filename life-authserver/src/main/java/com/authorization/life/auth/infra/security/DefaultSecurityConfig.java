@@ -69,6 +69,7 @@ public class DefaultSecurityConfig {
                                                           AuthenticationProvider usernamePasswordProvider)
             throws Exception {
         http
+                .cors().and()
                 // 前后端分离工程需要 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
                 .csrf().disable()
                 .sessionManagement()

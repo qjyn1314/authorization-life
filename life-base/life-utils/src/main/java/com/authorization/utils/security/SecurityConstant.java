@@ -104,7 +104,7 @@ public interface SecurityConstant {
      */
     String[] IGNORE_PERM_URLS = {
             //swagger文档
-            "/v3/api-docs",
+            "/v3/api-docs/**",
             "/doc.html",
             "/webjars/**",
             //公有public路径

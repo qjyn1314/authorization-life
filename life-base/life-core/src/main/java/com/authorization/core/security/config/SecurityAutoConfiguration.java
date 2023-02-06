@@ -49,6 +49,7 @@ public class SecurityAutoConfiguration {
     @Bean
     public SecurityFilterChain defaultSpringSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .cors().and()
                 // 禁用csrf
                 .csrf().disable()
                 // 使用session 如果security需要设置sessionid则进行设置。  参考：https://blog.csdn.net/zpz_326/article/details/80901575

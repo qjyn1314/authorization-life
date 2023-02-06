@@ -3,6 +3,7 @@ package com.authorization.life.auth.infra.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,10 +25,25 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode
 @TableName("lifetime_oauth_client")
 public class OauthClient implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static final String FIELD_OAUTH_CLIENT_ID = "oauthClientId";
+    public static final String FIELD_DOMAIN_NAME = "domainName";
+    public static final String FIELD_CLIENT_ID = "clientId";
+    public static final String FIELD_CLIENT_SECRET = "clientSecret";
+    public static final String FIELD_GRANT_TYPES = "grantTypes";
+    public static final String FIELD_SCOPES = "scopes";
+    public static final String FIELD_REDIRECT_URI = "redirectUri";
+    public static final String FIELD_ACCESS_TOKEN_TIMEOUT = "accessTokenTimeout";
+    public static final String FIELD_REFRESH_TOKEN_TIMEOUT = "refreshTokenTimeout";
+    public static final String FIELD_ADDITIONAL_INFORMATION = "additionalInformation";
+    public static final String FIELD_TENANT_ID = "tenantId";
+    public static final String FIELD_CLIENT_SECRET_BAK = "clientSecretBak";
+
 
     /**
      * oauth客户端表主键
@@ -46,6 +62,10 @@ public class OauthClient implements Serializable {
      * 客户端密钥
      */
     private String clientSecret;
+    /**
+     * 客户端密钥
+     */
+    private String clientSecretBak;
     /**
      * 授权类型
      */

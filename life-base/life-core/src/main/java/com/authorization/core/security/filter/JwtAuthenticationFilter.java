@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,8 +20,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 每一次请求将从gateway中获取前端的token，gateway解析为每一个服务所使用的JWT-token请求头中获取token，并解析为当前登录用户信息。
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
         // 开启登录且请求路径不在忽略认证的url集合中
         Boolean authEnable = getAuthEnable(request);
-        if (authEnable ) {
+        if (authEnable) {
             UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
             if (Objects.isNull(userDetail)) {
                 SecurityContextHolder.clearContext();
@@ -75,8 +76,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
 
     private Boolean getAuthEnable(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
+        if (!StringUtils.hasText(requestURI)) {
+            return true;
+        }
         Boolean enable = ssoSecurityProperties.getEnable();
-        List<String> ignorePermUrls = ssoSecurityProperties.getIgnorePermUrls();
+        Set<String> ignorePermUrls = ssoSecurityProperties.getIgnorePermUrls();
         boolean permUrlsFlag = ignorePermUrls.stream().anyMatch(requestURI::startsWith);
         return enable && permUrlsFlag;
     }

@@ -119,8 +119,6 @@ public interface SecurityConstant {
             "/oauth/login",
             //退出登录接口
             "/oauth/logout",
-            //aouth2接口
-            "/oauth2/**",
     };
 
     /**

@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 登录配置信息
@@ -31,11 +33,11 @@ public class SsoSecurityProperties {
     /**
      * 忽略认证的url
      */
-    private List<String> ignorePermUrls = new ArrayList<>();
+    private Set<String> ignorePermUrls = new TreeSet<>();
 
-    public List<String> getIgnorePermUrls() {
-        List<String> permUrls = ignorePermUrls;
-        permUrls.addAll(List.of(SecurityConstant.IGNORE_PERM_URLS));
+    public Set<String> getIgnorePermUrls() {
+        Set<String> permUrls = ignorePermUrls;
+        permUrls.addAll(Set.of(SecurityConstant.IGNORE_PERM_URLS));
         return permUrls;
     }
 }

@@ -1,7 +1,6 @@
 package com.authorization.life.auth.app.service;
 
 import com.authorization.life.auth.app.vo.OauthClientVO;
-import com.authorization.life.auth.infra.entity.OauthClient;
 
 /**
  * oauth客户端表
@@ -14,6 +13,6 @@ public interface OauthClientService {
 
     OauthClientVO selectClientByClientId(String id);
 
-    OauthClientVO clientByDomain(String domainName);
+    OauthClientVO clientByDomain(String domainName, String grantType);
 
 }

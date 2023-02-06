@@ -7,6 +7,7 @@
         ${prefix}domain_name,
         ${prefix}client_id,
         ${prefix}client_secret,
+        ${prefix}client_secret_bak,
         ${prefix}grant_types,
         ${prefix}scopes,
         ${prefix}redirect_uri,

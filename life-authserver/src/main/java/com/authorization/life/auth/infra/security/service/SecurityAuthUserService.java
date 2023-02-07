@@ -6,9 +6,10 @@ import com.authorization.core.security.UserDetailService;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserGroupService;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.entity.LifeUser;
-import com.authorization.life.auth.entity.OauthClient;
-import com.authorization.life.auth.entity.UserGroup;
+import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.authorization.life.auth.infra.entity.LifeUser;
+import com.authorization.life.auth.infra.entity.OauthClient;
+import com.authorization.life.auth.infra.entity.UserGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,7 +70,7 @@ public class SecurityAuthUserService implements UserDetailService {
 
 
     public UserDetail createUserDetailByClientId(String clientId) {
-        OauthClient oauthClient = oauthClientService.selectClientByClientId(clientId);
+        OauthClientVO oauthClient = oauthClientService.selectClientByClientId(clientId);
         UserDetail userDetail = new UserDetail();
         userDetail.setUsername(oauthClient.getClientId());
         userDetail.setTenantId(oauthClient.getTenantId());

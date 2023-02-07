@@ -2,7 +2,7 @@ package com.authorization.life.auth.infra.mapper;
 
 import java.util.List;
 
-import com.authorization.life.auth.entity.OauthClient;
+import com.authorization.life.auth.infra.entity.OauthClient;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 

@@ -4,7 +4,8 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.text.StrPool;
 import cn.hutool.json.JSONUtil;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.entity.OauthClient;
+import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.security.sso.RegClientException;
 import com.authorization.utils.exception.CommonException;
 import com.authorization.utils.security.SecurityConstant;
@@ -41,7 +42,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
 
     @Override
     public RegisteredClient findById(String clientId) {
-        OauthClient oauthClient = clientService.selectClientByClientId(clientId);
+        OauthClientVO oauthClient = clientService.selectClientByClientId(clientId);
         if (Objects.isNull(oauthClient)) {
             return null;
         }
@@ -51,7 +52,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
-        OauthClient oauthClient = clientService.selectClientByClientId(clientId);
+        OauthClientVO oauthClient = clientService.selectClientByClientId(clientId);
         if (Objects.isNull(oauthClient)) {
             return null;
         }
@@ -66,7 +67,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
      * @param oauthClient 数据库client
      * @return RegisteredClient
      */
-    private RegisteredClient getRegisteredClient(String clientId, OauthClient oauthClient) {
+    private RegisteredClient getRegisteredClient(String clientId, OauthClientVO oauthClient) {
         RegisteredClient.Builder builder = RegisteredClient.withId(clientId)
                 .clientId(oauthClient.getClientId())
                 .clientSecret(oauthClient.getClientSecret())

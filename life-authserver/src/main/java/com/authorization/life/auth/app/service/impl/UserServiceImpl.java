@@ -4,7 +4,7 @@ import cn.hutool.core.lang.Assert;
 import com.authorization.core.entity.UserDetail;
 import com.authorization.core.entity.UserHelper;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.entity.LifeUser;
+import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

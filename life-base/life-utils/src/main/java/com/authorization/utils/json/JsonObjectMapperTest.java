@@ -10,16 +10,17 @@ public class JsonObjectMapperTest {
 
     public static void main(String[] args) {
 
-        String lovJson = JsonHelper.writeValueAsString(JsonObjectMapperTest.lovJson);
-        log.info("转换后的json是：-{}",lovJson);
+        String lovJson = JsonHelper.toJson(JsonObjectMapperTest.lovJson);
+        log.info("转换后的json是：-{}", lovJson);
 
         LovJson lovJson1 = JsonHelper.readValue(lovJson, LovJson.class);
 
-        log.info("转换后的对象是：-{}",lovJson1);
+        log.info("转换后的对象是：-{}", lovJson1);
 
     }
 
     static LovJson lovJson = new LovJson();
+
     static {
         lovJson.setLovCode("sex");
         lovJson.setLovName("性别");

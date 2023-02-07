@@ -1,19 +1,15 @@
-package com.authorization.life.auth.entity;
+package com.authorization.life.auth.app.vo;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
- * oauth客户端表
+ * oauth客户端表的返回值
  *
  * @author code@code.com
  * @date 2022-02-21 20:21:01
@@ -23,16 +19,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TableName("lifetime_oauth_client")
-public class OauthClient implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class OauthClientVO implements Serializable {
 
     /**
-     * oauth客户端表主键
+     * 客户端域名
      */
-    @TableId
-    private Long oauthClientId;
+    private String domainName;
     /**
      * 客户端ID
      */
@@ -65,33 +57,9 @@ public class OauthClient implements Serializable {
      * 附加信息
      */
     private String additionalInformation;
+
     /**
      * 租户ID
      */
     private Long tenantId;
-    /**
-     * 创建用户
-     */
-    private Long createdByUser;
-    /**
-     * 创建员工
-     */
-    private Long createdByEmp;
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdTime;
-    /**
-     * 最后更新用户
-     */
-    private Long updatedByUser;
-    /**
-     * 最后更新员工
-     */
-    private Long updatedByEmp;
-    /**
-     * 最后更新时间
-     */
-    private LocalDateTime updatedTime;
-
 }

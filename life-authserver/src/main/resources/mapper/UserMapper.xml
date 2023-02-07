@@ -32,7 +32,7 @@
         ${prefix}updated_time
     </sql>
 
-    <select id="page" resultType="com.authorization.life.auth.entity.LifeUser">
+    <select id="page" resultType="com.authorization.life.auth.infra.entity.LifeUser">
         SELECT
         <include refid="lifetime_user_column">
             <property name="prefix" value="t1."/>

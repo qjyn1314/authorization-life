@@ -24,8 +24,10 @@ public class JsonHelper {
         objectMapper = newObjectMapper;
     }
 
-
-    public static String writeValueAsString(Object value) {
+    /**
+     * 将对象转换为字符串
+     */
+    public static String toJson(Object value) {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {

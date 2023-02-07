@@ -91,7 +91,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             return null;
         }
         Map<String, Object> map = Jwts.parse(accessToken).getPayload().toJSONObject();
-        String token = (String) map.get(SecurityConstant.TOKEN);
+        String token = (String) map.get(SecurityConstant.CLAIM_TOKEN_KEY);
         if (StrUtil.isBlank(token)) {
             // 若有jwt但没有token，则jwt一定有问题
             throw new UnauthorizedException();

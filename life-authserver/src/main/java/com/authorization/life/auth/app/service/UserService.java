@@ -1,7 +1,7 @@
 package com.authorization.life.auth.app.service;
 
 import com.authorization.core.entity.UserDetail;
-import com.authorization.life.auth.entity.LifeUser;
+import com.authorization.life.auth.infra.entity.LifeUser;
 import com.github.pagehelper.PageInfo;
 import org.springframework.security.core.userdetails.UserDetails;
 

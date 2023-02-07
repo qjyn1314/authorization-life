@@ -1,4 +1,4 @@
-package com.authorization.life.auth.entity;
+package com.authorization.life.auth.infra.entity;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 用户表
@@ -28,11 +31,34 @@ import java.util.*;
 @Getter
 @NoArgsConstructor
 @Accessors(chain = true)
+@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName("lifetime_user")
 public class LifeUser implements Serializable, UserDetails {
 
     private static final long serialVersionUID = 1L;
+
+    public static final String FIELD_USER_ID = "userId";
+    public static final String FIELD_USERNAME = "username";
+    public static final String FIELD_REAL_NAME = "realName";
+    public static final String FIELD_LANG = "lang";
+    public static final String FIELD_LOCALE = "locale";
+    public static final String FIELD_GENDER = "gender";
+    public static final String FIELD_HASH_PASSWORD = "hashPassword";
+    public static final String FIELD_TEL_AREA_CODE = "telAreaCode";
+    public static final String FIELD_PHONE = "phone";
+    public static final String FIELD_PHONE_CHECKED_FLAG = "phoneCheckedFlag";
+    public static final String FIELD_EMAIL = "email";
+    public static final String FIELD_EMAIL_CHECKED_FLAG = "emailCheckedFlag";
+    public static final String FIELD_BIRTHDAY = "birthday";
+    public static final String FIELD_EFFECTIVE_START_DATE = "effectiveStartDate";
+    public static final String FIELD_EFFECTIVE_END_DATE = "effectiveEndDate";
+    public static final String FIELD_ACTIVED_FLAG = "activedFlag";
+    public static final String FIELD_LOCKED_FLAG = "lockedFlag";
+    public static final String FIELD_LOCKED_TIME = "lockedTime";
+    public static final String FIELD_ENABLED_FLAG = "enabledFlag";
+    public static final String FIELD_TENANT_ID = "tenantId";
+    public static final String FIELD_VERSION_NUM = "versionNum";
 
     /**
      * 用户表主键
@@ -144,7 +170,9 @@ public class LifeUser implements Serializable, UserDetails {
      */
     private LocalDateTime updatedTime;
 
-    /**用户组信息*/
+    /**
+     * 用户组信息
+     */
     @TableField(exist = false)
     private Set<String> userGroups;
 

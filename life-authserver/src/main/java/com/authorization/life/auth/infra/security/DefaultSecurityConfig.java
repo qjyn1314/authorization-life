@@ -16,7 +16,6 @@ import com.authorization.utils.security.SsoSecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -53,9 +52,6 @@ public class DefaultSecurityConfig {
     @Autowired
     private SsoSecurityProperties ssoSecurityProperties;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
-
     /**
      * 默认的过滤链信息
      *
@@ -73,6 +69,7 @@ public class DefaultSecurityConfig {
                                                           AuthenticationProvider usernamePasswordProvider)
             throws Exception {
         http
+                .cors().and()
                 // 前后端分离工程需要 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
                 .csrf().disable()
                 .sessionManagement()
@@ -107,7 +104,7 @@ public class DefaultSecurityConfig {
         // 配置退出登录配置
         http.logout()
                 .logoutUrl(SecurityConstant.SSO_LOGOUT)
-                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService, ssoSecurityProperties, redisTemplate))
+                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService, ssoSecurityProperties))
                 //在此处可以删除相应的cookie
                 .deleteCookies(SecurityConstant.JSESSIONID)
                 .invalidateHttpSession(true)
@@ -122,16 +119,17 @@ public class DefaultSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加自定义的用户名密码认证类
         http.authenticationProvider(usernamePasswordProvider);
-//        //开启记住我的功能，默认时间是两周
+        //开启记住我的功能，默认时间是24小时
 //        http.rememberMe()
 //                .alwaysRemember(Boolean.TRUE)
-////                .rememberMeParameter(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
+//                //记住我的form表单传参
+//                .rememberMeParameter(SecurityConstant.REMEMBER_ME_PARAM)
 //                //cookie的过期秒数
-////                .tokenValiditySeconds(AuthUserUtil.AUTH_COOKIE_TIME)
-//                //form表单中的记住我input框的name属性值
-////                .rememberMeCookieName(AuthUserUtil.FORM_REMEMBER_ME_COOKIE_NAME)
+//                .tokenValiditySeconds(SecurityConstant.COOKIE_TIMEOUT)
+//                //cookie中的名称
+//                .rememberMeCookieName(SecurityConstant.REMEMBER_ME_PARAM)
 //                //需要配置的二级域名
-//                .rememberMeCookieDomain(LifeSecurityConstants.SECURITY_DOMAIN)
+//                .rememberMeCookieDomain(SecurityConstant.SECURITY_DOMAIN)
 //                //配置用户service，用于在关闭浏览器再次打开时，使用此service型数据库中根据名称查询用户数据，
 //                .userDetailsService(userDetailsService);
         return http.build();

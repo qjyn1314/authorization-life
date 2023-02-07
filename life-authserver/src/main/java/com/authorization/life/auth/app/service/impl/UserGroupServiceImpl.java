@@ -1,7 +1,7 @@
 package com.authorization.life.auth.app.service.impl;
 
 import com.authorization.life.auth.app.service.UserGroupService;
-import com.authorization.life.auth.entity.UserGroup;
+import com.authorization.life.auth.infra.entity.UserGroup;
 import com.authorization.life.auth.infra.mapper.UserGroupMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -33,7 +33,6 @@ public final class JsonDateUtil extends DateUtil {
      */
     public static final String TIME_SS = "HH:mm:ss";
 
-    //
     // 系统时间格式
     // ----------------------------------------------------------------------------------------------------
     /**
@@ -53,7 +52,6 @@ public final class JsonDateUtil extends DateUtil {
      */
     public static final String SYS_DATETIME_SSS = "yyyy/MM/dd HH:mm:ss.SSS";
 
-    //
     // 无连接符模式
     // ----------------------------------------------------------------------------------------------------
     /**

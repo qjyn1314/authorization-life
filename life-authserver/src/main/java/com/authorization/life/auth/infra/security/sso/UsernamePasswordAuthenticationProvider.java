@@ -3,7 +3,7 @@ package com.authorization.life.auth.infra.security.sso;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.entity.LifeUser;
+import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.utils.security.SecurityConstant;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.kvp.KvpFormat;

@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 (OAuth2AuthorizationCodeRequestAuthenticationToken) authentication;
         if (authentication.getPrincipal() instanceof OAuth2AccessTokenAuthenticationToken token){
             OAuth2AccessToken accessToken = token.getAccessToken();
-            String redirectUrl = KvpFormat.of(SecurityConstant.IMPLICIT_REDIRECT_URI_FORMAT)
+            String redirectUrl = KvpFormat.of(SecurityConstant.AUTHORIZATION_CODE_IMPLICIT_REDIRECT_URI_FORMAT)
                     .add("redirectUri",codeRequestAuthenticationToken.getRedirectUri())
                     .add("accessToken", accessToken.getTokenValue())
                     .add("tokenType", accessToken.getTokenType().getValue())

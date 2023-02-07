@@ -1,7 +1,7 @@
 package com.authorization.life.auth.api.controller;
 
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.entity.LifeUser;
+import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.utils.result.R;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;

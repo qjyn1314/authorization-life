@@ -1,15 +1,16 @@
 package com.authorization.life.auth.api.controller;
 
+import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.util.Captcha;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.result.R;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -26,6 +27,17 @@ public class LoginController {
 
     @Resource
     private StringRedisService stringRedisService;
+    @Autowired
+    private OauthClientService oauthClientService;
+
+    @Operation(summary = "通过请求的域名获取client信息.")
+    @GetMapping("/client-domain/{domainName}/grant-type/{grantType}")
+    public R<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
+                                           @PathVariable String domainName,
+                                           @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
+                                           @PathVariable String grantType) {
+        return R.ok(oauthClientService.clientByDomain(domainName, grantType));
+    }
 
     @Operation(summary = "发送验证码")
     @GetMapping("/send-sms-code")

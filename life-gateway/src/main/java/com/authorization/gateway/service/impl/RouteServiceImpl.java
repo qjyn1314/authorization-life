@@ -17,7 +17,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
-import org.springframework.cloud.gateway.filter.factory.SpringCloudCircuitBreakerResilience4JFilterFactory;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
@@ -58,7 +57,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
                 .collect(Collectors.toList()));
         mergeRoutes.addAll(this.staticRoutes);
         routes = ImmutableList.copyOf(mergeRoutes);
-        log.trace("[DynamicRoute] current routes: [{}]", JsonHelper.writeValueAsString(mergeRoutes));
+        log.trace("[DynamicRoute] current routes: [{}]", JsonHelper.toJson(mergeRoutes));
     }
 
     /**

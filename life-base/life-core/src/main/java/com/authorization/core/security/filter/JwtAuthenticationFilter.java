@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 每一次请求将从gateway中获取前端的token，gateway解析为每一个服务所使用的JWT-token请求头中获取token，并解析为当前登录用户信息。
@@ -47,15 +49,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwt = request.getHeader(Jwts.HEADER_JWT);
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
-        // 开启登录但是没有jwt,则直接返回.
-        Boolean authEnable = ssoSecurityProperties.getEnable();
+        // 开启登录且请求路径不在忽略认证的url集合中
+        Boolean authEnable = getAuthEnable(request);
         if (authEnable) {
             UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
             if (Objects.isNull(userDetail)) {
-                // 抛出异常 todo
-
+                SecurityContextHolder.clearContext();
             }
-            log.info("解析jwt后的用户信息是-{}", JsonHelper.writeValueAsString(userDetail));
+            log.info("登录成功之后解析jwt后的用户信息是-{}", JsonHelper.toJson(userDetail));
             chain.doFilter(request, response);
         } else {
             //如果有 jwt, 则进行设置当前登录用户信息.
@@ -71,6 +72,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             }
             chain.doFilter(request, response);
         }
+    }
+
+    private Boolean getAuthEnable(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        if (!StringUtils.hasText(requestURI)) {
+            return true;
+        }
+        Boolean enable = ssoSecurityProperties.getEnable();
+        Set<String> ignorePermUrls = ssoSecurityProperties.getIgnorePermUrls();
+        boolean permUrlsFlag = ignorePermUrls.stream().anyMatch(requestURI::startsWith);
+        return enable && permUrlsFlag;
     }
 
     /**
@@ -90,6 +102,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     }
 
     public UserDetail getUserDetailByInteriorJwt(String interiorJwt) {
+        if (StrUtil.isBlank(interiorJwt)) {
+            return null;
+        }
         JWSObject jwsObject = Jwts.parse(interiorJwt);
         if (!Jwts.verify(jwsObject, verifier)) {
             log.error("Jwt verify failed! JWT: [{}]", interiorJwt);

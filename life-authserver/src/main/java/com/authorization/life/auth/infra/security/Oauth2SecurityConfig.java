@@ -49,6 +49,8 @@ import javax.servlet.http.HttpServletRequest;
  * oauth2 security 的配置信息，关键是将配置信息托管给 HttpSecurity
  * <p>
  * https://juejin.cn/post/6985411823144615972
+ *
+ * @author wangjunming
  */
 @Slf4j
 @EnableWebSecurity
@@ -70,13 +72,13 @@ public class Oauth2SecurityConfig {
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
 
-//        authorizationServerConfigurer
-//                .authorizationEndpoint(endpointConfigurer -> {
-//                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-//                    endpointConfigurer
-//                            //配置自定义的请求成功的处理器
-//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-//                });
+        authorizationServerConfigurer
+                .authorizationEndpoint(endpointConfigurer -> {
+                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+                    endpointConfigurer
+                            //配置自定义的请求成功的处理器
+                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
@@ -94,7 +96,8 @@ public class Oauth2SecurityConfig {
 
         // 自定义设置accesstoken为jwt形式
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
-
+        // 跨域
+        http.cors();
         // 配置 异常处理
         http
                 .exceptionHandling()
@@ -112,7 +115,7 @@ public class Oauth2SecurityConfig {
                                                                         OauthClientService oauthClientService,
                                                                         StringRedisService stringRedisService,
                                                                         HttpServletRequest servletRequest) {
-        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService,servletRequest);
+        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService, servletRequest);
     }
 
     /**
@@ -174,20 +177,6 @@ public class Oauth2SecurityConfig {
         return AuthorizationServerSettings.builder()
                 //发布者的url地址,一般是本系统访问的根路径
                 .issuer(SecurityConstant.ISSUER)
-                //授权端点
-                .authorizationEndpoint("/oauth2/authorize")
-                // 配置获取token的端点路径
-                .tokenEndpoint("/oauth2/token")
-                //令牌自省端点
-                .tokenIntrospectionEndpoint("/oauth2/introspect")
-                //令牌撤销端点
-                .tokenRevocationEndpoint("/oauth2/revoke")
-                //jwk 设置端点
-                .jwkSetEndpoint("/oauth2/jwks")
-                //oidc 用户信息端点
-                .oidcUserInfoEndpoint("/userinfo")
-                //oidc 客户端注册端点
-                .oidcClientRegistrationEndpoint("/connect/register")
                 .build();
     }
 

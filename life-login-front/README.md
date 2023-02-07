@@ -1,4 +1,4 @@
-# auth-server-login-front
+# life-login-front
 
 ## Project setup
 ```

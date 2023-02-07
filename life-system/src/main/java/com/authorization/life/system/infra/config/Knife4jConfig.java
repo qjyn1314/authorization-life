@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * System服务的文档配置类
+ * 接口文档配置类
  *
  * @author wangjunming
  * @date 2022/12/20 16:49

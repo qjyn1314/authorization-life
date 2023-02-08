@@ -13,6 +13,7 @@ import com.authorization.life.auth.infra.security.sso.UsernamePasswordAuthentica
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.security.SecurityConstant;
 import com.authorization.utils.security.SsoSecurityProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,8 +34,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  *
  * @author wangjunming
  */
-@Configuration(proxyBeanMethods = false)
+@Slf4j
 @EnableWebSecurity
+@Configuration(proxyBeanMethods = false)
 public class DefaultSecurityConfig {
 
     @Autowired

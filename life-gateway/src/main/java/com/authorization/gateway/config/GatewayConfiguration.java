@@ -16,21 +16,14 @@ import org.springframework.boot.web.reactive.error.ErrorAttributes;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.result.view.ViewResolver;
 
-import java.net.URI;
 import java.time.Duration;
 import java.util.stream.Collectors;
 
@@ -85,7 +78,13 @@ public class GatewayConfiguration {
 
     /**
      * 配置断路器
-     * 参考：https://www.cnblogs.com/bolingcavalry/p/15575336.html
+     * 参考：
+     * <p>
+     * https://www.cnblogs.com/bolingcavalry/p/15575336.html
+     * <p>
+     * https://www.jianshu.com/p/29699c3fb65f
+     * <p>
+     * 官网: https://cloud.spring.io/spring-cloud-circuitbreaker/reference/html/spring-cloud-circuitbreaker.html
      *
      * @return ReactiveResilience4JCircuitBreakerFactory
      */
@@ -113,13 +112,14 @@ public class GatewayConfiguration {
                 .build();
         // 超时配置
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                // 设置超时时间为60s
-                .timeoutDuration(Duration.ofSeconds(60))
+                // 设置超时时间为30秒
+                .timeoutDuration(Duration.ofSeconds(30))
                 .build();
         ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory = new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry);
         circuitBreakerFactory.configureDefault(id -> new Resilience4JConfigBuilder(id)
                 .timeLimiterConfig(timeLimiterConfig)
-                .circuitBreakerConfig(circuitBreakerConfig).build());
+                .circuitBreakerConfig(circuitBreakerConfig)
+                .build());
         return circuitBreakerFactory;
     }
 }

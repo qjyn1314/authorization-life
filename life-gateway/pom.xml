@@ -35,6 +35,7 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi2-ui</artifactId>
+            <!-- TODO 是找过了开源者, 单独发布的快照版本, 需下次更新为最新版本 -->
             <version>4.1.0-SNAPSHOT</version>
         </dependency>
         <!--knife4j-end-->

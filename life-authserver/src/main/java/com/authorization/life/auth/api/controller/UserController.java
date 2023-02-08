@@ -1,7 +1,8 @@
 package com.authorization.life.auth.api.controller;
 
+import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.life.auth.infra.entity.LifeUser;
+import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.utils.result.R;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,11 +28,34 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Operation(summary = "获取当前登录用户信息")
+    @Operation(summary = "用户注册")
+    @PostMapping("/register")
+    public R<Void> register(@RequestBody LifeUserDTO lifeUser) {
+        return R.ok();
+    }
+
+    @Operation(summary = "用户列表")
     @PostMapping("/page")
-    public R<PageInfo<LifeUser>> page(@RequestBody LifeUser lifeUser) {
-        PageInfo<LifeUser> userPageInfo = userService.page(lifeUser);
-        return R.ok(userPageInfo);
+    public R<PageInfo<LifeUserVO>> page(@RequestBody LifeUserDTO lifeUser) {
+        return R.ok(userService.page(lifeUser));
+    }
+
+    @Operation(summary = "注册用户审核通过")
+    @PostMapping("/user-approved")
+    public R<Void> userApproved(@RequestBody LifeUserDTO lifeUser) {
+        return R.ok();
+    }
+
+    @Operation(summary = "注册用户审核拒绝")
+    @PostMapping("/user-audit-reject")
+    public R<Void> userAuditReject(@RequestBody LifeUserDTO lifeUser) {
+        return R.ok();
+    }
+
+    @Operation(summary = "用户解锁")
+    @PostMapping("/user-unlock")
+    public R<Void> userUnlock(@RequestBody LifeUserDTO lifeUser) {
+        return R.ok();
     }
 
 }

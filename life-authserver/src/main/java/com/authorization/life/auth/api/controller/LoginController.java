@@ -1,5 +1,6 @@
 package com.authorization.life.auth.api.controller;
 
+import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.util.Captcha;
@@ -39,12 +40,34 @@ public class LoginController {
         return R.ok(oauthClientService.clientByDomain(domainName, grantType));
     }
 
-    @Operation(summary = "发送验证码")
+    @Operation(summary = "发送手机验证码")
     @GetMapping("/send-sms-code")
     public R<String> sendSmsCode(@RequestParam(name = "phone") String phone) {
         Captcha captcha = RedisCaptchaValidator.create(stringRedisService);
         String code = captcha.getCode();
         return R.ok(code);
+    }
+
+    @Operation(summary = "发送邮箱验证码")
+    @GetMapping("/send-email-code")
+    public R<String> sendEmailCode(@RequestParam(name = "email") String email) {
+        Captcha captcha = RedisCaptchaValidator.create(stringRedisService);
+        String code = captcha.getCode();
+        return R.ok(code);
+    }
+
+    @Operation(summary = "图片验证码")
+    @GetMapping("/picture-code")
+    public R<String> pictureCode() {
+        Captcha captcha = RedisCaptchaValidator.create(stringRedisService);
+        String code = captcha.getCode();
+        return R.ok(code);
+    }
+
+    @Operation(summary = "用户重置密码")
+    @PostMapping("/reset-password")
+    public R<Void> resetPassword(@RequestBody LifeUserDTO lifeUser) {
+        return R.ok();
     }
 
 }

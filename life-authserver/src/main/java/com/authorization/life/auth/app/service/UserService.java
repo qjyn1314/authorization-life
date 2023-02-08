@@ -1,6 +1,8 @@
 package com.authorization.life.auth.app.service;
 
 import com.authorization.core.entity.UserDetail;
+import com.authorization.life.auth.app.dto.LifeUserDTO;
+import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.github.pagehelper.PageInfo;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,13 +24,6 @@ public interface UserService {
     LifeUser selectByUsername(String username);
 
     /**
-     * 创建当前登录用户信息
-     *
-     * @param principal security中的当前登录用户
-     */
-    UserDetail createUserDetailByUser(UserDetails principal);
-
-    /**
      * 锁定用户几小时
      *
      * @param userId 用户ID
@@ -36,6 +31,6 @@ public interface UserService {
      */
     void lock(Long userId , Integer lockTime);
 
-    PageInfo<LifeUser> page(LifeUser lifeUser);
+    PageInfo<LifeUserVO> page(LifeUserDTO lifeUser);
 
 }

@@ -34,7 +34,7 @@ public class DubboStartConfig {
     @Value("${server.port}")
     private Integer serverPort;
 
-    public static final String OWNER = "authorization";
+    public static final String OWNER = "authorization.life";
 
     /**所有dubbo服务, 接口, 需要在 dubbo分组中,与应用分组区分出来*/
     public static final String GROUP_DUBBO = "dubbo";

@@ -96,8 +96,6 @@ public class Oauth2SecurityConfig {
 
         // 自定义设置accesstoken为jwt形式
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
-        // 跨域
-        http.cors();
         // 配置 异常处理
         http
                 .exceptionHandling()

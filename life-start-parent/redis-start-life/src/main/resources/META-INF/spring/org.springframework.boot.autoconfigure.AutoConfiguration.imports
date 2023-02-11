@@ -1,1 +1,1 @@
-com.authorization.redis.start.config.LifeRedisAutoConfig
+com.authorization.redis.start.config.RedisTempAutoConfig

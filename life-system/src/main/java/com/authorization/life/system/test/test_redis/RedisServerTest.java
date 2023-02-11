@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class RedisServerTest {
 
     @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> authRedisTemplate;
 
     /**
      * 定时任务进行redis的消息发布。
@@ -32,7 +32,7 @@ public class RedisServerTest {
         String nowTimeFormat = DateUtil.format(nowTime, DatePattern.NORM_DATETIME_PATTERN);
         log.info("执行发布-消息内容是-{}", nowTimeFormat);
         //发布消息
-        redisTemplate.convertAndSend(RedisTestConstants.REDIS_TEST_TOPIC_01, nowTimeFormat);
+        authRedisTemplate.convertAndSend(RedisTestConstants.REDIS_TEST_TOPIC_01, nowTimeFormat);
     }
 
 //    /**

@@ -1,14 +1,11 @@
 package com.authorization.redis.start.config;
 
-import cn.hutool.json.JSONUtil;
 import com.authorization.redis.start.listener.RedisSubscription;
 import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.excutor.ExecutorManager;
 import com.authorization.utils.json.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,16 +28,16 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 2022/2/28 10:26
  */
 @Slf4j
-@AutoConfiguration(after = RedisAutoConfiguration.class)
-public class LifeRedisAutoConfig {
+@AutoConfiguration
+public class RedisTempAutoConfig {
 
     @Bean
     public StringRedisService strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
+        log.info("initialed redis-start-life StringRedisService");
         return new StringRedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
     }
 
     @Bean
-    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
     public RedisTemplate<String, Object> authRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -52,26 +49,6 @@ public class LifeRedisAutoConfig {
         return redisTemplate;
     }
 
-    /**
-     * 配置redis监听消息配置类
-     *
-     * @param connectionFactory   链接参数
-     * @param redisSubscriberList 监听列表
-     * @return RedisMessageListenerContainer
-     */
-    @Bean
-    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
-    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
-                                                                       List<RedisSubscription> redisSubscriberList) {
-        log.info("initialed-redisMessageListenerContainer-connectionFactory-{}", JSONUtil.toJsonStr(connectionFactory));
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setTaskExecutor(scheduledRedisListenerExecutor());
-        for (RedisSubscription redisSubscriber : redisSubscriberList) {
-            container.addMessageListener(redisSubscriber, redisSubscriber.topic());
-        }
-        return container;
-    }
 
     /**
      * 设置线程池的目的是需要让定时任务不浪费主线程的情况下，尽最大努力的去执行任务，如果执行到了拒绝策略，那么交给调用方执行此任务。
@@ -103,5 +80,26 @@ public class LifeRedisAutoConfig {
      */
     public static final String REDIS_LISTENER_TASKS_NAME = "REDIS-LISTENER-TASK-";
 
+
+    /**
+     * 配置redis监听消息配置类
+     *
+     * @param connectionFactory   链接参数
+     * @param redisSubscriberList 监听列表
+     * @return RedisMessageListenerContainer
+     */
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
+                                                                       List<RedisSubscription> redisSubscriberList,
+                                                                       ScheduledExecutorService scheduledRedisListenerExecutor) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setTaskExecutor(scheduledRedisListenerExecutor);
+        for (RedisSubscription redisSubscriber : redisSubscriberList) {
+            container.addMessageListener(redisSubscriber, redisSubscriber.topic());
+        }
+        log.info("initialed RedisMessageListenerContainer redisSubscriberList.size ：{}", redisSubscriberList.size());
+        return container;
+    }
 
 }

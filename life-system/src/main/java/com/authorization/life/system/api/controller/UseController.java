@@ -6,13 +6,11 @@ import com.authorization.common.log.LogAdvice;
 import com.authorization.utils.result.R;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import javax.validation.Validator;
 import java.time.LocalDateTime;
 
@@ -31,8 +29,6 @@ public class UseController {
 
     @Autowired
     private Validator validator;
-    @Autowired
-    private RedissonClient redissonClient;
 
     @Operation(summary = "获取当前时间", description = "直接获取当前时间格式化后的字符串")
     @LogAdvice

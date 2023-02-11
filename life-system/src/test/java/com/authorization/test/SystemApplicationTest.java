@@ -4,14 +4,15 @@ import com.authorization.life.system.SystemLifeApplication;
 import com.authorization.redis.start.service.StringRedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.*;
+import org.redisson.api.RedissonClient;
+import org.redisson.api.RedissonReactiveClient;
+import org.redisson.api.RedissonRxClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @SpringBootTest(classes = SystemLifeApplication.class)
@@ -21,25 +22,20 @@ public class SystemApplicationTest {
     private StringRedisService stringRedisService;
     public static final String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
     @Autowired
-    private RedissonClient client;
+    private RedissonClient redissonClient;
     @Autowired
     private RedissonRxClient redissonRxClient;
     @Autowired
     private RedissonReactiveClient redissonReactiveClient;
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> stringRedisTemplate;
     @Autowired
-    private ReactiveRedisTemplate reactiveRedisTemplate;
+    private ReactiveRedisTemplate<String, String> stringReactiveRedisTemplate;
+    @Autowired
+    private RedisTemplate<String, Object> authRedisTemplate;
 
     @Test
-    public void preRedisTemp() throws ExecutionException, InterruptedException {
-        RAtomicLong longObject = client.getAtomicLong("test_lock");
-        // 同步执行方式
-        longObject.compareAndSet(3, 401);
-        // 异步执行方式
-        RFuture<Boolean> result = longObject.compareAndSetAsync(3, 401);
-        log.info("result-{}", result);
-        log.info("result-{}", result.get());
+    public void preRedisTemp() {
     }
 
 }

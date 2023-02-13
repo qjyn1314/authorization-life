@@ -1,17 +1,21 @@
 package com.authorization.mybatis.start;
 
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.sql.DataSource;
 import java.util.Objects;
 
 /**
@@ -45,6 +49,13 @@ public class MybatisPlusConfig {
         // 添加乐观锁控制
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         return interceptor;
+    }
+// https://juejin.cn/post/7135699186070552590
+    @Bean("master")
+    @Primary
+    @ConfigurationProperties(prefix = "spring.datasource.druid.master")
+    public DataSource master() {
+        return DruidDataSourceBuilder.create().build();
     }
 
 }

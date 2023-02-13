@@ -1,14 +1,13 @@
 package com.authorization.life.auth.infra.security.service;
 
 import cn.hutool.core.lang.Assert;
-import com.authorization.core.entity.UserDetail;
+import com.authorization.core.security.entity.UserDetail;
 import com.authorization.core.security.UserDetailService;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserGroupService;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
-import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.entity.UserGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.authorization.life.auth.api.controller;
 
-import com.authorization.core.entity.UserDetail;
-import com.authorization.core.entity.UserHelper;
+import com.authorization.core.security.entity.UserDetail;
+import com.authorization.core.security.entity.UserHelper;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.utils.result.R;
 import io.swagger.v3.oas.annotations.Operation;

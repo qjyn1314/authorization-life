@@ -17,15 +17,15 @@ public class JasyptConfig {
     /**
      * 自定义 StringEncryptor，覆盖默认的 StringEncryptor
      * bean 名称是必需的，从 1.5 版开始按名称检测自定义字符串加密程序,默认 bean 名称为：jasyptStringEncryptor
-     *
+     * <p>
      * 使用: Jasypt加密，格式为ENC(加密结果)
-     *
-     *  ENC(密文)
+     * <p>
+     * ENC(密文)
      *
      * @return StringEncryptor
      */
-    @Bean("jasyptStringEncryptor")
-    public StringEncryptor jasyptStringEncryptor() {
+    @Bean("stringEncryptor")
+    public StringEncryptor stringEncryptor() {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         encryptor.setConfig(JasyptUtils.getSimpleStringPBEConfig(JasyptUtils.SECRET_KEY));
         return encryptor;

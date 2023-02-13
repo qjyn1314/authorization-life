@@ -1,4 +1,4 @@
-package com.authorization.core.entity;
+package com.authorization.core.security.entity;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;

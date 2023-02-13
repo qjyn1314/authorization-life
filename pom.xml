@@ -54,7 +54,8 @@
         <!--数据库依赖-->
         <mysql.version>8.0.31</mysql.version>
         <druid.version>1.2.15</druid.version>
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <dynamic-datasource.version>3.6.1</dynamic-datasource.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <pagehelper.version>1.4.6</pagehelper.version>
         <redisson.version>3.17.7</redisson.version>
         <!--工具依赖-->
@@ -180,6 +181,11 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-datasource.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>

@@ -1,11 +1,9 @@
 package com.authorization.life.auth.app.service;
 
-import com.authorization.core.entity.UserDetail;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.github.pagehelper.PageInfo;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * 用户表

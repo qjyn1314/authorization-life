@@ -1,4 +1,4 @@
-package com.authorization.core.entity;
+package com.authorization.core.security.entity;
 
 import com.authorization.utils.json.JsonDateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;

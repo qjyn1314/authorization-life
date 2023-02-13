@@ -2,7 +2,7 @@ package com.authorization.life.auth.infra.security.service;
 
 
 import cn.hutool.core.lang.UUID;
-import com.authorization.core.entity.UserDetail;
+import com.authorization.core.security.entity.UserDetail;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;

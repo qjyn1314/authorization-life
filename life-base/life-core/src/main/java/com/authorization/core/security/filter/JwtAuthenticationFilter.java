@@ -2,7 +2,7 @@ package com.authorization.core.security.filter;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.authorization.core.entity.UserDetail;
+import com.authorization.core.security.entity.UserDetail;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
 import com.authorization.utils.security.SsoSecurityProperties;

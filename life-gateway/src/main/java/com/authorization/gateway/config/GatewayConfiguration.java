@@ -77,12 +77,15 @@ public class GatewayConfiguration {
     }
 
     /**
-     * 配置断路器
+     * 配置断路器, 即根据接口的响应, 匹配设置的规则, 达到某一个规则时, 将网关(gateway)与业务(system)服务之间的链接断开.
      * 参考：
      * <p>
      * https://www.cnblogs.com/bolingcavalry/p/15575336.html
      * <p>
      * https://www.jianshu.com/p/29699c3fb65f
+     * <p>
+     * 重点参考:
+     * https://blog.csdn.net/boling_cavalry/article/details/119849436
      * <p>
      * 官网: https://cloud.spring.io/spring-cloud-circuitbreaker/reference/html/spring-cloud-circuitbreaker.html
      *
@@ -110,10 +113,10 @@ public class GatewayConfiguration {
                 // 当作失败处理的异常类型
                 .recordExceptions(Throwable.class)
                 .build();
-        // 超时配置
+        // 超时配置: timeLimiterConfig方法设置了超时时间，服务提供者如果超过200毫秒没有响应，Spring Cloud Gateway就会向调用者返回失败
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                // 设置超时时间为30秒
-                .timeoutDuration(Duration.ofSeconds(30))
+                // 设置超时时间为300毫秒,则进行触发返回
+                .timeoutDuration(Duration.ofMillis(300))
                 .build();
         ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory = new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry);
         circuitBreakerFactory.configureDefault(id -> new Resilience4JConfigBuilder(id)

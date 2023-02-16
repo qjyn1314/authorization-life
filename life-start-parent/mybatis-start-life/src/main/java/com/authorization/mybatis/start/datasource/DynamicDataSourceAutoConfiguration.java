@@ -3,14 +3,17 @@ package com.authorization.mybatis.start.datasource;
 import com.authorization.mybatis.start.datasource.config.DataSourceProperties;
 import com.authorization.mybatis.start.datasource.config.JdbcDynamicDataSourceProvider;
 import com.authorization.mybatis.start.datasource.config.LastParamDsProcessor;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * <p>
@@ -26,7 +29,8 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author wangjunming
  */
-@AutoConfigureAfter(DataSourceAutoConfiguration.class)
+@Configuration(proxyBeanMethods = false)
+@AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataSourceProperties.class)
 public class DynamicDataSourceAutoConfiguration {
 
@@ -39,6 +43,11 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     public DsProcessor dsProcessor() {
         return new LastParamDsProcessor();
+    }
+
+    @Bean
+    public DefaultDataSourceCreator defaultDataSourceCreator() {
+        return new DefaultDataSourceCreator();
     }
 
 }

@@ -40,38 +40,40 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
      */
     @Override
     protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
+        Map<String, DataSourceProperty> map = new ConcurrentHashMap<>(8);
+        // 添加默认主数据源
+        DataSourceProperty property = new DataSourceProperty();
+        property.setUrl(properties.getUrl());
+        property.setUsername(properties.getUsername());
+        property.setPassword(properties.getPassword());
+        property.setDriverClassName(properties.getDriverClassName());
+//        property.setLazy(true);
+        map.put(DataSourceConstants.DS_MASTER, property);
+
         ResultSet rs = null;
         try {
+            // 从数据库中查询多数据源表获取数据源
             rs = statement.executeQuery(properties.getQueryDsSql());
             log.info("执行后的结果是-{}", JsonHelper.toJson(rs));
         } catch (SQLException e) {
             log.error("查询从数据源失败...", e);
         }
-        Map<String, DataSourceProperty> map = new ConcurrentHashMap<>(8);
-
-        if (Objects.nonNull(rs)) {
-            while (rs.next()) {
-                String name = rs.getString(DataSourceConstants.DS_NAME);
-                String username = rs.getString(DataSourceConstants.DS_USER_NAME);
-                String password = rs.getString(DataSourceConstants.DS_USER_PWD);
-                String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
-                DataSourceProperty property = new DataSourceProperty();
-                property.setUsername(username);
-                property.setLazy(true);
-                property.setPassword(stringEncryptor.decrypt(password));
-                property.setUrl(url);
-                map.put(name, property);
-            }
+        if (Objects.isNull(rs)) {
+            return map;
         }
-
-
-        // 添加默认主数据源
-        DataSourceProperty property = new DataSourceProperty();
-        property.setUsername(properties.getUsername());
-        property.setPassword(properties.getPassword());
-        property.setUrl(properties.getUrl());
-        property.setLazy(true);
-        map.put(DataSourceConstants.DS_MASTER, property);
+        while (rs.next()) {
+            String name = rs.getString(DataSourceConstants.DS_NAME);
+            String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
+            String username = rs.getString(DataSourceConstants.DS_USER_NAME);
+            String password = rs.getString(DataSourceConstants.DS_USER_PWD);
+            DataSourceProperty slaveProperty = new DataSourceProperty();
+            slaveProperty.setUrl(url);
+            slaveProperty.setUsername(username);
+            slaveProperty.setPassword(stringEncryptor.decrypt(password));
+            slaveProperty.setDriverClassName(properties.getDriverClassName());
+//            slaveProperty.setLazy(true);
+            map.put(name, property);
+        }
         return map;
     }
 

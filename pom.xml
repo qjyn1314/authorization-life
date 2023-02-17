@@ -55,6 +55,7 @@
         <mysql.version>8.0.31</mysql.version>
         <druid.version>1.2.15</druid.version>
         <dynamic-datasource.version>3.6.1</dynamic-datasource.version>
+        <p6spy.version>3.9.1</p6spy.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <pagehelper.version>1.4.6</pagehelper.version>
         <redisson.version>3.17.7</redisson.version>
@@ -181,6 +182,11 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>${p6spy.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>

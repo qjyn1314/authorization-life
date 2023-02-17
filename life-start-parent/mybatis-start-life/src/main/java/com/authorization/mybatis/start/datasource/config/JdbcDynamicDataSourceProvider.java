@@ -40,6 +40,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
      */
     @Override
     protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
+        log.info("加载动态数据源.");
         Map<String, DataSourceProperty> map = new ConcurrentHashMap<>(8);
         // 添加默认主数据源
         DataSourceProperty property = new DataSourceProperty();

@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Import;
  * @author wangjunming
  */
 @Configuration(proxyBeanMethods = false)
-@AutoConfigureBefore(DataSourceAutoConfiguration.class)
+//@AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataSourceProperties.class)
 public class DynamicDataSourceAutoConfiguration {
 
@@ -43,11 +43,6 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     public DsProcessor dsProcessor() {
         return new LastParamDsProcessor();
-    }
-
-    @Bean
-    public DefaultDataSourceCreator defaultDataSourceCreator() {
-        return new DefaultDataSourceCreator();
     }
 
 }

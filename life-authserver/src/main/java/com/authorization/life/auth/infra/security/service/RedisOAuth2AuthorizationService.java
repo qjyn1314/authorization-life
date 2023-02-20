@@ -7,7 +7,6 @@ import com.authorization.utils.security.SecurityConstant;
 import com.authorization.redis.start.service.RedisConstant;
 import com.authorization.redis.start.service.StringRedisService;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -54,7 +53,7 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
         saveTokenToCache(authorization);
     }
 
-    private void saveTokenToCache(@NotNull OAuth2Authorization authorization) {
+    private void saveTokenToCache(OAuth2Authorization authorization) {
         String authId = authorization.getId();
         String accessToken = getTokenByAuth(authorization, OAuth2AccessToken.class);
         //判断该授权信息中4个类型的token是否不为空，如果有值，则需要把对应token类型+MD5(token)为key,授权id为value的set格式放入缓存(摘要算法可能重复)，过期时间为一天

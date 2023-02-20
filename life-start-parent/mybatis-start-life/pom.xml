@@ -26,7 +26,6 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
-        <!--如果项目同时存在Druid和HikariCP并且未配置连接池type类型，默认 Druid优先于HikariCP 。-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>

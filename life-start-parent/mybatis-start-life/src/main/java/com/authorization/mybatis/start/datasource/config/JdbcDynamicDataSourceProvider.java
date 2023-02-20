@@ -57,7 +57,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             rs = statement.executeQuery(properties.getQueryDsSql());
             log.info("执行后的结果是-{}", JsonHelper.toJson(rs));
         } catch (SQLException e) {
-            log.error("查询从数据源失败...", e);
+            log.error("查询从数据源失败...{}", e.getMessage());
         }
         if (Objects.isNull(rs)) {
             return map;

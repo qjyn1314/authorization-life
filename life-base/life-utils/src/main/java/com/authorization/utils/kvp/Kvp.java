@@ -1,6 +1,6 @@
 package com.authorization.utils.kvp;
 
-import cn.hutool.core.lang.Assert;
+import org.springframework.util.Assert;
 
 /**
  * <p>
@@ -39,10 +39,28 @@ public final class Kvp<K, V> implements java.util.function.Supplier<Kvp<K, V>>, 
         Assert.notNull(key, "key cannot be null");
         Assert.notNull(value, "value cannot be null");
         if (key instanceof String) {
-            Assert.notBlank((String) key, "key cannot be null");
+            Assert.hasText((String) key, "key cannot be null");
         }
         if (value instanceof String) {
-            Assert.notBlank((String) value, "value cannot be null");
+            Assert.hasText((String) value, "value cannot be null");
+        }
+        return new Kvp<>(key, value);
+    }
+
+    /**
+     * key 不可以为空
+     * value 可以为空
+     *
+     * @param key   the input key
+     * @param value the input value
+     * @param <K>   key 的泛型
+     * @param <V>   value 的泛型
+     * @return KeyValue<K, V>
+     */
+    public static <K, V> Kvp<K, V> ofKey(K key, V value) {
+        Assert.notNull(key, "value cannot be null");
+        if (key instanceof String) {
+            Assert.hasText((String) key, "value cannot be null");
         }
         return new Kvp<>(key, value);
     }
@@ -60,7 +78,7 @@ public final class Kvp<K, V> implements java.util.function.Supplier<Kvp<K, V>>, 
     public static <K, V> Kvp<K, V> ofVal(K key, V value) {
         Assert.notNull(value, "value cannot be null");
         if (value instanceof String) {
-            Assert.notBlank((String) value, "value cannot be null");
+            Assert.hasText((String) value, "value cannot be null");
         }
         return new Kvp<>(key, value);
     }
@@ -76,7 +94,7 @@ public final class Kvp<K, V> implements java.util.function.Supplier<Kvp<K, V>>, 
     public static <K, V> Kvp<K, V> onlyVal(V value) {
         Assert.notNull(value, "value cannot be null");
         if (value instanceof String) {
-            Assert.notBlank((String) value, "value cannot be null");
+            Assert.hasText((String) value, "value cannot be null");
         }
         return new Kvp<>(null, value);
     }

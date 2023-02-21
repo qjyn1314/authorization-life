@@ -290,7 +290,11 @@ public class ExcelViewDecorate extends AbstractXlsxView {
         }
         //设置响应为文件下载
         response.setContentType("application/force-download");
-        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8));
+        response.setCharacterEncoding("utf-8");
+        // 前端将获取到filename字段的值
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + URLEncoder.encode(filename, StandardCharsets.UTF_8));
+        // 允许服务器指示那些响应标头可以暴露给浏览器中运行的脚本，以响应跨源请求。
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
     }
 
 

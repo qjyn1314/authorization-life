@@ -652,6 +652,9 @@ public class ExcelViewDecorate extends AbstractXlsxView {
             cell.setCellValue(obj.toString());
         } else if (Integer.class.isAssignableFrom(propertyType)
                 || Long.class.isAssignableFrom(propertyType)
+                || Double.class.isAssignableFrom(propertyType)
+                || Short.class.isAssignableFrom(propertyType)
+                || Float.class.isAssignableFrom(propertyType)
                 || BigDecimal.class.isAssignableFrom(propertyType)
         ) {
             cell.setCellValue(Double.parseDouble(obj.toString()));
@@ -782,15 +785,19 @@ public class ExcelViewDecorate extends AbstractXlsxView {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             ExportField that = (ExportField) o;
             return order == that.order && fieldCode.equals(that.fieldCode);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(fieldCode, fieldName, order);
+            return Objects.hash(order, fieldCode, fieldName);
         }
     }
 

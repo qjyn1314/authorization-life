@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataSourceProperties.class)
-public class CustomDynamicDataSourceAutoConfiguration {
+public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,

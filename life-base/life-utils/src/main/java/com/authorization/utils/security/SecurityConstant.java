@@ -111,8 +111,6 @@ public interface SecurityConstant {
             "/public/**",
             //监控服务路径
             "/actuator/**",
-            //sql监控控制台
-            "/druid/**",
             //获取client信息接口
             "/oauth2/**",
             //密码登录接口

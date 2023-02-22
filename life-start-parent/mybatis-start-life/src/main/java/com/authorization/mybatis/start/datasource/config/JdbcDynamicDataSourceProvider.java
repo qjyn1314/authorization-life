@@ -2,7 +2,6 @@ package com.authorization.mybatis.start.datasource.config;
 
 import cn.hutool.json.JSONUtil;
 import com.authorization.mybatis.start.datasource.support.DataSourceConstants;
-import com.authorization.utils.json.JsonHelper;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +48,6 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
         property.setUsername(properties.getUsername());
         property.setPassword(properties.getPassword());
         property.setDriverClassName(properties.getDriverClassName());
-        property.setLazy(true);
         map.put(DataSourceConstants.DS_MASTER, property);
 
         ResultSet rs = null;
@@ -73,7 +71,6 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             slaveProperty.setUsername(username);
             slaveProperty.setPassword(password);
             slaveProperty.setDriverClassName(properties.getDriverClassName());
-            slaveProperty.setLazy(true);
             map.put(name, slaveProperty);
         }
         return map;

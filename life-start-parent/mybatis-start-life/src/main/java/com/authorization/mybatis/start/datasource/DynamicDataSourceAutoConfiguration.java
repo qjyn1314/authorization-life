@@ -2,9 +2,7 @@ package com.authorization.mybatis.start.datasource;
 
 import com.authorization.mybatis.start.datasource.config.DataSourceProperties;
 import com.authorization.mybatis.start.datasource.config.JdbcDynamicDataSourceProvider;
-import com.authorization.mybatis.start.datasource.config.LastParamDsProcessor;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
-import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -23,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
  * <p>
  * https://github.com/baomidou/dynamic-datasource-spring-boot-starter/blob/master/test/javax/src/test/java/com/baomidou/dynamic/datasource/test/javax/LoadDatasourceFromJDBCTest.java
  * <p>
- *  //手动切换数据源
+ * 手动切换数据源
  * DynamicDataSourceContextHolder.push("slave");
  *
  * @author wangjunming
@@ -40,9 +38,5 @@ public class DynamicDataSourceAutoConfiguration {
         return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
     }
 
-    @Bean
-    public DsProcessor dsProcessor() {
-        return new LastParamDsProcessor();
-    }
 
 }

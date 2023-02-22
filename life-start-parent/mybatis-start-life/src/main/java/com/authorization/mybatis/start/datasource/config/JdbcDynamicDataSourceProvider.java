@@ -1,5 +1,6 @@
 package com.authorization.mybatis.start.datasource.config;
 
+import cn.hutool.json.JSONUtil;
 import com.authorization.mybatis.start.datasource.support.DataSourceConstants;
 import com.authorization.utils.json.JsonHelper;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
@@ -48,14 +49,14 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
         property.setUsername(properties.getUsername());
         property.setPassword(properties.getPassword());
         property.setDriverClassName(properties.getDriverClassName());
-//        property.setLazy(true);
+        property.setLazy(true);
         map.put(DataSourceConstants.DS_MASTER, property);
 
         ResultSet rs = null;
         try {
             // 从数据库中查询多数据源表获取数据源
             rs = statement.executeQuery(properties.getQueryDsSql());
-            log.info("执行后的结果是-{}", JsonHelper.toJson(rs));
+            log.info("执行后的结果是-{}", JSONUtil.toJsonStr(rs));
         } catch (SQLException e) {
             log.error("查询从数据源失败...{}", e.getMessage());
         }
@@ -63,17 +64,17 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             return map;
         }
         while (rs.next()) {
-            String name = rs.getString(DataSourceConstants.DS_NAME);
+            String name = rs.getString("datasource_name");
             String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
             String username = rs.getString(DataSourceConstants.DS_USER_NAME);
             String password = rs.getString(DataSourceConstants.DS_USER_PWD);
             DataSourceProperty slaveProperty = new DataSourceProperty();
             slaveProperty.setUrl(url);
             slaveProperty.setUsername(username);
-            slaveProperty.setPassword(stringEncryptor.decrypt(password));
+            slaveProperty.setPassword(password);
             slaveProperty.setDriverClassName(properties.getDriverClassName());
-//            slaveProperty.setLazy(true);
-            map.put(name, property);
+            slaveProperty.setLazy(true);
+            map.put(name, slaveProperty);
         }
         return map;
     }

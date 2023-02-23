@@ -40,7 +40,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
      */
     @Override
     protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
-        log.info("加载动态数据源.");
+        log.info("JDBC中加载动态数据源.");
         Map<String, DataSourceProperty> map = new ConcurrentHashMap<>(8);
         // 添加默认主数据源
         DataSourceProperty property = new DataSourceProperty();
@@ -62,7 +62,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             return map;
         }
         while (rs.next()) {
-            String name = rs.getString("datasource_name");
+            String name = rs.getString(DataSourceConstants.DS_NAME);
             String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
             String username = rs.getString(DataSourceConstants.DS_USER_NAME);
             String password = rs.getString(DataSourceConstants.DS_USER_PWD);

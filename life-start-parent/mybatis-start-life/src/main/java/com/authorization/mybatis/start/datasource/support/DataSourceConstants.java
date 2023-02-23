@@ -9,7 +9,7 @@ public interface DataSourceConstants {
     /**
      * 数据源名称
      */
-    String DS_NAME = "name";
+    String DS_NAME = "datasource_name";
 
     /**
      * 默认数据源（master）

@@ -24,7 +24,7 @@ public class LifeUserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer pageNo;
+    private Integer pageNum;
     private Integer pageSize;
     /**
      * 用户编码

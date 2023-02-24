@@ -7,7 +7,6 @@ import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
 import com.authorization.utils.converter.BeanConverter;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageInfo<LifeUserVO> page(LifeUserDTO lifeUser) {
-        return PageHelper.startPage(lifeUser.getPageNo(), lifeUser.getPageSize())
+        return PageHelper.startPage(lifeUser.getPageNum(), lifeUser.getPageSize())
                 .doSelectPageInfo(() -> handleUserPage(lifeUser));
     }
 

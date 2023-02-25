@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author wangjunming
  * @date 2023/2/24 13:26
  */
-@Tag(name = "登录管理控制层", description = "登录管理控制层")
+@Tag(name = "测试动态数据源控制层", description = "测试动态数据源控制层")
 @RestController
 @RequestMapping("/v1/dynamic-datasource")
 public class DataSourceController {
@@ -32,7 +32,7 @@ public class DataSourceController {
     private OauthClientService oauthClientService;
 
 
-    @Operation(summary = "通过请求的域名获取client信息.")
+    @Operation(summary = "测试动态数据源手动切换的效果")
     @GetMapping("/client-domain/{domainName}/grant-type/{grantType}")
     public R<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
                                            @PathVariable String domainName,

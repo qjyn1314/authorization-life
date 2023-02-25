@@ -5,6 +5,7 @@ import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.utils.result.R;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +38,12 @@ public class DataSourceController {
                                            @PathVariable String domainName,
                                            @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
                                            @PathVariable String grantType) {
-        return R.ok(oauthClientService.clientByDomain(domainName, grantType));
+
+        DynamicDataSourceContextHolder.push("slave01");
+        OauthClientVO oauthClientVO = oauthClientService.clientByDomain(domainName, grantType);
+        DynamicDataSourceContextHolder.clear();
+
+        return R.ok(oauthClientVO);
     }
 
 

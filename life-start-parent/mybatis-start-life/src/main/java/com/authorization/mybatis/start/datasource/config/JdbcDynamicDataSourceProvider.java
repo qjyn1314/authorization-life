@@ -1,6 +1,5 @@
 package com.authorization.mybatis.start.datasource.config;
 
-import cn.hutool.json.JSONUtil;
 import com.authorization.mybatis.start.datasource.support.DataSourceConstants;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
@@ -48,13 +47,13 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
         property.setUsername(properties.getUsername());
         property.setPassword(properties.getPassword());
         property.setDriverClassName(properties.getDriverClassName());
+        property.setType(properties.getType());
         map.put(DataSourceConstants.DS_MASTER, property);
 
         ResultSet rs = null;
         try {
             // 从数据库中查询多数据源表获取数据源
             rs = statement.executeQuery(properties.getQueryDsSql());
-            log.info("执行后的结果是-{}", JSONUtil.toJsonStr(rs));
         } catch (SQLException e) {
             log.error("查询从数据源失败...{}", e.getMessage());
         }
@@ -71,6 +70,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             slaveProperty.setUsername(username);
             slaveProperty.setPassword(password);
             slaveProperty.setDriverClassName(properties.getDriverClassName());
+            slaveProperty.setType(properties.getType());
             map.put(name, slaveProperty);
         }
         return map;

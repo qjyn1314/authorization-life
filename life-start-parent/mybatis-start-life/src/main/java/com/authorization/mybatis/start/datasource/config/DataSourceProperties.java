@@ -3,6 +3,8 @@ package com.authorization.mybatis.start.datasource.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import javax.sql.DataSource;
+
 /**
  * @author lengleng
  * @date 2019-05-14
@@ -31,6 +33,11 @@ public class DataSourceProperties {
 	 * 驱动类型
 	 */
 	private String driverClassName;
+
+	/**
+	 * 驱动类型
+	 */
+	private Class<? extends DataSource> type;
 
 	/**
 	 * 查询数据源的SQL

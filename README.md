@@ -139,4 +139,17 @@
     注意: 其中 每个springboot服务中,redis的配置是一致的, 使用  0号  数据库. 
 
 
+## 项目中遇到的问题
+### 一. 项目中使用了 jdk17 + orika 序列化框架,项目中使用到了 orikaBean转换工具类会出现以下错误信息 
+```
+java.lang.reflect.InaccessibleObjectException: Unable to make protected native java.lang.Object java.lang.Object.clone() throws java.lang.CloneNotSupportedException accessible: module java.base does not "opens java.lang" to unnamed module @7671cb68
+```
+#### 参考:
+https://github.com/orika-mapper/orika/issues/377
 
+#### 解决方法:
+添加vm启动参数: 
+
+--add-opens java.base/java.lang=ALL-UNNAMED
+
+### 二. 待记录

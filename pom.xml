@@ -53,10 +53,11 @@
 
         <!--数据库依赖-->
         <mysql.version>8.0.31</mysql.version>
-        <dynamic-datasource.version>3.6.1</dynamic-datasource.version>
         <p6spy.version>3.9.1</p6spy.version>
+        <dynamic-datasource.version>3.6.1</dynamic-datasource.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <pagehelper.version>1.4.6</pagehelper.version>
+        <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <redisson.version>3.17.7</redisson.version>
         <!--工具依赖-->
         <hutool.version>5.8.12</hutool.version>
@@ -197,6 +198,16 @@
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.version}</version>
             </dependency>
+            <!--<dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+                <version>${sharding-jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>sharding-jdbc-spring-namespace</artifactId>
+                <version>${sharding-jdbc.version}</version>
+            </dependency>-->
             <!--以上为数据库连接-->
             <dependency>
                 <groupId>org.redisson</groupId>

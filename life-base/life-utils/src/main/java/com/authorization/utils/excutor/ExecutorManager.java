@@ -134,7 +134,9 @@ public class ExecutorManager {
      */
     private static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName) {
         // 每60*3秒输出一下线程池的状态
-        displayThreadPoolStatus(threadPool, threadPoolName, RandomUtil.randomInt(1800), TimeUnit.SECONDS);
+        int randomInt = RandomUtil.randomInt(1800);
+        log.info("ThreadPool Name: [{}], in [{}] seconds output state. ", threadPoolName, randomInt);
+        displayThreadPoolStatus(threadPool, threadPoolName, randomInt, TimeUnit.SECONDS);
     }
 
     /**

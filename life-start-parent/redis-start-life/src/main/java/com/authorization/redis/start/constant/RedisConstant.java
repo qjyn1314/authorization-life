@@ -1,4 +1,4 @@
-package com.authorization.redis.start.service;
+package com.authorization.redis.start.constant;
 
 /**
  * redis的常量类

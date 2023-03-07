@@ -1,6 +1,6 @@
 package com.authorization.life.system.test;
 
-import cn.hutool.json.JSONUtil;
+import com.authorization.utils.json.JsonHelper;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class TestCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("dateSourceList->{}", JSONUtil.toJsonStr(dateSourceList));
+        log.info("dateSourceList->{}", JsonHelper.toJson(dateSourceList));
         log.info("dateSourceList->{}", DynamicDataSourceContextHolder.peek());
     }
 

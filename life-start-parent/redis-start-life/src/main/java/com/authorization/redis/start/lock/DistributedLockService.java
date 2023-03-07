@@ -32,11 +32,11 @@ public class DistributedLockService {
         DistributedLockService.staticRedissonReactiveClient = redissonReactiveClient;
     }
 
-    public static RedissonClient getStaticRedissonClient() {
+    public static RedissonClient getRedissonCli() {
         return staticRedissonClient;
     }
 
-    public static RedissonReactiveClient getStaticRedissonReactiveClient() {
+    public static RedissonReactiveClient getRedisReactCli() {
         return staticRedissonReactiveClient;
     }
 
@@ -46,7 +46,7 @@ public class DistributedLockService {
      * @param lockKey 锁的key
      */
     public void lock(String lockKey) {
-        RLock lock = getStaticRedissonClient().getLock(lockKey);
+        RLock lock = getRedissonCli().getLock(lockKey);
         lock.lock();
     }
 
@@ -56,7 +56,7 @@ public class DistributedLockService {
      * @param lockKey 锁的key
      */
     public void unlock(String lockKey) {
-        RLock lock = getStaticRedissonClient().getLock(lockKey);
+        RLock lock = getRedissonCli().getLock(lockKey);
         lock.unlock();
     }
 

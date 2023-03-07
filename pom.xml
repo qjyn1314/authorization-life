@@ -93,12 +93,12 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>life-core</artifactId>
+                <artifactId>life-utils</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>life-utils</artifactId>
+                <artifactId>life-core</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -144,11 +144,13 @@
             </dependency>
             <!--对于api工程可以在各个子服务工程中引入并设置版本号-end-->
             <!--以上为工程内部的子工程-->
+            <!--hutool工具类-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+            <!--谷歌工具类-->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

@@ -72,13 +72,13 @@ public class Oauth2SecurityConfig {
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
 
-        authorizationServerConfigurer
-                .authorizationEndpoint(endpointConfigurer -> {
-                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
-                    endpointConfigurer
-                            //配置自定义的请求成功的处理器
-                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-                });
+//        authorizationServerConfigurer
+//                .authorizationEndpoint(endpointConfigurer -> {
+//                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
+//                    endpointConfigurer
+//                            //配置自定义的请求成功的处理器
+//                            .authorizationResponseHandler(new OAuth2SuccessHandler());
+//                });
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截

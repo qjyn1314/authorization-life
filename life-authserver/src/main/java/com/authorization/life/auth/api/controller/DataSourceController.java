@@ -3,8 +3,7 @@ package com.authorization.life.auth.api.controller;
 import com.authorization.life.auth.app.service.ConfDatasourceService;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
-import com.authorization.utils.result.R;
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.authorization.utils.result.Result;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,16 +33,16 @@ public class DataSourceController {
 
     @Operation(summary = "测试动态数据源手动切换的效果")
     @GetMapping("/client-domain/{domainName}/grant-type/{grantType}")
-    public R<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
+    public Result<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
                                            @PathVariable String domainName,
-                                           @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
+                                                @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
                                            @PathVariable String grantType) {
 
         DynamicDataSourceContextHolder.push("slave01");
         OauthClientVO oauthClientVO = oauthClientService.clientByDomain(domainName, grantType);
         DynamicDataSourceContextHolder.clear();
 
-        return R.ok(oauthClientVO);
+        return Result.ok(oauthClientVO);
     }
 
 

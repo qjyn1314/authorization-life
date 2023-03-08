@@ -1,7 +1,8 @@
 package com.authorization.core.security.handle;
 
 import cn.hutool.json.JSONUtil;
-import com.authorization.utils.result.R;
+import com.authorization.utils.exception.ErrorMsgDefaultConstant;
+import com.authorization.utils.result.Result;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -17,8 +18,6 @@ import java.nio.charset.StandardCharsets;
  */
 public class TokenInformationExpiredStrategy implements SessionInformationExpiredStrategy {
 
-    public static final String EXPIRED_STRATEGY_MSG = "当前登录过期，请重新登录。";
-
     @Override
     public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
         HttpServletResponse response = event.getResponse();
@@ -26,10 +25,9 @@ public class TokenInformationExpiredStrategy implements SessionInformationExpire
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         PrintWriter out = response.getWriter();
-        out.write(JSONUtil.toJsonStr(R.failMsg(EXPIRED_STRATEGY_MSG)));
+        out.write(JSONUtil.toJsonStr(Result.fail(ErrorMsgDefaultConstant.EXPIRED_STRATEGY_MSG.getMsgCode())));
         out.flush();
         out.close();
     }
-
 
 }

@@ -1,6 +1,6 @@
 package com.authorization.remote.system.service;
 
-import com.authorization.utils.result.R;
+import com.authorization.utils.result.Result;
 
 /**
  * System-life 服务 暴露的远程接口
@@ -11,6 +11,6 @@ import com.authorization.utils.result.R;
 public interface SystemRemoteService {
 
 
-    R<String> getSystemRemoteNowDate();
+    Result<String> getSystemRemoteNowDate();
 
 }

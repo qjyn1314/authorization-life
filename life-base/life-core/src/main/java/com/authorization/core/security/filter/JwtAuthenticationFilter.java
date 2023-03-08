@@ -3,6 +3,8 @@ package com.authorization.core.security.filter;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.security.entity.UserDetail;
+import com.authorization.core.security.exception.NotLoggedException;
+import com.authorization.utils.exception.ErrorMsgDefaultConstant;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
 import com.authorization.utils.security.SsoSecurityProperties;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -51,10 +54,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwt);
         // 开启登录且请求路径不在忽略认证的url集合中
         Boolean authEnable = getAuthEnable(request);
+        log.info("authEnable -> {}", authEnable);
         if (authEnable) {
             UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
             if (Objects.isNull(userDetail)) {
                 SecurityContextHolder.clearContext();
+                throw new NotLoggedException(ErrorMsgDefaultConstant.USER_NOT_LOGIN.getMsgCode());
             }
             log.info("登录成功之后解析jwt后的用户信息是-{}", JsonHelper.toJson(userDetail));
             chain.doFilter(request, response);
@@ -74,15 +79,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         }
     }
 
+    /**
+     * 判断是否需要登录.
+     *
+     * @param request 当前请求信息
+     * @return Boolean true- 必须有登录用户信息, false- 不需要登录用户的信息, 为默认用户信息.
+     */
     private Boolean getAuthEnable(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        if (!StringUtils.hasText(requestURI)) {
+        Boolean enable = ssoSecurityProperties.getEnable();
+        //不需要认证则 直接返回false,
+        if (!enable) {
+            return false;
+        }
+        String requestUrl = request.getRequestURI();
+        if (!StringUtils.hasText(requestUrl)) {
             return true;
         }
-        Boolean enable = ssoSecurityProperties.getEnable();
+        //需要验证, 但是又匹配到了 不需要验证的url, 则匹配通过后 返回false
         Set<String> ignorePermUrls = ssoSecurityProperties.getIgnorePermUrls();
-        boolean permUrlsFlag = ignorePermUrls.stream().anyMatch(requestURI::startsWith);
-        return enable && permUrlsFlag;
+        for (String ignorePermUrl : ignorePermUrls) {
+            // 验证当前请求, 是否符合 指定的url路径.
+            boolean matches = AntPathRequestMatcher.antMatcher(ignorePermUrl).matches(request);
+            if (matches) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

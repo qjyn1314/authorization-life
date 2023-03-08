@@ -1,15 +1,19 @@
 package com.authorization.life.auth.infra.security.handler.sso;
 
 import cn.hutool.json.JSONUtil;
+import com.authorization.utils.result.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 单点登录成功处理类
@@ -20,5 +24,16 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         log.info("密码验证登录成功的对象信息是-{}", JSONUtil.toJsonStr(authentication));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        try {
+            PrintWriter out = response.getWriter();
+            out.write(JSONUtil.toJsonStr(Result.ok(JSONUtil.toJsonStr(authentication))));
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            log.error("登录成功处理器处理失败，返回数据异常.", e);
+        }
     }
 }

@@ -154,13 +154,13 @@ public class DefaultSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http)
+    public AuthenticationManager authenticationManager(HttpSecurity http, AuthenticationProvider usernamePasswordProvider)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder)
                 .and()
-                .authenticationProvider(usernamePasswordProvider())
+                .authenticationProvider(usernamePasswordProvider)
                 .build();
     }
 

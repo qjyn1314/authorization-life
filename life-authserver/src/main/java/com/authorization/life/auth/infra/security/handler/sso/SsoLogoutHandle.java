@@ -4,9 +4,10 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.security.entity.UserDetail;
 import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.utils.exception.ErrorMsgDefaultConstant;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
-import com.authorization.utils.result.R;
+import com.authorization.utils.result.Result;
 import com.authorization.utils.security.SecurityConstant;
 import com.authorization.utils.security.SsoSecurityProperties;
 import com.nimbusds.jose.JWSObject;
@@ -60,7 +61,7 @@ public class SsoLogoutHandle implements LogoutHandler {
         if (StrUtil.isBlank(authorization) || StrUtil.isBlank(interiorJwt)) {
             try {
                 PrintWriter out = response.getWriter();
-                out.write(JSONUtil.toJsonStr(new R<>(R.ERROR, "未找到请求头的token，请确认已登录。", null)));
+                out.write(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, ErrorMsgDefaultConstant.TOKEN_OF_HEADER_NOT_FOUND.getMsgCode())));
                 out.flush();
                 out.close();
             } catch (IOException e) {
@@ -101,7 +102,7 @@ public class SsoLogoutHandle implements LogoutHandler {
         }
         try {
             PrintWriter out = response.getWriter();
-            out.write(JSONUtil.toJsonStr(new R<>(R.SUCCESS, R.SUCCESS_DESC, null)));
+            out.write(JSONUtil.toJsonStr(Result.ok()));
             out.flush();
             out.close();
         } catch (IOException e) {

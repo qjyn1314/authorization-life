@@ -82,7 +82,7 @@ public class ObjectMappers {
         // 允许出现特殊字符和转义符
         objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
         // 序列化结果格式化，美化输出
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+//        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         return objectMapper;
     }
 }

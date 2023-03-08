@@ -2,7 +2,7 @@ package com.authorization.life.auth.api.controller;
 
 import com.authorization.common.log.LogAdvice;
 import com.authorization.remote.system.service.SystemRemoteService;
-import com.authorization.utils.result.R;
+import com.authorization.utils.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.redisson.api.RedissonClient;
@@ -33,7 +33,7 @@ public class SystemRemoteController {
     @Operation(summary = "获取-SystemRemote-当前时间", description = "获取-SystemRemote-当前时间")
     @LogAdvice
     @GetMapping("/remote-date")
-    public R<String> getSystemRemoteNowDate() {
+    public Result<String> getSystemRemoteNowDate() {
         return systemRemoteService.getSystemRemoteNowDate();
     }
 

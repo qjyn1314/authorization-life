@@ -8,7 +8,7 @@ import org.springframework.aop.framework.AopContext;
  * @author wangjunming
  * @date 2022/12/30 13:41
  */
-public interface LifeProxy<T> {
+public interface CurrentProxy<T> {
 
     @SuppressWarnings("unchecked")
     default T self(){

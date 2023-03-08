@@ -3,7 +3,7 @@ package com.authorization.life.auth.api.controller;
 import com.authorization.core.security.entity.UserDetail;
 import com.authorization.core.security.entity.UserHelper;
 import com.authorization.life.auth.app.service.UserService;
-import com.authorization.utils.result.R;
+import com.authorization.utils.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class OauthController {
 
     @Operation(summary = "获取当前登录用户信息")
     @GetMapping("/self-user")
-    public R<UserDetail> getCurrentUser() {
-        return R.ok(UserHelper.getUserDetail());
+    public Result<UserDetail> getCurrentUser() {
+        return Result.ok(UserHelper.getUserDetail());
     }
 
 }

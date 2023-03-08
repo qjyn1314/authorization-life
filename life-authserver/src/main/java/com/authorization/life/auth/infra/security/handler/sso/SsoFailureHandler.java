@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.life.auth.infra.security.sso.ValiVerificationCodeException;
 import com.authorization.life.auth.infra.security.sso.VerificationCodeException;
 import com.authorization.life.auth.infra.security.vo.AuthCodeExceptionVO;
-import com.authorization.utils.result.R;
+import com.authorization.utils.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.*;
@@ -34,12 +34,12 @@ public class SsoFailureHandler implements AuthenticationFailureHandler {
                                         AuthenticationException exception) throws IOException {
         String message = exception.getMessage();
         log.error("Sso登录失败的信息是：", exception);
-        R<AuthCodeExceptionVO> r = new R<>(R.FORM_ERROR, message, handleDataByException(exception));
+        Result<AuthCodeExceptionVO> result = Result.failForCode(Result.FORM_ERROR, message, handleDataByException(exception));
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         PrintWriter out = response.getWriter();
-        out.write(JSONUtil.toJsonStr(r));
+        out.write(JSONUtil.toJsonStr(result));
         out.flush();
         out.close();
     }

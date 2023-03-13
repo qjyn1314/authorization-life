@@ -1,4 +1,4 @@
-package com.authorization.utils.exception.vo;
+package com.authorization.core.exception.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.EqualsAndHashCode;

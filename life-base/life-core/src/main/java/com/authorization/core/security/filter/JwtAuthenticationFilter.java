@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.security.entity.UserDetail;
 import com.authorization.core.security.exception.NotLoggedException;
-import com.authorization.utils.exception.ErrorMsgDefaultConstant;
+import com.authorization.core.exception.handle.DefaultErrorMsg;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
 import com.authorization.utils.security.SsoSecurityProperties;
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             UserDetail userDetail = handleLoginUser(request, response, chain, jwt);
             if (Objects.isNull(userDetail)) {
                 SecurityContextHolder.clearContext();
-                throw new NotLoggedException(ErrorMsgDefaultConstant.USER_NOT_LOGIN.getMsgCode());
+                throw new NotLoggedException(DefaultErrorMsg.USER_NOT_LOGIN.getMsgCode());
             }
             log.info("登录成功之后解析jwt后的用户信息是-{}", JsonHelper.toJson(userDetail));
             chain.doFilter(request, response);

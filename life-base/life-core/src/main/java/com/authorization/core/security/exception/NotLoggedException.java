@@ -1,6 +1,6 @@
 package com.authorization.core.security.exception;
 
-import com.authorization.utils.exception.CommonException;
+import com.authorization.core.exception.handle.CommonException;
 
 /**
  * 未登录的异常信息.

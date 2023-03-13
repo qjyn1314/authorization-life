@@ -41,6 +41,7 @@ public class ReactiveExceptionHandler extends DefaultErrorWebExceptionHandler {
 
     @Override
     protected Map<String, Object> getErrorAttributes(ServerRequest request, ErrorAttributeOptions options) {
+        log.info("进入了- ReactiveExceptionHandler - getErrorAttributes 方法, ");
         // 默认502异常
         int httpStatus = HttpStatus.BAD_GATEWAY.value();
         // 未知错误，请联系管理员

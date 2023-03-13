@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.security.entity.UserDetail;
 import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.exception.ErrorMsgDefaultConstant;
+import com.authorization.core.exception.handle.DefaultErrorMsg;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
 import com.authorization.utils.result.Result;
@@ -61,7 +61,7 @@ public class SsoLogoutHandle implements LogoutHandler {
         if (StrUtil.isBlank(authorization) || StrUtil.isBlank(interiorJwt)) {
             try {
                 PrintWriter out = response.getWriter();
-                out.write(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, ErrorMsgDefaultConstant.TOKEN_OF_HEADER_NOT_FOUND.getMsgCode())));
+                out.write(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, DefaultErrorMsg.TOKEN_OF_HEADER_NOT_FOUND.getMsgCode())));
                 out.flush();
                 out.close();
             } catch (IOException e) {

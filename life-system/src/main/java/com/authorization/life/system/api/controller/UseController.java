@@ -4,7 +4,6 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.authorization.common.log.LogAdvice;
 import com.authorization.life.system.infra.constant.ErrorMsgConstant;
-import com.authorization.utils.message.MsgResource;
 import com.authorization.utils.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +42,7 @@ public class UseController {
     @Operation(summary = "获取国际化消息提示-通过抛出异常获得提示信息", description = "获取国际化消息提示-通过抛出异常获得提示信息")
     @LogAdvice
     @GetMapping("/in18/exception")
-    public Result<Void> getIn18ByException() {
+    public Result<String> getIn18ByException() {
 
         Integer i = 10 / 0;
 

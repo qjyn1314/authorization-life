@@ -1,7 +1,7 @@
 package com.authorization.life.system.infra.constant;
 
-import com.authorization.utils.exception.vo.ExceptionDefaultMsg;
-import com.authorization.utils.exception.vo.ExceptionErrorCode;
+import com.authorization.core.exception.vo.ExceptionDefaultMsg;
+import com.authorization.core.exception.vo.ExceptionErrorCode;
 
 /**
  * 错误消息常量类

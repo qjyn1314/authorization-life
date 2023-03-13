@@ -42,9 +42,7 @@ public class RequestUtils {
      * 获取服务器地址
      */
     public static String getServerAndContextUrl() {
-        HttpServletRequest request = getRequest();
-        return getScheme() + "://" + getHost() + (getPort() == null ? "" : (":" + getPort())) +
-                request.getContextPath();
+        return getServerUrl() + getRequest().getContextPath();
     }
 
     /**

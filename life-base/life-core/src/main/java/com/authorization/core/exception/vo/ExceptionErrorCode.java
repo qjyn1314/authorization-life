@@ -1,4 +1,4 @@
-package com.authorization.utils.exception.vo;
+package com.authorization.core.exception.vo;
 
 /**
  * 错误信息编码接口

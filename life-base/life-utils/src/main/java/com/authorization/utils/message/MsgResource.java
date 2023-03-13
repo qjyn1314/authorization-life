@@ -50,8 +50,15 @@ public class MsgResource {
      * 从本地消息文件获取多语言消息
      */
     public static Msg getMessageLocal(String code, Object[] args, Locale locale) {
-        String message = BUNDLE_MESSAGE_SOURCE.getMessage(code, args, Locale.getDefault());
+        String message = BUNDLE_MESSAGE_SOURCE.getMessage(code, args, locale);
         return new Msg().setCode(code).setMessage(message);
+    }
+
+    /**
+     * 从本地消息文件获取多语言消息
+     */
+    public static String getMsg(String code, Locale locale) {
+        return BUNDLE_MESSAGE_SOURCE.getMessage(code, null, Locale.getDefault());
     }
 
     /**

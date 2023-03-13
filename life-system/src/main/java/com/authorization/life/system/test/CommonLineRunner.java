@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -18,15 +19,23 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class TestCommandLineRunner implements CommandLineRunner {
+public class CommonLineRunner implements CommandLineRunner {
 
     @Autowired
     private List<DataSource> dateSourceList;
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public void run(String... args) {
         log.info("dateSourceList->{}", JSONUtil.toJsonStr(dateSourceList));
         log.info("dateSourceList->{}", DynamicDataSourceContextHolder.peek());
+        log.info("dataSource-{}", dataSource);
+        try {
+            log.info("dataSource-{}", dataSource.getConnection());
+        } catch (SQLException e) {
+            log.error("获取数据库连接失败, ", e);
+        }
     }
 
 }

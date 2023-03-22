@@ -7,6 +7,7 @@ import com.authorization.life.system.infra.constant.ErrorMsgConstant;
 import com.authorization.utils.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import java.util.Date;
  * @author wangjunming
  * @since 2022/6/4 2:07
  */
+@Slf4j
 @RestController
 @RequestMapping("/use")
 @Tag(name = "测试服务控制层", description = "用来给开发人员测试使用的")

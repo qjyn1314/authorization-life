@@ -35,8 +35,6 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi2-ui</artifactId>
-            <!-- TODO 是找过了开源者, 单独发布的快照版本, 需下次更新为最新版本 -->
-            <version>4.1.0-SNAPSHOT</version>
         </dependency>
         <!--knife4j-end-->
         <dependency>
@@ -67,14 +65,6 @@
             <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>nexus-maven</id>
-            <name>nexus-maven</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
 
     <build>
         <finalName>${project.artifactId}</finalName>

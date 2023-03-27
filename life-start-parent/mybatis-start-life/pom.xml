@@ -47,15 +47,19 @@
             <artifactId>p6spy</artifactId>
         </dependency>
         <!--shardingsphere start-->
-       <!-- <dependency>
+        <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-jdbc-spring-namespace</artifactId>
-        </dependency>-->
+        </dependency>
         <!--shardingsphere end-->
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>sharding-remote-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

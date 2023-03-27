@@ -76,6 +76,7 @@
         <module>life-authserver</module>
         <module>life-system</module>
         <module>life-remote-api</module>
+        <module>life-shardingsphere</module>
 
     </modules>
 
@@ -142,6 +143,11 @@
                 <artifactId>system-remote-api</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>sharding-remote-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!--对于api工程可以在各个子服务工程中引入并设置版本号-end-->
             <!--以上为工程内部的子工程-->
             <!--hutool工具类-->
@@ -200,7 +206,7 @@
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.version}</version>
             </dependency>
-            <!--<dependency>
+            <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
                 <version>${sharding-jdbc.version}</version>
@@ -209,7 +215,7 @@
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>sharding-jdbc-spring-namespace</artifactId>
                 <version>${sharding-jdbc.version}</version>
-            </dependency>-->
+            </dependency>
             <!--以上为数据库连接-->
             <dependency>
                 <groupId>org.redisson</groupId>
@@ -282,7 +288,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <!--以上为基础的导入依赖-->
         </dependencies>
     </dependencyManagement>

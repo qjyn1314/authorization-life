@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+
+    <dubbo:provider token="true"/>
+    <!--对外暴露服务, 服务实例是springioc中的bean, ref 的值就是 ioc中bean的名称 -->
+
+    <dubbo:service
+            interface="com.authorization.remote.sharding.service.ShardingRemoteService"
+            ref="shardingRemoteServiceImpl"
+            version="${remote.version}"
+            timeout="${remote.timeout}"
+            group="${remote.provider.group}"
+    />
+
+
+</beans>

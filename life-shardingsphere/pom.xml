@@ -10,31 +10,24 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>life-remote-api</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>authserver-remote-api</module>
-        <module>system-remote-api</module>
-        <module>sharding-remote-api</module>
-    </modules>
+    <artifactId>life-shardingsphere</artifactId>
 
     <properties>
-
     </properties>
+
 
     <dependencies>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>life-parent</artifactId>
+            <artifactId>life-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>life-utils</artifactId>
+            <artifactId>mybatis-start-life</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>valid-start-life</artifactId>
+            <artifactId>redis-start-life</artifactId>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
@@ -42,8 +35,34 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>excel-start-life</artifactId>
+            <artifactId>dubbo-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>sharding-remote-api</artifactId>
         </dependency>
     </dependencies>
+
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!--源码包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <!--jar包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <!--springboot启动类的jar包-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

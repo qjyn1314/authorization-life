@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @EnableAuthServerConsumer
 @EnableSystemProvider
 @EnableDiscoveryClient
-@MapperScan(basePackages = {"com.authserver.system.mapper",}, annotationClass = Repository.class)
+@MapperScan(basePackages = {"com.authorization.life.system.infra.mapper",}, annotationClass = Repository.class)
 @SpringBootApplication
 public class SystemLifeApplication {
 

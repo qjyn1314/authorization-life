@@ -1,5 +1,6 @@
 package com.authorization.utils.jasypt;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author wangjunming
  * @date 2022/12/20 15:39
  */
+@Slf4j
 @Configuration
 public class JasyptConfig {
 
@@ -28,6 +30,7 @@ public class JasyptConfig {
     public StringEncryptor stringEncryptor() {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         encryptor.setConfig(JasyptUtils.getSimpleStringPBEConfig(JasyptUtils.SECRET_KEY));
+        log.info("StringEncryptor init...");
         return encryptor;
     }
 

@@ -5,5 +5,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
 
+        <dubbo:reference
+            interface="com.authorization.remote.sharding.service.ShardingRemoteService"
+            id="shardingRemoteService"
+            protocol="dubbo"
+            version="${remote.version}"
+            timeout="${remote.timeout}"
+            check="${remote.checked}"
+            group="${remote.consumer.group}"
+    />
+
 
 </beans>

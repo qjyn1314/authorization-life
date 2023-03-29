@@ -41,6 +41,14 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
+            <artifactId>datasource-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>sharding-remote-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
             <artifactId>system-remote-api</artifactId>
         </dependency>
         <dependency>

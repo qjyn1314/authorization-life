@@ -3,7 +3,6 @@ package com.authorization.life.auth.api.controller;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.utils.result.Result;
-import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,9 +34,7 @@ public class DynamicDataSourceController {
                                                 @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
                                                 @PathVariable String grantType) {
 
-        DynamicDataSourceContextHolder.push("slave01");
         OauthClientVO oauthClientVO = oauthClientService.clientByDomain(domainName, grantType);
-        DynamicDataSourceContextHolder.clear();
 
         return Result.ok(oauthClientVO);
     }

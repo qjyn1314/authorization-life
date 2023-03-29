@@ -1,4 +1,4 @@
-package com.authorization.mybatis.start.datasource.support;
+package com.authorization.life.datasource.start.datasource.support;
 
 /**
  * <p>

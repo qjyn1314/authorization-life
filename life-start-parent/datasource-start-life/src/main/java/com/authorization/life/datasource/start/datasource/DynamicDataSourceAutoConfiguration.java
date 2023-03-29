@@ -1,17 +1,22 @@
-package com.authorization.mybatis.start.datasource;
+package com.authorization.life.datasource.start.datasource;
 
-import com.authorization.mybatis.start.datasource.config.DataSourceProperties;
-import com.authorization.mybatis.start.datasource.config.JdbcDynamicDataSourceProvider;
-import com.authorization.mybatis.start.datasource.config.LastParamDsProcessor;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
+import com.authorization.life.datasource.start.datasource.config.DataSourceProperties;
+import com.authorization.life.datasource.start.datasource.config.JdbcDynamicDataSourceProvider;
+import com.authorization.life.datasource.start.datasource.config.LastParamDsProcessor;
+import com.authorization.remote.sharding.service.ShardingRemoteService;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -28,21 +33,29 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author wangjunming
  */
+@Slf4j
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataSourceProperties.class)
 public class DynamicDataSourceAutoConfiguration {
 
+    @Resource
+    private ShardingRemoteService shardingRemoteService;
+    @Autowired
+    private Environment environment;
+
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
-                                                               DataSourceProperties properties,
-                                                               DefaultDataSourceCreator defaultDataSourceCreator) {
+                                                               DataSourceProperties properties) {
+        log.info("stringEncryptor->{}", stringEncryptor);
+        log.info("shardingRemoteService->{}", shardingRemoteService);
+        log.info("environment->{}", environment);
         return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
     }
 
-	@Bean
-	public DsProcessor dsProcessor() {
-		return new LastParamDsProcessor();
-	}
+    @Bean
+    public DsProcessor dsProcessor() {
+        return new LastParamDsProcessor();
+    }
 
 }

@@ -1,6 +1,6 @@
-package com.authorization.mybatis.start.datasource.config;
+package com.authorization.life.datasource.start.datasource.config;
 
-import com.authorization.mybatis.start.datasource.support.DataSourceConstants;
+import com.authorization.life.datasource.start.datasource.support.DataSourceConstants;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;

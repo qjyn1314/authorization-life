@@ -109,6 +109,11 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
+                <artifactId>datasource-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
                 <artifactId>redis-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>

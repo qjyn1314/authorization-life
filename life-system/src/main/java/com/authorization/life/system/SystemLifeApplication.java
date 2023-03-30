@@ -2,7 +2,6 @@ package com.authorization.life.system;
 
 import com.authorization.life.datasource.start.datasource.annotion.EnableDynamicDataSource;
 import com.authorization.remote.authserver.auto.EnableAuthServerConsumer;
-import com.authorization.remote.sharding.auto.EnableShardingConsumer;
 import com.authorization.remote.system.auto.EnableSystemProvider;
 import com.authorization.utils.message.MsgResource;
 import org.mybatis.spring.annotation.MapperScan;
@@ -11,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.stereotype.Repository;
 
-@EnableShardingConsumer
 @EnableAuthServerConsumer
 @EnableSystemProvider
 @EnableDynamicDataSource

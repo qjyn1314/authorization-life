@@ -16,7 +16,6 @@
     <modules>
         <module>authserver-remote-api</module>
         <module>system-remote-api</module>
-        <module>sharding-remote-api</module>
     </modules>
 
     <properties>

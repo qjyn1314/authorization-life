@@ -76,7 +76,6 @@
         <module>life-authserver</module>
         <module>life-system</module>
         <module>life-remote-api</module>
-        <module>life-shardingsphere</module>
 
     </modules>
 
@@ -148,11 +147,6 @@
                 <artifactId>system-remote-api</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <dependency>
-                <groupId>com.authorization.life</groupId>
-                <artifactId>sharding-remote-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
             <!--对于api工程可以在各个子服务工程中引入并设置版本号-end-->
             <!--以上为工程内部的子工程-->
             <!--hutool工具类-->
@@ -161,7 +155,7 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!--谷歌工具类-->
+            <!--guava工具类-->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -179,7 +173,7 @@
                 <artifactId>easyexcel</artifactId>
                 <version>${easyexcel.version}</version>
             </dependency>
-            <!--配置文件加解密-->
+            <!--配置文件中字段的加解密-->
             <dependency>
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>

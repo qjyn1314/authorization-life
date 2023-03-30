@@ -1,6 +1,7 @@
 package com.authorization.life.datasource.start.datasource.config;
 
 import com.authorization.life.datasource.start.datasource.support.DataSourceConstants;
+import com.authorization.utils.kvp.KvpFormat;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,13 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 
     private final StringEncryptor stringEncryptor;
 
-    public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties) {
+    private Map<String, DataSourceProperty> dataSourceMap;
+
+    public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties,Map<String, DataSourceProperty> dataSourceMap) {
         super(properties.getDriverClassName(), properties.getUrl(), properties.getUsername(), properties.getPassword());
         this.stringEncryptor = stringEncryptor;
         this.properties = properties;
+        this.dataSourceMap = dataSourceMap;
     }
 
     /**
@@ -39,7 +43,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
      */
     @Override
     protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
-        log.info("JDBC中加载动态数据源.");
+        log.info("加载JDBC动态数据源...");
         Map<String, DataSourceProperty> map = new ConcurrentHashMap<>(8);
         // 添加默认主数据源
         DataSourceProperty property = new DataSourceProperty();
@@ -57,23 +61,36 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
         } catch (SQLException e) {
             log.error("查询从数据源失败...{}", e.getMessage());
         }
-        if (Objects.isNull(rs)) {
-            return map;
+        if (Objects.nonNull(rs)) {
+            getSalveDataSource(rs, map);
         }
+        this.dataSourceMap = map;
+        return map;
+    }
+
+    private void getSalveDataSource(ResultSet rs, Map<String, DataSourceProperty> map) throws SQLException {
         while (rs.next()) {
             String name = rs.getString(DataSourceConstants.DS_NAME);
-            String url = rs.getString(DataSourceConstants.DS_JDBC_URL);
             String username = rs.getString(DataSourceConstants.DS_USER_NAME);
             String password = rs.getString(DataSourceConstants.DS_USER_PWD);
+            log.info("数据库中的密码->{}", password);
+            password = stringEncryptor.decrypt(password);
+            log.info("解析数据库中的密码成功后->{}", password);
+            String databaseIp = rs.getString(DataSourceConstants.DATABASE_IP);
+            String databasePort = rs.getString(DataSourceConstants.DATABASE_PORT);
+            String databaseName = rs.getString(DataSourceConstants.DATABASE_NAME);
+            String url = rs.getString(DataSourceConstants.FORMAT_URL);
+            String realJdbcUrl = KvpFormat.of(url).add(DataSourceConstants.DATABASE_IP, databaseIp)
+                    .add(DataSourceConstants.DATABASE_PORT, databasePort).add(DataSourceConstants.DATABASE_NAME, databaseName).format();
+            // jdbc:mysql://{database_ip}:{database_port}/{database_name}?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
             DataSourceProperty slaveProperty = new DataSourceProperty();
-            slaveProperty.setUrl(url);
+            slaveProperty.setUrl(realJdbcUrl);
             slaveProperty.setUsername(username);
             slaveProperty.setPassword(password);
             slaveProperty.setDriverClassName(properties.getDriverClassName());
             slaveProperty.setType(properties.getType());
             map.put(name, slaveProperty);
         }
-        return map;
     }
 
 }

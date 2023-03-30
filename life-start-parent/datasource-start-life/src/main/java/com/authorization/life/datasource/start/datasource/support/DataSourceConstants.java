@@ -17,9 +17,24 @@ public interface DataSourceConstants {
     String DS_MASTER = "master";
 
     /**
-     * jdbcurl
+     * databaseip
      */
-    String DS_JDBC_URL = "url";
+    String DATABASE_IP = "database_ip";
+
+    /**
+     * database_port
+     */
+    String DATABASE_PORT = "database_port";
+
+    /**
+     * database_name
+     */
+    String DATABASE_NAME = "database_name";
+
+    /**
+     * format_url
+     */
+    String FORMAT_URL = "url";
 
     /**
      * 用户名

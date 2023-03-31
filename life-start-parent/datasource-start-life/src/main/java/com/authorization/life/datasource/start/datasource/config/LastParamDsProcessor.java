@@ -1,4 +1,4 @@
-package com.authorization.mybatis.start.datasource.config;
+package com.authorization.life.datasource.start.datasource.config;
 
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;

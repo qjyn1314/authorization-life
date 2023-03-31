@@ -1,2 +1,1 @@
 com.authorization.mybatis.start.MybatisPlusConfig
-com.authorization.mybatis.start.datasource.DynamicDataSourceAutoConfiguration

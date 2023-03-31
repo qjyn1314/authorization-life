@@ -1,16 +1,20 @@
-package com.authorization.mybatis.start.datasource;
+package com.authorization.life.datasource.start.datasource;
 
-import com.authorization.mybatis.start.datasource.config.DataSourceProperties;
-import com.authorization.mybatis.start.datasource.config.JdbcDynamicDataSourceProvider;
-import com.authorization.mybatis.start.datasource.config.LastParamDsProcessor;
+import com.authorization.life.datasource.start.datasource.config.DataSourceProperties;
+import com.authorization.life.datasource.start.datasource.config.JdbcDynamicDataSourceProvider;
+import com.authorization.life.datasource.start.datasource.config.LastParamDsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -27,19 +31,23 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author wangjunming
  */
+@Slf4j
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties(DataSourceProperties.class)
 public class DynamicDataSourceAutoConfiguration {
 
+    private Map<String, DataSourceProperty> dataSourceMap;
+
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
                                                                DataSourceProperties properties) {
-        return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
+        return new JdbcDynamicDataSourceProvider(stringEncryptor, properties, dataSourceMap);
     }
 
     @Bean
     public DsProcessor dsProcessor() {
+        log.info("dataSourceMap->{}", dataSourceMap);
         return new LastParamDsProcessor();
     }
 

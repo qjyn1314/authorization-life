@@ -1,6 +1,5 @@
 package com.authorization.life.auth.api.controller;
 
-import com.authorization.life.auth.app.service.ConfDatasourceService;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.utils.result.Result;
@@ -22,10 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "测试动态数据源控制层", description = "测试动态数据源控制层")
 @RestController
 @RequestMapping("/v1/dynamic-datasource")
-public class DataSourceController {
+public class DynamicDataSourceController {
 
-    @Autowired
-    private ConfDatasourceService datasourceService;
     @Autowired
     private OauthClientService oauthClientService;
 
@@ -36,7 +33,9 @@ public class DataSourceController {
                                                 @PathVariable String domainName,
                                                 @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
                                                 @PathVariable String grantType) {
+
         OauthClientVO oauthClientVO = oauthClientService.clientByDomain(domainName, grantType);
+
         return Result.ok(oauthClientVO);
     }
 

@@ -108,6 +108,11 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
+                <artifactId>datasource-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
                 <artifactId>redis-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -150,7 +155,7 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!--谷歌工具类-->
+            <!--guava工具类-->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -168,7 +173,7 @@
                 <artifactId>easyexcel</artifactId>
                 <version>${easyexcel.version}</version>
             </dependency>
-            <!--配置文件加解密-->
+            <!--配置文件中字段的加解密-->
             <dependency>
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
@@ -200,7 +205,7 @@
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>${pagehelper.version}</version>
             </dependency>
-            <!--<dependency>
+            <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
                 <version>${sharding-jdbc.version}</version>
@@ -209,7 +214,7 @@
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>sharding-jdbc-spring-namespace</artifactId>
                 <version>${sharding-jdbc.version}</version>
-            </dependency>-->
+            </dependency>
             <!--以上为数据库连接-->
             <dependency>
                 <groupId>org.redisson</groupId>
@@ -282,7 +287,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <!--以上为基础的导入依赖-->
         </dependencies>
     </dependencyManagement>

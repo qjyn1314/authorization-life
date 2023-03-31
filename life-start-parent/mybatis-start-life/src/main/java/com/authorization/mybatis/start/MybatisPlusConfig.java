@@ -29,6 +29,7 @@ public class MybatisPlusConfig {
     public MybatisPlusPropertiesCustomizer plusPropertiesCustomizer(Environment environment) {
         return plusProperties -> {
             plusProperties.getGlobalConfig().setBanner(false);
+            plusProperties.getConfiguration().setMapUnderscoreToCamelCase(true);
             if (Objects.isNull(environment.getProperty("mybatis-plus.global-config.db-config.id-type"))) {
                 plusProperties.getGlobalConfig().getDbConfig().setIdType(IdType.AUTO);
             }

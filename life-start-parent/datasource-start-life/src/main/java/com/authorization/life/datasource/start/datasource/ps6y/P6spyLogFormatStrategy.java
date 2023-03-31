@@ -1,4 +1,4 @@
-package com.authorization.mybatis.start.ps6y;
+package com.authorization.life.datasource.start.datasource.ps6y;
 
 import cn.hutool.core.map.MapUtil;
 import com.authorization.utils.json.JsonHelper;

@@ -1,4 +1,4 @@
-package com.authorization.mybatis.start.ps6y;
+package com.authorization.life.datasource.start.datasource.ps6y;
 
 import com.p6spy.engine.logging.Category;
 import com.p6spy.engine.spy.appender.FormattedLogger;

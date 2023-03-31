@@ -3,7 +3,6 @@ package com.authorization.mybatis.start.datasource;
 import com.authorization.mybatis.start.datasource.config.DataSourceProperties;
 import com.authorization.mybatis.start.datasource.config.JdbcDynamicDataSourceProvider;
 import com.authorization.mybatis.start.datasource.config.LastParamDsProcessor;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import org.jasypt.encryption.StringEncryptor;
@@ -35,14 +34,13 @@ public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
-                                                               DataSourceProperties properties,
-                                                               DefaultDataSourceCreator defaultDataSourceCreator) {
+                                                               DataSourceProperties properties) {
         return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
     }
 
-	@Bean
-	public DsProcessor dsProcessor() {
-		return new LastParamDsProcessor();
-	}
+    @Bean
+    public DsProcessor dsProcessor() {
+        return new LastParamDsProcessor();
+    }
 
 }

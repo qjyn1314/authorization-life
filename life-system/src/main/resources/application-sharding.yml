@@ -1,0 +1,47 @@
+#数据源配置
+spring:
+  datasource:
+    url: ${blade.datasource.dev.url}
+    username: ${blade.datasource.dev.username}
+    password: ${blade.datasource.dev.password}
+  shardingsphere:
+    datasource:
+      names: master   #数据库名称（可以与数据库中的库名不一致）
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        hikari:
+          maximumPoolSize: 20
+          poolName: ShardingHikariCP
+        jdbc-url: ${blade.datasource.dev.url}
+        username: ${blade.datasource.dev.username}
+        password: ${blade.datasource.dev.password}
+    sharding:
+      default-data-source-name: master  #默认数据源为主数据源
+      tables:
+        #        test_user: #逻辑表明
+        #          actual-data-nodes: master.test_user_$->{['000000','123456']}
+        #          table-strategy: #分表策略 标准分片
+        #            standard:
+        #              sharding-column: tenant_id
+        #              preciseAlgorithmClassName: com.inca.insider.conf.sharding.table.FetchStringTableShardingAlgorithm
+        #              rangeAlgorithmClassName: com.inca.insider.conf.sharding.table.FetchStringTableShardingAlgorithm
+        insider_info: #逻辑表明
+          actual-data-nodes: master.insider_info_$->{0..999999}
+          table-strategy: #分表策略 标准分片
+            standard:
+              sharding-column: tenant_id
+              preciseAlgorithmClassName: com.inca.insider.conf.sharding.table.FetchStringTenantIdTableShardingAlgorithm
+
+    props:
+      # 打印SQL
+      sql.show: true
+      #      check:
+      #        table:
+      #          metadata: true
+      #          # 是否在启动时检查分表元数据一致性
+      #          enabled: true
+      query:
+        with:
+          cipher:
+            column: true

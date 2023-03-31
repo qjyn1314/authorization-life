@@ -1,11 +1,12 @@
 package com.authorization.life.datasource.start.datasource;
 
+import cn.hutool.json.JSONUtil;
+import com.authorization.life.datasource.start.datasource.config.CustShardingDataSource;
 import com.authorization.life.datasource.start.datasource.config.DataSourceProperties;
 import com.authorization.life.datasource.start.datasource.config.JdbcDynamicDataSourceProvider;
 import com.authorization.life.datasource.start.datasource.config.LastParamDsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -14,6 +15,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.sql.DataSource;
 import java.util.Map;
 
 /**
@@ -37,18 +39,23 @@ import java.util.Map;
 @EnableConfigurationProperties(DataSourceProperties.class)
 public class DynamicDataSourceAutoConfiguration {
 
-    private Map<String, DataSourceProperty> dataSourceMap;
-
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
                                                                DataSourceProperties properties) {
-        return new JdbcDynamicDataSourceProvider(stringEncryptor, properties, dataSourceMap);
+        return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
     }
 
     @Bean
     public DsProcessor dsProcessor() {
-        log.info("dataSourceMap->{}", dataSourceMap);
         return new LastParamDsProcessor();
     }
+
+    @Bean
+    public CustShardingDataSource custShardingDataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
+        Map<String, DataSource> stringDataSourceMap = dynamicDataSourceProvider.loadDataSources();
+        log.info("当前数据源信息是->{}", JSONUtil.toJsonStr(stringDataSourceMap));
+        return new CustShardingDataSource();
+    }
+
 
 }

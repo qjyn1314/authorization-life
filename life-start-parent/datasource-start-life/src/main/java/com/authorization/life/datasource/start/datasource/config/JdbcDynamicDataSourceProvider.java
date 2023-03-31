@@ -25,13 +25,10 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 
     private final StringEncryptor stringEncryptor;
 
-    private Map<String, DataSourceProperty> dataSourceMap;
-
-    public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties,Map<String, DataSourceProperty> dataSourceMap) {
+    public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties properties) {
         super(properties.getDriverClassName(), properties.getUrl(), properties.getUsername(), properties.getPassword());
         this.stringEncryptor = stringEncryptor;
         this.properties = properties;
-        this.dataSourceMap = dataSourceMap;
     }
 
     /**
@@ -45,7 +42,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
     protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
         log.info("加载JDBC动态数据源...");
         Map<String, DataSourceProperty> map = new ConcurrentHashMap<>(8);
-        // 添加默认主数据源
+        // 添加默认主数据源, 即 工程的配置文件中配置的数据源为主数据源
         DataSourceProperty property = new DataSourceProperty();
         property.setUrl(properties.getUrl());
         property.setUsername(properties.getUsername());
@@ -62,13 +59,19 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             log.error("查询从数据源失败...{}", e.getMessage());
         }
         if (Objects.nonNull(rs)) {
-            getSalveDataSource(rs, map);
+            setSalveDataSource(rs, map);
         }
-        this.dataSourceMap = map;
         return map;
     }
 
-    private void getSalveDataSource(ResultSet rs, Map<String, DataSourceProperty> map) throws SQLException {
+    /**
+     * 设置从数据库
+     *
+     * @param rs  数据库查询数据源结果
+     * @param map 数据源map信息
+     * @throws SQLException
+     */
+    private void setSalveDataSource(ResultSet rs, Map<String, DataSourceProperty> map) throws SQLException {
         while (rs.next()) {
             String name = rs.getString(DataSourceConstants.DS_NAME);
             String username = rs.getString(DataSourceConstants.DS_USER_NAME);

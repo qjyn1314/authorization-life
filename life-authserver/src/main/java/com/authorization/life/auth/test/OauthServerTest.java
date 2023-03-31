@@ -1,4 +1,4 @@
-package com.authorization.life.auth.api.controller;
+package com.authorization.life.auth.test;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

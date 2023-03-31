@@ -76,7 +76,10 @@ public class Oauth2SecurityConfig {
 //                .authorizationEndpoint(endpointConfigurer -> {
 //                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
 //                    endpointConfigurer
-//                            //配置自定义的请求成功的处理器
+//                            // 配置自定义的请求成功的处理器,
+//                            // 注意 如果 TokenSettings.accessTokenFormat 设置为 OAuth2TokenFormat.REFERENCE 则需要设置此handle.
+//                            // 此时将不会进入到 自定义的token设置类中, 即 CustomizerOAuth2Token, token中没有自定义的uuid 存储到 redis中 ,gateway中将获取不到此登录用户的信息.
+//                            // 这个时候只能在 auth-life 服务中获取到当前登录用户的信息, 不再是前后端分离的分布式登录流程.
 //                            .authorizationResponseHandler(new OAuth2SuccessHandler());
 //                });
 

@@ -1,10 +1,10 @@
-package com.authorization.life.datasource.start.datasource;
+package com.authorization.life.datasource.start;
 
 import cn.hutool.json.JSONUtil;
-import com.authorization.life.datasource.start.datasource.config.CustShardingDataSource;
-import com.authorization.life.datasource.start.datasource.config.DataSourceProperties;
-import com.authorization.life.datasource.start.datasource.config.JdbcDynamicDataSourceProvider;
-import com.authorization.life.datasource.start.datasource.config.LastParamDsProcessor;
+import com.authorization.life.datasource.start.config.CustShardingDataSource;
+import com.authorization.life.datasource.start.config.DataSourceProperties;
+import com.authorization.life.datasource.start.config.JdbcDynamicDataSourceProvider;
+import com.authorization.life.datasource.start.config.LastParamDsProcessor;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +56,5 @@ public class DynamicDataSourceAutoConfiguration {
         log.info("当前数据源信息是->{}", JSONUtil.toJsonStr(stringDataSourceMap));
         return new CustShardingDataSource();
     }
-
 
 }

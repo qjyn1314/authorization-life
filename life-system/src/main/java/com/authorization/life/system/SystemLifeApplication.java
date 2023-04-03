@@ -1,6 +1,7 @@
 package com.authorization.life.system;
 
-import com.authorization.life.datasource.start.datasource.annotion.EnableDynamicDataSource;
+import com.authorization.life.datasource.start.annotion.EnableDynamicDataSource;
+import com.authorization.life.sharding.annotion.EnableShardingJdbc;
 import com.authorization.remote.authserver.auto.EnableAuthServerConsumer;
 import com.authorization.remote.system.auto.EnableSystemProvider;
 import com.authorization.utils.message.MsgResource;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 @EnableAuthServerConsumer
 @EnableSystemProvider
 @EnableDynamicDataSource
+@EnableShardingJdbc
 @EnableDiscoveryClient
 @MapperScan(basePackages = {"com.authorization.life.system.infra.mapper",}, annotationClass = Repository.class)
 @SpringBootApplication
@@ -24,3 +26,4 @@ public class SystemLifeApplication {
     }
 
 }
+

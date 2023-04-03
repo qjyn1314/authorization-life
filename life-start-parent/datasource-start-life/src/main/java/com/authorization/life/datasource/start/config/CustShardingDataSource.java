@@ -1,4 +1,4 @@
-package com.authorization.life.datasource.start.datasource.config;
+package com.authorization.life.datasource.start.config;
 
 /**
  * TODO 请填写类描述

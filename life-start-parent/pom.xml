@@ -25,6 +25,7 @@
         <module>excel-start-life</module>
         <module>valid-start-life</module>
         <module>datasource-start-life</module>
+        <module>sharding-start-life</module>
     </modules>
 
     <dependencies>

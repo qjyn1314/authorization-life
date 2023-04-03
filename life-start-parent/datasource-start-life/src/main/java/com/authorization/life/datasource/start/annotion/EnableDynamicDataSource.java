@@ -1,6 +1,6 @@
-package com.authorization.life.datasource.start.datasource.annotion;
+package com.authorization.life.datasource.start.annotion;
 
-import com.authorization.life.datasource.start.datasource.DynamicDataSourceAutoConfiguration;
+import com.authorization.life.datasource.start.DynamicDataSourceAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

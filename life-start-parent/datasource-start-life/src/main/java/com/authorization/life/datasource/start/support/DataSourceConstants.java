@@ -1,4 +1,4 @@
-package com.authorization.life.datasource.start.datasource.support;
+package com.authorization.life.datasource.start.support;
 
 /**
  * <p>

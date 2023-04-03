@@ -1,4 +1,4 @@
-package com.authorization.life.datasource.start.datasource.config;
+package com.authorization.life.datasource.start.config;
 
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;

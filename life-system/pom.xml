@@ -45,6 +45,10 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
+            <artifactId>sharding-start-life</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
             <artifactId>system-remote-api</artifactId>
         </dependency>
         <dependency>

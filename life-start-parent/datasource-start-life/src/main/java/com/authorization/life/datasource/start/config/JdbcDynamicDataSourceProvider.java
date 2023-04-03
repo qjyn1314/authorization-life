@@ -1,6 +1,6 @@
-package com.authorization.life.datasource.start.datasource.config;
+package com.authorization.life.datasource.start.config;
 
-import com.authorization.life.datasource.start.datasource.support.DataSourceConstants;
+import com.authorization.life.datasource.start.support.DataSourceConstants;
 import com.authorization.utils.kvp.KvpFormat;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;

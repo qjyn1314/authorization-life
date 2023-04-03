@@ -1,4 +1,4 @@
-package com.authorization.life.datasource.start.datasource.config;
+package com.authorization.life.datasource.start.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

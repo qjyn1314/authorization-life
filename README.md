@@ -73,7 +73,7 @@ vue2.0
 
 ## 新的工程结构图：
 
-![image.png](assets/new_project_struct.png)
+![image.png](image/new_project_struct.png)
 
 
 

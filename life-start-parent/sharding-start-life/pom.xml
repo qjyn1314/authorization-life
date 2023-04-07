@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
@@ -51,7 +50,7 @@
             <version>${sharding-jdbc.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>shardingsphere-cluster-mode-repository-nacos</artifactId>
             <version>${sharding-jdbc.version}</version>
@@ -68,7 +67,7 @@
             <artifactId>shardingsphere-sql-parser-mysql</artifactId>
             <version>${sharding-jdbc.version}</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
 
         <!--shardingsphere end-->
     </dependencies>

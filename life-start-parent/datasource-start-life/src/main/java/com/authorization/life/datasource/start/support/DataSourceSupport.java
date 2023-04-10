@@ -4,7 +4,7 @@ package com.authorization.life.datasource.start.support;
  * <p>
  * 数据源相关常量
  */
-public interface DataSourceConstants {
+public interface DataSourceSupport {
 
     /**
      * 数据源名称

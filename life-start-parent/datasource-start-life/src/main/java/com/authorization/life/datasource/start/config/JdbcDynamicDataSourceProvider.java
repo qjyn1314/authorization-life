@@ -1,6 +1,6 @@
 package com.authorization.life.datasource.start.config;
 
-import com.authorization.life.datasource.start.support.DataSourceConstants;
+import com.authorization.life.datasource.start.support.DataSourceSupport;
 import com.authorization.utils.kvp.KvpFormat;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
@@ -49,7 +49,7 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
         property.setPassword(properties.getPassword());
         property.setDriverClassName(properties.getDriverClassName());
         property.setType(properties.getType());
-        map.put(DataSourceConstants.DS_MASTER, property);
+        map.put(DataSourceSupport.DS_MASTER, property);
 
         ResultSet rs = null;
         try {
@@ -73,18 +73,18 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
      */
     private void setSalveDataSource(ResultSet rs, Map<String, DataSourceProperty> map) throws SQLException {
         while (rs.next()) {
-            String name = rs.getString(DataSourceConstants.DS_NAME);
-            String username = rs.getString(DataSourceConstants.DS_USER_NAME);
-            String password = rs.getString(DataSourceConstants.DS_USER_PWD);
+            String name = rs.getString(DataSourceSupport.DS_NAME);
+            String username = rs.getString(DataSourceSupport.DS_USER_NAME);
+            String password = rs.getString(DataSourceSupport.DS_USER_PWD);
             log.info("数据库中的密码->{}", password);
             password = stringEncryptor.decrypt(password);
             log.info("解析数据库中的密码成功后->{}", password);
-            String databaseIp = rs.getString(DataSourceConstants.DATABASE_IP);
-            String databasePort = rs.getString(DataSourceConstants.DATABASE_PORT);
-            String databaseName = rs.getString(DataSourceConstants.DATABASE_NAME);
-            String url = rs.getString(DataSourceConstants.FORMAT_URL);
-            String realJdbcUrl = KvpFormat.of(url).add(DataSourceConstants.DATABASE_IP, databaseIp)
-                    .add(DataSourceConstants.DATABASE_PORT, databasePort).add(DataSourceConstants.DATABASE_NAME, databaseName).format();
+            String databaseIp = rs.getString(DataSourceSupport.DATABASE_IP);
+            String databasePort = rs.getString(DataSourceSupport.DATABASE_PORT);
+            String databaseName = rs.getString(DataSourceSupport.DATABASE_NAME);
+            String url = rs.getString(DataSourceSupport.FORMAT_URL);
+            String realJdbcUrl = KvpFormat.of(url).add(DataSourceSupport.DATABASE_IP, databaseIp)
+                    .add(DataSourceSupport.DATABASE_PORT, databasePort).add(DataSourceSupport.DATABASE_NAME, databaseName).format();
             // jdbc:mysql://{database_ip}:{database_port}/{database_name}?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
             DataSourceProperty slaveProperty = new DataSourceProperty();
             slaveProperty.setUrl(realJdbcUrl);

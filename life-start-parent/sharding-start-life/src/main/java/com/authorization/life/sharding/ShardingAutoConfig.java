@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.driver.api.ShardingSphereDataSourceFactory;
 import org.apache.shardingsphere.infra.config.algorithm.AlgorithmConfiguration;
 import org.apache.shardingsphere.infra.config.rule.RuleConfiguration;
-import org.apache.shardingsphere.infra.database.type.DatabaseType;
-import org.apache.shardingsphere.infra.database.type.DatabaseTypeEngine;
 import org.apache.shardingsphere.readwritesplitting.algorithm.loadbalance.RandomReadQueryLoadBalanceAlgorithm;
 import org.apache.shardingsphere.readwritesplitting.api.ReadwriteSplittingRuleConfiguration;
 import org.apache.shardingsphere.readwritesplitting.api.rule.ReadwriteSplittingDataSourceRuleConfiguration;
@@ -56,7 +54,7 @@ public class ShardingAutoConfig {
         Collection<RuleConfiguration> ruleConfigs = createRuleConfiguration(dataSourceMap);
         // 其他字段配置
         Properties props = createProperties();
-        // Sharding 创建的数据源
+        // Sharding 创建的数据源 todo 在创建sharding-jdbc数据源时创建失败, 由于源码的bug暂时搁置.
         DataSource dataSource = ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, ruleConfigs, props);
         log.info("dataSource-->{}", JSONUtil.toJsonStr(dataSource));
         return dataSource;
@@ -123,17 +121,5 @@ public class ShardingAutoConfig {
     private ShardingRuleConfiguration getShardingRuleConfiguration(Map<String, DataSource> dataSourceMap) {
         return null;
     }
-
-    //-------------------------------------------------------
-//    @Bean
-//    public ModeConfiguration createModeConfiguration(PersistRepositoryConfiguration repositoryConfiguration) {
-//        return new ModeConfiguration("Standalone", repositoryConfiguration);
-//    }
-//
-//    @Bean
-//    public PersistRepositoryConfiguration repositoryConfiguration() {
-//        return new StandalonePersistRepositoryConfiguration("JDBC", new Properties());
-//    }
-
 
 }

@@ -6,15 +6,16 @@ package com.authorization.life.datasource.start.support;
  */
 public interface DataSourceSupport {
 
+
+    /**
+     * 默认数据源（master）-即当前应用配置的默认数据源
+     */
+    String DS_MASTER = "master";
+
     /**
      * 数据源名称
      */
     String DS_NAME = "datasource_name";
-
-    /**
-     * 默认数据源（master）
-     */
-    String DS_MASTER = "master";
 
     /**
      * databaseip

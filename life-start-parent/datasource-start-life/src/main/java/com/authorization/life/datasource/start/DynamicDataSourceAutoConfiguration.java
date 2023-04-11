@@ -1,7 +1,5 @@
 package com.authorization.life.datasource.start;
 
-import cn.hutool.json.JSONUtil;
-import com.authorization.life.datasource.start.config.CustShardingDataSource;
 import com.authorization.life.datasource.start.config.DataSourceProperties;
 import com.authorization.life.datasource.start.config.JdbcDynamicDataSourceProvider;
 import com.authorization.life.datasource.start.config.LastParamDsProcessor;
@@ -14,9 +12,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
-import java.util.Map;
 
 /**
  * <p>
@@ -48,13 +43,6 @@ public class DynamicDataSourceAutoConfiguration {
     @Bean
     public DsProcessor dsProcessor() {
         return new LastParamDsProcessor();
-    }
-
-    @Bean
-    public CustShardingDataSource custShardingDataSource(DynamicDataSourceProvider dynamicDataSourceProvider) {
-        Map<String, DataSource> stringDataSourceMap = dynamicDataSourceProvider.loadDataSources();
-        log.info("当前数据源信息是->{}", JSONUtil.toJsonStr(stringDataSourceMap));
-        return new CustShardingDataSource();
     }
 
 }

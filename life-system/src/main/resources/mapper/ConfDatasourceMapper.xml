@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authorization.life.system.infra.mapper.ConfDatasourceMapper">
+
+    <sql id="conf_datasource_column">
+        ${prefix}datasource_id,
+        ${prefix}service_name,
+        ${prefix}datasource_name,
+        ${prefix}database_name,
+        ${prefix}database_ip,
+        ${prefix}database_port,
+        ${prefix}username,
+        ${prefix}password,
+        ${prefix}url,
+        ${prefix}create_date,
+        ${prefix}update_date,
+        ${prefix}del_flag
+    </sql>
+
+    <select id="page" resultType="com.authorization.life.system.infra.entity.ConfDatasource">
+        select
+        <include refid="conf_datasource_column">
+            <property name="prefix" value="t1."/>
+        </include>
+        from conf_datasource t1
+    </select>
+
+</mapper>

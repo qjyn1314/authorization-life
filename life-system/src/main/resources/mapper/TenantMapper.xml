@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authorization.life.system.infra.mapper.TenantMapper">
+
+    <sql id="life_tenant_column">
+        ${prefix}tenant_id,
+        ${prefix}tenant_name,
+        ${prefix}tenant_code,
+        ${prefix}certified_flag,
+        ${prefix}certified_time,
+        ${prefix}company_id,
+        ${prefix}supplier_flag,
+        ${prefix}purchase_flag,
+        ${prefix}version_num,
+        ${prefix}created_by_user,
+        ${prefix}created_by_emp,
+        ${prefix}created_time,
+        ${prefix}updated_by_user,
+        ${prefix}updated_by_emp,
+        ${prefix}updated_time
+    </sql>
+
+    <select id="page" resultType="com.authorization.life.system.infra.entity.Tenant">
+        select
+        <include refid="life_tenant_column">
+            <property name="prefix" value="t1."/>
+        </include>
+        from life_tenant t1
+    </select>
+
+</mapper>

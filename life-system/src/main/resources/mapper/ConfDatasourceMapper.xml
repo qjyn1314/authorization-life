@@ -3,7 +3,7 @@
 <mapper namespace="com.authorization.life.system.infra.mapper.ConfDatasourceMapper">
 
     <sql id="conf_datasource_column">
-        ${prefix}id,
+        ${prefix}datasource_id,
         ${prefix}service_name,
         ${prefix}datasource_name,
         ${prefix}database_name,

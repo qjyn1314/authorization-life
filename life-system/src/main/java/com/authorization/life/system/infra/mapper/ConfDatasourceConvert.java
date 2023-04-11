@@ -6,7 +6,6 @@ package com.authorization.life.system.infra.mapper;
  * @author wangjunming
  * @date 2023/3/27 13:49
  */
-public interface TenantInfoConvert {
-
+public interface ConfDatasourceConvert {
 
 }

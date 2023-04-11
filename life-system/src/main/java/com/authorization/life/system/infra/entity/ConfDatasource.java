@@ -6,15 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
+import java.math.BigDecimal;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
 /**
  * 数据源表
  *
  * @author code@code.com
- * @date 2023-04-07 18:00:09
+ * @date 2023-04-11 12:43:42
  */
 @Setter
 @Getter
@@ -25,7 +26,7 @@ public class ConfDatasource implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String FIELD_ID = "id";
+    public static final String FIELD_DATASOURCE_ID = "datasourceId";
     public static final String FIELD_SERVICE_NAME = "serviceName";
     public static final String FIELD_DATASOURCE_NAME = "datasourceName";
     public static final String FIELD_DATABASE_NAME = "databaseName";
@@ -42,7 +43,7 @@ public class ConfDatasource implements Serializable {
      * 主键
      */
     @TableId
-    private Integer id;
+    private Integer datasourceId;
     /**
      * 服务名称
      */

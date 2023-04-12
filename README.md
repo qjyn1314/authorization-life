@@ -75,8 +75,6 @@ vue2.0
 
 ![image.png](image/new_project_struct.png)
 
-
-
 ## Oauth2.0的授权模式的概念
 
 ### 授权的四种方式
@@ -118,11 +116,15 @@ https://blog.csdn.net/qq_38046739/article/details/127752149
 ### 流程：
 
 1、访问 https://www.authorization.life ， 将跳转到 https://www.authorization.life/login 登录页面。
+
 2、输入用户名密码
 用户名：qjyn1314@163.com
 密码：admin
-3、用户名密码验证通过之后，将重定向到：https://www.authorization.life/login/home[temporary](life-login-front%2Fsrc%2Fviews%2Ftemporary)?code=gyLKC_d06yIPo-69hbKuVOFfFjps3F-EPRbAwilmQZPYO0TBkY2GORjhyZ1CXxeUeeC8d5rHY8g8j3Wykhiv_T17P-QYsbFDWvBzJcvfKk0oF8Z8Nj_CgLhSLFiIskL4&state=authorization-life
+
+3、用户名密码验证通过之后，将重定向到：https://www.authorization.life/login/hometemporary?code=gyLKC_d06yIPo-69hbKuVOFfFjps3F-EPRbAwilmQZPYO0TBkY2GORjhyZ1CXxeUeeC8d5rHY8g8j3Wykhiv_T17P-QYsbFDWvBzJcvfKk0oF8Z8Nj_CgLhSLFiIskL4&state=authorization-life
+
 4、login-front前端工程中的 home 页面中做一些操作，通过 网址中的 code 请求 /oauth2/token 接口 ，获取自定义的 jwt形式的 accessToken，然后将其保存到cookie中，为下一次请求接口使用。
+
 
 ### 结果：
 
@@ -133,14 +135,22 @@ https://blog.csdn.net/qq_38046739/article/details/127752149
 博文:
 
 https://blog.csdn.net/qq_38046739/article/details/127774901
+
+
 流程:
 
 1.post请求接口
 https://www.authorization.life/auth-life/oauth2/token
+
 传参:
+
 grant_type： client_credentials – 验证方式.
+
 client_id： passport – 申请时的 client信息
+
 client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
+
+
 ![img.png](image/client_credentials.png)
 
 ## 部署(windows)
@@ -152,7 +162,10 @@ client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
 5. 部署nginx , 或者 windows中安装nginx , 进行配置 nginx的 的代理.
 6. 部署和启动 nacos 单机模式, 部署后端网关- 启动 life-gateway 服务, 部署认证中心和鉴权服务- 启动 life-authserver 服务.
 7. 部署前端, 进入 life-authserver-front 文件后 , npm install , npm run dev 启动 vue工程.
-   注意: 其中 每个springboot服务中,redis的配置是一致的, 使用  0号  数据库.
+
+
+注意: 其中 每个springboot服务中,redis的配置是一致的, 使用  0号  数据库.
+
 
 ## nginx.conf文件的配置项
 
@@ -198,7 +211,7 @@ http {
     keepalive_timeout  65;
 
     #gzip  on;
-    
+  
     # another virtual host using mix of IP-, name-, and port-based configuration
     #
 

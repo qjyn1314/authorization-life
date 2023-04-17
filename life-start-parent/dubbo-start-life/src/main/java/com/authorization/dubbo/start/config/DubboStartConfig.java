@@ -37,7 +37,6 @@ public class DubboStartConfig {
     @Value("${server.port}")
     private Integer serverPort;
 
-    public static final int QOS_PORT = 3;
     public static final int PROTOCOL_PORT = 5;
 
     public static final String OWNER = "authorization.life";
@@ -78,16 +77,9 @@ public class DubboStartConfig {
      */
     @Bean
     public ApplicationConfig dubboApplicationConfig(NacosDiscoveryProperties nacosDiscoveryProperties) {
-        // QosPort 等于当前服务的端口号 + 3
-        Integer qosPort = serverPort + QOS_PORT;
         ApplicationConfig applicationConfig = new ApplicationConfig();
         applicationConfig.setName(applicationName + GROUP_DUBBO_);
         applicationConfig.setOwner(OWNER);
-
-        applicationConfig.setQosEnable(Boolean.TRUE);
-        log.info("dubbo应用配置的应用服务qos端口号是-{}", qosPort);
-        applicationConfig.setQosPort(qosPort);
-
         applicationConfig.setParameters(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
         return applicationConfig;
     }

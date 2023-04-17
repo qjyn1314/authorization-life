@@ -39,10 +39,10 @@ public interface TenantConvert {
      * @return 返回的是目标对象，就是最终的结果对象
      * @Mapping 用来定义属性复制规则 source 指定源对象属性 target指定目标对象属性
      */
-    @Mappings({@Mapping(source = "name", target = "userName")})
+    @Mappings({})
     TenantVO toVO(Tenant tenant);
 
-    @Mappings({@Mapping(source = "userName", target = "name")})
+    @Mappings({})
     Tenant toEntity(TenantVO tenantVO);
 
 

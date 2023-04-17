@@ -9,10 +9,10 @@
             interface="com.authorization.remote.authserver.service.AuthServerRemoteService"
             id="authServerRemoteService"
             protocol="dubbo"
-            version="${remote.version}"
-            timeout="${remote.timeout}"
-            check="${remote.checked}"
-            group="${remote.consumer.group}"
+            version="${authserver-remote.version}"
+            timeout="${authserver-remote.timeout}"
+            check="${authserver-remote.checked}"
+            group="${authserver-remote.consumer.group}"
     />
 
 </beans>

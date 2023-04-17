@@ -27,22 +27,6 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>life-parent</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>life-utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>valid-start-life</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>knife4j-start-life</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>excel-start-life</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

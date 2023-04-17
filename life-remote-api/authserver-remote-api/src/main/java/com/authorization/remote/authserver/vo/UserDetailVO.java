@@ -1,48 +1,16 @@
-package com.authorization.core.security.entity;
+package com.authorization.remote.authserver.vo;
 
-import com.authorization.utils.json.JsonDateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Set;
 
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDetail {
-
-    /**
-     * 匿名用户
-     *
-     * @return UserDetail
-     */
-    public static UserDetail anonymous() {
-        UserDetail userDetail = new UserDetail();
-        userDetail.setUserId(0L);
-        userDetail.setEmpId(0L);
-        userDetail.setTenantId(0L);
-        userDetail.setLocale(Locale.CHINA);
-        return userDetail;
-    }
-
-    /**
-     * 系统用户
-     *
-     * @return UserDetail
-     */
-    public static UserDetail systemUser() {
-        UserDetail userDetail = new UserDetail();
-        userDetail.setUserId(-1L);
-        userDetail.setEmpId(-1L);
-        userDetail.setTenantId(0L);
-        userDetail.setLocale(Locale.CHINA);
-        return userDetail;
-    }
+public class UserDetailVO implements Serializable {
 
     /**
      * 用户Id
@@ -75,14 +43,10 @@ public class UserDetail {
     /**
      * 生效开始日期
      */
-    @JsonFormat(pattern = JsonDateUtil.DATETIME)
-    @DateTimeFormat(pattern = JsonDateUtil.DATETIME)
     private LocalDateTime effectiveStartDate;
     /**
      * 生效截至日期
      */
-    @JsonFormat(pattern = JsonDateUtil.DATETIME)
-    @DateTimeFormat(pattern = JsonDateUtil.DATETIME)
     private LocalDateTime effectiveEndDate;
     /**
      * 用户是否启用

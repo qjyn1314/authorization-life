@@ -38,10 +38,10 @@
             authorization-server：0.3.1
         -->
         <!--基本依赖-->
-        <spring-boot.version>2.7.6</spring-boot.version>
-        <spring-cloud.version>2021.0.5</spring-cloud.version>
+        <spring-boot.version>2.7.10</spring-boot.version>
+        <spring-cloud.version>2021.0.6</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
-        <dubbo.version>3.2.0-beta.6</dubbo.version>
+        <dubbo.version>3.2.0</dubbo.version>
         <jackson-bom.version>2.14.1</jackson-bom.version>
         <knife4j.version>4.1.0</knife4j.version>
 
@@ -49,7 +49,7 @@
         <spring-security.version>5.8.1</spring-security.version>
         <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
         <oauth2-oidc-sdk.version>10.1</oauth2-oidc-sdk.version>
-        <oauth2-authorization-server.version>0.4.0</oauth2-authorization-server.version>
+        <oauth2-authorization-server.version>0.4.1</oauth2-authorization-server.version>
 
         <!--数据库依赖-->
         <mysql.version>8.0.31</mysql.version>
@@ -318,6 +318,7 @@
                         <target>${java.version}</target>
                         <testSource>${java.version}</testSource>
                         <testTarget>${java.version}</testTarget>
+                        <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
                 <!--maven-source-plugin 这个插件专门负责将项目源文件打成包的-->

@@ -10,9 +10,9 @@
     <dubbo:service
             interface="com.authorization.remote.system.service.SystemRemoteService"
             ref="systemRemoteServiceImpl"
-            version="${remote.version}"
-            timeout="${remote.timeout}"
-            group="${remote.provider.group}"
+            version="${system-remote.version}"
+            timeout="${system-remote.timeout}"
+            group="${system-remote.provider.group}"
     />
 
 </beans>

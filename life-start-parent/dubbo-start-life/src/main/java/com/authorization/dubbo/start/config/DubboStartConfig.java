@@ -80,6 +80,8 @@ public class DubboStartConfig {
         ApplicationConfig applicationConfig = new ApplicationConfig();
         applicationConfig.setName(applicationName + GROUP_DUBBO_);
         applicationConfig.setOwner(OWNER);
+        // 关闭 qos
+        applicationConfig.setQosEnable(false);
         applicationConfig.setParameters(Map.of(NAMESPACE, nacosDiscoveryProperties.getNamespace()));
         return applicationConfig;
     }

@@ -20,6 +20,8 @@ target/
 *.ipr
 */src/main/resources/rebel.xml
 */src/main/java/rebel.xml
+.fastRequest
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

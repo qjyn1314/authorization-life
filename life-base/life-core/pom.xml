@@ -45,12 +45,6 @@
             <artifactId>valid-start-life</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>

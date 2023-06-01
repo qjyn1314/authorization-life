@@ -2,6 +2,7 @@ package com.authorization.life.auth.app.service.impl;
 
 import com.authorization.common.log.LogAdvice;
 import com.authorization.life.auth.app.service.RemoteCommonService;
+import com.authorization.remote.system.SystemServerApiRes;
 import com.authorization.remote.system.service.SystemRemoteService;
 import com.authorization.utils.result.Result;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class RemoteCommonServiceImpl implements RemoteCommonService {
     @LogAdvice(name = "获取-SystemRemote-当前时间")
     @Override
     public String getSystemRemoteNowDate() {
-        Result<String> systemRemoteNowDate = systemRemoteService.getSystemRemoteNowDate();
+        SystemServerApiRes<String> systemRemoteNowDate = systemRemoteService.getSystemRemoteNowDate();
         return systemRemoteNowDate.getData();
     }
 

@@ -3,7 +3,7 @@ package com.authorization.valid.start.util;
 /**
  * 校验异常
  *
- * @author cuijiaxu@zhichubao.com 2021/3/31 11.38
+ * @author wangjunming
  */
 public class ValidException extends RuntimeException {
 

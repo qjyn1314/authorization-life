@@ -1,17 +1,20 @@
 package com.authorization.life.datasource.start;
 
-import com.authorization.life.datasource.start.config.DataSourceProperties;
 import com.authorization.life.datasource.start.config.JdbcDynamicDataSourceProvider;
 import com.authorization.life.datasource.start.config.LastParamDsProcessor;
+import com.authorization.utils.jasypt.JasyptConfig;
 import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * <p>
@@ -29,15 +32,17 @@ import org.springframework.context.annotation.Configuration;
  * @author wangjunming
  */
 @Slf4j
+@Import(JasyptConfig.class)
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
-@EnableConfigurationProperties(DataSourceProperties.class)
+@EnableConfigurationProperties({DataSourceProperties.class, DynamicDataSourceProperties.class})
 public class DynamicDataSourceAutoConfiguration {
 
     @Bean
     public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
-                                                               DataSourceProperties properties) {
-        return new JdbcDynamicDataSourceProvider(stringEncryptor, properties);
+                                                               DataSourceProperties dataSourceProperties,
+                                                               DynamicDataSourceProperties dynamicDataSourceProperties) {
+        return new JdbcDynamicDataSourceProvider(stringEncryptor, dataSourceProperties, dynamicDataSourceProperties);
     }
 
     @Bean

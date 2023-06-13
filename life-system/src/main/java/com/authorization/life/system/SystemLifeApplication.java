@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 @EnableAuthServerConsumer
 @EnableSystemProvider
 @EnableDynamicDataSource
-@EnableShardingJdbc
 @EnableDiscoveryClient
 @MapperScan(basePackages = {"com.authorization.life.system.infra.mapper",}, annotationClass = Repository.class)
 @SpringBootApplication

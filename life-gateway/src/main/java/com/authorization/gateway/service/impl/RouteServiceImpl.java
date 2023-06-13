@@ -17,6 +17,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
+import org.springframework.cloud.gateway.filter.factory.SpringCloudCircuitBreakerResilience4JFilterFactory;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
@@ -103,9 +104,8 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
         return CollUtil.newArrayList(
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
-                new FilterDefinition(AuthGatewayFilterFactory.AUTH)
-//                ,
-//                new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
+                new FilterDefinition(AuthGatewayFilterFactory.AUTH),
+                new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
         );
     }
 

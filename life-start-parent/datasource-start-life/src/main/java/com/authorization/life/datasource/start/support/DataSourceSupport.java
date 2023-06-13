@@ -6,7 +6,6 @@ package com.authorization.life.datasource.start.support;
  */
 public interface DataSourceSupport {
 
-
     /**
      * 默认数据源（master）-即当前应用配置的默认数据源
      */
@@ -51,5 +50,10 @@ public interface DataSourceSupport {
      * 驱动包名称
      */
     String DS_DRIVER_CLASS_NAME = "driver_class_name";
+
+    /**
+     * 查询数据源的SQL
+     */
+    String QUERY_DS_SQL = "select * from conf_datasource where del_flag = 0";
 
 }

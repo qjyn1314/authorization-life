@@ -22,6 +22,7 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>life-utils</artifactId>
         </dependency>
+        <!--mysql + mybatis-plus start -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>

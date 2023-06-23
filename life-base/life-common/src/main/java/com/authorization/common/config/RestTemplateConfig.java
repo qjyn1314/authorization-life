@@ -109,5 +109,29 @@ public class RestTemplateConfig {
         return restTemplate;
     }
 
+    private static volatile RestTemplate restTemplate = null;
+
+    /**
+     * 获取静态的 RestTemplate
+     *
+     * @return RestTemplate
+     */
+    public static RestTemplate getStaticRest() {
+        RestTemplateConfig restConfig = new RestTemplateConfig();
+        if (restTemplate != null) {
+            return restTemplate;
+        }
+        synchronized (RestTemplateConfig.class) {
+            if (restTemplate != null) {
+                return restTemplate;
+            }
+            restTemplate = restConfig
+                    .restTemplate(restConfig
+                            .clientHttpRequestFactory(restConfig
+                                    .httpClient(restConfig
+                                            .poolingHttpClientConnectionManager())));
+        }
+        return restTemplate;
+    }
 
 }

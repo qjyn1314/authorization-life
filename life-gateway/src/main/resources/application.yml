@@ -25,3 +25,4 @@ spring:
     port: 7777
     password: 123456
     timeout: 50000
+    password: 123456

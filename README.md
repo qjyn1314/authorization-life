@@ -272,7 +272,7 @@ http {
 
 ## 项目中遇到的问题
 
-### 一. 项目中使用了 jdk17 + orika 序列化框架,项目中使用到了 orikaBean转换工具类会出现以下错误信息
+### 一. 项目中使用 jdk17 + orika 序列化框架,项目中使用到了 orikaBean转换工具类会出现以下错误信息
 
 ```
 java.lang.reflect.InaccessibleObjectException: Unable to make protected native java.lang.Object java.lang.Object.clone() throws java.lang.CloneNotSupportedException accessible: module java.base does not "opens java.lang" to unnamed module @7671cb68

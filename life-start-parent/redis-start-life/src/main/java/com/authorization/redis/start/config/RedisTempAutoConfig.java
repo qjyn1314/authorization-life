@@ -95,10 +95,13 @@ public class RedisTempAutoConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        List<RedisSubscription> redisSubscriberList,
                                                                        ScheduledExecutorService scheduledRedisListenerExecutor) {
+        log.info("初始化配置redis监听消息配置类");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setTaskExecutor(scheduledRedisListenerExecutor);
         for (RedisSubscription redisSubscriber : redisSubscriberList) {
+            log.info("redisSubscriber->{}", redisSubscriber.topic());
+            log.info("redisSubscriber->{}", redisSubscriber.topicName());
             container.addMessageListener(redisSubscriber, redisSubscriber.topic());
         }
         log.info("initialed RedisMessageListenerContainer redisSubscriberList.size ：{}", redisSubscriberList.size());
@@ -118,6 +121,7 @@ public class RedisTempAutoConfig {
     @Bean
     public DistributedLockService distributedLockService(RedissonClient redissonClient,
                                                          RedissonReactiveClient redissonReactiveClient) {
+        log.info("初始化分布式锁服务...");
         return new DistributedLockService(redissonClient, redissonReactiveClient);
     }
 

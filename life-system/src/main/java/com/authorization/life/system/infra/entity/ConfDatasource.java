@@ -6,16 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import java.math.BigDecimal;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.io.Serializable;
 
 /**
  * 数据源表
  *
  * @author code@code.com
- * @date 2023-04-11 12:43:42
+ * @date 2023-06-23 14:44:22
  */
 @Setter
 @Getter
@@ -26,18 +25,18 @@ public class ConfDatasource implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String FIELD_DATASOURCE_ID = "datasourceId";
-    public static final String FIELD_SERVICE_NAME = "serviceName";
-    public static final String FIELD_DATASOURCE_NAME = "datasourceName";
-    public static final String FIELD_DATABASE_NAME = "databaseName";
-    public static final String FIELD_DATABASE_IP = "databaseIp";
-    public static final String FIELD_DATABASE_PORT = "databasePort";
+    public static final String FIELD_DATASOURCE_ID = "datasource_id";
+    public static final String FIELD_SERVICE_NAME = "service_name";
+    public static final String FIELD_DATASOURCE_NAME = "datasource_name";
+    public static final String FIELD_DATABASE_NAME = "database_name";
+    public static final String FIELD_DATABASE_IP = "database_ip";
+    public static final String FIELD_DATABASE_PORT = "database_port";
     public static final String FIELD_USERNAME = "username";
     public static final String FIELD_PASSWORD = "password";
     public static final String FIELD_URL = "url";
-    public static final String FIELD_CREATE_DATE = "createDate";
-    public static final String FIELD_UPDATE_DATE = "updateDate";
-    public static final String FIELD_DEL_FLAG = "delFlag";
+    public static final String FIELD_CREATE_DATE = "create_date";
+    public static final String FIELD_UPDATE_DATE = "update_date";
+    public static final String FIELD_DEL_FLAG = "del_flag";
 
     /**
      * 主键

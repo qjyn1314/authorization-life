@@ -12,6 +12,7 @@ spring:
         enabled: true
         group: ${spring.cloud.nacos.group}
         namespace: ${spring.cloud.nacos.namespace}
+        watch-delay: 300
       config:
         enabled: false
 

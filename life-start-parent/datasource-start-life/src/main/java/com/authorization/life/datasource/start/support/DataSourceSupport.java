@@ -1,20 +1,20 @@
-package com.authorization.life.datasource.start.datasource.support;
+package com.authorization.life.datasource.start.support;
 
 /**
  * <p>
  * 数据源相关常量
  */
-public interface DataSourceConstants {
+public interface DataSourceSupport {
+
+    /**
+     * 默认数据源（master）-即当前应用配置的默认数据源
+     */
+    String DS_MASTER = "master";
 
     /**
      * 数据源名称
      */
     String DS_NAME = "datasource_name";
-
-    /**
-     * 默认数据源（master）
-     */
-    String DS_MASTER = "master";
 
     /**
      * databaseip
@@ -50,5 +50,10 @@ public interface DataSourceConstants {
      * 驱动包名称
      */
     String DS_DRIVER_CLASS_NAME = "driver_class_name";
+
+    /**
+     * 查询数据源的SQL
+     */
+    String QUERY_DS_SQL = "select * from conf_datasource where del_flag = 0";
 
 }

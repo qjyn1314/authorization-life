@@ -17,6 +17,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.filter.FilterDefinition;
+import org.springframework.cloud.gateway.filter.factory.SpringCloudCircuitBreakerResilience4JFilterFactory;
 import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
@@ -50,6 +51,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
     @Override
     @EventListener(RefreshRoutesEvent.class)
     public void refreshRoutes(RefreshRoutesEvent refreshRoutesEvent) {
+        log.info("监听的事件是->{}", refreshRoutesEvent.getSource());
         List<String> services = discoveryClient.getServices();
         List<RouteDefinition> mergeRoutes = CollUtil.newArrayList(services.stream()
                 .map(this::convert)
@@ -103,14 +105,14 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
         return CollUtil.newArrayList(
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
-                new FilterDefinition(AuthGatewayFilterFactory.AUTH)
-//                ,
-//                new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
+                new FilterDefinition(AuthGatewayFilterFactory.AUTH),
+                new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
         );
     }
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
+        log.info("从缓存中获取服务列表......");
         return Flux.fromIterable(routes);
     }
 

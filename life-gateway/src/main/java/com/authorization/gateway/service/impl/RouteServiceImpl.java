@@ -51,6 +51,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
     @Override
     @EventListener(RefreshRoutesEvent.class)
     public void refreshRoutes(RefreshRoutesEvent refreshRoutesEvent) {
+        log.info("监听的事件是->{}", refreshRoutesEvent.getSource());
         List<String> services = discoveryClient.getServices();
         List<RouteDefinition> mergeRoutes = CollUtil.newArrayList(services.stream()
                 .map(this::convert)
@@ -111,6 +112,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
+        log.info("从缓存中获取服务列表......");
         return Flux.fromIterable(routes);
     }
 

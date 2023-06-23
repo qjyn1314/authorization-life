@@ -10,7 +10,6 @@ import org.redisson.api.RedissonClient;
 import org.redisson.api.RedissonReactiveClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -96,10 +95,13 @@ public class RedisTempAutoConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        List<RedisSubscription> redisSubscriberList,
                                                                        ScheduledExecutorService scheduledRedisListenerExecutor) {
+        log.info("初始化配置redis监听消息配置类");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setTaskExecutor(scheduledRedisListenerExecutor);
         for (RedisSubscription redisSubscriber : redisSubscriberList) {
+            log.info("redisSubscriber->{}", redisSubscriber.topic());
+            log.info("redisSubscriber->{}", redisSubscriber.topicName());
             container.addMessageListener(redisSubscriber, redisSubscriber.topic());
         }
         log.info("initialed RedisMessageListenerContainer redisSubscriberList.size ：{}", redisSubscriberList.size());

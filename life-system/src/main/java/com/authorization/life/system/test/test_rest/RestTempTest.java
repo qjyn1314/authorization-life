@@ -8,7 +8,7 @@ import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.result.Result;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageInfo;
-import groovy.util.logging.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class RestTempTest {
 
     public static void main(String[] args) {
-
+        testShardingJdbcQuery();
     }
 
 
@@ -75,7 +75,7 @@ public class RestTempTest {
         countMap.forEach((k, v) -> {
             log.info("租户id-->{}-共多少数据->{}", k, v.size());
         });
-        RestTemplate restTemplate = RestTempUtil.me().restTemplate();
+        RestTemplate restTemplate = RestTempUtil.restTemplate();
         String url = "http://127.0.0.1:9050/lemd/emp/batchSave";
         // 设置请求头
         HttpHeaders httpHeaders = new HttpHeaders();

@@ -2,6 +2,7 @@ package com.authorization.life.system.infra.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.system.infra.dto.EmpDTO;
@@ -78,8 +79,8 @@ public class EmpServiceImpl implements EmpService {
 
     @Override
     public PageInfo<Emp> page(EmpDTO empDto) {
-        QueryWrapper<Emp> queryWrapper = Wrappers.query(new Emp());
-        queryWrapper.eq(Objects.nonNull(empDto.getTenantId()), Emp.FIELD_TENANT_ID, empDto.getTenantId());
+        Assert.notNull(empDto.getTenantId(), "租户id不能为空. ");
+        QueryWrapper<Emp> queryWrapper = Wrappers.query(new Emp().setTenantId(empDto.getTenantId()));
         queryWrapper.likeRight(StrUtil.isNotBlank(empDto.getEmpName()), Emp.FIELD_EMP_NAME, empDto.getEmpName());
         return PageHelper.startPage(empDto.getPageNum(), empDto.getPageSize())
                 .doSelectPageInfo(() -> {

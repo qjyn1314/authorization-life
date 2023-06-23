@@ -101,8 +101,8 @@ public class EmpDTO implements Serializable {
      */
     private LocalDateTime updatedTime;
 
-    private int pageNum;
+    private Integer pageNum;
 
-    private int pageSize;
+    private Integer pageSize;
 
 }

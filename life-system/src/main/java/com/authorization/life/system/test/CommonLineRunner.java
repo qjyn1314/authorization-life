@@ -22,9 +22,13 @@ public class CommonLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        DynamicRoutingDataSource routingDataSource = SpringUtil.getBean(DynamicRoutingDataSource.class);
-        final Map<String, DataSource> currentDataSources = routingDataSource.getDataSources();
-        log.info("当前服务所拥有的的数据源信息->{}", JSONUtil.toJsonStr(currentDataSources));
+        try {
+            DynamicRoutingDataSource routingDataSource = SpringUtil.getBean(DynamicRoutingDataSource.class);
+            final Map<String, DataSource> currentDataSources = routingDataSource.getDataSources();
+            log.info("当前服务所拥有的的数据源信息->{}", JSONUtil.toJsonStr(currentDataSources));
+        } catch (Exception e) {
+            log.error("打印数据源信息失败...", e);
+        }
     }
 
 }

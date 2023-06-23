@@ -24,3 +24,4 @@ spring:
         min-idle: 3
     port: 7777
     timeout: 50000
+    password: 123456

@@ -122,7 +122,9 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
             conn = DriverManager.getConnection(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
             log.info("成功获取数据库连接");
             stmt = conn.createStatement();
+            // 执行SQL语句,并获取数据源信息
             Map<String, DataSourceProperty> dataSourcePropertiesMap = executeStmt(stmt);
+            // 处理为 HikariDataSource 数据源信息
             return createDataSourceMapByDiy(dataSourcePropertiesMap);
         } catch (Exception e) {
             log.error("获取数据源失败,异常信息->", e);

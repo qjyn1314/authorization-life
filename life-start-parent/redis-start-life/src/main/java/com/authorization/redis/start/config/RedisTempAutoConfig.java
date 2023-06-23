@@ -10,6 +10,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.api.RedissonReactiveClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -118,6 +119,7 @@ public class RedisTempAutoConfig {
     @Bean
     public DistributedLockService distributedLockService(RedissonClient redissonClient,
                                                          RedissonReactiveClient redissonReactiveClient) {
+        log.info("初始化分布式锁服务...");
         return new DistributedLockService(redissonClient, redissonReactiveClient);
     }
 

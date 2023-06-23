@@ -1,125 +1,48 @@
 package com.authorization.life.sharding;
 
-import cn.hutool.json.JSONUtil;
-import com.authorization.life.datasource.start.support.DataSourceSupport;
-import com.authorization.utils.props.LifeProperties;
+
+import com.authorization.life.datasource.start.DynamicDataSourceAutoConfiguration;
+import com.authorization.life.sharding.config.DataShardingReadWriteConfig;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shardingsphere.driver.api.ShardingSphereDataSourceFactory;
-import org.apache.shardingsphere.infra.config.algorithm.AlgorithmConfiguration;
-import org.apache.shardingsphere.infra.config.rule.RuleConfiguration;
-import org.apache.shardingsphere.readwritesplitting.algorithm.loadbalance.RandomReadQueryLoadBalanceAlgorithm;
-import org.apache.shardingsphere.readwritesplitting.api.ReadwriteSplittingRuleConfiguration;
-import org.apache.shardingsphere.readwritesplitting.api.rule.ReadwriteSplittingDataSourceRuleConfiguration;
-import org.apache.shardingsphere.readwritesplitting.api.strategy.StaticReadwriteSplittingStrategyConfiguration;
-import org.apache.shardingsphere.sharding.api.config.ShardingRuleConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Properties;
 
-/**
- * sharding-jdbc的自动配置
- * 参考:
- * <a href="https://shardingsphere.apache.org/document/5.3.0/cn/overview/">sharding官网最新文档</a>
- *
- * @author wangjunming
- * @date 2023/4/3 15:32
- */
 @Slf4j
+@Import(DynamicDataSourceAutoConfiguration.class)
 @AutoConfiguration
 public class ShardingAutoConfig {
 
-    @Resource
-    private LifeProperties lifeProperties;
 
-    private Properties createProperties() {
+    private Properties props() {
         Properties props = new Properties();
-        // #是否开启SQL显示，默认值: false
+        //是否在日志中打印 SQL。
+        //打印 SQL 可以帮助开发者快速定位系统问题。日志内容包含：逻辑 SQL，真实 SQL 和 SQL 解析结果。
+        //如果开启配置，日志将使用 Topic ShardingSphere-SQL，日志级别是 INFO。
         props.setProperty("sql-show", Boolean.TRUE.toString());
-        // #是否在启动时检查分表元数据一致性，默认值: false
-        props.setProperty("check-table-metadata-enabled", Boolean.TRUE.toString());
+        // 是否在日志中打印简单风格的 SQL。
+        props.setProperty("sql-simple", Boolean.FALSE.toString());
         return props;
     }
 
+    /**
+     * 读写分离配置参考:
+     * <a href="https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-jdbc/java-api/rules/readwrite-splitting/">读写分离官网</a>
+     *
+     * @param dynamicDataSourceProvider 用于加载数据库中的数据源
+     * @return DataSource
+     * @throws SQLException
+     */
+    @Primary
     @Bean
     public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) throws SQLException {
-        // 数据源
-        Map<String, DataSource> dataSourceMap = dynamicDataSourceProvider.loadDataSources();
-        // 规则
-        Collection<RuleConfiguration> ruleConfigs = createRuleConfiguration(dataSourceMap);
-        // 其他字段配置
-        Properties props = createProperties();
-        // Sharding 创建的数据源 todo 在创建sharding-jdbc数据源时创建失败, 由于源码的bug暂时搁置.
-        DataSource dataSource = ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, ruleConfigs, props);
-        log.info("dataSource-->{}", JSONUtil.toJsonStr(dataSource));
-        return dataSource;
-    }
-
-    /**
-     * 获取规则配置
-     */
-    private Collection<RuleConfiguration> createRuleConfiguration(Map<String, DataSource> dataSourceMap) {
-        ArrayList<RuleConfiguration> configurations = new ArrayList<>();
-
-        // 获取读写分离配置
-        ReadwriteSplittingRuleConfiguration readwriteSplittingRule = getReadwriteSplittingRule(dataSourceMap);
-        if (Objects.nonNull(readwriteSplittingRule)) {
-            configurations.add(readwriteSplittingRule);
-        }
-
-        // 获取分片规则
-        ShardingRuleConfiguration shardingRuleConfig = getShardingRuleConfiguration(dataSourceMap);
-        if (Objects.nonNull(shardingRuleConfig)) {
-            configurations.add(shardingRuleConfig);
-        }
-
-        return configurations;
-    }
-
-    /**
-     * <a href="https://shardingsphere.apache.org/document/5.3.0/cn/user-manual/shardingsphere-jdbc/java-api/rules/readwrite-splitting/">参考官网</a>
-     * 获取读写分离配置
-     */
-    private ReadwriteSplittingRuleConfiguration getReadwriteSplittingRule(Map<String, DataSource> dataSourceMap) {
-        // todo 此处将通过 读写分离字典配置 + 应用名称 获取读写分离配置
-        String readwriteSplit = "READWRITE_SPLIT";
-        String applicationName = lifeProperties.getApplicationName();
-
-        // 主数据源--以 master 开头的认为是 主数据源
-        Set<String> master = dataSourceMap.keySet().stream().filter(DataSourceSupport.DS_MASTER::startsWith).collect(Collectors.toSet());
-        // 从数据库
-        List<String> slave = dataSourceMap.keySet().stream().filter(item -> !item.startsWith(DataSourceSupport.DS_MASTER)).collect(Collectors.toList());
-
-        // 静态读写分离配置
-        StaticReadwriteSplittingStrategyConfiguration staticStrategy = new StaticReadwriteSplittingStrategyConfiguration(DataSourceSupport.DS_MASTER, slave);
-
-        // 读写分离数据源名称
-        String readwriteSplitName = "life_read_query_ds";
-        ReadwriteSplittingDataSourceRuleConfiguration dataSourceConfig = new ReadwriteSplittingDataSourceRuleConfiguration(
-                readwriteSplitName, staticStrategy, null, "RANDOM_READ_QUERY_LOAD_BALANCE");
-
-
-        Properties algorithmProps = new Properties();
-        for (int i = 0; i < slave.size(); i++) {
-            algorithmProps.setProperty(slave.get(i), String.valueOf(i));
-        }
-        Map<String, AlgorithmConfiguration> algorithmConfigMap = new HashMap<>(1);
-        // 使用 随机读查询负载均衡算法
-        algorithmConfigMap.put("RANDOM_READ_QUERY_LOAD_BALANCE", new AlgorithmConfiguration(new RandomReadQueryLoadBalanceAlgorithm().getType(), algorithmProps));
-
-        return new ReadwriteSplittingRuleConfiguration(Collections.singleton(dataSourceConfig), algorithmConfigMap);
-    }
-
-    /**
-     * 获取分片规则
-     */
-    private ShardingRuleConfiguration getShardingRuleConfiguration(Map<String, DataSource> dataSourceMap) {
-        return null;
+        return new DataShardingReadWriteConfig().getDataSource(dynamicDataSourceProvider, props());
     }
 
 }

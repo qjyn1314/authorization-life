@@ -1,9 +1,7 @@
 package com.authorization.life.datasource.start;
 
 import com.authorization.life.datasource.start.config.JdbcDynamicDataSourceProvider;
-import com.authorization.life.datasource.start.config.LastParamDsProcessor;
 import com.authorization.utils.jasypt.JasyptConfig;
-import com.baomidou.dynamic.datasource.processor.DsProcessor;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +41,6 @@ public class DynamicDataSourceAutoConfiguration {
                                                                DataSourceProperties dataSourceProperties,
                                                                DynamicDataSourceProperties dynamicDataSourceProperties) {
         return new JdbcDynamicDataSourceProvider(stringEncryptor, dataSourceProperties, dynamicDataSourceProperties);
-    }
-
-    @Bean
-    public DsProcessor dsProcessor() {
-        return new LastParamDsProcessor();
     }
 
 }

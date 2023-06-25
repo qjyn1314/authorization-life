@@ -31,25 +31,25 @@
             springboot 官网： https://spring.io/projects/spring-boot
             2022年9月4日
             得出结果：
-            boot：2.7.3
-            cloud：2021.0.3
+            boot：2.7.13
+            cloud：2021.0.7
             cloud-alibaba：2.2.8.RELEASE
             spring-security：5.7.3
             authorization-server：0.3.1
         -->
         <!--基本依赖-->
-        <spring-boot.version>2.7.10</spring-boot.version>
-        <spring-cloud.version>2021.0.6</spring-cloud.version>
+        <spring-boot.version>2.7.13</spring-boot.version>
+        <spring-cloud.version>2021.0.7</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
-        <dubbo.version>3.2.0</dubbo.version>
-        <jackson-bom.version>2.14.1</jackson-bom.version>
+        <dubbo.version>3.2.2</dubbo.version>
+        <jackson-bom.version>2.15.2</jackson-bom.version>
         <knife4j.version>4.1.0</knife4j.version>
 
         <!--权限认证依赖-->
-        <spring-security.version>5.8.1</spring-security.version>
-        <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
-        <oauth2-oidc-sdk.version>10.1</oauth2-oidc-sdk.version>
-        <oauth2-authorization-server.version>0.4.1</oauth2-authorization-server.version>
+        <spring-security.version>5.8.4</spring-security.version>
+        <nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
+        <oauth2-oidc-sdk.version>10.9.2</oauth2-oidc-sdk.version>
+        <oauth2-authorization-server.version>0.4.3</oauth2-authorization-server.version>
 
         <!--数据库依赖-->
         <mysql.version>8.0.31</mysql.version>

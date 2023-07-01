@@ -32,7 +32,7 @@ public class DataShardingReadWriteConfig {
     public DataSource getDataSource(DynamicDataSourceProvider dynamicDataSourceProvider, Properties props) throws SQLException {
         log.info("开始创建数据源->com.hulunbuir.sharding.ShardingAutoConfig.dataSource->start");
         Map<String, DataSource> dataSourceMap = dynamicDataSourceProvider.loadDataSources();
-        // 整个 sharding配置的逻辑数据源名称,
+        // 整个 sharding配置的逻辑数据源名称, ******此处为重点之一
         String dataSourceConfigName = "diy-sharding-read-write-datasource";
         return ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, getRuleConfigs(dataSourceConfigName, dataSourceMap), props);
     }
@@ -86,6 +86,7 @@ public class DataShardingReadWriteConfig {
         for (int i = 0; i < slaveList.size(); i++) {
             properties.setProperty(slaveList.get(i), String.valueOf(i + 5));
         }
+        // ******此处为重点之一
         properties.put("transaction-read-query-strategy", "FIXED_PRIMARY");
         loadBalanceMap.put(loadBalancerName, new AlgorithmConfiguration("ROUND_ROBIN", properties));
 
@@ -112,6 +113,7 @@ public class DataShardingReadWriteConfig {
         // 自定义分表算法配置
         Properties props = new Properties();
         props.put("strategy", "Standard");
+        // ******此处为重点之一
         props.put("algorithmClassName", "com.authorization.life.sharding.config.TenantIdPreciseShardingAlgorithm");
         result.getShardingAlgorithms().put(tableShardingAlgorithmsName, new AlgorithmConfiguration("CLASS_BASED", props));
 
@@ -125,7 +127,7 @@ public class DataShardingReadWriteConfig {
     private ShardingTableRuleConfiguration getLemdEmpTableRuleConfiguration(String dataSourceConfigName,String tableShardingAlgorithmsName) {
         // 分片逻辑表名称
         String logicTable = "lemd_emp";
-        // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式
+        // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式   ******此处为重点之一
         String actualDataNodes = dataSourceConfigName + ".lemd_emp_$->{0..9999}";
         ShardingTableRuleConfiguration result = new ShardingTableRuleConfiguration(logicTable, actualDataNodes);
         // 默认分表策略-- 查询数据是必须带有此分表列作为查询条件

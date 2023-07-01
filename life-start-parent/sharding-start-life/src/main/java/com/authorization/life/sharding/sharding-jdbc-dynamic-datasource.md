@@ -1,13 +1,17 @@
-# Sharding-Jdbc水平分表+Mybatis-Plus+数据库中管理多数据源
+# Sharding-Jdbc水平分表+Mybatis-Plus+数据库管理多数据源
 
 ## 序言
 
-分库分表的原因就不在多说,
+分库分表的原因就不再多说,
 具体可以参考: [为什么要分库分表？](https://blog.csdn.net/weixin_44742132/article/details/124138347)
 
-此次实现的是 mybatis-dynamic-datasource, 从数据库中读取从数据源信息. 搭建mysql的主从复制, 一主多从模式.
+此次实现的是 mybatis-dynamic-datasource, 从数据库中读取多个从数据源信息, 形成多数据源. 
 
-sharding-jdbc水平分表处理逻辑,以及遇到的问题.
+为读写分离做准备, 搭建mysql的主从复制, 一主多从模式.
+
+集成sharding-jdbc水平分表处理逻辑,以及遇到的问题.
+
+租户注册时进行创建相关分表的思路.
 
 ## mysql8 windows 搭建主从复制模式
 
@@ -17,9 +21,9 @@ sharding-jdbc水平分表处理逻辑,以及遇到的问题.
 
 ## springboot 2.7 集成 mybatis-plus 3.5.3 + dynamic-datasource 3.6.1
 
-### dynamic-datasource 相关依赖
+### dynamic-datasource 和 mybatis-plus 相关依赖
 
-```
+```java
         <!--mysql + mybatis-plus start -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -195,7 +199,7 @@ sharding-jdbc水平分表处理逻辑,以及遇到的问题.
 
 数据源信息表:
 
-```
+```mysql
 create table if not exists conf_datasource
 (
     datasource_id   int auto_increment comment '主键'
@@ -214,9 +218,13 @@ create table if not exists conf_datasource
 ) comment '数据源表';
 ```
 
-### springboot + dynamic-datasource 到此处结束
+## 从数据库中读取数据源信息  springboot + dynamic-datasource 集成到此处结束........
 
-## springboot 2.7 集成 mybatis-plus 3.5.3 + dynamic-datasource 3.6.1 + sharding-jdbc 5.3.2
+### 以上集成注意事项: 
+
+###### 对于注解 @DS("数据源名称") 是可以使用的, 但是 集成了 sharding-jdbc 后就不再有效果了. 其原因主要是因为 集成之前动态数据源信息的数据源是 DynamicRoutingDataSource, 在集成之后就变成了 DataShardingReadWriteConfig 创建出来的数据源,其创建的过程不一致, 返回的数据源内容也不尽相同.
+
+## springboot 2.7 集成 mybatis-plus 3.5.3 + dynamic-datasource 3.6.1 + sharding-jdbc 5.3.2 (最新版)
 
 ### 依赖
 
@@ -224,7 +232,8 @@ create table if not exists conf_datasource
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <!-- 此处的版本号必须是 1.33, 官网提示也需要 1.33  -->
+            <!-- 此处的版本号必须是 1.33, 官网提示也需要 1.33, 即需要在父工程的pom文件中重新定义此依赖的版本号 -->
+            <version>1.33</version>
         </dependency>
          <dependency>
             <groupId>org.apache.shardingsphere</groupId>
@@ -235,18 +244,18 @@ create table if not exists conf_datasource
 
 ### 配置信息
 
-主要参考官网:
+参考官网: [sharding-jdbc的读写分离JavaApi配置信息](https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-jdbc/java-api/rules/readwrite-splitting)
 
-https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-jdbc/java-api/rules/readwrite-splitting
+##### 以下介绍如何使用javaAPI进行配置sharding-jdbc的分库分表和读写分离, 以及在集成过程中遇到的问题. 
 
-此处使用javaAPI进行配置
 
+
+#### sharding-jdbc的数据源配置信息
 ```
 
     public DataSource getDataSource(DynamicDataSourceProvider dynamicDataSourceProvider, Properties props) throws SQLException {
-        log.info("开始创建数据源->com.hulunbuir.sharding.ShardingAutoConfig.dataSource->start");
         Map<String, DataSource> dataSourceMap = dynamicDataSourceProvider.loadDataSources();
-        // 整个 sharding配置的逻辑数据源名称,
+        // 整个 sharding配置的逻辑数据源名称, ******此处为重点之一
         String dataSourceConfigName = "diy-sharding-read-write-datasource";
         return ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, getRuleConfigs(dataSourceConfigName, dataSourceMap), props);
     }
@@ -300,6 +309,7 @@ https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-j
         for (int i = 0; i < slaveList.size(); i++) {
             properties.setProperty(slaveList.get(i), String.valueOf(i + 5));
         }
+        // ******此处为重点之一
         properties.put("transaction-read-query-strategy", "FIXED_PRIMARY");
         loadBalanceMap.put(loadBalancerName, new AlgorithmConfiguration("ROUND_ROBIN", properties));
 
@@ -326,7 +336,8 @@ https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-j
         // 自定义分表算法配置
         Properties props = new Properties();
         props.put("strategy", "Standard");
-        props.put("algorithmClassName", "com.hulunbuir.sharding.config.TenantIdPreciseShardingAlgorithm");
+        // ******此处为重点之一
+        props.put("algorithmClassName", "com.authorization.life.sharding.config.TenantIdPreciseShardingAlgorithm");
         result.getShardingAlgorithms().put(tableShardingAlgorithmsName, new AlgorithmConfiguration("CLASS_BASED", props));
 
         // https://shardingsphere.apache.org/document/current/cn/user-manual/common-config/builtin-algorithm/keygen/
@@ -339,7 +350,7 @@ https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-j
     private ShardingTableRuleConfiguration getLemdEmpTableRuleConfiguration(String dataSourceConfigName,String tableShardingAlgorithmsName) {
         // 分片逻辑表名称
         String logicTable = "lemd_emp";
-        // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式
+        // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式   ******此处为重点之一 
         String actualDataNodes = dataSourceConfigName + ".lemd_emp_$->{0..9999}";
         ShardingTableRuleConfiguration result = new ShardingTableRuleConfiguration(logicTable, actualDataNodes);
         // 默认分表策略-- 查询数据是必须带有此分表列作为查询条件
@@ -352,6 +363,44 @@ https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-j
 ```
 
 
+#### sharding-jdbc的数据源配置信息的总入口
+
+
+```
+
+@Slf4j
+@Import(DynamicDataSourceAutoConfiguration.class)
+@AutoConfiguration
+public class ShardingAutoConfig {
+
+    private Properties props() {
+        Properties props = new Properties();
+        //是否在日志中打印 SQL。
+        //打印 SQL 可以帮助开发者快速定位系统问题。日志内容包含：逻辑 SQL，真实 SQL 和 SQL 解析结果。
+        //如果开启配置，日志将使用 Topic ShardingSphere-SQL，日志级别是 INFO。
+        props.setProperty("sql-show", Boolean.TRUE.toString());
+        // 是否在日志中打印简单风格的 SQL。
+        props.setProperty("sql-simple", Boolean.FALSE.toString());
+        return props;
+    }
+
+    /**
+     * 读写分离配置参考:
+     * <a href="https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-jdbc/java-api/rules/readwrite-splitting/">读写分离官网</a>
+     *
+     * @param dynamicDataSourceProvider 用于加载数据库中的数据源
+     * @return DataSource
+     * @throws SQLException
+     */
+    @Primary
+    @Bean
+    public DataSource dataSource(DynamicDataSourceProvider dynamicDataSourceProvider) throws SQLException {
+        return new DataShardingReadWriteConfig().getDataSource(dynamicDataSourceProvider, props());
+    }
+
+}
+
+```
 
 
 

@@ -16,13 +16,12 @@ spring:
   redis:
     database: 0
     host: 127.0.0.1
+    port: 7777
+    password: 123456
     lettuce:
       pool:
         max-active: 10
         max-idle: 5
         max-wait: 10000
         min-idle: 3
-    port: 7777
-    password: 123456
     timeout: 50000
-    password: 123456

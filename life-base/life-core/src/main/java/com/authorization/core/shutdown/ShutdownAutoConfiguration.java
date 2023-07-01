@@ -4,7 +4,8 @@ import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
 import com.authorization.redis.start.service.StringRedisService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
 
 /**
  * 服务关闭配置
@@ -12,9 +13,13 @@ import org.springframework.context.annotation.Configuration;
 @AutoConfiguration
 public class ShutdownAutoConfiguration {
 
+    @Resource
+    private NacosAutoServiceRegistration nacosAutoServiceRegistration;
+    @Resource
+    private StringRedisService stringRedisService;
+
     @Bean
-    public GracefulShutdownTomcat gracefulShutdownTomcat(NacosAutoServiceRegistration nacosRegistration,
-                                                         StringRedisService stringRedisService) {
-        return new GracefulShutdownTomcat(nacosRegistration, stringRedisService);
+    public GracefulShutdownTomcat gracefulShutdownTomcat() {
+        return new GracefulShutdownTomcat(nacosAutoServiceRegistration, stringRedisService);
     }
 }

@@ -5,6 +5,7 @@ import com.authorization.redis.start.service.StringRedisService;
 import com.authorization.utils.contsant.ServerUpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.ApplicationListener;
@@ -15,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 用于发送服务关闭消息
+ * redis 用于发送当前服务关闭消息
  */
 @Slf4j
 public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, ApplicationListener<ContextClosedEvent> {

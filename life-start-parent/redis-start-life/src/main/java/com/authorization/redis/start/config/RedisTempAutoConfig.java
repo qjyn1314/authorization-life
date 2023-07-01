@@ -35,7 +35,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class RedisTempAutoConfig {
 
     @Bean
-    public StringRedisService strRedisHelper(RedisTemplate<String, String> stringRedisTemplate) {
+    public StringRedisService stringRedisService(RedisTemplate<String, String> stringRedisTemplate) {
         log.info("initialed redis-start-life StringRedisService");
         return new StringRedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
     }
@@ -95,13 +95,12 @@ public class RedisTempAutoConfig {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
                                                                        List<RedisSubscription> redisSubscriberList,
                                                                        ScheduledExecutorService scheduledRedisListenerExecutor) {
-        log.info("初始化配置redis监听消息配置类");
+        log.info("初始化配置redis发布订阅消息配置类");
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setTaskExecutor(scheduledRedisListenerExecutor);
         for (RedisSubscription redisSubscriber : redisSubscriberList) {
-            log.info("redisSubscriber->{}", redisSubscriber.topic());
-            log.info("redisSubscriber->{}", redisSubscriber.topicName());
+            log.debug("redisSubscriber->topic-{}-topicName-{}", redisSubscriber.topic(), redisSubscriber.topicName());
             container.addMessageListener(redisSubscriber, redisSubscriber.topic());
         }
         log.info("initialed RedisMessageListenerContainer redisSubscriberList.size ：{}", redisSubscriberList.size());

@@ -33,6 +33,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * 自定义路由的查询.
+ */
 @Slf4j
 @Component
 public class RouteServiceImpl implements RouteDefinitionRepository, RouteService {
@@ -44,14 +47,13 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
     private DiscoveryClient discoveryClient;
 
     public RouteServiceImpl(GatewayProperties gatewayProperties) {
-        this.staticRoutes = Optional.ofNullable(gatewayProperties.getRoutes())
-                .orElse(Collections.emptyList());
+        this.staticRoutes = Optional.ofNullable(gatewayProperties.getRoutes()).orElse(Collections.emptyList());
     }
 
     @Override
     @EventListener(RefreshRoutesEvent.class)
     public void refreshRoutes(RefreshRoutesEvent refreshRoutesEvent) {
-        log.info("监听的事件是->{}", refreshRoutesEvent.getSource());
+        log.trace("监听的事件是->{}", Objects.nonNull(refreshRoutesEvent) ? refreshRoutesEvent.getSource() : refreshRoutesEvent);
         List<String> services = discoveryClient.getServices();
         List<RouteDefinition> mergeRoutes = CollUtil.newArrayList(services.stream()
                 .map(this::convert)
@@ -77,10 +79,10 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
             log.warn("[DynamicRoute] [{}] unavailable instance! dynamic route will ignore", service);
             return null;
         }
-        log.debug("服务-instance-{}", JSONUtil.toJsonStr(instance.getMetadata()));
+        log.trace("服务-instance-{}", JSONUtil.toJsonStr(instance.getMetadata()));
         String serviceName = instance.getMetadata().getOrDefault(ServerUpDown.KEY_SERVICE_CODE, service);
-        log.debug("服务-instance-serviceName-{}", serviceName);
-        log.debug("服务-instance-serviceId-{}", instance.getServiceId());
+        log.trace("服务-instance-serviceName-{}", serviceName);
+        log.trace("服务-instance-serviceId-{}", instance.getServiceId());
         //此处将使用服务名称作为请求路径前缀进行处理请求。
         RouteDefinition routeDefinition = new RouteDefinition();
         routeDefinition.setId(service);
@@ -112,7 +114,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
-        log.info("从缓存中获取服务列表......");
+        log.trace("从缓存->getRouteDefinitions->中获取服务列表......");
         return Flux.fromIterable(routes);
     }
 

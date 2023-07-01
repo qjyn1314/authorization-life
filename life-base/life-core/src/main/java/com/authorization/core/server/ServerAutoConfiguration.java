@@ -1,27 +1,26 @@
 package com.authorization.core.server;
 
-import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import com.alibaba.cloud.nacos.registry.NacosServiceRegistry;
 import com.authorization.redis.start.service.StringRedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 
 /**
- * 服务注册到nacos类
+ * 需要刷新服务
  *
  * @author wangjunming
  */
 @Slf4j
 @AutoConfiguration
+@Import(StringRedisService.class)
 public class ServerAutoConfiguration {
 
     @Bean
-    @Primary
-    public NacosServiceRegistry customServiceRegistry(NacosDiscoveryProperties nacosDiscoveryProperties,
-                                                      StringRedisService stringRedisService) {
-        return new CustomServiceRegistry(nacosDiscoveryProperties, stringRedisService);
+    @Order
+    public TimelyDetection timelyDetection(StringRedisService stringRedisService) {
+        return new TimelyDetection(stringRedisService);
     }
 
 }

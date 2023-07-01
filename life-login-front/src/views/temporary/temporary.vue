@@ -52,8 +52,8 @@ export default {
       this.accessToken = result.data;
       console.log("获取的accessToken对象信息是：" + result);
       //将accessToken缓存到当前二级域名的cookie中，开始通过accessToken获取当前登录用户的信息
-      setCookie('accessToken', accessToken.access_token)
-      setCookie('tokenType', accessToken.token_type)
+      setCookie('accessToken', this.accessToken.access_token)
+      setCookie('tokenType', this.accessToken.token_type)
       //一旦将access_token 存储到cookie中之后将跳转到正确的路径中。
     })
   },

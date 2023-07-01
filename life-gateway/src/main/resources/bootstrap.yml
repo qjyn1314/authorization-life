@@ -12,8 +12,8 @@ spring:
         enabled: true
         group: ${spring.cloud.nacos.group}
         namespace: ${spring.cloud.nacos.namespace}
-        # 服务发现的延迟时间-默认 30000 毫秒,即 30秒. 此处设置为 300毫秒.
-        watch-delay: 300
+        # 获取服务发现的延迟时间-默认 30000 毫秒,即 30秒.
+        watch-delay: 500
       config:
         enabled: false
 

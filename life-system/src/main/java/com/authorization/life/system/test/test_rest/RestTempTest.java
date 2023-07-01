@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class RestTempTest {
 
     public static void main(String[] args) {
-        testShardingJdbcQuery();
+        testShardingJdbcInsert();
     }
 
 

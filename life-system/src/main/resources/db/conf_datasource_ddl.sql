@@ -13,4 +13,6 @@ create table if not exists conf_datasource
     create_date     datetime default CURRENT_TIMESTAMP null comment '创建时间',
     update_date     datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新',
     del_flag        char     default '0'               null comment '删除标记'
-) comment '数据源表';
+)
+    comment '数据源表';
+

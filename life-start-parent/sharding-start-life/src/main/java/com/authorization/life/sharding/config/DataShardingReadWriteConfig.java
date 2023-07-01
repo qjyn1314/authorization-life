@@ -20,13 +20,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 读写分离 (采用默认的 负载均衡算法配置 ) + 分表
+ * 读写分离 + 分表
  *
  * @author wangjunming
  * @date 2023/6/13 15:22
  */
 @Slf4j
 public class DataShardingReadWriteConfig {
+
 
     public DataSource getDataSource(DynamicDataSourceProvider dynamicDataSourceProvider, Properties props) throws SQLException {
         log.info("开始创建数据源->com.hulunbuir.sharding.ShardingAutoConfig.dataSource->start");
@@ -59,7 +60,26 @@ public class DataShardingReadWriteConfig {
         ReadwriteSplittingDataSourceRuleConfiguration dataSourceConfig = new ReadwriteSplittingDataSourceRuleConfiguration(
                 dataSourceConfigName, staticStrategy, null, loadBalancerName);
 
-        // 参考官网:  https://shardingsphere.apache.org/document/current/cn/user-manual/common-config/builtin-algorithm/load-balance/
+// 参考官网:  https://shardingsphere.apache.org/document/current/cn/user-manual/common-config/builtin-algorithm/load-balance/
+//        // 读写分离的算法-权重算法
+//        Properties algorithmProps = new Properties();
+//        for (int i = 0; i < slaveList.size(); i++) {
+//            algorithmProps.setProperty(slaveList.get(i), String.valueOf(i + 5));
+//        }
+//        // 说明：事务内，读请求根据 transaction-read-query-strategy 属性的配置进行路由。事务外，采用权重策略路由到 replica。
+//        algorithmProps.put("transaction-read-query-strategy", "FIXED_PRIMARY");
+//        algorithmProps.put("slave02", algorithmProps.getProperty("slave02"));
+//        Map<String, AlgorithmConfiguration> algorithmConfigMap = new HashMap<>(1);
+//        algorithmConfigMap.put(loadBalancerName, new AlgorithmConfiguration("WEIGHT", algorithmProps));
+
+        // 读写分离算法 - 随机负载均衡算法
+//        Map<String, AlgorithmConfiguration> algorithmConfigMap = new HashMap<>(1);
+////        Properties algorithmProps = new Properties();
+//         // 说明：事务内，读请求根据 transaction-read-query-strategy 属性的配置进行路由。事务外，采用权重策略路由到 replica。
+//        algorithmProps.put("transaction-read-query-strategy", "FIXED_PRIMARY");
+//        algorithmProps.put("slave02", algorithmProps.getProperty("slave02"));
+//        algorithmConfigMap.put(loadBalancerName, new AlgorithmConfiguration("RANDOM", algorithmProps));
+
         //负载均衡算法配置
         Map<String, AlgorithmConfiguration> loadBalanceMap = new HashMap<>();
         Properties properties = new Properties();
@@ -105,11 +125,13 @@ public class DataShardingReadWriteConfig {
     private ShardingTableRuleConfiguration getLemdEmpTableRuleConfiguration(String dataSourceConfigName,String tableShardingAlgorithmsName) {
         // 分片逻辑表名称
         String logicTable = "lemd_emp";
-        // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式.
-        String actualDataNodes = dataSourceConfigName + ".lemd_emp_$->{0..999}";
+        // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式
+        String actualDataNodes = dataSourceConfigName + ".lemd_emp_$->{0..9999}";
         ShardingTableRuleConfiguration result = new ShardingTableRuleConfiguration(logicTable, actualDataNodes);
         // 默认分表策略-- 查询数据是必须带有此分表列作为查询条件
         result.setTableShardingStrategy(new StandardShardingStrategyConfiguration("tenant_id", tableShardingAlgorithmsName));
+//        // 默认自增列生成器配置
+//        result.setKeyGenerateStrategy(new KeyGenerateStrategyConfiguration("emp_id", "snowflake"));
         return result;
     }
 

@@ -1,5 +1,6 @@
 package com.authorization.common.config;
 
+import com.authorization.utils.json.JsonHelper;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -9,7 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -99,11 +102,14 @@ public class RestTemplateConfig {
      */
     @Bean
     public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
-        //解决乱码问题，遍历寻找，进行覆盖
-        StringHttpMessageConverter messageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
         //添加额外的HttpMessageConverter，在构建器上配置的任何转换器都将替换RestTemplate的默认转换器。
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        jackson2HttpMessageConverter.setObjectMapper(JsonHelper.getObjectMapper());
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .additionalMessageConverters(messageConverter)
+                //解决乱码问题，遍历寻找，进行覆盖
+                .additionalMessageConverters(new StringHttpMessageConverter(StandardCharsets.UTF_8))
+                .additionalMessageConverters(new FormHttpMessageConverter())
+                .additionalMessageConverters(jackson2HttpMessageConverter)
                 .build();
         restTemplate.setRequestFactory(clientHttpRequestFactory);
         return restTemplate;

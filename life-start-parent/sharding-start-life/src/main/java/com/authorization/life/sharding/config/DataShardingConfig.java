@@ -54,10 +54,12 @@ public class DataShardingConfig {
         // 分片逻辑表名称
         String logicTable = "lemd_emp";
         // 由数据源名 + 表名组成，以小数点分隔。多个表以逗号分隔，支持行表达式
-        String actualDataNodes = "master.lemd_emp_$->{0..999}";
+        String actualDataNodes = "master.lemd_emp_$->{0..9999}";
         ShardingTableRuleConfiguration result = new ShardingTableRuleConfiguration(logicTable, actualDataNodes);
         // 默认分表策略-- 查询数据是必须带有此分表列作为查询条件
         result.setTableShardingStrategy(new StandardShardingStrategyConfiguration("tenant_id", tableShardingAlgorithmsName));
+//        // 默认自增列生成器配置
+//        result.setKeyGenerateStrategy(new KeyGenerateStrategyConfiguration("emp_id", "snowflake"));
         return result;
     }
 

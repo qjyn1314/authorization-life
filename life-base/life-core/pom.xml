@@ -26,11 +26,6 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>life-utils</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
             <artifactId>mybatis-start-life</artifactId>
             <!--可选依赖，即不会向下传递此依赖，(引入了life-core之后是不会在工程中间接依赖到redis-start，需要使用到redis相关的信息是才需要在工程中引入）-->
             <optional>true</optional>

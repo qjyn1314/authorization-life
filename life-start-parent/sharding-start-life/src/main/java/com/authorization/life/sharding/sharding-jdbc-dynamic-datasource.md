@@ -340,7 +340,7 @@ create table if not exists conf_datasource
         props.put("algorithmClassName", "com.authorization.life.sharding.config.TenantIdPreciseShardingAlgorithm");
         result.getShardingAlgorithms().put(tableShardingAlgorithmsName, new AlgorithmConfiguration("CLASS_BASED", props));
 
-        // https://shardingsphere.apache.org/document/current/cn/user-manual/common-config/builtin-algorithm/keygen/
+        // https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/common-config/builtin-algorithm/keygen/
         // 自增列生成算法名称和配置
 //        result.getKeyGenerators().put("snowflake", new AlgorithmConfiguration("SNOWFLAKE", new Properties()));
         log.info("配置的分表信息是->{}", JSONUtil.toJsonStr(result));
@@ -401,6 +401,30 @@ public class ShardingAutoConfig {
 }
 
 ```
+
+### 整合sharding-jdbc过程中遇到的问题
+
+1. 字段 actualDataNodes 的表达式书写 重点之一:  $->
+示例 : lemd_emp_$->{0..9999}
+
+官网: 
+https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-jdbc/java-api/rules/sharding/
+
+在官网中没有具体的体现出来, 官网上并没有加  ->  符号.
+
+2. 设置 sql-show 为 true ,  sql-simple  为 false  .
+
+在配置成功之后会打印执行的预编译sql语句, sql语句中的表名是真实的表名.
+
+3. 自定义分表算法配置中, 算法类型为  CLASS_BASED  时, 才进行编写自定义算法类.
+
+可参考:
+
+com.authorization.life.sharding.config.TenantIdPreciseShardingAlgorithm
+
+4. 在对于被分表字段, 在增删改查的时候, 其字段必须不能为空(包含空字符串).
+
+会出现一下报错:
 
 
 

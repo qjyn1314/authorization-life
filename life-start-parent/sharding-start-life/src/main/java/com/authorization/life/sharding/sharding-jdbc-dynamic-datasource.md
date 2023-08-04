@@ -422,12 +422,12 @@ https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-j
 
 com.authorization.life.sharding.config.TenantIdPreciseShardingAlgorithm
 
-4. 在对于被分表字段, 在增删改查的时候, 其字段必须不能为空(包含空字符串).
-
-会出现一下报错:
+4. 在对于被分表字段, 在增删改查的时候, 其字段(例如: tenant_id )必须不能为空(包含空字符串).
 
 
+### 租户注册是的流程以及需要注意事项
 
+1. 对于 sharding-jdbc 是没有自动生成表操作的.
 
-
+在租户注册的时候需要执行创建表sql语句, 进行创建相关分表. 即 将创建表sql写在配置文件中, 或者写在枚举类中, 将租户ID进行配置得到最终的创建表sql, 进行创建相关分表.
 

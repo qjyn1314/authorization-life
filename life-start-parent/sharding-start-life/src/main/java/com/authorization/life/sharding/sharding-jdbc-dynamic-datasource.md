@@ -404,7 +404,7 @@ public class ShardingAutoConfig {
 
 ### 整合sharding-jdbc过程中遇到的问题
 
-1. 字段 actualDataNodes 的表达式书写 重点之一:  $->
+#### 1. 字段 actualDataNodes 的表达式书写 重点之一:  $->
 示例 : lemd_emp_$->{0..9999}
 
 官网: 
@@ -412,22 +412,29 @@ https://shardingsphere.apache.org/document/5.3.2/cn/user-manual/shardingsphere-j
 
 在官网中没有具体的体现出来, 官网上并没有加  ->  符号.
 
-2. 设置 sql-show 为 true ,  sql-simple  为 false  .
+#### 2. 设置 sql-show 为 true ,  sql-simple  为 false  .
 
 在配置成功之后会打印执行的预编译sql语句, sql语句中的表名是真实的表名.
 
-3. 自定义分表算法配置中, 算法类型为  CLASS_BASED  时, 才进行编写自定义算法类.
+#### 3. 自定义分表算法配置中, 算法类型为  CLASS_BASED  时, 才进行编写自定义算法类.
 
 可参考:
-
 com.authorization.life.sharding.config.TenantIdPreciseShardingAlgorithm
 
-4. 在对于被分表字段, 在增删改查的时候, 其字段(例如: tenant_id )必须不能为空(包含空字符串).
+#### 4. 在对于被分表字段, 在增删改查的时候, 其字段(例如: tenant_id )必须不能为空(包含空字符串).
 
+保存数据时, 没有租户id 字段的错误信息:
+
+查询的SQL语句中必须要有  tenant_id 字段, 否则就会查询 所有的分表信息使用 union all 关键字进行连接并做查询, 这个时候也就意味着需要创建出所有的分表.
 
 ### 租户注册是的流程以及需要注意事项
 
 1. 对于 sharding-jdbc 是没有自动生成表操作的.
 
 在租户注册的时候需要执行创建表sql语句, 进行创建相关分表. 即 将创建表sql写在配置文件中, 或者写在枚举类中, 将租户ID进行配置得到最终的创建表sql, 进行创建相关分表.
+
+
+
+
+
 

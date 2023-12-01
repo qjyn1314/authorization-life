@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Primary;
 @AutoConfiguration
 public class EnhanceAutoBeanConfig {
 
-//    @Bean
-//    @Primary
-//    public ObjectMapper jacksonObjectMapper() {
-//        return ObjectMappers.configMapper();
-//    }
+    @Bean
+    @Primary
+    public ObjectMapper jacksonObjectMapper() {
+        return ObjectMappers.configMapper();
+    }
 
 }

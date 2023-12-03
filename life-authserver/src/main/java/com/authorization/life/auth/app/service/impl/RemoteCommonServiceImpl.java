@@ -4,10 +4,8 @@ import com.authorization.common.log.LogAdvice;
 import com.authorization.life.auth.app.service.RemoteCommonService;
 import com.authorization.remote.system.SystemServerApiRes;
 import com.authorization.remote.system.service.SystemRemoteService;
-import com.authorization.utils.result.Result;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * dubbo接口公共集成接口的实现, 将包含所有在此项目中调用的dubbo接口.

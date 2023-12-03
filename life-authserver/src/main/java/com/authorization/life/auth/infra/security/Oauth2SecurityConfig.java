@@ -11,6 +11,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,9 +30,6 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import javax.servlet.http.HttpServletRequest;
-
 
 /**
  * 整合 oauth2_authorization 的配置类。
@@ -93,17 +91,19 @@ public class Oauth2SecurityConfig {
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 //配置formLogin
-                .formLogin(Customizer.withDefaults())
-                //将oauth2.0的配置托管给 SpringSecurity
-                .apply(authorizationServerConfigurer);
+                .formLogin(Customizer.withDefaults());
+
+//        http.apply(authServerConfig->)
+//                //将oauth2.0的配置托管给 SpringSecurity
+//                .apply(authorizationServerConfigurer);
 
         // 自定义设置accesstoken为jwt形式
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
         // 配置 异常处理
         http
-                .exceptionHandling()
-                //当未登录的情况下 该如何跳转。
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
+                .exceptionHandling(exceHandle->exceHandle
+                        //当未登录的情况下 该如何跳转。
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
 
         return http.build();
     }

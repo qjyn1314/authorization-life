@@ -56,15 +56,15 @@ public class ReactiveExceptionHandler extends DefaultErrorWebExceptionHandler {
             // 找不到主机
             httpStatus = HttpStatus.BAD_GATEWAY.value();
             result = new Result(Result.ERROR, "The target service [" + e.getMessage() + "] not found");
-        } else if (e instanceof ResponseStatusException && Objects.equals(((ResponseStatusException) e).getStatus(), HttpStatus.GATEWAY_TIMEOUT)) {
+        } else if (e instanceof ResponseStatusException && Objects.equals(((ResponseStatusException) e).getStatusCode().value(), HttpStatus.GATEWAY_TIMEOUT)) {
             // 响应超时
             ResponseStatusException exception = (ResponseStatusException) e;
-            httpStatus = exception.getStatus().value();
+            httpStatus = exception.getStatusCode().value();
             result = new Result(Result.ERROR, "The target service instance response timeout, Pleade retry on later");
         } else if (e instanceof ResponseStatusException) {
             // 其他异常
             ResponseStatusException exception = (ResponseStatusException) e;
-            httpStatus = exception.getStatus().value();
+            httpStatus = exception.getStatusCode().value();
             result = new Result(Result.ERROR, exception.getReason());
         }
         Map<String, Object> map = BeanUtil.beanToMap(result, false, true);

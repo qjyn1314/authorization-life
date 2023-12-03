@@ -24,6 +24,12 @@
         <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>life-parent</artifactId>
+             <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

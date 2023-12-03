@@ -2,10 +2,11 @@ package com.authorization.life.datasource.start.config;
 
 import com.authorization.life.datasource.start.support.DataSourceSupport;
 import com.authorization.utils.kvp.KvpFormat;
+import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
+import com.baomidou.dynamic.datasource.creator.hikaricp.HikariCpConfig;
 import com.baomidou.dynamic.datasource.provider.AbstractJdbcDataSourceProvider;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
-import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.hikari.HikariCpConfig;
 import com.baomidou.dynamic.datasource.toolkit.ConfigMergeCreator;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -33,8 +34,8 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
     private final StringEncryptor stringEncryptor;
     private final DynamicDataSourceProperties dynamicDataSourceProperties;
 
-    public JdbcDynamicDataSourceProvider(StringEncryptor stringEncryptor, DataSourceProperties dataSourceProperties, DynamicDataSourceProperties dynamicDataSourceProperties) {
-        super(dataSourceProperties.getDriverClassName(), dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
+    public JdbcDynamicDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator, StringEncryptor stringEncryptor, DataSourceProperties dataSourceProperties, DynamicDataSourceProperties dynamicDataSourceProperties) {
+        super(defaultDataSourceCreator, dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
         this.stringEncryptor = stringEncryptor;
         this.dataSourceProperties = dataSourceProperties;
         this.dynamicDataSourceProperties = dynamicDataSourceProperties;

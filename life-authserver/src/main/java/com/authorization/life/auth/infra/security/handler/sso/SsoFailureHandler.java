@@ -5,6 +5,8 @@ import com.authorization.life.auth.infra.security.sso.ValiVerificationCodeExcept
 import com.authorization.life.auth.infra.security.sso.VerificationCodeException;
 import com.authorization.life.auth.infra.security.vo.AuthCodeExceptionVO;
 import com.authorization.utils.result.Result;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.*;
@@ -12,8 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;

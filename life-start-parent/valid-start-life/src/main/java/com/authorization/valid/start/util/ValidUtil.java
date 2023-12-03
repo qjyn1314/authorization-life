@@ -1,9 +1,10 @@
 package com.authorization.valid.start.util;
 
 import cn.hutool.core.collection.CollUtil;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.springframework.util.CollectionUtils;
 
-import javax.validation.ConstraintViolation;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,11 +21,11 @@ public class ValidUtil {
      * 校验单个对象，并返回效验结果
      *
      * @param validator 验证器
-     * @param bean    Bean
+     * @param bean      Bean
      * @param groups    验证组
      * @param <T>       Bean 泛型
      */
-    public static <T> Set<ConstraintViolation<T>> validate(javax.validation.Validator validator, T bean, Class<?>... groups) {
+    public static <T> Set<ConstraintViolation<T>> validate(Validator validator, T bean, Class<?>... groups) {
         Set<ConstraintViolation<T>> violationSet;
         if (groups == null) {
             violationSet = validator.validate(bean);
@@ -37,12 +38,12 @@ public class ValidUtil {
     /**
      * 校验集合对象，并返回效验结果
      *
-     * @param validator 验证器
+     * @param validator  验证器
      * @param collection Bean集合
-     * @param groups    验证组
-     * @param <T>       Bean 泛型
+     * @param groups     验证组
+     * @param <T>        Bean 泛型
      */
-    public static <T> Map<Integer, Set<ConstraintViolation<T>>> validate(javax.validation.Validator validator, Collection<T> collection, Class<?>... groups) {
+    public static <T> Map<Integer, Set<ConstraintViolation<T>>> validate(Validator validator, Collection<T> collection, Class<?>... groups) {
         if (CollectionUtils.isEmpty(collection)) {
             return Collections.emptyMap();
         }
@@ -65,12 +66,13 @@ public class ValidUtil {
 
     /**
      * 校验对象，如果错误则直接抛出异常。
+     *
      * @param validator 验证器
-     * @param bean Bean
-     * @param groups 验证组
-     * @param <T> Bean 泛型
+     * @param bean      Bean
+     * @param groups    验证组
+     * @param <T>       Bean 泛型
      */
-    public static <T> void validateAndThrow(javax.validation.Validator validator, T bean, Class<?>... groups) {
+    public static <T> void validateAndThrow(Validator validator, T bean, Class<?>... groups) {
         Set<ConstraintViolation<T>> validateRes = validate(validator, bean, groups);
         if (CollUtil.isNotEmpty(validateRes)) {
             process(validateRes);
@@ -79,12 +81,13 @@ public class ValidUtil {
 
     /**
      * 校验对象，如果错误则直接抛出异常。
-     * @param validator 验证器
+     *
+     * @param validator  验证器
      * @param collection 集合
-     * @param groups 验证组
-     * @param <T> Bean 泛型
+     * @param groups     验证组
+     * @param <T>        Bean 泛型
      */
-    public static <T> void validateAndThrow(javax.validation.Validator validator, Collection<T> collection, Class<?>... groups) {
+    public static <T> void validateAndThrow(Validator validator, Collection<T> collection, Class<?>... groups) {
         Map<Integer, Set<ConstraintViolation<T>>> validateRes = validate(validator, collection, groups);
         if (CollUtil.isNotEmpty(validateRes)) {
             process(validateRes);
@@ -92,7 +95,7 @@ public class ValidUtil {
     }
 
     private static <T> void process(Set<ConstraintViolation<T>> resultSet) {
-        if (CollUtil.isEmpty(resultSet)){
+        if (CollUtil.isEmpty(resultSet)) {
             return;
         }
         String error = resultSet.stream()
@@ -102,13 +105,13 @@ public class ValidUtil {
     }
 
     private static <T> void process(Map<Integer, Set<ConstraintViolation<T>>> resultMap) {
-        if (CollUtil.isEmpty(resultMap)){
+        if (CollUtil.isEmpty(resultMap)) {
             return;
         }
         String error = resultMap.entrySet().stream()
                 .map(entry ->
                         "[index: " + entry.getKey()
-                    + " , error: " +  entry.getValue().stream().map(ValidUtil::errorMsg).collect(Collectors.joining("\n")) + "]")
+                                + " , error: " + entry.getValue().stream().map(ValidUtil::errorMsg).collect(Collectors.joining("\n")) + "]")
                 .collect(Collectors.joining("\n"));
         throw new ValidException(error);
     }

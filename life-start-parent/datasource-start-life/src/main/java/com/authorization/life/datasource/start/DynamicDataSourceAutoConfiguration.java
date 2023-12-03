@@ -2,6 +2,7 @@ package com.authorization.life.datasource.start;
 
 import com.authorization.life.datasource.start.config.JdbcDynamicDataSourceProvider;
 import com.authorization.utils.jasypt.JasyptConfig;
+import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.dynamic.datasource.provider.DynamicDataSourceProvider;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +38,11 @@ import org.springframework.context.annotation.Import;
 public class DynamicDataSourceAutoConfiguration {
 
     @Bean
-    public DynamicDataSourceProvider dynamicDataSourceProvider(StringEncryptor stringEncryptor,
+    public DynamicDataSourceProvider dynamicDataSourceProvider(DefaultDataSourceCreator defaultDataSourceCreator,
+                                                               StringEncryptor stringEncryptor,
                                                                DataSourceProperties dataSourceProperties,
                                                                DynamicDataSourceProperties dynamicDataSourceProperties) {
-        return new JdbcDynamicDataSourceProvider(stringEncryptor, dataSourceProperties, dynamicDataSourceProperties);
+        return new JdbcDynamicDataSourceProvider(defaultDataSourceCreator, stringEncryptor, dataSourceProperties, dynamicDataSourceProperties);
     }
 
 }

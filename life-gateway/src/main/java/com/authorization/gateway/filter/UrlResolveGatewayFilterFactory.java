@@ -33,7 +33,7 @@ public class UrlResolveGatewayFilterFactory extends AbstractGatewayFilterFactory
             ServerHttpRequest request = exchange.getRequest();
             addOriginalRequestUrl(exchange, request.getURI());
             String path = request.getURI().getRawPath();
-            String httpMethod = request.getMethodValue().toUpperCase();
+            String httpMethod = request.getMethod().toString();
             String serviceName = Arrays.stream(StringUtils.tokenizeToStringArray(path, "/")).limit(1).collect(Collectors.joining("/"));
             String newPath = "/" + Arrays.stream(StringUtils.tokenizeToStringArray(path, "/")).skip(1).collect(Collectors.joining("/"));
             newPath += (newPath.length() > 1 && path.endsWith("/") ? "/" : "");

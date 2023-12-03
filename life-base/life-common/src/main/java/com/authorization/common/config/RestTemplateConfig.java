@@ -1,10 +1,10 @@
 package com.authorization.common.config;
 
 import com.authorization.utils.json.JsonHelper;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.io.HttpClientConnectionManager;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -89,7 +89,7 @@ public class RestTemplateConfig {
         // 连接超时时间/毫秒（连接上服务器(握手成功)的时间，超出抛出connect timeout）
         clientHttpRequestFactory.setConnectTimeout(5 * 1000);
         // 数据读取超时时间(socketTimeout)/毫秒（务器返回数据(response)的时间，超过抛出read timeout）
-        clientHttpRequestFactory.setReadTimeout(10 * 1000);
+//        clientHttpRequestFactory.setReadTimeout(10 * 1000);
         // 连接池获取请求连接的超时时间，不宜过长，必须设置/毫秒（超时间未拿到可用连接，会抛出org.apache.http.conn.ConnectionPoolTimeoutException: Timeout waiting for connection from pool）
         clientHttpRequestFactory.setConnectionRequestTimeout(10 * 1000);
         return clientHttpRequestFactory;

@@ -2,10 +2,9 @@ package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
 import com.authorization.redis.start.service.StringRedisService;
+import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-
-import javax.annotation.Resource;
 
 /**
  * 服务关闭配置

@@ -48,7 +48,7 @@
         <!--权限认证依赖-->
         <spring-security.version>6.2.0</spring-security.version>
         <oauth2-authorization-server.version>1.2.0</oauth2-authorization-server.version>
-        <oauth2-oidc-sdk.version>11.7</oauth2-oidc-sdk.version>
+        <!-- 此依赖从 oauth2-authorization-server 中获取 -->
         <nimbus-jose-jwt.version>9.37.1</nimbus-jose-jwt.version>
 
         <!--数据库依赖-->
@@ -238,11 +238,6 @@
                 <groupId>com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
                 <version>${nimbus-jose-jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nimbusds</groupId>
-                <artifactId>oauth2-oidc-sdk</artifactId>
-                <version>${oauth2-oidc-sdk.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>

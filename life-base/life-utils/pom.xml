@@ -57,7 +57,7 @@
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
         <!-- mapstruct end -->
-         <dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
         </dependency>

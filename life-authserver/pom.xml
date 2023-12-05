@@ -31,16 +31,12 @@
             <artifactId>life-utils</artifactId>
         </dependency>
 
-        <!--以下为security+oauth2-->
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>oauth2-oidc-sdk</artifactId>
-        </dependency>
+        <!--以下为 authorization-server 1.2.0 -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
         </dependency>
-        <!--以上为security+oauth2-->
+        <!--以上为 authorization-server 1.2.0 -->
 
         <dependency>
             <groupId>com.authorization.life</groupId>

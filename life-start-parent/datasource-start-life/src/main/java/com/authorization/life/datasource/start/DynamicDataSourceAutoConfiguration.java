@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
  * @author wangjunming
  */
 @Slf4j
-@Import(JasyptConfig.class)
+@Import({JasyptConfig.class, DefaultDataSourceCreator.class})
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @EnableConfigurationProperties({DataSourceProperties.class, DynamicDataSourceProperties.class})

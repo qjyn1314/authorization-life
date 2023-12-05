@@ -47,6 +47,10 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  * oauth2 security 的配置信息，关键是将配置信息托管给 HttpSecurity
  * <p>
  * https://juejin.cn/post/6985411823144615972
+ * <p>
+ * 官网:
+ * <p>
+ * https://docs.spring.io/spring-security/reference/getting-spring-security.html
  *
  * @author wangjunming
  */
@@ -101,7 +105,7 @@ public class Oauth2SecurityConfig {
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
         // 配置 异常处理
         http
-                .exceptionHandling(exceHandle->exceHandle
+                .exceptionHandling(exceHandle -> exceHandle
                         //当未登录的情况下 该如何跳转。
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
 

@@ -38,7 +38,7 @@
             authorization-server：0.3.1
         -->
         <!--基本依赖-->
-        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring-boot.version>3.1.6</spring-boot.version>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
         <dubbo.version>3.2.9</dubbo.version>

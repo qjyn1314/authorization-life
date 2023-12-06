@@ -13,11 +13,11 @@ spring:
             max-age: 3600
       default-filters:
         - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
-  redis:
+  data.redis:
     database: 0
     host: 127.0.0.1
-    port: 7777
-#    password: 123456
+    port: 12030
+    password: 123456
     lettuce:
       pool:
         max-active: 10

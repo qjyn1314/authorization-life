@@ -12,7 +12,7 @@ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 public class JasyptUtils {
 
     // 默认密钥 但是生产环境不建议代码中显示声明
-    public static final String SECRET_KEY = "60RO0ADCzdCKuR2+";
+    public static final String SECRET_KEY = "b3HfBmJtafn+ZUDa3sBD3xuXwuZ28GiE/p5KM7WBQ2Bob+nIHIEyzw==";
 
     /**
      * {@link StringEncryptor} 加解密。

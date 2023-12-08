@@ -5,6 +5,7 @@ import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 /**
  * 密码的密文配置信息
@@ -26,6 +27,7 @@ public class JasyptConfig {
      *
      * @return StringEncryptor
      */
+    @Primary
     @Bean("stringEncryptor")
     public StringEncryptor stringEncryptor() {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();

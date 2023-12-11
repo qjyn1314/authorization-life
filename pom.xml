@@ -43,7 +43,7 @@
         <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
         <dubbo.version>3.2.9</dubbo.version>
         <jackson-bom.version>2.16.0</jackson-bom.version>
-        <knife4j.version>4.3.0</knife4j.version>
+        <knife4j.version>4.4.0</knife4j.version>
 
         <!--权限认证依赖-->
         <spring-security.version>6.2.0</spring-security.version>

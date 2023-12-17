@@ -158,15 +158,15 @@ public class DefaultSecurityConfig {
                 stringRedisService, userService, registeredClientService);
     }
 
+    /**
+     * 配置生成 认证管理器
+     */
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, AuthenticationProvider usernamePasswordProvider)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .authenticationProvider(usernamePasswordProvider)
-                .build();
+    public AuthenticationManager authenticationManager(HttpSecurity http, AuthenticationProvider usernamePasswordProvider) throws Exception {
+        AuthenticationManagerBuilder authMagBuild = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authMagBuild.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        authMagBuild.authenticationProvider(usernamePasswordProvider);
+        return authMagBuild.build();
     }
 
 }

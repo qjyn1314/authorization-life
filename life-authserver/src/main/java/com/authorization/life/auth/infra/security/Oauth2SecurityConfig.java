@@ -97,6 +97,8 @@ public class Oauth2SecurityConfig {
                 //配置formLogin
                 .formLogin(Customizer.withDefaults());
 
+//        http.apply(authorizationServerConfigurer);
+
 //        http.apply(authServerConfig->)
 //                //将oauth2.0的配置托管给 SpringSecurity
 //                .apply(authorizationServerConfigurer);
@@ -105,7 +107,7 @@ public class Oauth2SecurityConfig {
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
         // 配置 异常处理
         http
-                .exceptionHandling(exceHandle -> exceHandle
+                .exceptionHandling(excHandle -> excHandle
                         //当未登录的情况下 该如何跳转。
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
 

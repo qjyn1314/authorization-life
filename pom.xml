@@ -305,6 +305,46 @@
         </dependencies>
     </dependencyManagement>
 
+
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>nexus</name>
+            <!--仓库地址 仅仅是 需要拉取jar包, 这个即可使用 -->
+            <url>http://127.0.0.1:18081/repository/maven-central/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <!-- 如果需要上传jar包, 需要配置此标签  -->
+        <repository>
+            <!-- 上传稳定版本的jar包 -->
+            <id>releases</id>
+            <url>http://127.0.0.1:18081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <!--上传快照-->
+            <id>snapshots</id>
+            <url>http://127.0.0.1:18081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <!--插件地址-->
+            <id>nexus</id>
+            <url>http://127.0.0.1:8181/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
     <build>
         <finalName>${project.artifactId}</finalName>
         <pluginManagement>

@@ -9,6 +9,10 @@ public final class JsonDateUtil extends DateUtil {
     }
 
     /**
+     * yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     */
+    public static final String DATETIME_SSSZ = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    /**
      * yyyy-MM-dd
      */
     public static final String DATE = "yyyy-MM-dd";

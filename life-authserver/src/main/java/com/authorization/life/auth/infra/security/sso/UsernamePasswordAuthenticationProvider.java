@@ -4,9 +4,9 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.entity.LifeUser;
-import com.authorization.utils.security.SecurityConstant;
-import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.kvp.KvpFormat;
+import com.authorization.utils.security.SecurityCoreService;
+import com.authorization.redis.start.util.RedisService;
+import com.authorization.utils.message.StrForm;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,17 +34,17 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
     public static final String CAPTCHA_CODE = "captchaCode";
     public static final String CLIENT_ID = "client_id";
 
-    private static final String PASSWORD_ERROR_COUNT = SecurityConstant.PASSWORD_ERROR_COUNT;
+    private static final String PASSWORD_ERROR_COUNT = SecurityCoreService.PASSWORD_ERROR_COUNT;
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final StringRedisService stringRedisService;
+    private final RedisService stringRedisService;
     private final UserService userService;
     private final RegisteredClientRepository registeredClientService;
 
     public UsernamePasswordAuthenticationProvider(UserDetailsService userDetailsService,
                                                   PasswordEncoder passwordEncoder,
-                                                  StringRedisService stringRedisService,
+                                                  RedisService stringRedisService,
                                                   UserService userService,
                                                   RegisteredClientRepository registeredClientService) {
         this.userDetailsService = userDetailsService;
@@ -91,12 +91,12 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         String presentedPassword = authentication.getCredentials().toString();
         if (passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
             // 清除密码错误次数累计
-            String cacheKey = KvpFormat.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
+            String cacheKey = StrForm.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
             stringRedisService.delKey(cacheKey);
         } else {
             log.debug("Authentication failed: password does not match stored value");
             // 检查密码错误次数
-            String cacheKey = KvpFormat.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
+            String cacheKey = StrForm.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
             int passwordErrorCount = Optional.ofNullable(stringRedisService.strGet(cacheKey)).map(count -> Integer.parseInt(count.toString())).orElse(0);
             if (passwordErrorCount >= 5 && passwordErrorCount < 10) {
                 // 未超过10次则密码错误累计次数+1

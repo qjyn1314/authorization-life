@@ -1,4 +1,4 @@
-package com.authorization.redis.start.service;
+package com.authorization.redis.start.util;
 
 import cn.hutool.core.util.StrUtil;
 import com.authorization.redis.start.constant.RedisConstant;
@@ -19,16 +19,12 @@ import java.util.concurrent.TimeUnit;
  * 存储存字符传的redis工具类，
  */
 @Slf4j
-public class StringRedisService {
+public class RedisService {
 
     private final ObjectMapper objectMapper;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
-
-    public StringRedisService(RedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
+    public RedisService(StringRedisTemplate redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
     }
@@ -927,10 +923,11 @@ public class StringRedisService {
 
     /**
      * 根据key获取此key存储的数据类型
+     *
      * @return
      */
-    public DataType keyType(String key){
-       return this.currentRestTemplate().type(key);
+    public DataType keyType(String key) {
+        return this.currentRestTemplate().type(key);
     }
 
 

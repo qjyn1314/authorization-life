@@ -6,8 +6,8 @@ import com.authorization.core.security.entity.UserDetail;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
-import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.redis.start.util.RedisService;
+import com.authorization.utils.security.SecurityCoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -28,11 +28,11 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
 
     private final SecurityAuthUserService securityAuthUserService;
     private final OauthClientService oauthClientService;
-    private final StringRedisService stringRedisService;
+    private final RedisService stringRedisService;
     private final HttpServletRequest servletRequest;
 
     public CustomizerOAuth2Token(SecurityAuthUserService securityAuthUserService, OauthClientService oauthClientService,
-                                 StringRedisService stringRedisService, HttpServletRequest servletRequest) {
+                                 RedisService stringRedisService, HttpServletRequest servletRequest) {
         this.securityAuthUserService = securityAuthUserService;
         this.oauthClientService = oauthClientService;
         this.stringRedisService = stringRedisService;
@@ -61,7 +61,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
                 // 将 RedisOAuth2AuthorizationConsentService 的  OAuth2Authorization id 存储到当前登录用户信息中,在退出登录时将进行删除
                 userDetail.setAuthorizationId(authorization.getId());
                 // 通过此 redisKey 也可以获取到当前登录用户的信息, 其实就是 OAuth2Authorization 的信息
-                userDetail.setAuthorizationIdToken(SecurityConstant.getAuthorizationId(authorization.getId()));
+                userDetail.setAuthorizationIdToken(SecurityCoreService.getAuthorizationId(authorization.getId()));
             }
         }
         //如果解析失败，则抛出异常信息。
@@ -74,12 +74,12 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         //也需要将此token存放到当前登录用户中，为了在退出登录时进行获取redis中的信息并将其删除
         userDetail.setToken(token);
         //将用户信息放置到redis中，并设置其过期时间为 client中的过期时间
-        String userTokenKey = SecurityConstant.getUserTokenKey(token);
+        String userTokenKey = SecurityCoreService.getUserTokenKey(token);
         // token过期的秒数
         long tokenOverdueSeconds = registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds();
         log.info("生成gateway服务解析redis存储jwtToken的key是:{},过期时间是:{}秒,默认是 86400秒(24小时) ,此token作为key，用户信息作为value存储到redis中", userTokenKey, tokenOverdueSeconds);
         stringRedisService.strSet(userTokenKey, userDetail, tokenOverdueSeconds, TimeUnit.SECONDS);
         //也可以在此处将当前登录用户的信息存放到jwt中，但是这样就不再安全。
-        context.getClaims().claim(SecurityConstant.CLAIM_TOKEN_KEY, token).build();
+        context.getClaims().claim(SecurityCoreService.CLAIM_TOKEN_KEY, token).build();
     }
 }

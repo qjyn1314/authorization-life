@@ -10,8 +10,8 @@ import com.authorization.life.auth.infra.security.handler.sso.SsoLogoutHandle;
 import com.authorization.life.auth.infra.security.handler.sso.SsoSuccessHandler;
 import com.authorization.life.auth.infra.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.auth.infra.security.sso.UsernamePasswordAuthenticationProvider;
-import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.redis.start.util.RedisService;
+import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class DefaultSecurityConfig {
 
     @Autowired
-    private StringRedisService stringRedisService;
+    private RedisService stringRedisService;
     @Autowired
     private UserDetailService userDetailsService;
     @Autowired
@@ -86,7 +86,7 @@ public class DefaultSecurityConfig {
 
         http.authorizeHttpRequests(authHttpReq -> authHttpReq
                 // 无需认证即可访问
-                .requestMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                .requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
         );
@@ -100,11 +100,11 @@ public class DefaultSecurityConfig {
         // 配置退出登录配置
         http.logout(logout -> logout
                 // 指定退出登录url
-                .logoutUrl(SecurityConstant.SSO_LOGOUT)
+                .logoutUrl(SecurityCoreService.SSO_LOGOUT)
                 // 自定义退出登录处理器,根据当前登录用户的信息删除缓存中的数据
                 .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService, ssoSecurityProperties))
                 //在此处可以删除相应的cookie
-                .deleteCookies(SecurityConstant.JSESSIONID)
+                .deleteCookies(SecurityCoreService.JSESSIONID)
                 //需要验证session
                 .invalidateHttpSession(true)
                 //清楚认证权限
@@ -113,7 +113,7 @@ public class DefaultSecurityConfig {
         // 配置表单登录配置
         http.formLogin(form -> form
                 // 指定form表单登录的路径
-                .loginProcessingUrl(SecurityConstant.SSO_LOGIN)
+                .loginProcessingUrl(SecurityCoreService.SSO_LOGIN)
                 // 配置 达到登录失败次数时, 需要填写的验证码等信息
                 .authenticationDetailsSource(authenticationDetailsSource)
                 // 表单登录成功处理器

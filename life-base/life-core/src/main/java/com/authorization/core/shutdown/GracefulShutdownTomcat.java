@@ -1,11 +1,10 @@
 package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import com.authorization.utils.contsant.ServerUpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.context.ApplicationListener;
@@ -24,12 +23,12 @@ public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, Applic
     private volatile Connector connector;
     private final int waitTime = 30;
     private final NacosAutoServiceRegistration nacosAutoServiceRegistration;
-    private final StringRedisService stringRedisService;
+    private final RedisService stringRedisService;
 
     @Value("${spring.application.name}")
     private String applicationName;
 
-    public GracefulShutdownTomcat(NacosAutoServiceRegistration nacosAutoServiceRegistration, StringRedisService stringRedisService) {
+    public GracefulShutdownTomcat(NacosAutoServiceRegistration nacosAutoServiceRegistration, RedisService stringRedisService) {
         this.nacosAutoServiceRegistration = nacosAutoServiceRegistration;
         this.stringRedisService = stringRedisService;
     }

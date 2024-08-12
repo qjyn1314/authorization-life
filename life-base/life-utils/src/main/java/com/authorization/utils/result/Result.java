@@ -1,6 +1,6 @@
 package com.authorization.utils.result;
 
-import com.authorization.utils.message.MsgResource;
+import com.authorization.utils.message.MsgFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class Result<T> implements Serializable {
     public Result(String code, String msg, Object[] args, T data) {
         this.code = code;
         try {
-            this.msg = Objects.nonNull(msg) ? MsgResource.getMessageLocal(msg, args, null).getMessage() : null;
+            this.msg = Objects.nonNull(msg) ? MsgFormat.getMessageLocal(msg, args, null).getMessage() : null;
         } catch (Exception e) {
             this.msg = msg;
         }

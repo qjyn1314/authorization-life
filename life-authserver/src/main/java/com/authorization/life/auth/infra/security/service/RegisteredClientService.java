@@ -7,7 +7,7 @@ import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.sso.RegClientException;
 import com.authorization.core.exception.handle.CommonException;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SecurityCoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -87,9 +87,9 @@ public class RegisteredClientService implements RegisteredClientRepository {
                         //是否可重用刷新令牌
                         .reuseRefreshTokens(true)
                         //accessToken 的有效期  单位：秒
-                        .accessTokenTimeToLive(Duration.of(Objects.isNull(oauthClient.getAccessTokenTimeout()) ? SecurityConstant.ACCESS_TOKEN_TIME_TO_LIVE : oauthClient.getAccessTokenTimeout(), ChronoUnit.SECONDS))
+                        .accessTokenTimeToLive(Duration.of(Objects.isNull(oauthClient.getAccessTokenTimeout()) ? SecurityCoreService.ACCESS_TOKEN_TIME_TO_LIVE : oauthClient.getAccessTokenTimeout(), ChronoUnit.SECONDS))
                         //refreshToken 的有效期   单位：秒
-                        .refreshTokenTimeToLive(Duration.of(Objects.isNull(oauthClient.getRefreshTokenTimeout()) ? SecurityConstant.REFRESH_TOKEN_TIME_TO_LIVE : oauthClient.getRefreshTokenTimeout(), ChronoUnit.SECONDS))
+                        .refreshTokenTimeToLive(Duration.of(Objects.isNull(oauthClient.getRefreshTokenTimeout()) ? SecurityCoreService.REFRESH_TOKEN_TIME_TO_LIVE : oauthClient.getRefreshTokenTimeout(), ChronoUnit.SECONDS))
                         .build());
         //批量设置当前的授权类型
         Arrays.stream(oauthClient.getGrantTypes().split(StrPool.COMMA))

@@ -1,17 +1,16 @@
 package com.authorization.redis.start.config;
 
 import com.authorization.redis.start.listener.RedisSubscription;
-import com.authorization.redis.start.lock.DistributedLockService;
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
+import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.excutor.ExecutorManager;
 import com.authorization.utils.json.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RedissonClient;
-import org.redisson.api.RedissonReactiveClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -35,16 +34,23 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class RedisTempAutoConfig {
 
     @Bean
-    public StringRedisService stringRedisService(RedisTemplate<String, String> stringRedisTemplate) {
-        log.info("initialed redis-start-life StringRedisService");
-        return new StringRedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
+    public RedisService redisService(StringRedisTemplate stringRedisTemplate) {
+        log.info("initialed redis-start-life RedisService");
+        return new RedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
     }
 
     @Bean
-    public RedisTemplate<String, Object> authRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisUtil redisUtil(StringRedisTemplate stringRedisTemplate) {
+        log.info("initialed redis-start-life RedisUtil");
+        return new RedisUtil().setRedisTemplate(stringRedisTemplate);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(RedisSerializer.string());
+        redisTemplate.setHashKeySerializer(RedisSerializer.string());
         redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
         redisTemplate.afterPropertiesSet();
@@ -106,23 +112,5 @@ public class RedisTempAutoConfig {
         log.info("initialed RedisMessageListenerContainer redisSubscriberList.size ：{}", redisSubscriberList.size());
         return container;
     }
-
-    /**
-     * 构建分布式锁服务
-     * <p>
-     * 参考:
-     * https://blog.csdn.net/qq_44695727/article/details/115903957
-     * http://www.51ufo.cn/%E5%BE%AE%E6%9C%8D%E5%8A%A1/%E5%88%86%E5%B8%83%E5%BC%8F/2020/11/30/SpringBoot%E6%95%B4%E5%90%88Redisson.html
-     * https://www.cnblogs.com/east7/p/16255305.html
-     * https://www.cnblogs.com/east7/p/16271043.html
-     * https://blog.csdn.net/weixin_43410352/article/details/120216509
-     */
-    @Bean
-    public DistributedLockService distributedLockService(RedissonClient redissonClient,
-                                                         RedissonReactiveClient redissonReactiveClient) {
-        log.info("初始化分布式锁服务...");
-        return new DistributedLockService(redissonClient, redissonReactiveClient);
-    }
-
 
 }

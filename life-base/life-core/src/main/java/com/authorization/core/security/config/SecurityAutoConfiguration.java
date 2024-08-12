@@ -3,7 +3,7 @@ package com.authorization.core.security.config;
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SecurityCoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -61,7 +61,7 @@ public class SecurityAutoConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 // 无需认证即可访问
-                .requestMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                .requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

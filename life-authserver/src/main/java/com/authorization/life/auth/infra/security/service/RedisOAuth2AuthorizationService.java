@@ -3,9 +3,9 @@ package com.authorization.life.auth.infra.security.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.redis.start.constant.RedisConstant;
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
@@ -31,14 +31,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public final class RedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
-    private static final String AUTHORIZATION = SecurityConstant.AUTHORIZATION;
+    private static final String AUTHORIZATION = SecurityCoreService.AUTHORIZATION;
     public static final String UNDERSCORE = "_";
     private final static String AUTHORIZATION_UNDERSCORE = AUTHORIZATION + UNDERSCORE;
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final StringRedisService stringRedisService;
+    private final RedisService stringRedisService;
 
-    public RedisOAuth2AuthorizationService(RedisTemplate<String, Object> redisTemplate, StringRedisService stringRedisService) {
+    public RedisOAuth2AuthorizationService(RedisTemplate<String, Object> redisTemplate, RedisService stringRedisService) {
         this.redisTemplate = redisTemplate;
         this.stringRedisService = stringRedisService;
     }

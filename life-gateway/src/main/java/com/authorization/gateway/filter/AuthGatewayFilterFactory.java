@@ -1,7 +1,7 @@
 package com.authorization.gateway.filter;
 
 
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<Objec
     public static final String AUTH = "Auth";
 
     @Autowired
-    private StringRedisService stringRedisService;
+    private RedisService stringRedisService;
 
     @Override
     public void afterPropertiesSet() {

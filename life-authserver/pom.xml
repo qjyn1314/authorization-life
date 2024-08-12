@@ -26,17 +26,11 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>life-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
-            <artifactId>life-utils</artifactId>
-        </dependency>
 
-        <!--以下为 authorization-server 1.2.0 -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
         </dependency>
-        <!--以上为 authorization-server 1.2.0 -->
 
         <dependency>
             <groupId>com.authorization.life</groupId>

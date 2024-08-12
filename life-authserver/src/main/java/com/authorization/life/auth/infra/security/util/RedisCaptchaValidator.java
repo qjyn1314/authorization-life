@@ -7,8 +7,8 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.kvp.KvpFormat;
+import com.authorization.redis.start.util.RedisService;
+import com.authorization.utils.message.StrForm;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +40,7 @@ public final class RedisCaptchaValidator {
      * @param stringRedisService stringRedisService
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService) {
+    public static Captcha create(RedisService stringRedisService) {
         return create(stringRedisService, new RandomGenerator(RandomUtil.BASE_NUMBER, DEFAULT_COUNT), null, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_EXPIRE);
     }
 
@@ -51,7 +51,7 @@ public final class RedisCaptchaValidator {
      * @param uuid        验证码缓存key
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, String uuid) {
+    public static Captcha create(RedisService stringRedisService, String uuid) {
         return create(stringRedisService, DEFAULT_GEN, uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_EXPIRE);
     }
 
@@ -62,7 +62,7 @@ public final class RedisCaptchaValidator {
      * @param uuid        验证码缓存key
      * @return Captcha
      */
-    public static Captcha createNumCaptcha(StringRedisService stringRedisService, String uuid) {
+    public static Captcha createNumCaptcha(RedisService stringRedisService, String uuid) {
         return create(stringRedisService, NUM_GEN, uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_EXPIRE);
     }
 
@@ -75,7 +75,7 @@ public final class RedisCaptchaValidator {
      * @param expire      缓存生存时间，单位: 秒, 传入时间小于0则默认十分钟
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, String uuid, long expire) {
+    public static Captcha create(RedisService stringRedisService, String uuid, long expire) {
         return create(stringRedisService, DEFAULT_GEN, uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, expire);
     }
 
@@ -88,7 +88,7 @@ public final class RedisCaptchaValidator {
      * @param expire      缓存生存时间，单位: 秒, 传入时间小于0则默认十分钟
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, String baseStr, String uuid, long expire) {
+    public static Captcha create(RedisService stringRedisService, String baseStr, String uuid, long expire) {
         return create(stringRedisService, new RandomGenerator(baseStr, DEFAULT_COUNT), uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, expire);
     }
 
@@ -101,7 +101,7 @@ public final class RedisCaptchaValidator {
      * @param expire      缓存生存时间，单位: 秒, 传入时间小于0则默认十分钟
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, int count, String uuid, long expire) {
+    public static Captcha create(RedisService stringRedisService, int count, String uuid, long expire) {
         count = count <= 0 ? DEFAULT_COUNT : count;
         return create(stringRedisService, new RandomGenerator(RandomUtil.BASE_NUMBER, count), uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, expire);
     }
@@ -116,7 +116,7 @@ public final class RedisCaptchaValidator {
      * @param expire      缓存生存时间，单位: 秒, 传入时间小于0则默认十分钟
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, String baseStr, int count, String uuid, long expire) {
+    public static Captcha create(RedisService stringRedisService, String baseStr, int count, String uuid, long expire) {
         count = count <= 0 ? DEFAULT_COUNT : count;
         return create(stringRedisService, new RandomGenerator(baseStr, count), uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, expire);
     }
@@ -130,7 +130,7 @@ public final class RedisCaptchaValidator {
      * @param expire        缓存生存时间，单位: 秒, 传入时间小于0则默认十分钟
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, CodeGenerator codeGenerator, String uuid, long expire) {
+    public static Captcha create(RedisService stringRedisService, CodeGenerator codeGenerator, String uuid, long expire) {
         return create(stringRedisService, codeGenerator, uuid, DEFAULT_WIDTH, DEFAULT_HEIGHT, expire);
     }
 
@@ -145,14 +145,14 @@ public final class RedisCaptchaValidator {
      * @param expire        缓存生存时间，单位: 秒, 传入时间小于0则默认十分钟
      * @return Captcha
      */
-    public static Captcha create(StringRedisService stringRedisService, CodeGenerator codeGenerator, String uuid, int width, int height, long expire) {
+    public static Captcha create(RedisService stringRedisService, CodeGenerator codeGenerator, String uuid, int width, int height, long expire) {
         Assert.notNull(stringRedisService, "redisHelper is null!");
         expire = expire <= 0 ? DEFAULT_EXPIRE : expire;
         codeGenerator = Objects.isNull(codeGenerator) ? DEFAULT_GEN : codeGenerator;
         ShearCaptcha shearCaptcha = new ShearCaptcha(width, height);
         shearCaptcha.setGenerator(codeGenerator);
         uuid = StrUtil.isBlank(uuid) ? UUID.fastUUID().toString(true) : uuid;
-        stringRedisService.strSet(KvpFormat.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format(), shearCaptcha.getCode(),
+        stringRedisService.strSet(StrForm.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format(), shearCaptcha.getCode(),
                 expire, TimeUnit.MINUTES);
         return Captcha.of(shearCaptcha, uuid);
     }
@@ -165,8 +165,8 @@ public final class RedisCaptchaValidator {
      * @param code        待验证的验证码
      * @return 通过验证为true，未通过为false
      */
-    public static boolean verify(StringRedisService stringRedisService, String uuid, String code) {
-        String okValue = stringRedisService.strGet(KvpFormat.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format());
+    public static boolean verify(RedisService stringRedisService, String uuid, String code) {
+        String okValue = stringRedisService.strGet(StrForm.of(CAPTCHA_CACHE_KEY).add("uuid", uuid).format());
         return StrUtil.equalsIgnoreCase(code, okValue);
     }
 }

@@ -24,79 +24,113 @@
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+
         <!--
-            查看版本依赖关系:
-            spring-cloud 官网：  https://spring.io/projects/spring-cloud
-            spring-cloud-alibaba 官网：  https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E
-            springboot 官网： https://spring.io/projects/spring-boot
-            2022年9月4日
-            得出结果：
-            boot：2.7.13
-            cloud：2021.0.7
-            cloud-alibaba：2.2.8.RELEASE
-            spring-security：5.7.3
-            authorization-server：0.3.1
+             spring-cloud 官网版本对应关系:
+             https://spring.io/projects/spring-cloud#learn
+         -->
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <spring-boot.version>3.2.7</spring-boot.version>
+        <!--
+            spring-cloud-alibaba:
+            官网:
+            https://sca.aliyun.com/
+            官网发布版本对应关系: https://sca.aliyun.com/docs/2023/overview/version-explain/
+            spring.io 对应官网地址: https://spring.io/projects/spring-cloud-alibaba#overview
         -->
-        <!--基本依赖-->
-        <spring-boot.version>3.1.6</spring-boot.version>
-        <spring-cloud.version>2022.0.4</spring-cloud.version>
-        <spring-cloud-alibaba.version>2022.0.0.0</spring-cloud-alibaba.version>
-        <dubbo.version>3.2.9</dubbo.version>
-        <jackson-bom.version>2.16.0</jackson-bom.version>
-        <knife4j.version>4.4.0</knife4j.version>
+        <spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
+
+        <dubbo.version>3.2.14</dubbo.version>
+        <jackson-bom.version>2.17.2</jackson-bom.version>
+        <knife4j.version>4.5.0</knife4j.version>
 
         <!--权限认证依赖-->
-        <spring-security.version>6.2.0</spring-security.version>
-        <oauth2-authorization-server.version>1.2.0</oauth2-authorization-server.version>
-        <!-- 此依赖从 oauth2-authorization-server 中获取 -->
-        <nimbus-jose-jwt.version>9.37.1</nimbus-jose-jwt.version>
+        <spring-security.version>6.3.1</spring-security.version>
+        <authorization-server.version>1.3.1</authorization-server.version>
 
         <!--数据库依赖-->
-        <mysql.version>8.2.0</mysql.version>
-        <p6spy.version>3.9.1</p6spy.version>
-        <dynamic-datasource.version>4.2.0</dynamic-datasource.version>
-        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
-        <pagehelper.version>2.0.0</pagehelper.version>
-        <sharding-jdbc.version>5.3.2</sharding-jdbc.version>
-        <redisson.version>3.24.3</redisson.version>
+        <mysql.version>9.0.0</mysql.version>
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
+        <pagehelper.version>2.1.0</pagehelper.version>
         <!--工具依赖-->
-        <slf4j-api.version>2.0.9</slf4j-api.version>
-        <hutool.version>5.8.23</hutool.version>
-        <guava.version>32.1.3-jre</guava.version>
+        <slf4j-api.version>2.0.13</slf4j-api.version>
+        <hutool.version>5.8.29</hutool.version>
+        <guava.version>33.2.1-jre</guava.version>
         <orika.version>1.5.4</orika.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <easyexcel.version>3.3.2</easyexcel.version>
         <jasypt.version>3.0.5</jasypt.version>
-        <snakeyaml.version>1.33</snakeyaml.version>
     </properties>
 
     <modules>
-        <module>life-parent</module>
         <module>life-start-parent</module>
         <module>life-base</module>
-
+        <module>life-remote-api</module>
         <module>life-gateway</module>
         <module>life-authserver</module>
         <module>life-system</module>
-        <module>life-remote-api</module>
 
     </modules>
+    <!--将规定默认引入的依赖有哪些-->
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!-- 配置类处理器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <!--加载 bootstrap.yml 中的信息 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.authorization.life</groupId>
-                <artifactId>life-parent</artifactId>
+                <artifactId>life-utils</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
                 <artifactId>life-common</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.authorization.life</groupId>
-                <artifactId>life-utils</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -107,16 +141,6 @@
             <dependency>
                 <groupId>com.authorization.life</groupId>
                 <artifactId>mybatis-start-life</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.authorization.life</groupId>
-                <artifactId>datasource-start-life</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.authorization.life</groupId>
-                <artifactId>sharding-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -132,11 +156,6 @@
             <dependency>
                 <groupId>com.authorization.life</groupId>
                 <artifactId>valid-start-life</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.authorization.life</groupId>
-                <artifactId>excel-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -169,7 +188,6 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!--guava工具类-->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
@@ -191,38 +209,17 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-            <!--excel工具类-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easyexcel.version}</version>
-            </dependency>
             <!--配置文件中字段的加解密-->
             <dependency>
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml.version}</version>
-            </dependency>
             <!--以上为工具包依赖-->
             <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>p6spy</groupId>
-                <artifactId>p6spy</artifactId>
-                <version>${p6spy.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-                <version>${dynamic-datasource.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -235,21 +232,11 @@
                 <version>${pagehelper.version}</version>
             </dependency>
             <!--以上为数据库连接-->
-            <dependency>
-                <groupId>org.redisson</groupId>
-                <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>${redisson.version}</version>
-            </dependency>
             <!-- 以上为 redisson 依赖 -->
-            <dependency>
-                <groupId>com.nimbusds</groupId>
-                <artifactId>nimbus-jose-jwt</artifactId>
-                <version>${nimbus-jose-jwt.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-oauth2-authorization-server</artifactId>
-                <version>${oauth2-authorization-server.version}</version>
+                <version>${authorization-server.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -304,7 +291,6 @@
             <!--以上为基础的导入依赖-->
         </dependencies>
     </dependencyManagement>
-
 
 
     <repositories>

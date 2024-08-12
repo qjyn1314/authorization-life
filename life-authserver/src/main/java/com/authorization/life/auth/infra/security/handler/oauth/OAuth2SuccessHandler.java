@@ -2,8 +2,8 @@ package com.authorization.life.auth.infra.security.handler.oauth;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.utils.security.SecurityConstant;
-import com.authorization.utils.kvp.KvpFormat;
+import com.authorization.utils.security.SecurityCoreService;
+import com.authorization.utils.message.StrForm;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +38,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 (OAuth2AuthorizationCodeRequestAuthenticationToken) authentication;
         if (authentication.getPrincipal() instanceof OAuth2AccessTokenAuthenticationToken token){
             OAuth2AccessToken accessToken = token.getAccessToken();
-            String redirectUrl = KvpFormat.of(SecurityConstant.AUTHORIZATION_CODE_IMPLICIT_REDIRECT_URI_FORMAT)
+            String redirectUrl = StrForm.of(SecurityCoreService.AUTHORIZATION_CODE_IMPLICIT_REDIRECT_URI_FORMAT)
                     .add("redirectUri",codeRequestAuthenticationToken.getRedirectUri())
                     .add("accessToken", accessToken.getTokenValue())
                     .add("tokenType", accessToken.getTokenType().getValue())

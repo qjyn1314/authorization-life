@@ -2,7 +2,7 @@ package com.authorization.core.security.handle;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.URLUtil;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SsoSecurityProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.net.URI;
 @Slf4j
 public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    public static final String LOGIN_URL = SecurityConstant.SSO_LOGIN_FORM_PAGE;
+    public static final String LOGIN_URL = SsoSecurityProperties.SSO_LOGIN_FORM_PAGE;
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 

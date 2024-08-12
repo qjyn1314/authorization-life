@@ -13,7 +13,7 @@ import java.util.Locale;
  * @author wangjunming
  * @date 2023/3/7 14:28
  */
-public class MsgResource {
+public class MsgFormat {
 
     private static final ReloadableResourceBundleMessageSource BUNDLE_MESSAGE_SOURCE;
 

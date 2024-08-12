@@ -1,4 +1,3 @@
-com.authorization.utils.EnhanceAutoBeanConfig
 com.authorization.utils.security.SsoSecurityProperties
-com.authorization.utils.jasypt.JasyptConfig
 com.authorization.utils.props.LifeProperties
+com.authorization.utils.jasypt.JasyptConfig

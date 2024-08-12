@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * TODO 请填写类描述
+ * 公共的环境变量
  *
  * @author wangjunming
  * @date 2023/4/10 15:42

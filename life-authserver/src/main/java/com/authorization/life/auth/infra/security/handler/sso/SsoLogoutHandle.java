@@ -3,12 +3,12 @@ package com.authorization.life.auth.infra.security.handler.sso;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.authorization.core.security.entity.UserDetail;
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import com.authorization.core.exception.handle.DefaultErrorMsg;
 import com.authorization.utils.json.JsonHelper;
 import com.authorization.utils.jwt.Jwts;
 import com.authorization.utils.result.Result;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.JWSVerifier;
@@ -38,10 +38,10 @@ import java.util.*;
 public class SsoLogoutHandle implements LogoutHandler {
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
-    private final StringRedisService stringRedisService;
+    private final RedisService stringRedisService;
     private final JWSVerifier verifier;
 
-    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, StringRedisService stringRedisService, SsoSecurityProperties ssoSecurityProperties) {
+    public SsoLogoutHandle(OAuth2AuthorizationService oAuth2AuthorizationService, RedisService stringRedisService, SsoSecurityProperties ssoSecurityProperties) {
         this.oAuth2AuthorizationService = oAuth2AuthorizationService;
         this.stringRedisService = stringRedisService;
         this.verifier = Jwts.verifier(ssoSecurityProperties.getSecret());
@@ -74,19 +74,19 @@ public class SsoLogoutHandle implements LogoutHandler {
         if (Objects.nonNull(userDetail)) {
             String userToken = userDetail.getToken();
             log.debug("当前登录用户的token-是：" + userToken);
-            stringRedisService.delKey(SecurityConstant.getUserTokenKey(userToken));
+            stringRedisService.delKey(SecurityCoreService.getUserTokenKey(userToken));
         }
         //清除掉当前登录用户的信息.
         SecurityContextHolder.clearContext();
         //解析前端给到的accessToken
         String accessToken = null;
         // 先检查header中有没有accessToken
-        if (StrUtil.startWithIgnoreCase(authorization, SecurityConstant.Header.TYPE_BEARER)) {
-            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityConstant.Header.TYPE_BEARER).trim();
+        if (StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER)) {
+            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER).trim();
         }
         // 如果header中没有，则检查url参数并赋值
         if (StrUtil.isBlank(accessToken)) {
-            accessToken = Optional.of(request.getParameter(SecurityConstant.ACCESS_TOKEN)).orElse(null);
+            accessToken = Optional.of(request.getParameter(SecurityCoreService.ACCESS_TOKEN)).orElse(null);
         }
         // 查询token
         OAuth2Authorization auth2Authorization = oAuth2AuthorizationService.findByToken(accessToken, OAuth2TokenType.ACCESS_TOKEN);
@@ -94,7 +94,7 @@ public class SsoLogoutHandle implements LogoutHandler {
             //删除 refrenToken, authorizationCode, OAuth2AuthorizationConsent
             String authorizationId = auth2Authorization.getId();
             // 查询出包含此 authorizationId 的 key信息, 并将其删除
-            List<String> authorizationIdValueKeys = getOtherKeysByValue(SecurityConstant.AUTHORIZATION, authorizationId);
+            List<String> authorizationIdValueKeys = getOtherKeysByValue(SecurityCoreService.AUTHORIZATION, authorizationId);
             for (String valueKey : authorizationIdValueKeys) {
                 stringRedisService.delKey(valueKey);
             }

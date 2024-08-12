@@ -5,7 +5,7 @@ import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.util.Captcha;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import com.authorization.utils.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class LoginController {
 
     @Resource
-    private StringRedisService stringRedisService;
+    private RedisService stringRedisService;
     @Autowired
     private OauthClientService oauthClientService;
 

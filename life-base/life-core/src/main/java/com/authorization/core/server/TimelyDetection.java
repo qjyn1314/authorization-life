@@ -1,6 +1,6 @@
 package com.authorization.core.server;
 
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import com.authorization.utils.contsant.ServerUpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,12 +12,12 @@ import org.springframework.boot.CommandLineRunner;
 @Slf4j
 public class TimelyDetection implements CommandLineRunner {
 
-    private final StringRedisService stringRedisService;
+    private final RedisService stringRedisService;
 
     @Value("${spring.application.name}")
     private String applicationName;
 
-    public TimelyDetection(StringRedisService stringRedisService) {
+    public TimelyDetection(RedisService stringRedisService) {
         this.stringRedisService = stringRedisService;
     }
 

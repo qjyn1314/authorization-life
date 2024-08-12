@@ -1,6 +1,6 @@
 package com.authorization.life.auth.infra.security.service;
 
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SecurityCoreService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
  */
 public final class RedisOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
 
-    private static final String AUTHORIZATION = SecurityConstant.AUTHORIZATION_CONSENT;
+    private static final String AUTHORIZATION = SecurityCoreService.AUTHORIZATION_CONSENT;
 
     private final RedisTemplate<String, Object> redisTemplate;
 

@@ -5,7 +5,7 @@ import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.mapper.OauthClientMapper;
 import com.authorization.utils.converter.BeanConverter;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.utils.security.SecurityCoreService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class OauthClientServiceImpl implements OauthClientService {
     public OauthClientVO clientByDomain(String domainName, String grantType) {
         OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, domainName));
         if (Objects.isNull(oauthClient)) {
-            oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, SecurityConstant.DEFAULT_DOMAIN));
+            oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, SecurityCoreService.DEFAULT_DOMAIN));
         }
         if (Objects.isNull(oauthClient)) {
             log.info("根据域名获取client信息失败,域名-{}", domainName);

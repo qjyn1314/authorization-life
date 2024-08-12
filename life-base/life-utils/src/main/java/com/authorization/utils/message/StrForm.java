@@ -1,4 +1,4 @@
-package com.authorization.utils.kvp;
+package com.authorization.utils.message;
 
 import cn.hutool.core.util.StrUtil;
 
@@ -9,21 +9,21 @@ import java.util.Map;
  * 字符串占位符拼接工具类
  * @author wangjunming
  */
-public final class KvpFormat {
+public final class StrForm {
 
     private final String pattern;
     private final Map<String, Object> kvMap = new HashMap<>();
 
 
-    public static KvpFormat of(String pattern) {
-        return new KvpFormat(pattern);
+    public static StrForm of(String pattern) {
+        return new StrForm(pattern);
     }
 
-    private KvpFormat(String pattern) {
+    private StrForm(String pattern) {
         this.pattern = pattern;
     }
 
-    public KvpFormat add(String key, Object value) {
+    public StrForm add(String key, Object value) {
         this.kvMap.put(key, value);
         return this;
     }

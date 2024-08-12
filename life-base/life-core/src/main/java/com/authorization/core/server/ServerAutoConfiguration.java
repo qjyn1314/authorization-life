@@ -1,6 +1,6 @@
 package com.authorization.core.server;
 
-import com.authorization.redis.start.service.StringRedisService;
+import com.authorization.redis.start.util.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +14,12 @@ import org.springframework.core.annotation.Order;
  */
 @Slf4j
 @AutoConfiguration
-@Import(StringRedisService.class)
+@Import(RedisService.class)
 public class ServerAutoConfiguration {
 
     @Bean
     @Order
-    public TimelyDetection timelyDetection(StringRedisService stringRedisService) {
+    public TimelyDetection timelyDetection(RedisService stringRedisService) {
         return new TimelyDetection(stringRedisService);
     }
 

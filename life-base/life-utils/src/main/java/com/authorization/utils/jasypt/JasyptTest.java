@@ -1,6 +1,5 @@
-package com.authorization.utils.test;
+package com.authorization.utils.jasypt;
 
-import com.authorization.utils.jasypt.JasyptUtils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JasyptTest {
 
     public static void main(String[] args) {
-        String message = "123456";
+        String message = "0123456789";
         String password = JasyptUtils.SECRET_KEY;
 
         //一个同样的密码和秘钥，每次执行加密，密文都是不一样的。但是解密是没问题的。

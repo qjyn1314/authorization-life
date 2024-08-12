@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import lombok.Getter;
 
 import java.io.IOException;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
  */
 public class JsonHelper {
 
+    @Getter
     private static ObjectMapper objectMapper = ObjectMappers.configMapper();
 
     /**
@@ -71,7 +73,4 @@ public class JsonHelper {
         return objectMapper.getTypeFactory();
     }
 
-    public static ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
 }

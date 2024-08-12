@@ -2,11 +2,10 @@ package com.authorization.life.auth.infra.security;
 
 import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
 import com.authorization.life.auth.infra.security.util.Jwks;
-import com.authorization.redis.start.service.StringRedisService;
-import com.authorization.utils.security.SecurityConstant;
+import com.authorization.redis.start.util.RedisService;
+import com.authorization.utils.security.SecurityCoreService;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -90,7 +89,7 @@ public class Oauth2SecurityConfig {
         http.securityMatcher(endpointsMatcher)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
 //                        // 无需认证即可访问
-                        .requestMatchers(SecurityConstant.IGNORE_PERM_URLS).permitAll()
+                        .requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll()
                         //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
@@ -120,7 +119,7 @@ public class Oauth2SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
                                                                         OauthClientService oauthClientService,
-                                                                        StringRedisService stringRedisService,
+                                                                        RedisService stringRedisService,
                                                                         HttpServletRequest servletRequest) {
         return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService, servletRequest);
     }
@@ -158,7 +157,7 @@ public class Oauth2SecurityConfig {
      */
     @Bean
     public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate,
-                                                           StringRedisService stringRedisService) {
+                                                           RedisService stringRedisService) {
         return new RedisOAuth2AuthorizationService(redisTemplate, stringRedisService);
     }
 
@@ -183,7 +182,7 @@ public class Oauth2SecurityConfig {
         //此处为oauth授权服务的发行者，即此授权服务地址
         return AuthorizationServerSettings.builder()
                 //发布者的url地址,一般是本系统访问的根路径
-                .issuer(SecurityConstant.ISSUER)
+                .issuer(SecurityCoreService.ISSUER)
                 .build();
     }
 

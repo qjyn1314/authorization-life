@@ -3,7 +3,6 @@ package com.authorization.utils.security;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -13,7 +12,6 @@ import java.util.TreeSet;
  */
 @Setter
 @Getter
-@Configuration
 @ConfigurationProperties(prefix = "sso.security")
 public class SsoSecurityProperties implements SecurityCoreService {
 
@@ -25,7 +23,7 @@ public class SsoSecurityProperties implements SecurityCoreService {
     /**
      * gateway与后续服务签署用户信息jwt时使用的密钥, 如果没有则使用默认的
      */
-    private String secret = DEFAULT_SECRET;
+    private String secret = JwtService.DEFAULT_SECRET;
 
     /**
      * 忽略认证的url

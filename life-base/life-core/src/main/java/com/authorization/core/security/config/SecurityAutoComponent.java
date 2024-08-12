@@ -2,10 +2,10 @@ package com.authorization.core.security.config;
 
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
 import com.authorization.core.security.service.UserDetailsServiceImpl;
+import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -44,8 +44,8 @@ public class SecurityAutoComponent {
      * 此处将配置每次只执行一次的filter，需要对gateway中jwt进行解析为内部的当前登录用户信息
      */
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(SsoSecurityProperties ssoSecurityProperties) {
-        return new JwtAuthenticationFilter(ssoSecurityProperties);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(SsoSecurityProperties ssoSecurityProperties, JwtService jwtService) {
+        return new JwtAuthenticationFilter(ssoSecurityProperties, jwtService);
     }
 
     /**

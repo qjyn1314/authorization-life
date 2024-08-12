@@ -20,10 +20,6 @@ public interface SecurityCoreService {
      */
     String AUTH_POSITION = "Auth-Position";
     /**
-     * 默认的jwt密钥
-     */
-    String DEFAULT_SECRET = "q1zrLbKQ1EkFR7X3iQcUL/3Z50OU3lKn1h9ZpILp0/w=";
-    /**
      * 登录页的跳转路径
      */
     String SSO_LOGIN_FORM_PAGE = "/login";

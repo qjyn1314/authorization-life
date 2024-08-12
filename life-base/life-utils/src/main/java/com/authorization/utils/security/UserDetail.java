@@ -1,4 +1,4 @@
-package com.authorization.gateway.entity;
+package com.authorization.utils.security;
 
 import com.authorization.utils.json.JsonDateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,6 +15,34 @@ import java.util.Set;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDetail {
+
+    /**
+     * 匿名用户
+     *
+     * @return UserDetail
+     */
+    public static UserDetail anonymous() {
+        UserDetail userDetail = new UserDetail();
+        userDetail.setUserId(0L);
+        userDetail.setEmpId(0L);
+        userDetail.setTenantId(0L);
+        userDetail.setLocale(Locale.CHINA);
+        return userDetail;
+    }
+
+    /**
+     * 系统用户
+     *
+     * @return UserDetail
+     */
+    public static UserDetail systemUser() {
+        UserDetail userDetail = new UserDetail();
+        userDetail.setUserId(-1L);
+        userDetail.setEmpId(-1L);
+        userDetail.setTenantId(0L);
+        userDetail.setLocale(Locale.CHINA);
+        return userDetail;
+    }
 
     /**
      * 用户Id

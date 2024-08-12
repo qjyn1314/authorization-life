@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Primary;
  * @date 2022/12/20 15:39
  */
 @Slf4j
-@Configuration
 public class JasyptConfig {
 
     /**

@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Setter
 @Getter
-@Configuration
 public class LifeProperties {
 
     @Value("${spring.application.name}")

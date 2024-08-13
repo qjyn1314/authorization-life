@@ -1,6 +1,6 @@
 package com.authorization.core.security;
 
-import com.authorization.core.security.entity.UserDetail;
+import com.authorization.utils.security.UserDetail;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

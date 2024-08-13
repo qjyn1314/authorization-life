@@ -36,6 +36,7 @@ public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoin
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        log.info("进入LoginUrlAuthenticationEntryPoint-->");
         URI uri = URI.create(loginPath);
         String query = uri.getQuery();
         String redirectUri = request.getParameter("redirect_uri");

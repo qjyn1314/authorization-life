@@ -1,5 +1,6 @@
 package com.authorization.gateway.entity;
 
+import com.authorization.utils.security.UserDetail;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

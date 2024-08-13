@@ -72,7 +72,7 @@ public class Oauth2SecurityConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
-
+        authorizationServerConfigurer.setBuilder(http);
 //        authorizationServerConfigurer
 //                .authorizationEndpoint(endpointConfigurer -> {
 //                    //参考：https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html
@@ -95,21 +95,15 @@ public class Oauth2SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 //配置formLogin
                 .formLogin(Customizer.withDefaults());
-
-//        http.apply(authorizationServerConfigurer);
-
-//        http.apply(authServerConfig->)
-//                //将oauth2.0的配置托管给 SpringSecurity
-//                .apply(authorizationServerConfigurer);
+        //将oauth2.0的配置托管给 SpringSecurity
+        http.with(authorizationServerConfigurer, Customizer.withDefaults());
 
         // 自定义设置accesstoken为jwt形式
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
         // 配置 异常处理
-        http
-                .exceptionHandling(excHandle -> excHandle
-                        //当未登录的情况下 该如何跳转。
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
-
+        http.exceptionHandling(excHandle -> excHandle
+                //当未登录的情况下 该如何跳转。
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
         return http.build();
     }
 
@@ -182,7 +176,7 @@ public class Oauth2SecurityConfig {
         //此处为oauth授权服务的发行者，即此授权服务地址
         return AuthorizationServerSettings.builder()
                 //发布者的url地址,一般是本系统访问的根路径
-                .issuer(SecurityCoreService.ISSUER)
+                .issuer(SecurityCoreService.DEFAULT_ISSUER)
                 .build();
     }
 

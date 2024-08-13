@@ -20,10 +20,9 @@ public class UserHelper {
 
     public static void setUserDetail(UserDetail userInfo) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        if (Objects.isNull(securityContext)) {
+        if (Objects.isNull(securityContext) || Objects.isNull(userInfo)) {
             return;
         }
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userInfo, (Object) null);
-        securityContext.setAuthentication(usernamePasswordAuthenticationToken);
+        securityContext.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(userInfo, null, null));
     }
 }

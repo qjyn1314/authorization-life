@@ -1,5 +1,7 @@
 package com.authorization.utils.security;
 
+import com.authorization.utils.message.StrForm;
+
 /**
  * <p>
  * 权限常量类
@@ -40,6 +42,10 @@ public interface SecurityCoreService {
      */
     String SSO_EMAIL_LOGIN = "/oauth2/emaillogin";
     /**
+     * 验证码的缓存key
+     */
+    String CAPTCHA_CACHE_KEY = "sso-auth-server:auth:captcha-code:{uuid}";
+    /**
      * 密码输入错误的次数,redis的key, 是指不管用什么方式登录出错都会被记录一次.当此处达到 默认5次时将锁定账户不允许登录.
      */
     String PASSWORD_ERROR_COUNT_KEY = "sso-oauth-server:auth:password-error-count:{username}";
@@ -69,34 +75,35 @@ public interface SecurityCoreService {
      */
     String ACCESS_TOKEN = "access_token";
 
-//    /**
-//     * 登录过程中所需要存储信息的 redisKey前缀
-//     */
-//    String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
-//    /**
-//     * 生成token时用于组装 authorizationId的redisKey
-//     */
-//    static String getAuthorizationId(String authorizationId) {
-//        return AUTHORIZATION + "_" + authorizationId;
-//    }
-//    /**
-//     * 登录同意的信息存储key
-//     */
-//    String AUTHORIZATION_CONSENT = "oauth-server:auth:oauth2:authorization-consent";
-//    /**
-//     * oauth2/token接口中返回的 accessToken(jwt形式)中claim 的key
-//     */
-//    String CLAIM_TOKEN_KEY = "token";
-//    /**
-//     * 登录成功的用户信息缓存
-//     */
-//    String USER_TOKEN_DETAIL = "sso-oauth-server:user:{token}";
-//    /**
-//     * redis中存储的用户tokenKey信息
-//     */
-//    static String getUserTokenKey(String token) {
-//        return StrForm.of(USER_TOKEN_DETAIL).add(CLAIM_TOKEN_KEY, token).format();
-//    }
+    /**
+     * 登录过程中所需要存储信息的 redisKey前缀
+     */
+    String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
+    /**
+     * 生成token时用于组装 authorizationId的redisKey
+     */
+    static String getAuthorizationId(String authorizationId) {
+        return AUTHORIZATION + "_" + authorizationId;
+    }
+    /**
+     * 登录同意的信息存储key
+     */
+    String AUTHORIZATION_CONSENT = "oauth-server:auth:oauth2:authorization-consent";
+
+    /**
+     * oauth2/token接口中返回的 accessToken(jwt形式)中claim 的key
+     */
+    String CLAIM_TOKEN_KEY = "token";
+    /**
+     * 登录成功的用户信息缓存
+     */
+    String USER_TOKEN_DETAIL = "sso-oauth-server:user:{token}";
+    /**
+     * redis中存储的用户tokenKey信息
+     */
+    static String getUserTokenKey(String token) {
+        return StrForm.of(USER_TOKEN_DETAIL).add(CLAIM_TOKEN_KEY, token).format();
+    }
 
 
     /**

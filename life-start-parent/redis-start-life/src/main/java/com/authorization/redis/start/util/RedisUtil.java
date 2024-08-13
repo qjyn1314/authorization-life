@@ -1325,4 +1325,15 @@ public class RedisUtil {
     public Cursor<TypedTuple<String>> zScan(String key, ScanOptions options) {
         return redisTemplate.opsForZSet().scan(key, options);
     }
+
+    /**
+     * 根据key获取此key存储的数据类型
+     *
+     * @return
+     */
+    public DataType keyType(String key) {
+        return redisTemplate.type(key);
+    }
+
+
 }

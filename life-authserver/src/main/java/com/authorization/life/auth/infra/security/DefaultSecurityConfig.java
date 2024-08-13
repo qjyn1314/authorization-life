@@ -10,7 +10,8 @@ import com.authorization.life.auth.infra.security.handler.sso.SsoLogoutHandle;
 import com.authorization.life.auth.infra.security.handler.sso.SsoSuccessHandler;
 import com.authorization.life.auth.infra.security.sso.CaptchaAuthenticationDetailsSource;
 import com.authorization.life.auth.infra.security.sso.UsernamePasswordAuthenticationProvider;
-import com.authorization.redis.start.util.RedisService;
+import com.authorization.redis.start.util.RedisUtil;
+import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -41,7 +41,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class DefaultSecurityConfig {
 
     @Autowired
-    private RedisService stringRedisService;
+    private RedisUtil redisUtil;
     @Autowired
     private UserDetailService userDetailsService;
     @Autowired
@@ -54,6 +54,8 @@ public class DefaultSecurityConfig {
     private RegisteredClientRepository registeredClientService;
     @Autowired
     private SsoSecurityProperties ssoSecurityProperties;
+    @Autowired
+    private JwtService jwtService;
 
     /**
      * 默认的过滤链信息
@@ -69,11 +71,11 @@ public class DefaultSecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           CaptchaAuthenticationDetailsSource authenticationDetailsSource,
                                                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                                                          AuthenticationProvider usernamePasswordProvider)
+                                                          UsernamePasswordAuthenticationProvider usernamePasswordProvider)
             throws Exception {
 
         // 前后端分离工程需要 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(CsrfConfigurer::disable);
 
         // 配置session会话管理器
         http.sessionManagement(sessionMan -> sessionMan
@@ -102,7 +104,7 @@ public class DefaultSecurityConfig {
                 // 指定退出登录url
                 .logoutUrl(SecurityCoreService.SSO_LOGOUT)
                 // 自定义退出登录处理器,根据当前登录用户的信息删除缓存中的数据
-                .addLogoutHandler(new SsoLogoutHandle(authorizationService, stringRedisService, ssoSecurityProperties))
+                .addLogoutHandler(new SsoLogoutHandle(authorizationService, redisUtil, ssoSecurityProperties, jwtService))
                 //在此处可以删除相应的cookie
                 .deleteCookies(SecurityCoreService.JSESSIONID)
                 //需要验证session
@@ -125,19 +127,6 @@ public class DefaultSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加自定义的用户名密码认证类
         http.authenticationProvider(usernamePasswordProvider);
-        //开启记住我的功能，默认时间是24小时
-//        http.rememberMe()
-//                .alwaysRemember(Boolean.TRUE)
-//                //记住我的form表单传参
-//                .rememberMeParameter(SecurityConstant.REMEMBER_ME_PARAM)
-//                //cookie的过期秒数
-//                .tokenValiditySeconds(SecurityConstant.COOKIE_TIMEOUT)
-//                //cookie中的名称
-//                .rememberMeCookieName(SecurityConstant.REMEMBER_ME_PARAM)
-//                //需要配置的二级域名
-//                .rememberMeCookieDomain(SecurityConstant.SECURITY_DOMAIN)
-//                //配置用户service，用于在关闭浏览器再次打开时，使用此service型数据库中根据名称查询用户数据，
-//                .userDetailsService(userDetailsService);
         return http.build();
     }
 
@@ -150,23 +139,21 @@ public class DefaultSecurityConfig {
     }
 
     /**
-     * 自定义用户名密码验证规则
+     * 自定义用户名密码身份验证提供程序
      */
     @Bean
-    public AuthenticationProvider usernamePasswordProvider() {
+    public UsernamePasswordAuthenticationProvider usernamePasswordProvider() {
         return new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder,
-                stringRedisService, userService, registeredClientService);
+                redisUtil, userService, registeredClientService);
     }
 
     /**
-     * 配置生成 认证管理器
+     * 配置身份验证提供程序, 不同的验证请求策略判断, 通过 AbstractUserDetailsAuthenticationProvider#supports 方法确定, 此处可以定义多个身份验证实现器
      */
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, AuthenticationProvider usernamePasswordProvider) throws Exception {
-        AuthenticationManagerBuilder authMagBuild = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authMagBuild.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-        authMagBuild.authenticationProvider(usernamePasswordProvider);
-        return authMagBuild.build();
+    public AuthenticationManager authenticationManager(HttpSecurity http,
+                                                       UsernamePasswordAuthenticationProvider usernamePasswordProvider) {
+        return new ProviderManager(usernamePasswordProvider);
     }
 
 }

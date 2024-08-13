@@ -2,12 +2,12 @@ package com.authorization.life.auth.infra.security.service;
 
 
 import cn.hutool.core.lang.UUID;
-import com.authorization.core.security.entity.UserDetail;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
 import com.authorization.redis.start.util.RedisService;
 import com.authorization.utils.security.SecurityCoreService;
+import com.authorization.utils.security.UserDetail;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

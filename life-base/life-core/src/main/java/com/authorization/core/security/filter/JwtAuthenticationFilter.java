@@ -2,11 +2,9 @@ package com.authorization.core.security.filter;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.authorization.core.exception.handle.DefaultErrorMsg;
-import com.authorization.core.security.exception.NotLoggedException;
+import com.authorization.core.security.entity.UserHelper;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import com.authorization.utils.security.UserDetail;
@@ -17,8 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -50,11 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwtToken = getJwtToken(request);
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwtToken);
-        Boolean authEnable = getAuthEnable(request);
-        log.info("authEnable -> {}", authEnable);
-        if (authEnable) {
-            handleLoginUser(request, response, chain, jwtToken);
-        }
+
+        UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
+
         chain.doFilter(request, response);
     }
 
@@ -73,33 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             }
         }
         return jwt;
-    }
-
-    /**
-     * 判断是否需要登录.
-     *
-     * @param request 当前请求信息
-     * @return Boolean true- 必须有登录用户信息, false- 不需要登录用户的信息, 为默认用户信息.
-     */
-    private Boolean getAuthEnable(HttpServletRequest request) {
-        //不需要认证则 直接返回false,
-        return ssoSecurityProperties.getEnable();
-    }
-
-    /**
-     * 设置当前登录用户
-     *
-     * @param request
-     * @param response
-     * @param chain
-     * @param jwt
-     */
-    private void handleLoginUser(HttpServletRequest request, HttpServletResponse response, FilterChain chain, String jwt) {
-        // 如果此处的jwt信息解析不出来, 则设置访客用户为当前登录用户信息.
-        UserDetail userDetail = getUserDetailByInteriorJwt(jwt);
-        Assert.notNull(userDetail, () -> new NotLoggedException(DefaultErrorMsg.EXPIRED_STRATEGY_MSG.getMsgCode()));
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetail, null, null);
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
 
     public UserDetail getUserDetailByInteriorJwt(String interiorJwt) {

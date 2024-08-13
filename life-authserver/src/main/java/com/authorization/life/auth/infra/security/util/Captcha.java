@@ -1,6 +1,6 @@
 package com.authorization.life.auth.infra.security.util;
 
-import cn.hutool.captcha.ShearCaptcha;
+import cn.hutool.captcha.GifCaptcha;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 public final class Captcha {
 
-    public static Captcha of(ShearCaptcha shearCaptcha, String uuid) {
+    public static Captcha of(GifCaptcha shearCaptcha, String uuid) {
         Captcha captcha = new Captcha();
         captcha.uuid = uuid;
         captcha.imageBase64 = shearCaptcha.getImageBase64Data();

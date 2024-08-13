@@ -2,20 +2,22 @@ package com.authorization.life.auth.infra.security.sso;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import com.authorization.core.security.UserDetailService;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.entity.LifeUser;
-import com.authorization.utils.security.SecurityCoreService;
-import com.authorization.redis.start.util.RedisService;
-import com.authorization.utils.message.StrForm;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
+import com.authorization.redis.start.util.RedisUtil;
+import com.authorization.utils.message.StrForm;
+import com.authorization.utils.security.JwtService;
+import com.authorization.utils.security.SecurityCoreService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -34,26 +36,35 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
     public static final String CAPTCHA_CODE = "captchaCode";
     public static final String CLIENT_ID = "client_id";
 
-    private static final String PASSWORD_ERROR_COUNT = SecurityCoreService.PASSWORD_ERROR_COUNT;
+    private static final String PASSWORD_ERROR_COUNT = SecurityCoreService.PASSWORD_ERROR_COUNT_KEY;
 
-    private final UserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final RedisService stringRedisService;
+    private final RedisUtil redisUtil;
     private final UserService userService;
     private final RegisteredClientRepository registeredClientService;
 
-    public UsernamePasswordAuthenticationProvider(UserDetailsService userDetailsService,
+    public UsernamePasswordAuthenticationProvider(UserDetailService userDetailsService,
                                                   PasswordEncoder passwordEncoder,
-                                                  RedisService stringRedisService,
+                                                  RedisUtil redisUtil,
                                                   UserService userService,
                                                   RegisteredClientRepository registeredClientService) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
-        this.stringRedisService = stringRedisService;
+        this.redisUtil = redisUtil;
         this.userService = userService;
         this.registeredClientService = registeredClientService;
     }
 
+    /**
+     * 获取用户信息
+     *
+     * @param username       The username to retrieve
+     * @param authentication The authentication request, which subclasses <em>may</em>
+     *                       need to perform a binding-based retrieval of the <code>UserDetails</code>
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         try {
@@ -64,23 +75,29 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         } catch (UsernameNotFoundException notFound) {
             log.debug("User '" + username + "' not found");
             throw notFound;
-        } catch (InternalAuthenticationServiceException ex) {
+        } catch (AuthenticationServiceException ex) {
             log.error("在自定义passwordAuthProvider的父类中验证失败，", ex);
             throw ex;
         }
     }
 
+    /**
+     * 其他身份检查, 例如, 用户是否已锁定, 用户是否过期,用户是否未激活
+     *
+     * @param userDetails    as retrieved from the
+     *                       {@link #retrieveUser(String, UsernamePasswordAuthenticationToken)} or
+     *                       <code>UserCache</code>
+     * @param authentication the current request that needs to be authenticated
+     * @throws AuthenticationException
+     */
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
                                                   UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         // 检查是否存在验证码
         Object authenticationDetails = authentication.getDetails();
-        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails
-                && StrUtil.isNotBlank(((CaptchaWebAuthenticationDetails) authenticationDetails).getCaptchaCode())) {
+        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails captcha && StrUtil.isNotBlank(captcha.getCaptchaCode())) {
             // 检查验证码正确
-
-            CaptchaWebAuthenticationDetails captcha = (CaptchaWebAuthenticationDetails) authenticationDetails;
-            boolean verify = RedisCaptchaValidator.verify(stringRedisService, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
+            boolean verify = RedisCaptchaValidator.verify(redisUtil, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
             Assert.isTrue(verify, () -> new ValiVerificationCodeException("验证码输入错误。"));
         }
         if (authentication.getCredentials() == null) {
@@ -92,15 +109,15 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         if (passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
             // 清除密码错误次数累计
             String cacheKey = StrForm.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
-            stringRedisService.delKey(cacheKey);
+            redisUtil.delete(cacheKey);
         } else {
             log.debug("Authentication failed: password does not match stored value");
             // 检查密码错误次数
             String cacheKey = StrForm.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
-            int passwordErrorCount = Optional.ofNullable(stringRedisService.strGet(cacheKey)).map(count -> Integer.parseInt(count.toString())).orElse(0);
+            int passwordErrorCount = Optional.ofNullable(redisUtil.get(cacheKey)).map(Integer::parseInt).orElse(0);
             if (passwordErrorCount >= 5 && passwordErrorCount < 10) {
                 // 未超过10次则密码错误累计次数+1
-                stringRedisService.strSet(cacheKey, passwordErrorCount + 1);
+                redisUtil.set(cacheKey, String.valueOf(passwordErrorCount + 1));
                 throw new VerificationCodeException("用户名或密码错误。");
             }
             if (passwordErrorCount >= 10) {
@@ -108,24 +125,20 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
                 userService.lock(((LifeUser) userDetails).getUserId(), 3);
             } else {
                 // 未超过10次则密码错误累计次数+1
-                stringRedisService.strSet(cacheKey, passwordErrorCount + 1);
+                redisUtil.set(cacheKey, String.valueOf(passwordErrorCount + 1));
             }
             throw new BadCredentialsException("用户名或密码错误。");
         }
         // 检查登录端是否与用户组匹配
-        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails clientIdDetails
-                && StrUtil.isNotBlank(((CaptchaWebAuthenticationDetails) authenticationDetails).getClientId())) {
+        if (authenticationDetails instanceof CaptchaWebAuthenticationDetails clientIdDetails && StrUtil.isNotBlank(clientIdDetails.getClientId())) {
             String clientId = clientIdDetails.getClientId();
             RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
             Assert.notNull(registeredClient, () -> new RegClientException("未找到此 OauthClient 信息。"));
+            //检查授权域
             Set<String> allowedScopes = registeredClient.getScopes();
             boolean express = ((LifeUser) userDetails).getUserGroups().containsAll(allowedScopes);
             Assert.isTrue(express, () -> new InternalAuthenticationServiceException("用户名或密码错误"));
         }
     }
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
-    }
 }

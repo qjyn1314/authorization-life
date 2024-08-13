@@ -6,7 +6,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import java.util.Objects;
 
 /**
- * 用户名密码登录-验证码
+ * 用户名密码登录-验证码传参
  */
 public class CaptchaWebAuthenticationDetails  extends WebAuthenticationDetails {
 

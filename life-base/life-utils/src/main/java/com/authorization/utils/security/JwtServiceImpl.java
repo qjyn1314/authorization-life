@@ -28,6 +28,11 @@ public class JwtServiceImpl implements JwtService {
     private SsoSecurityProperties ssoSecurityProperties;
 
     @Override
+    public String createJwtToken(Map<String, Object> claims) {
+        return createJwtToken(ssoSecurityProperties.getSecret(), claims);
+    }
+
+    @Override
     public String createJwtToken(String secret, Map<String, Object> claims) {
         Assert.notEmpty(claims, "claims must not be empty");
         if (StrUtil.isBlank(secret)) {

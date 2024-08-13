@@ -25,6 +25,13 @@ public interface JwtService {
     /**
      * 创建jwttoken字符串
      *
+     * @param claims 数据
+     * @return String
+     */
+    String createJwtToken(Map<String, Object> claims);
+    /**
+     * 创建jwttoken字符串
+     *
      * @param secret 密钥
      * @param claims 数据
      * @return String

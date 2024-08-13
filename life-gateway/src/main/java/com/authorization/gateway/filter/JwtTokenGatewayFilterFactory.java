@@ -2,18 +2,14 @@ package com.authorization.gateway.filter;
 
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.authorization.gateway.entity.RequestContext;
-import com.authorization.gateway.entity.UserDetail;
 import com.authorization.gateway.execption.UnauthorizedException;
 import com.authorization.redis.start.util.RedisUtil;
-import com.authorization.utils.json.JsonHelper;
-import com.authorization.utils.jwt.Jwts;
+import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.Payload;
+import com.authorization.utils.security.UserDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +34,8 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
 
     @Autowired
     private SsoSecurityProperties ssoSecurityProperties;
-
+    @Autowired
+    private JwtService jwtService;
     @Autowired
     private RedisUtil redisUtil;
 
@@ -54,16 +51,10 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             ServerHttpRequest request = exchange.getRequest();
             String token = getToken(request);
             // 获取当前用户的信息
-            String userDetailStr = StrUtil.isBlank(token) ? null : stringRedisService.strGet(SecurityCoreService.getUserTokenKey(token));
-            // 若jwt不存在，则封入一个空字符串，到权限拦截器处理。因为有些api是不需要登录的，故在此不处理。
-            UserDetail userDetail = StrUtil.isNotBlank(userDetailStr) ? JsonHelper.readValue(userDetailStr, UserDetail.class) : null;
-            userDetailStr = Optional.ofNullable(userDetailStr).orElse(StrUtil.EMPTY);
-            // 创建JWS对象
-            JWSObject jwsObject = new JWSObject(jwsHeader, new Payload(userDetailStr));
-            // 签名并序列化转换为真正存储用户信息的jwtToken
-            String jwtToken = Jwts.signAndSerialize(jwsObject, signer);
+            UserDetail userDetail = JSONUtil.toBean(Optional.ofNullable(redisUtil.get(SecurityCoreService.getUserTokenKey(token))).orElse(""), UserDetail.class);
+            String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(JSONUtil.toJsonStr(userDetail), Map.class));
             log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
-            ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate().header(Jwts.HEADER_JWT, jwtToken).build()).build();
+            ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate().header(SsoSecurityProperties.ACCESS_TOKEN, jwtToken).build()).build();
             return chain.filter(jwtExchange).contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY, ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY).orElse(new RequestContext()).setUserDetail(userDetail)));
         };
     }
@@ -78,9 +69,9 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
         String authorization = Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).orElse(null);
         String accessToken = null;
         // 先检查header中有没有accessToken
-        if (StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER)) {
-            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER).trim();
-        }
+//        if (StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER)) {
+//            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER).trim();
+//        }
         // 如果header中没有，则检查url参数并赋值
         if (StrUtil.isBlank(accessToken)) {
             accessToken = Optional.of(request.getQueryParams()).map(param -> param.getFirst(SecurityCoreService.ACCESS_TOKEN)).orElse(null);
@@ -88,8 +79,7 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
         if (StrUtil.isBlank(accessToken)) {
             return null;
         }
-        Map<String, Object> map = Jwts.parse(accessToken).getPayload().toJSONObject();
-        String token = (String) map.get(SecurityCoreService.CLAIM_TOKEN_KEY);
+        String token = Optional.ofNullable(jwtService.getClaimsFromJwtToken(accessToken)).orElse(Map.of()).getOrDefault(SecurityCoreService.CLAIM_TOKEN_KEY, "").toString();
         if (StrUtil.isBlank(token)) {
             // 若有jwt但没有token，则jwt一定有问题
             throw new UnauthorizedException();

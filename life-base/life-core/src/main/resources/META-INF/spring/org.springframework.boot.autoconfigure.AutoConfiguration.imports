@@ -2,6 +2,5 @@ com.authorization.core.server.ServerAutoConfiguration
 com.authorization.core.shutdown.ShutdownAutoConfiguration
 com.authorization.core.security.config.SecurityAutoComponent
 com.authorization.core.security.config.SecurityAutoConfiguration
-com.authorization.core.schedule.ScheduleAutoConfig
 com.authorization.core.LifeCoreAutoConfig
 com.authorization.core.exception.ExceptionConfig

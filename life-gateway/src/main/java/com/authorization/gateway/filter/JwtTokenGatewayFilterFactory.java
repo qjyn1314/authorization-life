@@ -51,11 +51,18 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             ServerHttpRequest request = exchange.getRequest();
             String token = getToken(request);
             // 获取当前用户的信息
-            UserDetail userDetail = JSONUtil.toBean(Optional.ofNullable(redisUtil.get(SecurityCoreService.getUserTokenKey(token))).orElse(""), UserDetail.class);
-            String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(JSONUtil.toJsonStr(userDetail), Map.class));
-            log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
-            ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate().header(SsoSecurityProperties.ACCESS_TOKEN, jwtToken).build()).build();
-            return chain.filter(jwtExchange).contextWrite(ctx -> ctx.put(RequestContext.CTX_KEY, ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY).orElse(new RequestContext()).setUserDetail(userDetail)));
+            UserDetail userDetail = null;
+            if (StrUtil.isNotBlank(token)) {
+                userDetail = JSONUtil.toBean(Optional.ofNullable(redisUtil.get(SecurityCoreService.getUserTokenKey(token))).orElse(""), UserDetail.class);
+                String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(JSONUtil.toJsonStr(userDetail), Map.class));
+                log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
+            }
+            ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate()
+//                    .header(SsoSecurityProperties.ACCESS_TOKEN, null)
+                    .build()).build();
+            return chain.filter(jwtExchange).contextWrite(ctx ->
+                    ctx.put(RequestContext.CTX_KEY, ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY)
+                            .orElse(new RequestContext()).setUserDetail(null)));
         };
     }
 

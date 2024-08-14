@@ -46,8 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwtToken = getJwtToken(request);
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwtToken);
-
-        UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
+        if (StrUtil.isNotBlank(jwtToken)) {
+            UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
+        }
 
         chain.doFilter(request, response);
     }
@@ -61,7 +62,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         }
         if (StrUtil.isBlank(jwt)) {
             // 从cookie中获取
-            Optional<Cookie> optionalCookie = Arrays.stream(request.getCookies()).filter(item -> item.getName().equals(SsoSecurityProperties.ACCESS_TOKEN)).findFirst();
+            Optional<Cookie> optionalCookie = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                    .filter(item -> item.getName().equals(SsoSecurityProperties.ACCESS_TOKEN)).findFirst();
             if (optionalCookie.isPresent()) {
                 jwt = optionalCookie.get().getValue();
             }

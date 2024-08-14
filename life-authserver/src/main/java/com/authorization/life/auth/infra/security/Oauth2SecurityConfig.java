@@ -145,14 +145,12 @@ public class Oauth2SecurityConfig {
     /**
      * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
      *
-     * @param redisTemplate      redis操作类
-     * @param stringRedisService redis字符串的操作类
+     * @param redisTemplate redis操作类
      * @return OAuth2AuthorizationService
      */
     @Bean
-    public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate,
-                                                           RedisService stringRedisService) {
-        return new RedisOAuth2AuthorizationService(redisTemplate, stringRedisService);
+    public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate) {
+        return new RedisOAuth2AuthorizationService(redisTemplate);
     }
 
     /**

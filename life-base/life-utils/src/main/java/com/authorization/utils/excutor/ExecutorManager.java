@@ -131,10 +131,10 @@ public class ExecutorManager {
      * @param threadPoolName 线程池名称
      */
     private static void displayThreadPoolStatus(ThreadPoolExecutor threadPool, String threadPoolName) {
-        // 每60*3秒输出一下线程池的状态
-        int randomInt = 180;//RandomUtil.randomInt(1800);
+        // 每(60*60秒)输出一下线程池的状态
+        int randomInt = 30;//RandomUtil.randomInt(1800);
         log.info("ThreadPool Name: [{}], in every [{}] seconds output state. ", threadPoolName, randomInt);
-        displayThreadPoolStatus(threadPool, threadPoolName, randomInt, TimeUnit.SECONDS);
+        displayThreadPoolStatus(threadPool, threadPoolName, randomInt, TimeUnit.MINUTES);
     }
 
     /**

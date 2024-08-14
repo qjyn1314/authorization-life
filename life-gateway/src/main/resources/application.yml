@@ -25,3 +25,7 @@ spring:
         max-wait: 10000
         min-idle: 3
     timeout: 50000
+logging:
+  level:
+    web: debug
+    com.authorization.gateway: debug

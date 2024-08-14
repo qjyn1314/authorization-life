@@ -22,6 +22,7 @@ import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,6 +56,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
     public void refreshRoutes(RefreshRoutesEvent refreshRoutesEvent) {
         log.trace("监听的事件是->{}", Objects.nonNull(refreshRoutesEvent) ? refreshRoutesEvent.getSource() : refreshRoutesEvent);
         List<String> services = discoveryClient.getServices();
+        log.trace("当前注册的service有-{}", JSONUtil.toJsonStr(services));
         List<RouteDefinition> mergeRoutes = CollUtil.newArrayList(services.stream()
                 .map(this::convert)
                 .filter(Objects::nonNull)

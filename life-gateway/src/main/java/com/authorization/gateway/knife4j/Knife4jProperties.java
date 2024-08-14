@@ -53,7 +53,7 @@ public class Knife4jProperties {
     }
 
     private Map<String, String> convert(String service) {
-        String url = "/" + service + "/v3/api-docs/" + service + "?group=APPLICATION";
+        String url = "/" + service + "/v3/api-docs/";
         String source = service + url + service;
         return MapUtil.builder("name", service)
                 .put("url", url)

@@ -28,7 +28,7 @@ public interface SecurityCoreService {
     /**
      * 退出登录接口
      */
-    String SSO_LOGOUT = "/oauth/logout";
+    String SSO_LOGOUT = "/oauth2/logout";
     /**
      * 用户名密码(包含手机号,邮箱,用户名(username))登录请求的接口
      */
@@ -85,10 +85,6 @@ public interface SecurityCoreService {
     static String getAuthorizationId(String authorizationId) {
         return AUTHORIZATION + "_" + authorizationId;
     }
-    /**
-     * 登录同意的信息存储key
-     */
-    String AUTHORIZATION_CONSENT = "oauth-server:auth:oauth2:authorization-consent";
 
     /**
      * oauth2/token接口中返回的 accessToken(jwt形式)中claim 的key
@@ -126,6 +122,7 @@ public interface SecurityCoreService {
     String[] IGNORE_PERM_URLS = {
             //swagger文档
             "/v3/api-docs/**",
+            "/favicon.ico",
             "/doc.html",
             "/webjars/**",
             //公有public路径

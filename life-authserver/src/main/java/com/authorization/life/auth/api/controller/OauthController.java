@@ -3,18 +3,15 @@ package com.authorization.life.auth.api.controller;
 import com.authorization.core.security.entity.UserHelper;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.util.Captcha;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
-import com.authorization.redis.start.util.RedisService;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.UserDetail;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class OauthController {
 
 
-    @Resource
+    @Autowired
     private RedisUtil redisUtil;
     @Autowired
     private OauthClientService oauthClientService;

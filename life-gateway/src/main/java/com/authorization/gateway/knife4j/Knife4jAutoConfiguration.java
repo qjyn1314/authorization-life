@@ -18,7 +18,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
  */
 @Slf4j
 @Configuration
-@EnableConfigurationProperties(Knife4jProperties.class)
 @ConditionalOnProperty(name = "knife4j.gateway.enable", havingValue = "true")
 public class Knife4jAutoConfiguration {
 

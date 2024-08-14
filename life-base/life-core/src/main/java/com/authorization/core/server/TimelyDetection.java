@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 
 /**
- *  redis 发布 当前服务上线事件
+ * redis 发布 当前服务上线事件
  */
 @Slf4j
 public class TimelyDetection implements CommandLineRunner {
 
-    private final RedisService stringRedisService;
+    private final RedisService redisService;
 
     @Value("${spring.application.name}")
     private String applicationName;
 
-    public TimelyDetection(RedisService stringRedisService) {
-        this.stringRedisService = stringRedisService;
+    public TimelyDetection(RedisService redisService) {
+        this.redisService = redisService;
     }
 
     /**
@@ -28,7 +28,7 @@ public class TimelyDetection implements CommandLineRunner {
     public void run(String... args) {
         log.info("上线的工程名是-{}", applicationName);
         // 发送服务上线事件
-        stringRedisService.convertAndSend(ServerUpDown.INSTANCE_UP_TOPIC, applicationName);
+        redisService.convertAndSend(ServerUpDown.INSTANCE_UP_TOPIC, applicationName);
     }
 
 }

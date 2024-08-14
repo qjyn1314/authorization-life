@@ -29,8 +29,8 @@
              spring-cloud 官网版本对应关系:
              https://spring.io/projects/spring-cloud#learn
          -->
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
-        <spring-boot.version>3.2.4</spring-boot.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <spring-boot.version>3.2.7</spring-boot.version>
         <!--
             spring-cloud-alibaba:
             官网:
@@ -40,7 +40,7 @@
         -->
         <spring-cloud-alibaba.version>2023.0.1.2</spring-cloud-alibaba.version>
 
-        <dubbo.version>3.2.12</dubbo.version>
+        <dubbo.version>3.2.15</dubbo.version>
         <jackson-bom.version>2.17.2</jackson-bom.version>
         <knife4j.version>4.5.0</knife4j.version>
 
@@ -52,6 +52,7 @@
         <!--数据库依赖-->
         <mysql.version>9.0.0</mysql.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
+        <mybatis-spring.version>3.0.4</mybatis-spring.version>
         <pagehelper.version>2.1.0</pagehelper.version>
         <!--工具依赖-->
         <slf4j-api.version>2.0.13</slf4j-api.version>
@@ -223,6 +224,11 @@
                 <version>${mysql.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis-spring.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
@@ -233,7 +239,6 @@
                 <version>${pagehelper.version}</version>
             </dependency>
             <!--以上为数据库连接-->
-            <!-- 以上为 redisson 依赖 -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-oauth2-authorization-server</artifactId>
@@ -314,28 +319,30 @@
             </releases>
         </repository>
     </repositories>
+    <!--
 
-    <distributionManagement>
-        <!-- 如果需要上传jar包, 需要配置此标签  -->
-        <repository>
-            <!-- 上传稳定版本的jar包 -->
-            <id>releases</id>
-            <url>http://127.0.0.1:18081/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <!--上传快照-->
-            <id>snapshots</id>
-            <url>http://127.0.0.1:18081/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+        <distributionManagement>
+            &lt;!&ndash; 如果需要上传jar包, 需要配置此标签  &ndash;&gt;
+            <repository>
+                &lt;!&ndash; 上传稳定版本的jar包 &ndash;&gt;
+                <id>releases</id>
+                <url>http://127.0.0.1:18081/repository/maven-releases/</url>
+            </repository>
+            <snapshotRepository>
+                &lt;!&ndash;上传快照&ndash;&gt;
+                <id>snapshots</id>
+                <url>http://127.0.0.1:18081/repository/maven-snapshots/</url>
+            </snapshotRepository>
+        </distributionManagement>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <!--插件地址-->
-            <id>nexus</id>
-            <url>http://127.0.0.1:8181/repository/maven-public/</url>
-        </pluginRepository>
-    </pluginRepositories>
+        <pluginRepositories>
+            <pluginRepository>
+                &lt;!&ndash;插件地址&ndash;&gt;
+                <id>nexus</id>
+                <url>http://127.0.0.1:8181/repository/maven-public/</url>
+            </pluginRepository>
+        </pluginRepositories>
+    -->
 
 
     <build>

@@ -33,28 +33,39 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
+        <!--
+        spring-cloud的负载均衡器:
+        是指在有多个服务名相同的springboot服务进行注册, 如何选择其的服务.
+        简介和使用: https://blog.csdn.net/weixin_73000974/article/details/135901495
+        简单配置: https://blog.csdn.net/qq_42600094/article/details/130676670
+        配置说明: https://blog.csdn.net/qq_19891197/article/details/137435365
+        nacos按照权重loadbalancer配置: https://blog.csdn.net/aoxiaojun/article/details/137789916
+        -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        <!--
+        spring-cloud-gateway的熔断器(断路器):
+        是指在用户请求接口时, 接口出现异常的次数较多, 则直接将此接口进行断开, 不再访问springboot服务, 就直接返回.
+        说明和使用: https://juejin.cn/post/7033040662966583310
+        CLOSED状态时，请求正常放行
+        请求失败率达到设定阈值时，变为OPEN状态，此时请求全部不放行
+        OPEN状态持续设定时间后，进入半开状态（HALE_OPEN），放过部分请求
+        半开状态下，失败率低于设定阈值，就进入CLOSE状态，即全部放行
+        半开状态下，失败率高于设定阈值，就进入OPEN状态，即全部不放行
+        -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-        <!--负载均衡器-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-        </dependency>
-        <!--缓存配置-->
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-        <!--断路器-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

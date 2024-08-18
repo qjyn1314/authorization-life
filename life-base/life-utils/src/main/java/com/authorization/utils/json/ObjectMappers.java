@@ -14,6 +14,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,12 +31,14 @@ import java.util.TimeZone;
  * <p>
  * https://www.jianshu.com/p/89f8040fe956
  */
+@Slf4j
 public class ObjectMappers {
 
     /**
      * @return 标准配置新objectMapper
      */
     public static ObjectMapper configMapper() {
+        log.info("使用项目中自定义的ObjectMapper配置信息..");
         return configMapper(new ObjectMapper());
     }
 

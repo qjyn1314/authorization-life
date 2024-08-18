@@ -6,74 +6,25 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.autoconfigure.web.WebProperties;
-import org.springframework.boot.autoconfigure.web.reactive.WebFluxAutoConfiguration;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
-import org.springframework.boot.web.reactive.error.ErrorAttributes;
-import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
-import org.springframework.context.ApplicationContext;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
-import org.springframework.web.reactive.result.view.ViewResolver;
 
 import java.time.Duration;
-import java.util.stream.Collectors;
 
 /**
  * 网关配置类
  */
 @Slf4j
 @Configuration
-@AutoConfiguration(after = WebFluxAutoConfiguration.EnableWebFluxConfiguration.class)
 public class GatewayConfiguration {
 
-    private ServerProperties serverProperties;
-
-    public GatewayConfiguration(ServerProperties serverProperties) {
-        this.serverProperties = serverProperties;
-    }
 
     @Bean
-    public ErrorAttributes errorAttributes() {
-        return new DefaultErrorAttributes();
-    }
-
-    @Bean
-    public ServerCodecConfigurer serverCodecConfigurer() {
-        return new DefaultServerCodecConfigurer();
-    }
-
-    @Bean
-    public ServerProperties serverProperties() {
-        return new ServerProperties();
-    }
-
-    @Bean
-    public WebProperties webProperties() {
-        return new WebProperties();
-    }
-
-    @Bean
-    @Order(-1)
-    public ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes,
-                                                             WebProperties webProperties,
-                                                             ObjectProvider<ViewResolver> viewResolvers,
-                                                             ServerCodecConfigurer serverCodecConfigurer,
-                                                             ApplicationContext applicationContext) {
-        ReactiveExceptionHandler exceptionHandler = new ReactiveExceptionHandler(errorAttributes,
-                webProperties, this.serverProperties.getError(), applicationContext);
-        exceptionHandler.setViewResolvers(viewResolvers.orderedStream().collect(Collectors.toList()));
-        exceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
-        exceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
-        return exceptionHandler;
+    public ReactiveExceptionHandler reactiveExceptionHandler() {
+        return new ReactiveExceptionHandler();
     }
 
     /**
@@ -93,7 +44,8 @@ public class GatewayConfiguration {
      */
     @Bean
     public ReactiveResilience4JCircuitBreakerFactory r4jFactory(CircuitBreakerRegistry circuitBreakerRegistry,
-                                                                TimeLimiterRegistry timeLimiterRegistry) {
+                                                                TimeLimiterRegistry timeLimiterRegistry,
+                                                                Resilience4JConfigurationProperties resilience4JConfigurationProperties) {
         // 断路器配置
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 // 滑动窗口的类型为时间窗口
@@ -118,7 +70,8 @@ public class GatewayConfiguration {
                 // 设置超时时间为300毫秒,则进行触发返回
                 .timeoutDuration(Duration.ofMillis(300))
                 .build();
-        ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory = new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry);
+        ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory =
+                new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry, resilience4JConfigurationProperties);
         circuitBreakerFactory.configureDefault(id -> new Resilience4JConfigBuilder(id)
                 .timeLimiterConfig(timeLimiterConfig)
                 .circuitBreakerConfig(circuitBreakerConfig)

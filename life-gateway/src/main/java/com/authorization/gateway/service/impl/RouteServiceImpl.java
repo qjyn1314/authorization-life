@@ -2,8 +2,6 @@ package com.authorization.gateway.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
-import com.authorization.gateway.filter.AuthGatewayFilterFactory;
-import com.authorization.gateway.filter.JwtTokenGatewayFilterFactory;
 import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
 import com.authorization.utils.contsant.ServerInfos;
@@ -22,7 +20,6 @@ import org.springframework.cloud.gateway.handler.predicate.PredicateDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -54,6 +51,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
     @Override
     @EventListener(RefreshRoutesEvent.class)
     public void refreshRoutes(RefreshRoutesEvent refreshRoutesEvent) {
+        log.trace("开始刷新路由信息-->{}", refreshRoutesEvent);
         log.trace("监听的事件是->{}", Objects.nonNull(refreshRoutesEvent) ? refreshRoutesEvent.getSource() : refreshRoutesEvent);
         List<String> services = discoveryClient.getServices();
         log.trace("当前注册的service有-{}", JSONUtil.toJsonStr(services));
@@ -105,29 +103,33 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
         return CollUtil.newArrayList(predicateDefinition);
     }
 
+    private static volatile List<FilterDefinition> filterDefinitions = CollUtil.newArrayList();
+
     private List<FilterDefinition> buildFilters() {
-        return CollUtil.newArrayList(
+        if (CollUtil.isNotEmpty(filterDefinitions)) {
+            return filterDefinitions;
+        }
+        filterDefinitions = CollUtil.newArrayList(
+//                new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
-                new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
-                new FilterDefinition(AuthGatewayFilterFactory.AUTH),
                 new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
         );
+        return filterDefinitions;
     }
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
-        log.trace("从缓存->getRouteDefinitions->中获取服务列表......");
         return Flux.fromIterable(routes);
     }
 
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
-        return null;
+        return Mono.empty();
     }
 
     @Override
     public Mono<Void> delete(Mono<String> routeId) {
-        return null;
+        return Mono.empty();
     }
 
 

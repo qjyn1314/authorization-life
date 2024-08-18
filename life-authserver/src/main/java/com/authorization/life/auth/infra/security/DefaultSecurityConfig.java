@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -71,7 +72,7 @@ public class DefaultSecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                           CaptchaAuthenticationDetailsSource authenticationDetailsSource,
                                                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                                                          UsernamePasswordAuthenticationProvider usernamePasswordProvider)
+                                                          AuthenticationProvider usernamePasswordProvider)
             throws Exception {
 
         // 前后端分离工程需要 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
@@ -114,7 +115,7 @@ public class DefaultSecurityConfig {
 
         // 配置表单登录配置
         http.formLogin(form -> form
-                // 指定form表单登录的路径
+                // 指定form表单登录的请求路径
                 .loginProcessingUrl(SecurityCoreService.SSO_LOGIN)
                 // 配置 达到登录失败次数时, 需要填写的验证码等信息
                 .authenticationDetailsSource(authenticationDetailsSource)
@@ -142,7 +143,7 @@ public class DefaultSecurityConfig {
      * 自定义用户名密码身份验证提供程序
      */
     @Bean
-    public UsernamePasswordAuthenticationProvider usernamePasswordProvider() {
+    public AuthenticationProvider usernamePasswordProvider() {
         return new UsernamePasswordAuthenticationProvider(userDetailsService, passwordEncoder,
                 redisUtil, userService, registeredClientService);
     }
@@ -152,7 +153,7 @@ public class DefaultSecurityConfig {
      */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
-                                                       UsernamePasswordAuthenticationProvider usernamePasswordProvider) {
+                                                       AuthenticationProvider usernamePasswordProvider) {
         return new ProviderManager(usernamePasswordProvider);
     }
 

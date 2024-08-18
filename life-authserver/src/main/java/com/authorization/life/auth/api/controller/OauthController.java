@@ -66,10 +66,10 @@ public class OauthController {
 
     @Operation(summary = "图片验证码")
     @GetMapping("/picture-code")
-    public Result<String> pictureCode() {
-        Captcha captcha = RedisCaptchaValidator.create(redisUtil);
+    public Result<Captcha> pictureCode() {
+        Captcha captcha = RedisCaptchaValidator.createNumCaptcha(redisUtil);
         String code = captcha.getCode();
-        return Result.ok(code);
+        return Result.ok(captcha);
     }
 
     @Operation(summary = "用户重置密码")

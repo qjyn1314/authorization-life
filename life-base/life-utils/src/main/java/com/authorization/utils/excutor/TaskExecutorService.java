@@ -3,7 +3,6 @@ package com.authorization.utils.excutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -11,7 +10,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * <p>
- *
+ * 自定义线程池配置类
  * </p>
  *
  * @author wangjunming
@@ -53,6 +52,17 @@ public class TaskExecutorService {
                 new ThreadPoolExecutor.CallerRunsPolicy());
         ExecutorManager.registerAndMonitorThreadPoolExecutor(SCHEDULED_TASKS_NAME, scheduledThreadPoolExecutor);
         return scheduledThreadPoolExecutor;
+    }
+
+    /**
+     * 自定义线程池
+     *
+     * @author wangjunming
+     * @since 2020/11/22 21:35
+     */
+    @Bean(name = "defaultExecutor", destroyMethod = "shutdown")
+    public ThreadPoolExecutor defaultExecutor() {
+        return ExecutorManager.getDefaultExecutor();
     }
 
 }

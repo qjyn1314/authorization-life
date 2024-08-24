@@ -3,7 +3,6 @@ package com.authorization.life.auth.infra.security.service;
 
 import cn.hutool.core.lang.UUID;
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
 import com.authorization.redis.start.util.RedisService;
 import com.authorization.utils.security.SecurityCoreService;
@@ -11,7 +10,10 @@ import com.authorization.utils.security.UserDetail;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
@@ -47,16 +49,20 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
      */
     @Override
     public void customize(JwtEncodingContext context) {
+        OAuth2TokenType tokenType = context.getTokenType();
+
+        JwsHeader.Builder jwsHeader = context.getJwsHeader();
         Authentication principal = context.getPrincipal();
+        log.warn("进入了自定义token实现类,认证信息是-->{}", principal);
         RegisteredClient registeredClient = context.getRegisteredClient();
         UserDetail userDetail = null;
         if (principal instanceof OAuth2ClientAuthenticationToken) {
             //如果当前登录的是client，则进行封装client
             userDetail = securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
-        } else if (principal.getPrincipal() instanceof LifeUser) {
+        } else if (principal.getPrincipal() instanceof UserDetails) {
             OAuth2Authorization authorization = context.getAuthorization();
             //如果当前登录的是系统用户，则进行封装userDetail
-            userDetail = securityAuthUserService.createUserDetailByUser((LifeUser) principal.getPrincipal());
+            userDetail = securityAuthUserService.createUserDetailByUser((UserDetails) principal.getPrincipal());
             if (Objects.nonNull(authorization)) {
                 // 将 RedisOAuth2AuthorizationConsentService 的  OAuth2Authorization id 存储到当前登录用户信息中,在退出登录时将进行删除
                 userDetail.setAuthorizationId(authorization.getId());

@@ -93,6 +93,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
                                                   UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+        log.info("additionalAuthenticationChecks-->{}", userDetails);
         // 检查是否存在验证码
         Object authenticationDetails = authentication.getDetails();
         if (authenticationDetails instanceof CaptchaWebAuthenticationDetails captcha && StrUtil.isNotBlank(captcha.getCaptchaCode())) {

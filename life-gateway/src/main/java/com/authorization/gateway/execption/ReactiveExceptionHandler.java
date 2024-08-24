@@ -8,11 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 /**
  * 自定义错误信息处理类
@@ -40,8 +43,14 @@ public class ReactiveExceptionHandler implements ErrorWebExceptionHandler {
         return response.writeWith(Mono.fromSupplier(() -> {
             DataBufferFactory bufferFactory = response.bufferFactory();
             try {
+                log.error("ex-->", ex);
                 log.error("Error Spring Cloud Gateway : {} {}", exchange.getRequest().getPath(), ex.getMessage());
-                return bufferFactory.wrap(JsonHelper.getObjectMapper().writeValueAsBytes(Result.failCode(Result.ERROR, ex.getMessage())));
+                Result<Object> result = Result.failCode(Result.ERROR, ex.getMessage());
+                if (ex instanceof ResponseStatusException && HttpStatus.GATEWAY_TIMEOUT.value() == Objects.requireNonNull(response.getStatusCode()).value()) {
+                    result = Result.failCode(Result.ERROR, Result.ERROR_MSG);
+                }
+
+                return bufferFactory.wrap(JsonHelper.getObjectMapper().writeValueAsBytes(result));
             } catch (Exception e) {
                 log.error("Error writing response", ex);
                 log.error("Error writing response JsonException", e);

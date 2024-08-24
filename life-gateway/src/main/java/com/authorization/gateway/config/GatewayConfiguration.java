@@ -68,14 +68,15 @@ public class GatewayConfiguration {
         // 超时配置: timeLimiterConfig方法设置了超时时间，服务提供者如果超过200毫秒没有响应，Spring Cloud Gateway就会向调用者返回失败
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
                 // 设置超时时间为300毫秒,则进行触发返回
-                .timeoutDuration(Duration.ofMillis(300))
+                .timeoutDuration(Duration.ofMillis(3000))
                 .build();
         ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory =
                 new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry, resilience4JConfigurationProperties);
-        circuitBreakerFactory.configureDefault(id -> new Resilience4JConfigBuilder(id)
-                .timeLimiterConfig(timeLimiterConfig)
-                .circuitBreakerConfig(circuitBreakerConfig)
-                .build());
+        circuitBreakerFactory.configureDefault(id ->
+                new Resilience4JConfigBuilder(id)
+                        .timeLimiterConfig(timeLimiterConfig)
+                        .circuitBreakerConfig(circuitBreakerConfig)
+                        .build());
         return circuitBreakerFactory;
     }
 }

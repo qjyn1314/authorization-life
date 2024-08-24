@@ -1,5 +1,7 @@
 package com.authorization.life.auth.app.service.impl;
 
+import cn.hutool.core.lang.Assert;
+import com.authorization.core.exception.handle.CommonException;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.entity.OauthClient;
@@ -30,7 +32,9 @@ public class OauthClientServiceImpl implements OauthClientService {
 
     @Override
     public OauthClientVO selectClientByClientId(String id) {
+        Assert.notBlank(id, () -> new CommonException("clientId不能为空."));
         OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getClientId, id));
+        Assert.notNull(oauthClient, () -> new CommonException("根据clientId未找到Client信息."));
         return BeanConverter.convert(oauthClient, OauthClientVO.class);
     }
 

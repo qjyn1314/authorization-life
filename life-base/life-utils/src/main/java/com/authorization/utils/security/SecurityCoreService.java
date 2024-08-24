@@ -28,19 +28,19 @@ public interface SecurityCoreService {
     /**
      * 退出登录接口
      */
-    String SSO_LOGOUT = "/oauth2/logout";
+    String SSO_LOGOUT = "/oauth/logout";
     /**
      * 用户名密码(包含手机号,邮箱,用户名(username))登录请求的接口
      */
-    String SSO_LOGIN = "/oauth2/login";
+    String SSO_LOGIN = "/oauth/login";
     /**
      * 用户手机号+手机短信登录请求的接口
      */
-    String SSO_SMS_LOGIN = "/oauth2/smslogin";
+    String SSO_SMS_LOGIN = "/oauth/smslogin";
     /**
      * 用户邮箱+邮箱验证码登录请求的接口
      */
-    String SSO_EMAIL_LOGIN = "/oauth2/emaillogin";
+    String SSO_EMAIL_LOGIN = "/oauth/emaillogin";
     /**
      * 验证码的缓存key
      */
@@ -130,6 +130,7 @@ public interface SecurityCoreService {
             //监控服务路径
             "/actuator/**",
             //获取client信息接口
+            "/oauth/**",
             "/oauth2/**",
     };
 

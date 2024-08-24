@@ -23,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +38,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author wangjunming
  */
 @Slf4j
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @Configuration(proxyBeanMethods = false)
 public class DefaultSecurityConfig {
 
@@ -77,6 +78,7 @@ public class DefaultSecurityConfig {
 
         // 前后端分离工程需要 禁用csrf-取消csrf防护-参考：https://blog.csdn.net/yjclsx/article/details/80349906
         http.csrf(CsrfConfigurer::disable);
+        http.cors(CorsConfigurer::disable);
 
         // 配置session会话管理器
         http.sessionManagement(sessionMan -> sessionMan

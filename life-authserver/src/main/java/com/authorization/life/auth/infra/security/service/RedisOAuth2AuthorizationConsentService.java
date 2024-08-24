@@ -40,7 +40,7 @@ public final class RedisOAuth2AuthorizationConsentService implements OAuth2Autho
     }
 
     private static String buildKey(String registeredClientId, String principalName) {
-        return "sso-oauth-server:auth:token-consent:" + registeredClientId + ":" + principalName;
+        return "sso-oauth-server:auth:token:token-consent:" + registeredClientId + ":" + principalName;
     }
 
     private static String buildKey(OAuth2AuthorizationConsent authorizationConsent) {

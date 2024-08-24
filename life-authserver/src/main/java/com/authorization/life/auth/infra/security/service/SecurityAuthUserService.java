@@ -33,7 +33,7 @@ public class SecurityAuthUserService implements UserDetailService {
     private OauthClientService oauthClientService;
 
     @Override
-    public LifeUser loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("登录时查询用户[{}]信息。", username);
         LifeUser lifeUser = userService.selectByUsername(username);
         Assert.notNull(lifeUser, () -> new UsernameNotFoundException("user [" + username + "] not found"));
@@ -44,14 +44,15 @@ public class SecurityAuthUserService implements UserDetailService {
 
     @Override
     public UserDetail createUserDetailByUser(UserDetails userDetails) {
-        LifeUser lifeUser = (LifeUser)userDetails;
+        LifeUser lifeUser = (LifeUser) userDetails;
         UserDetail userDetail = createUserDetail(lifeUser);
 
         //此处将获取到当前已登录用户所关联的员工、或者关联的当前登录的授权信息中所需要的其他信息，作为扩展。
 
         return userDetail;
     }
-    private UserDetail createUserDetail(LifeUser lifeUser){
+
+    private UserDetail createUserDetail(LifeUser lifeUser) {
         UserDetail userDetail = new UserDetail();
         userDetail.setUserId(lifeUser.getUserId());
         userDetail.setUsername(lifeUser.getUsername());

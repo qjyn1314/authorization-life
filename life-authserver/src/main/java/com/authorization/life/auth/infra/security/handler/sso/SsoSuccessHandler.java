@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
@@ -23,13 +22,12 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         log.info("密码验证登录成功的对象信息是-{}", JSONUtil.toJsonStr(authentication));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         try {
             PrintWriter out = response.getWriter();
-            out.write(JSONUtil.toJsonStr(Result.ok(JSONUtil.toJsonStr(authentication))));
+            out.write(JSONUtil.toJsonStr(Result.ok(authentication)));
             out.flush();
             out.close();
         } catch (IOException e) {

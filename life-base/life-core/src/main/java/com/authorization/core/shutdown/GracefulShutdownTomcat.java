@@ -1,7 +1,6 @@
 package com.authorization.core.shutdown;
 
 import com.alibaba.cloud.nacos.registry.NacosAutoServiceRegistration;
-import com.authorization.redis.start.util.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * redis 用于发送当前服务关闭消息
+ * nacos解除注册, 停止线程池中的线程
  */
 @Slf4j
 public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, ApplicationListener<ContextClosedEvent> {
@@ -22,14 +21,12 @@ public class GracefulShutdownTomcat implements TomcatConnectorCustomizer, Applic
     private volatile Connector connector;
     private final int waitTime = 30;
     private final NacosAutoServiceRegistration nacosAutoServiceRegistration;
-    private final RedisService stringRedisService;
 
     @Value("${spring.application.name}")
     private String applicationName;
 
-    public GracefulShutdownTomcat(NacosAutoServiceRegistration nacosAutoServiceRegistration, RedisService stringRedisService) {
+    public GracefulShutdownTomcat(NacosAutoServiceRegistration nacosAutoServiceRegistration) {
         this.nacosAutoServiceRegistration = nacosAutoServiceRegistration;
-        this.stringRedisService = stringRedisService;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.authorization.utils.security;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,7 +24,11 @@ public class SsoSecurityProperties implements SecurityCoreService {
     /**
      * gateway与后续服务签署用户信息jwt时使用的密钥, 如果没有则使用默认的
      */
-    private String secret = JwtService.DEFAULT_SECRET;
+    private String secret;
+
+    public String getSecret() {
+        return StrUtil.isBlank(secret) ? JwtService.DEFAULT_SECRET : secret;
+    }
 
     /**
      * 忽略认证的url

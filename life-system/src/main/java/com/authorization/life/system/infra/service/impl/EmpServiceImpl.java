@@ -5,6 +5,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.system.infra.dto.EmpDTO;
 import com.authorization.life.system.infra.entity.Emp;
 import com.authorization.life.system.infra.mapper.EmpMapper;
@@ -29,7 +30,7 @@ import java.util.Objects;
  * @date 2023-06-23 14:38:43
  */
 @Service
-public class EmpServiceImpl implements EmpService {
+public class EmpServiceImpl implements EmpService, CurrentProxy<EmpService> {
 
     @Autowired
     private EmpMapper empMapper;
@@ -37,6 +38,7 @@ public class EmpServiceImpl implements EmpService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean batchSaveEmp(List<Emp> empList) {
+        this.self().batchSaveEmp(empList);
         boolean saveFlag = false;
         for (int i = 0; i < empList.size(); i++) {
 //            if (i == 123) {

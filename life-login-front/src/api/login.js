@@ -5,7 +5,7 @@ import Qs from "qs";
 //  账号登录
 export function getAuthLogin (data) {
   return request({
-    url: `/${AUTH_SERVER}/oauth2/login`,
+    url: `/${AUTH_SERVER}/oauth/login`,
     method: 'POST',
     data: data
   })

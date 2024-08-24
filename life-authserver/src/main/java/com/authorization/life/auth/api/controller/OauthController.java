@@ -13,7 +13,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 /**
@@ -24,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Tag(name = "登录控制层", description = "获取当前登录用户信息,权限信息")
 @RestController
-@RequestMapping("/oauth2")
+@RequestMapping("/oauth")
 public class OauthController {
 
 
@@ -76,6 +80,16 @@ public class OauthController {
     @PostMapping("/reset-password")
     public Result<Void> resetPassword(@RequestBody LifeUserDTO lifeUser) {
         return Result.ok();
+    }
+
+    @Autowired
+    private JwtDecoder jwtDecoder;
+
+    @Operation(summary = "解析jwt信息")
+    @PostMapping("/decode-jwt")
+    public Result<Map<String, Object>> decodeJwt(@RequestParam("jwtToken") String jwtToken) {
+        Jwt decode = jwtDecoder.decode(jwtToken);
+        return Result.ok(decode.getClaims());
     }
 
 }

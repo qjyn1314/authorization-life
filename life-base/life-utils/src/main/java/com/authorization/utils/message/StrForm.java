@@ -7,9 +7,10 @@ import java.util.Map;
 
 /**
  * 字符串占位符拼接工具类
+ *
  * @author wangjunming
  */
-public final class StrForm {
+public final class StrForm extends StrUtil {
 
     private final String pattern;
     private final Map<String, Object> kvMap = new HashMap<>();

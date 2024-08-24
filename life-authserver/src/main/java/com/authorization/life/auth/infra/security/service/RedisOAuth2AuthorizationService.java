@@ -120,7 +120,7 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
     }
 
     private String buildKey(String type, String id) {
-        return String.format("sso-oauth-server:auth:%s::%s::%s", AUTHORIZATION, type, id);
+        return String.format("sso-oauth-server:auth:%s:%s:%s", AUTHORIZATION, type, id);
     }
 
     private static boolean isState(OAuth2Authorization authorization) {

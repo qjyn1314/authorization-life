@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  * @since 2024-08-12 13:20
  */
 @Slf4j
+@AllArgsConstructor
 public class JwtServiceImpl implements JwtService {
 
     @Autowired

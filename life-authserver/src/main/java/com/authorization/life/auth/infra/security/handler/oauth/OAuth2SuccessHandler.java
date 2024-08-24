@@ -1,17 +1,12 @@
 package com.authorization.life.auth.infra.security.handler.oauth;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.StrUtil;
-import com.authorization.utils.security.SecurityCoreService;
-import com.authorization.utils.message.StrForm;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationToken;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -20,8 +15,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 
 /**
  * oauth授权成功之后处理器
@@ -33,24 +26,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("重定向default auth令牌");
-        OAuth2AuthorizationCodeRequestAuthenticationToken codeRequestAuthenticationToken =
-                (OAuth2AuthorizationCodeRequestAuthenticationToken) authentication;
-        if (authentication.getPrincipal() instanceof OAuth2AccessTokenAuthenticationToken token){
-            OAuth2AccessToken accessToken = token.getAccessToken();
-            String redirectUrl = StrForm.of(SecurityCoreService.AUTHORIZATION_CODE_IMPLICIT_REDIRECT_URI_FORMAT)
-                    .add("redirectUri",codeRequestAuthenticationToken.getRedirectUri())
-                    .add("accessToken", accessToken.getTokenValue())
-                    .add("tokenType", accessToken.getTokenType().getValue())
-                    .add("expiresIn", Duration.between(Instant.now(), accessToken.getExpiresAt()).getSeconds())
-                    .add("state", codeRequestAuthenticationToken.getState())
-                    .add("scope", String.join(StrUtil.COMMA, accessToken.getScopes()))
-                    .format();
-            response.sendRedirect(redirectUrl);
-        }else {
-            sendAccessTokenResponse(request, response, authentication);
-        }
-
+        log.info("重定向default auth令牌, 重定向到当前回调页面");
+        sendAccessTokenResponse(request, response, authentication);
     }
 
     private void sendAccessTokenResponse(HttpServletRequest request, HttpServletResponse response,

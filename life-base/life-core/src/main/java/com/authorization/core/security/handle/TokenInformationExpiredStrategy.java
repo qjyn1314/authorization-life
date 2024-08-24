@@ -5,6 +5,7 @@ import com.authorization.core.exception.handle.DefaultErrorMsg;
 import com.authorization.utils.result.Result;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -16,10 +17,12 @@ import java.nio.charset.StandardCharsets;
 /**
  * 会话信息过期策略，仅允许一个用户对应一个token
  */
+@Slf4j
 public class TokenInformationExpiredStrategy implements SessionInformationExpiredStrategy {
 
     @Override
     public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
+        log.info("TokenInformationExpiredStrategy--> token expired");
         HttpServletResponse response = event.getResponse();
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

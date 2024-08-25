@@ -23,6 +23,11 @@ public class UserHelper {
         if (Objects.isNull(securityContext) || Objects.isNull(userInfo)) {
             return;
         }
-        securityContext.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(userInfo, null, null));
+        // 如果是匿名用户则设置为未认证用户
+        if (userInfo.getAnonymousFlag()) {
+            securityContext.setAuthentication(UsernamePasswordAuthenticationToken.unauthenticated(userInfo, null));
+        } else {
+            securityContext.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(userInfo, null, null));
+        }
     }
 }

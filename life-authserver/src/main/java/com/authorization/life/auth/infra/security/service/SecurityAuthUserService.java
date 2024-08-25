@@ -42,6 +42,14 @@ public class SecurityAuthUserService implements UserDetailService {
         return lifeUser;
     }
 
+    /**
+     * explain : 此处是将当前登录用户信息存储到redis中, 在自定义 CustomizerOAuth2Token 中设置值
+     *
+     * @param [userDetails]
+     * @return com.authorization.utils.security.UserDetail
+     * @author wangjunming
+     * @since 2024-08-25 10:53
+     */
     @Override
     public UserDetail createUserDetailByUser(UserDetails userDetails) {
         LifeUser lifeUser = (LifeUser) userDetails;

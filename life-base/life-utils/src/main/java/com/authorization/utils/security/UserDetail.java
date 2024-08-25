@@ -27,6 +27,7 @@ public class UserDetail {
         userDetail.setEmpId(0L);
         userDetail.setTenantId(0L);
         userDetail.setLocale(Locale.CHINA);
+        userDetail.setAnonymousFlag(true);
         return userDetail;
     }
 
@@ -44,6 +45,10 @@ public class UserDetail {
         return userDetail;
     }
 
+    /**
+     * 匿名用户登录标识
+     */
+    private Boolean anonymousFlag = false;
     /**
      * 用户Id
      */
@@ -161,11 +166,7 @@ public class UserDetail {
      */
     private String token;
     /**
-     * 当前登录用户的 authorizationId 即， RedisOAuth2AuthorizationService 进行存储的 OAuth2Authorization 中的id
+     * 用于从redis中获取相应的Jwt形式的accessToken
      */
-    private String authorizationId;
-    /**
-     * 当前登录用户的 authorizationId 即， RedisOAuth2AuthorizationService 进行存储的key
-     */
-    private String authorizationIdToken;
+    private String accessTokenId;
 }

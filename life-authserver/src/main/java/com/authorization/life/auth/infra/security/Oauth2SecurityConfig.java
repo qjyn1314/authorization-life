@@ -101,15 +101,13 @@ public class Oauth2SecurityConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
                                                                       OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
+        // 参考: org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
-        authorizationServerConfigurer.setBuilder(http);
-        authorizationServerConfigurer
-                .authorizationEndpoint(endpointConfigurer -> {
-                    endpointConfigurer
-                            // 配置自定义登录成功处理器, 即登录成功之后, get请求: /oauth2/authorize 的成功处理器
-                            .authorizationResponseHandler(new OAuth2SuccessHandler());
-                });
-
+        authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
+            endpointConfigurer
+                    // 配置自定义登录成功处理器, 即登录成功之后, get请求: /oauth2/authorize 的成功处理器
+                    .authorizationResponseHandler(new OAuth2SuccessHandler());
+        });
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
         http.securityMatcher(endpointsMatcher)
@@ -121,7 +119,6 @@ public class Oauth2SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
         //将oauth2.0的配置托管给 SpringSecurity
         http.with(authorizationServerConfigurer, Customizer.withDefaults());
-
         // 自定义设置accesstoken为jwt中的内容
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
         // 配置 异常处理

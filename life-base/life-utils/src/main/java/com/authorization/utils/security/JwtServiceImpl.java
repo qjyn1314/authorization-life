@@ -6,13 +6,31 @@ import cn.hutool.core.util.StrUtil;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.JWSKeySelector;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>
@@ -113,5 +131,51 @@ public class JwtServiceImpl implements JwtService {
         return validateJwtToken(jwtToken) ? object.getPayload().toJSONObject() : null;
     }
 
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource jwkSource) {
+        // 直接粘贴的类: org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerJwtAutoConfiguration
+        Set<JWSAlgorithm> jwsAlgs = new HashSet<>();
+        jwsAlgs.addAll(JWSAlgorithm.Family.RSA);
+        jwsAlgs.addAll(JWSAlgorithm.Family.EC);
+        jwsAlgs.addAll(JWSAlgorithm.Family.HMAC_SHA);
+        ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
+        JWSKeySelector<SecurityContext> jwsKeySelector = new JWSVerificationKeySelector<>(jwsAlgs, jwkSource);
+        jwtProcessor.setJWSKeySelector(jwsKeySelector);
+        // Override the default Nimbus claims set verifier as NimbusJwtDecoder handles it
+        // instead
+        jwtProcessor.setJWTClaimsSetVerifier((claims, context) -> {
+        });
+        return new NimbusJwtDecoder(jwtProcessor);
+    }
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() {
+        // 直接粘贴的类: org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerJwtAutoConfiguration
+        RSAKey rsaKey = getRsaKey();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return new ImmutableJWKSet<>(jwkSet);
+    }
+
+    private static RSAKey getRsaKey() {
+        KeyPair keyPair = generateRsaKey();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        RSAKey rsaKey = new RSAKey.Builder(publicKey).privateKey(privateKey)
+                .keyID(java.util.UUID.randomUUID().toString())
+                .build();
+        return rsaKey;
+    }
+
+    private static KeyPair generateRsaKey() {
+        KeyPair keyPair;
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            keyPair = keyPairGenerator.generateKeyPair();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+        return keyPair;
+    }
 
 }

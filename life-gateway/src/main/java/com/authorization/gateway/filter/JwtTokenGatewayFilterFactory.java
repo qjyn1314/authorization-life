@@ -1,25 +1,28 @@
 package com.authorization.gateway.filter;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.authorization.gateway.entity.RequestContext;
 import com.authorization.gateway.execption.UnauthorizedException;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SecurityCoreService;
-import com.authorization.utils.security.SsoSecurityProperties;
-import com.authorization.utils.security.UserDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,15 +36,14 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
     public static final String JWT_TOKEN = "JwtToken";
 
     @Autowired
-    private SsoSecurityProperties ssoSecurityProperties;
-    @Autowired
     private JwtService jwtService;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private JwtDecoder jwtDecoder;
 
     @Override
     public void afterPropertiesSet() {
-        String secret = ssoSecurityProperties.getSecret();
 
     }
 
@@ -50,20 +52,23 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             String token = getToken(request);
-            // 获取当前用户的信息
-            UserDetail userDetail = null;
-            if (StrUtil.isNotBlank(token)) {
-                userDetail = JSONUtil.toBean(Optional.ofNullable(redisUtil.get(SecurityCoreService.getUserTokenKey(token))).orElse(""), UserDetail.class);
-                String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(JSONUtil.toJsonStr(userDetail), Map.class));
-                log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
-            }
+            log.info("accessToken中的token字符串是->{}", token);
+            String realJwtToken = getByToken(token);
             ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate()
-//                    .header(SsoSecurityProperties.ACCESS_TOKEN, null)
+                    // 下传Header信息,存储了用户信息的自定义JwtToken
+                    .header(SecurityCoreService.AUTH_POSITION, realJwtToken)
                     .build()).build();
-            return chain.filter(jwtExchange).contextWrite(ctx ->
-                    ctx.put(RequestContext.CTX_KEY, ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY)
-                            .orElse(new RequestContext()).setUserDetail(null)));
+            return chain.filter(jwtExchange);
         };
+    }
+
+    private String getByToken(String token) {
+        if (StrUtil.isBlank(token)) {
+            return null;
+        }
+        String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(redisUtil.get(SecurityCoreService.getUserTokenKey(token)), LinkedHashMap.class));
+        log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
+        return jwtToken;
     }
 
     /**
@@ -73,25 +78,39 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
      * @return token
      */
     private String getToken(ServerHttpRequest request) {
-        String authorization = Optional.ofNullable(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION)).orElse(null);
         String accessToken = null;
         // 先检查header中有没有accessToken
-//        if (StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER)) {
-//            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.Header.TYPE_BEARER).trim();
-//        }
+        String authorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (StrUtil.isNotBlank(authorization) && StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.ACCESS_TOKEN_TYPE)) {
+            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.ACCESS_TOKEN_TYPE).trim();
+        }
         // 如果header中没有，则检查url参数并赋值
         if (StrUtil.isBlank(accessToken)) {
             accessToken = Optional.of(request.getQueryParams()).map(param -> param.getFirst(SecurityCoreService.ACCESS_TOKEN)).orElse(null);
         }
+        // 如果url参数中也没有赋值, 则检查cookie并赋值
         if (StrUtil.isBlank(accessToken)) {
+            MultiValueMap<String, HttpCookie> cookiesMap = request.getCookies();
+            if (CollUtil.isEmpty(cookiesMap)) {
+                return null;
+            }
+            accessToken = Optional.ofNullable(cookiesMap.getFirst(SecurityCoreService.ACCESS_TOKEN)).orElse(new HttpCookie(SecurityCoreService.ACCESS_TOKEN, "")).getValue();
+        }
+        log.info("网关接受到前端的AccessToken是->{}", accessToken);
+        if (StrUtil.isBlank(accessToken)) {
+            // 此处请求直接放过, 请求路径的白名单, 将交给 core包里面的 JwtAuthenticationFilter
             return null;
         }
-        String token = Optional.ofNullable(jwtService.getClaimsFromJwtToken(accessToken)).orElse(Map.of()).getOrDefault(SecurityCoreService.CLAIM_TOKEN_KEY, "").toString();
-        if (StrUtil.isBlank(token)) {
-            // 若有jwt但没有token，则jwt一定有问题
+        Jwt decode = null;
+        try {
+            // 当accessToken不为空时做校验, 并解析
+            decode = jwtDecoder.decode(accessToken);
+            return Optional.ofNullable(decode.getClaims()).orElse(Map.of()).getOrDefault(SecurityCoreService.CLAIM_TOKEN_KEY, "").toString();
+        } catch (Exception e) {
+            log.error("解析Token失败...", e);
+            // 解析失败则抛出异常
             throw new UnauthorizedException();
         }
-        return token;
     }
 
     @Override

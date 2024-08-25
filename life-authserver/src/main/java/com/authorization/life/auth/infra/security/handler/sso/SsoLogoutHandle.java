@@ -96,10 +96,10 @@ public class SsoLogoutHandle implements LogoutHandler {
             //删除 refrenToken, authorizationCode, OAuth2AuthorizationConsent
             String authorizationId = auth2Authorization.getId();
             // 查询出包含此 authorizationId 的 key信息, 并将其删除
-            List<String> authorizationIdValueKeys = getOtherKeysByValue(SecurityCoreService.AUTHORIZATION, authorizationId);
-            for (String valueKey : authorizationIdValueKeys) {
-                redisUtil.delete(valueKey);
-            }
+//            List<String> authorizationIdValueKeys = getOtherKeysByValue(SecurityCoreService.AUTHORIZATION, authorizationId);
+//            for (String valueKey : authorizationIdValueKeys) {
+//                redisUtil.delete(valueKey);
+//            }
             oAuth2AuthorizationService.remove(auth2Authorization);
         }
         try {

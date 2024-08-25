@@ -1,17 +1,7 @@
 package com.authorization.life.auth.test;
 
-import com.authorization.life.auth.infra.security.util.Jwks;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-
-import java.util.Map;
 
 @Slf4j
 public class OauthServerTest {
@@ -40,7 +30,6 @@ public class OauthServerTest {
 //        JWKSet jwkSet = new JWKSet(rsaKey);
 //        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
 //    }
-
 
 
 }

@@ -1,7 +1,6 @@
 package com.authorization.gateway.filter;
 
 
-import com.authorization.gateway.entity.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -42,16 +41,7 @@ public class UrlResolveGatewayFilterFactory extends AbstractGatewayFilterFactory
             log.info("request url: {}", path);
             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR,
                     newRequest.getURI());
-            return chain
-                    .filter(exchange.mutate().request(newRequest).build())
-                    .contextWrite(ctx ->
-                            ctx.put(RequestContext.CTX_KEY,
-                                    ctx.<RequestContext>getOrEmpty(RequestContext.CTX_KEY)
-                                            .orElse(new RequestContext())
-                                            .setServiceCode(serviceName)
-                                            .setServiceName(serviceName)
-                                            .setUri(finalNewPath)
-                                            .setHttpMethod(httpMethod)));
+            return chain.filter(exchange.mutate().request(newRequest).build());
         };
     }
 

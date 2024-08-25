@@ -1,5 +1,6 @@
 package com.authorization.life.auth.infra.security.service;
 
+import com.authorization.utils.security.SecurityCoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
@@ -40,7 +41,8 @@ public final class RedisOAuth2AuthorizationConsentService implements OAuth2Autho
     }
 
     private static String buildKey(String registeredClientId, String principalName) {
-        return "sso-oauth-server:auth:token:token-consent:" + registeredClientId + ":" + principalName;
+
+        return SecurityCoreService.AUTHORIZATION_KET_PREFIX + "token-consent:" + registeredClientId + ":" + principalName;
     }
 
     private static String buildKey(OAuth2AuthorizationConsent authorizationConsent) {

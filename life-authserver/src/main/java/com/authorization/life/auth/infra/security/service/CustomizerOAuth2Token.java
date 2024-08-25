@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
@@ -50,31 +49,28 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
     @Override
     public void customize(JwtEncodingContext context) {
         OAuth2TokenType tokenType = context.getTokenType();
-
-        JwsHeader.Builder jwsHeader = context.getJwsHeader();
-        Authentication principal = context.getPrincipal();
-        log.warn("进入了自定义token实现类,认证信息是-->{}", principal);
+        log.error("tokenType->{}", tokenType.getValue());
+        OAuth2Authorization oAuth2Authorization = context.getAuthorization();
+        String accessTokenId = Objects.nonNull(oAuth2Authorization) ? oAuth2Authorization.getId() : "";
+        log.error("ACCESS_TOKEN_ID-->{}", accessTokenId);
+        // 认证成功的用户信息
+        Authentication authentication = context.getPrincipal();
         RegisteredClient registeredClient = context.getRegisteredClient();
         UserDetail userDetail = null;
-        if (principal instanceof OAuth2ClientAuthenticationToken) {
+        if (authentication instanceof OAuth2ClientAuthenticationToken) {
             //如果当前登录的是client，则进行封装client
             userDetail = securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
-        } else if (principal.getPrincipal() instanceof UserDetails) {
-            OAuth2Authorization authorization = context.getAuthorization();
+        } else if (authentication.getPrincipal() instanceof UserDetails userDetails) {
             //如果当前登录的是系统用户，则进行封装userDetail
-            userDetail = securityAuthUserService.createUserDetailByUser((UserDetails) principal.getPrincipal());
-            if (Objects.nonNull(authorization)) {
-                // 将 RedisOAuth2AuthorizationConsentService 的  OAuth2Authorization id 存储到当前登录用户信息中,在退出登录时将进行删除
-                userDetail.setAuthorizationId(authorization.getId());
-                // 通过此 redisKey 也可以获取到当前登录用户的信息, 其实就是 OAuth2Authorization 的信息
-                userDetail.setAuthorizationIdToken(SecurityCoreService.getAuthorizationId(authorization.getId()));
-            }
+            userDetail = securityAuthUserService.createUserDetailByUser(userDetails);
         }
         //如果解析失败，则抛出异常信息。
         if (Objects.isNull(userDetail)) {
-            log.error("在自定义token实现中, 用户信息解析异常.");
-            throw new CustomizerTokenException("生成用户token信息失败.");
+            log.error("在自定义token实现中, 用户信息解析异常.认证信息是->{}", authentication);
+            throw new CustomizerTokenException("自定义JwtToken中的Claims失败.");
         }
+        log.info("当前登录用户信息是->{}", userDetail);
+        userDetail.setAccessTokenId(accessTokenId);
         //此处的token字符串是前端拿到的jwtToken信息中解密后的字符串，在这里将自定义jwtToken的实现，将定制jwt的 header 和 claims，将此token存放到 claim 中
         String token = UUID.randomUUID().toString(true);
         //也需要将此token存放到当前登录用户中，为了在退出登录时进行获取redis中的信息并将其删除

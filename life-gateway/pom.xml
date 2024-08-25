@@ -21,6 +21,10 @@
     <dependencies>
         <dependency>
             <groupId>com.authorization.life</groupId>
+            <artifactId>life-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
             <artifactId>redis-start-life</artifactId>
         </dependency>
         <!--knife4j-start-->

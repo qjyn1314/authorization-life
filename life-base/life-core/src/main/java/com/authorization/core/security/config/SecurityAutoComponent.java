@@ -50,8 +50,6 @@ public class SecurityAutoComponent {
         return new JwtAuthenticationFilter(ssoSecurityProperties, jwtService);
     }
 
-    @Autowired
-    private JwtDecoder jwtDecoder;
     /**
      * 跨域配置
      */

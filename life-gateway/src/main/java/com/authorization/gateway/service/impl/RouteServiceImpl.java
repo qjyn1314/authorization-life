@@ -2,6 +2,7 @@ package com.authorization.gateway.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.authorization.gateway.filter.JwtTokenGatewayFilterFactory;
 import com.authorization.gateway.filter.UrlResolveGatewayFilterFactory;
 import com.authorization.gateway.service.RouteService;
 import com.authorization.utils.contsant.ServerInfos;
@@ -110,7 +111,7 @@ public class RouteServiceImpl implements RouteDefinitionRepository, RouteService
             return filterDefinitions;
         }
         filterDefinitions = CollUtil.newArrayList(
-//                new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
+                new FilterDefinition(JwtTokenGatewayFilterFactory.JWT_TOKEN),
                 new FilterDefinition(UrlResolveGatewayFilterFactory.URL_RESOLVE),
                 new FilterDefinition(SpringCloudCircuitBreakerResilience4JFilterFactory.NAME)
         );

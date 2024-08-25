@@ -18,9 +18,21 @@ public interface SecurityCoreService {
      */
     String DEFAULT_ISSUER = "https://authorization.life";
     /**
-     * gateway下发到各个服务的TokenHeader, 其主要的目的是为了当前的应用确定的是从本系统中的gateway下发的请求.
+     * 前端传参的accessToken参数名称
+     */
+    String ACCESS_TOKEN = "Authorization";
+    /**
+     * 前端传参的accessToken的类型
+     */
+    String ACCESS_TOKEN_TYPE = "Bearer";
+    /**
+     * gateway下发到各个服务的TokenHeader, 为了确定系统中的所有请求一定是从此gateway中请求, 从而获取到用户信息.
      */
     String AUTH_POSITION = "Auth-Position";
+    /**
+     * 退出登录是需要将sessionId删除, 如果有的情况下
+     */
+    String JSESSIONID = "JSESSIONID";
     /**
      * 登录页的跳转路径
      */
@@ -36,15 +48,15 @@ public interface SecurityCoreService {
     /**
      * 用户手机号+手机短信登录请求的接口
      */
-    String SSO_SMS_LOGIN = "/oauth/smslogin";
+    String SSO_SMS_LOGIN = "/oauth/sms-login";
     /**
      * 用户邮箱+邮箱验证码登录请求的接口
      */
-    String SSO_EMAIL_LOGIN = "/oauth/emaillogin";
+    String SSO_EMAIL_LOGIN = "/oauth/email-login";
     /**
      * 验证码的缓存key
      */
-    String CAPTCHA_CACHE_KEY = "sso-auth-server:auth:captcha-code:{uuid}";
+    String CAPTCHA_CACHE_KEY = "sso-oauth-server:auth:captcha-code:{uuid}";
     /**
      * 密码输入错误的次数,redis的key, 是指不管用什么方式登录出错都会被记录一次.当此处达到 默认5次时将锁定账户不允许登录.
      */
@@ -62,38 +74,18 @@ public interface SecurityCoreService {
      */
     long REFRESH_TOKEN_TIME_TO_LIVE = 108000;
     /**
-     * 授权码模式中的回调地址: AUTHORIZATION_CODE
-     */
-    String AUTHORIZATION_CODE_IMPLICIT_REDIRECT_URI_FORMAT = "{redirectUri}" +
-            "#access_token={accessToken}" +
-            "&token_type={tokenType}" +
-            "&expires_in={expiresIn}" +
-            "&state={state}" +
-            "&scope={scope}";
-    /**
-     * 前端传参的accessToken参数名称
-     */
-    String ACCESS_TOKEN = "access_token";
-
-    /**
      * 登录过程中所需要存储信息的 redisKey前缀
      */
-    String AUTHORIZATION = "oauth-server:auth:oauth2:authorization";
+    String AUTHORIZATION_KET_PREFIX = "sso-oauth-server:auth:token:";
     /**
-     * 生成token时用于组装 authorizationId的redisKey
-     */
-    static String getAuthorizationId(String authorizationId) {
-        return AUTHORIZATION + "_" + authorizationId;
-    }
-
-    /**
-     * oauth2/token接口中返回的 accessToken(jwt形式)中claim 的key
+     * oauth2/token 接口中返回的 accessToken(jwt形式)中用户的标识 在 claim 的key
      */
     String CLAIM_TOKEN_KEY = "token";
     /**
      * 登录成功的用户信息缓存
      */
     String USER_TOKEN_DETAIL = "sso-oauth-server:user:{token}";
+
     /**
      * redis中存储的用户tokenKey信息
      */
@@ -101,20 +93,6 @@ public interface SecurityCoreService {
         return StrForm.of(USER_TOKEN_DETAIL).add(CLAIM_TOKEN_KEY, token).format();
     }
 
-
-    /**
-     * 退出登录是需要将sessionId删除, 如果有的情况下
-     */
-    String JSESSIONID = "JSESSIONID";
-    String USER_DETAIL = "oauth-server:auth:user:{token}";
-    String AUTH_PERM = "oauth-server:auth:perm:{serviceName}:{httpMethod}";
-    String PERM_ROLE = "oauth-server:auth:perm-role:{permCode}";
-    String USER_ROLE_MENU = "oauth-server:auth:menu:{token}:{roleCode}";
-    String TOKEN_STORE = "oauth-server:auth:token-store";
-    String REMEMBER_ME_PARAM = "remember_me";
-    int COOKIE_TIMEOUT = 86400;
-    String MOBILE_KEY = "phone";
-    String PHONE_LOGIN = "phone-login";
 
     /**
      * 无需认证即可访问的请求路径

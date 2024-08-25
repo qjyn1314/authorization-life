@@ -66,7 +66,11 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
         if (StrUtil.isBlank(token)) {
             return null;
         }
-        String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(redisUtil.get(SecurityCoreService.getUserTokenKey(token)), LinkedHashMap.class));
+        String userJson = redisUtil.get(SecurityCoreService.getUserTokenKey(token));
+        if (StrUtil.isBlank(userJson)) {
+            return null;
+        }
+        String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(userJson, LinkedHashMap.class));
         log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
         return jwtToken;
     }

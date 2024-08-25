@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Qs from 'qs' // 表单提交 data序列化
 import {Message} from 'element-ui'
-import {clearLoginCache} from '../utils/index'
+import {clearLoginCache, getCookie} from '../utils/index'
 
 let outCount = 0
 const service = axios.create({
@@ -11,6 +11,9 @@ const service = axios.create({
 service.interceptors.request.use(config => {
     // 普通表单请求类型
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    let accessToken = getCookie('accessToken') || ''
+    let tokenType = getCookie('tokenType') || ''
+    config.headers['Authorization'] = `${tokenType} ${accessToken}`
     if (config.data) {
         config.data = Qs.stringify(config.data)
     }

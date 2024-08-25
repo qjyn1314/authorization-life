@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -32,7 +34,7 @@ public class SecurityAutoConfiguration {
 
     @Bean
     public SecurityFilterChain defaultSpringSecurityFilterChain(HttpSecurity http) throws Exception {
-//        http.cors(CorsConfigurer::disable).csrf(CsrfConfigurer::disable);
+        http.cors(CorsConfigurer::disable).csrf(CsrfConfigurer::disable);
         // 设置禁用session
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorizeRequests -> {
@@ -45,7 +47,7 @@ public class SecurityAutoConfiguration {
             //未登录时跳转至登录页面
             exception.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint());
         });
-        // 配置formLogin登录
+        // 配置formLogin登录, 是为了添加 UsernamePasswordAuthenticationFilter 到过滤链中.
         http.formLogin(Customizer.withDefaults());
         // 过滤器顺序为 jwtFilter -> UsernamePasswordFilter  ，此处是配置的原因是将每次请求头中的token信息转换为SecurityContent
         // 添加jwtfilter

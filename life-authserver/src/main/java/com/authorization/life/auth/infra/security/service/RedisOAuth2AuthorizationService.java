@@ -16,9 +16,9 @@ import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.util.Assert;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -89,7 +89,7 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
     public void remove(OAuth2Authorization authorization) {
         Assert.notNull(authorization, "authorization cannot be null");
 
-        List<String> keys = new ArrayList<>();
+        Set<String> keys = new HashSet<>();
         if (isState(authorization)) {
             String token = authorization.getAttribute("state");
             keys.add(buildKey(OAuth2ParameterNames.STATE, token));

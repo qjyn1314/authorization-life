@@ -154,7 +154,8 @@ export default {
       const phoneReg = /^1[0-9]{10}$/
       if (!value) {
         return callback(new Error('手机号不能为空'))
-      }
+      }front
+
       setTimeout(() => {
         if (!Number.isInteger(+value)) {
           callback(new Error('请输入数字值'))
@@ -483,7 +484,7 @@ export default {
           height: 32px;
           color: #999999;
           border: 1px solid #d6d6d6;
-          border-left: none; 
+          border-left: none;
           margin: 0px -10px 0 -10px;
         }
         .codecss {

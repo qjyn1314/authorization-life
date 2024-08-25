@@ -18,11 +18,19 @@ public interface SecurityCoreService {
      */
     String DEFAULT_ISSUER = "https://authorization.life";
     /**
-     * 前端传参的accessToken参数名称
+     * accessToken参数的key
      */
-    String ACCESS_TOKEN = "Authorization";
+    String ACCESS_TOKEN = "accessToken";
     /**
-     * 前端传参的accessToken的类型
+     * accessToken参数类型的key
+     */
+    String TOKEN_TYPE = "tokenType";
+    /**
+     * 请求头中AccessToken的Key
+     */
+    String AUTHORIZATION = "Authorization";
+    /**
+     * 请求头中AccessToken的Key的前缀
      */
     String ACCESS_TOKEN_TYPE = "Bearer";
     /**

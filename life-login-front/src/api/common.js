@@ -1,6 +1,6 @@
 import request from '../utils/jsonAxios'
 import {AUTH_SERVER} from './severApi'
-import Qs from 'qs' // 表单提交 data序列化 
+import Qs from 'qs' // 表单提交 data序列化
 // 值集-行值集查询-公用接口*******************************
 export function getlovoptions (tenantId, data) {
   return request({
@@ -12,7 +12,7 @@ export function getlovoptions (tenantId, data) {
 // 查询当前登录用户的信息
 export function getUserSelf () {
   return request({
-    url: `/${AUTH_SERVER}/v1/oauth/self-user`,
+    url: `/${AUTH_SERVER}/oauth/self-user`,
     method: 'GET'
   })
 }

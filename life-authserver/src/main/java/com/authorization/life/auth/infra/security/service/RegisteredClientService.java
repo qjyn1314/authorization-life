@@ -3,10 +3,10 @@ package com.authorization.life.auth.infra.security.service;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.text.StrPool;
 import cn.hutool.json.JSONUtil;
+import com.authorization.core.exception.handle.CommonException;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.sso.RegClientException;
-import com.authorization.core.exception.handle.CommonException;
 import com.authorization.utils.security.SecurityCoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -78,11 +78,13 @@ public class RegisteredClientService implements RegisteredClientRepository {
                 .redirectUri(oauthClient.getRedirectUri())
                 // JWT的配置项 包括TTL  是否复用refreshToken等等
                 .clientSettings(ClientSettings.builder()
-                        //是否需要用户确认一下客户端需要获取用户的哪些权限
+                        // 是否需要用户确认一下客户端需要获取用户的哪些权限, 在登录成功之后, 将跳转到SpringSecurity-Authorization-Server自带的授权页面进行授权
+                        // 前后端分离项目不需要SpringSecurity-Authorization-Server自带的授权页面.
                         .requireAuthorizationConsent(false)
                         .build())
                 .tokenSettings(TokenSettings.builder()
-                        //配置使用自定义的jwtToken格式化，配置此处才会使用到 CustomizerOAuth2Token ， 如果 不配置此格式化的配置，将默认生成jwt的形式, jwtToken中将不能写入开发者自定义的字段.
+                        // OAuth2TokenFormat.SELF_CONTAINED -> 将会使用到自定义的CustomizerOAuth2Token为accessToken添加自定义字段,即: 自包含令牌使用受保护的、有时间限制的数据结构，其中包含令牌元数据以及用户和/ 或客户端的声明。JSON Web 令牌 （JWT） 是一种广泛使用的格式。
+                        // OAuth2TokenFormat.REFERENCE -> 不会使用自定义的CustomizerOAuth2Token为accessToken添加自定义字段,即: 引用（不透明）令牌是唯一标识符，用作对存储在提供商处的用户和/ 或客户端的令牌元数据和声明的引用。
                         .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
                         //是否可重用刷新令牌
                         .reuseRefreshTokens(true)

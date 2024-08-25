@@ -38,7 +38,7 @@ public class UrlResolveGatewayFilterFactory extends AbstractGatewayFilterFactory
             newPath += (newPath.length() > 1 && path.endsWith("/") ? "/" : "");
             final String finalNewPath = newPath;
             ServerHttpRequest newRequest = request.mutate().path(newPath).build();
-            log.info("request url: {}", path);
+            log.info("serviceName: {} method: {} request url: {} finalNewPath: {}", serviceName, httpMethod, path, finalNewPath);
             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR,
                     newRequest.getURI());
             return chain.filter(exchange.mutate().request(newRequest).build());

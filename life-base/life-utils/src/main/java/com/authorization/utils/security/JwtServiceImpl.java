@@ -106,13 +106,9 @@ public class JwtServiceImpl implements JwtService {
             return false;
         }
         try {
-            boolean verify = object.verify(verifier);
-            if (verify) {
-                boolean exped = Long.parseLong(object.getPayload().toJSONObject().get("exp").toString()) >= LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-                log.warn("{}:jwtToken已过期...", jwtToken);
-                return exped;
-            }
-            return false;
+            // 校验有效 且 未过期
+            return object.verify(verifier) &&
+                    Long.parseLong(object.getPayload().toJSONObject().get("exp").toString()) >= LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         } catch (Exception e) {
             log.error("验证jwtToken失败", e);
             return false;
@@ -148,12 +144,24 @@ public class JwtServiceImpl implements JwtService {
         return new NimbusJwtDecoder(jwtProcessor);
     }
 
+    public static final String JWK_SET_STRING = "{\"keys\":[{\"p\":\"x2tEyN338BDF9e7_gA8U2qHtyBpg0w7MGXGlxVyWdsT2M_6no3cvFDV9pLZio5L5VUekxY28tqDPN3oo--htTDErJhRTneDvhwWuKsM9dCj7wBjPIdKJgKJGKaHPZGjh-0jHMSMJJZMDHrD5Rcu6gpCnapfNzbrkbXmKdDy8hDk\",\"kty\":\"RSA\",\"q\":\"8K9FtOn3zqBrMrGQg4QcS-oa2C2X9yT7UTNZitx-buckZbU56OsdNzsKMV1zyd2yEbNPYUdiv_i526XjEA1sVpqmjHXd6s21kWsoi986_IeVEjeXIL9QABL1Ial3l205ee5dkqrnBVPpfCHSKOHLO3myBdmXYbw9Ty6c7CuCvdM\",\"d\":\"AZNz2JcoG64xUdWnAGjTmtkdVAvPBiGZMwIQElskwILWTw7xDt8hvWntD-GbGwKiNRkA4UuN2y5NFuG6xPogVrxiEiKje-ylNahKWF-mvKhUq1c8ipVMZe9b_RYXRpOu1aCQ7OftSxdDXnPmgwJJZX1iVKqGduC4OHSr_xIXXB_jxM5LMIWb2BoTDHYDwUk2W5kz6eQBIWd5G7gqIxNWXjoN-Jy7trFhnu8qU8QSUC-lsve2bT8cWgco4kdYgbLdpHm-u-aOks40AlTzvpVeMXe9KfGyihymLnos8e42hBspIqctv0BOxgBE30cz4Of-jOJMESkMPB04F4etfe9FIQ\",\"e\":\"AQAB\",\"kid\":\"28cdad0b-2c9d-400b-ab2b-c4a1719feb89\",\"qi\":\"g7nWUfMuX-AHV2FplDfogFo5MLc4ZVmSzhWLGzllL76sIzV47ULOY2V26Vdi062A6mQRAym4xnRwxYtMA01T5r-95MXCmZ_mWoRyKsx7DyHYPEt7WrLQaYgUIgveeCsNvYCQlx_4FLjGeVIxk9JJ2ifIg5SEzINGqAeZS7YypEQ\",\"dp\":\"h76SFPVbp7OTPWSR0VbyyBx_4r1p-WFSN2OwBteOqIxMV3paHKCtkGEVBMEOBfCu_okFNWDU-7AdPdNPAKLne3zgtUwS2x5ZjhykwQEj3OVk8Q8yOAC7jq9neUFnDh-C7G1PAjiqKkSXVBX9qLAUZnoXLCznb8pvYcHhKFyLqqk\",\"dq\":\"wmOdNg_dkCnqSog1ArN5syqBweWZHgflXuDNSiTpjKLst6SV__OcphXuFo62zOxcPIWI8DWaoRe-7JLfgACHZq8DIuCzekfohGl61vVVi83pbUwuqEk70MN-7lAUAd46lKsbMjEL4zaxlgsu1MwAu6l_SdBCvrItBj3MicZekvc\",\"n\":\"u30ZHSygWawy0fs5pudTZGaF9f694YP5d1gSk4OqIKXrMdb0JAZ672zbxE_fCMKAi97XPq226xwcbpEinPg_L_EXX3BieA6SQ51HC_o3frBgtlOXg0gfqBwoEX05n68TF_1DFcW_GsxfmM5dDbFKw9kWiR-2TKiGyzth4ZOqfdnO8G_Yn09v-J2BK29g6d6uTrH26hBLAwHlxvG39qSX6neiEUCaQ9OeGM8OsA9dWMvgz9MH_PnKXMstMokOM4TbY_UPhbu4MuDaUNwD-QJadmUFE980VV71GPKIKvnye-hmq-Dlxc40PIBFG4ebVwdMBztq0iiYnYADOhEh9PEP-w\"}]}";
+
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
         // 直接粘贴的类: org.springframework.boot.autoconfigure.security.oauth2.server.servlet.OAuth2AuthorizationServerJwtAutoConfiguration
         RSAKey rsaKey = getRsaKey();
+        //此处的JWKSet每次启动项目都将生成最新的, 所以在此处直接定义为固定的信息, 即: auth-life服务生成的AccessToken也能在gateway服务中解析,为都能够解析同一个AccessToken做准备.
         JWKSet jwkSet = new JWKSet(rsaKey);
-        return new ImmutableJWKSet<>(jwkSet);
+        String jwkSetString = jwkSet.toString(Boolean.FALSE);
+        log.info("此处生成的jwkSetString->{}", jwkSetString);
+        JWKSet defaultJwkSet = null;
+        try {
+            defaultJwkSet = JWKSet.parse(JWK_SET_STRING);
+        } catch (Exception e) {
+            log.error("反向解析JWKSet失败->", e);
+            throw new IllegalArgumentException(e);
+        }
+        return new ImmutableJWKSet<>(defaultJwkSet);
     }
 
     private static RSAKey getRsaKey() {

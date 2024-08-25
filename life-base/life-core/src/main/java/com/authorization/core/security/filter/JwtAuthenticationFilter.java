@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwtToken = getJwtToken(request);
-        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken-{}", jwtToken);
+        log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken->>>{}", jwtToken);
         UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
         // 此处如果是需要放过的请求路径, 将请求路径的校验交给SpringSecurity进行校验
         chain.doFilter(request, response);

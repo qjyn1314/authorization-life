@@ -1,6 +1,5 @@
 package com.authorization.life.auth.infra.security;
 
-import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
@@ -25,6 +24,8 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * 整合 oauth2_authorization 的配置类。
@@ -105,9 +106,17 @@ public class Oauth2SecurityConfig {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
             endpointConfigurer
-                    // 配置自定义登录成功处理器, 即登录成功之后, get请求: /oauth2/authorize 的成功处理器
+                    // 配置自定义登录成功处理器, 即登录成功之后,在登录页面拼接参数后直接请求此路径, get请求: /oauth2/authorize 的成功处理器,用于重定向到相应的登录成功页面并且带临时code
                     .authorizationResponseHandler(new OAuth2SuccessHandler());
         });
+
+//        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
+//            endpointConfigurer
+//                    // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
+//                    // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
+//                    .accessTokenResponseHandler();
+//        });
+
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
         http.securityMatcher(endpointsMatcher)
@@ -117,14 +126,15 @@ public class Oauth2SecurityConfig {
                         //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
+
         //将oauth2.0的配置托管给 SpringSecurity
         http.with(authorizationServerConfigurer, Customizer.withDefaults());
         // 自定义设置accesstoken为jwt中的内容
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
-        // 配置 异常处理
-        http.exceptionHandling(excHandle -> excHandle
-                //当未登录的情况下 该如何跳转。
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
+//        // 配置 异常处理
+//        http.exceptionHandling(excHandle -> excHandle
+//                //当未登录的情况下 该如何跳转。
+//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
         return http.build();
     }
 

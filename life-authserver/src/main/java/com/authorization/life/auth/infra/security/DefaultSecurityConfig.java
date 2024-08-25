@@ -97,10 +97,10 @@ public class DefaultSecurityConfig {
         );
 
         // 配置异常情况的处理器
-        http.exceptionHandling(exceHandle ->
-                exceHandle
-                        //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
+//        http.exceptionHandling(exceHandle ->
+//                exceHandle
+//                        //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
+//                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
 
         // 配置退出登录配置
         http.logout(logout -> logout

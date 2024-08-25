@@ -431,7 +431,7 @@ export default {
 .wrap {
   width: 100%;
   min-height: 100vh;
-  background: url("../../assets/imgs/loginbg.png") no-repeat;
+  background: url("../../assets/imgs/loginbg.jpg") no-repeat;
   background-size: 100% 100%;
   display: flex;
   flex-direction: column;

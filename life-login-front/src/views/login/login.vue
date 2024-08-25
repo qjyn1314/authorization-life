@@ -113,7 +113,7 @@
               请打开
               <span>微信</span> 扫一扫登录
             </div>
-            <img class="codeScanning_img" src="../../assets/imgs/loginbg.png" alt />
+            <img class="codeScanning_img" src="../../assets/imgs/loginbg.jpg" alt />
           </div>
           <el-form-item v-if="loginCur != 2">
             <el-button class="login_btn login_btn_cur" type="primary" @click="Login('ruleForm')">登录</el-button>
@@ -361,7 +361,7 @@ export default {
 .wrap {
   width: 100%;
   min-height: 100vh;
-  background: url("../../assets/imgs/loginbg.png") no-repeat center;
+  background: url("../../assets/imgs/loginbg.jpg") no-repeat center;
   background-size: 100% 100%;
   display: flex;
   flex-direction: column;

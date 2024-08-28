@@ -2,6 +2,7 @@ package com.authorization.life.auth.infra.security.service;
 
 
 import cn.hutool.core.lang.UUID;
+import cn.hutool.json.JSONUtil;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
 import com.authorization.redis.start.util.RedisService;
@@ -69,7 +70,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
             log.error("在自定义token实现中, 用户信息解析异常.认证信息是->{}", authentication);
             throw new CustomizerTokenException("自定义JwtToken中的Claims失败.");
         }
-        log.info("当前登录用户信息是->{}", userDetail);
+        log.info("当前登录用户信息是->{}", JSONUtil.toJsonStr(userDetail));
         userDetail.setAccessTokenId(accessTokenId);
         //此处的token字符串是前端拿到的jwtToken信息中解密后的字符串，在这里将自定义jwtToken的实现，将定制jwt的 header 和 claims，将此token存放到 claim 中
         String token = UUID.randomUUID().toString(true);

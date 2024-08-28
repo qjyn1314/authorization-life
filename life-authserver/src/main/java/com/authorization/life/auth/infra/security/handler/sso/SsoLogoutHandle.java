@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 import java.io.IOException;
@@ -72,6 +73,12 @@ public class SsoLogoutHandle implements LogoutHandler {
         // 先删除 Oauth2Server中存在于redis的accessToken, 包含 code,accessToken,refreshToken
         if (StrUtil.isNotBlank(userDetail.getAccessTokenId())) {
             OAuth2Authorization auth2Authorization = oAuth2AuthorizationService.findById(userDetail.getAccessTokenId());
+            oAuth2AuthorizationService.remove(auth2Authorization);
+        } else {
+            // 如果发现AccessTokenId为空则将通过Token查询accessToken数据信息并删除
+            OAuth2Authorization auth2Authorization = oAuth2AuthorizationService.findByToken(StrUtil.removePrefixIgnoreCase(authorization, SsoSecurityProperties.ACCESS_TOKEN_TYPE).trim(), OAuth2TokenType.ACCESS_TOKEN);
+            String authorizationId = auth2Authorization.getId();
+            log.info("authorizationId->{}", authorizationId);
             oAuth2AuthorizationService.remove(auth2Authorization);
         }
         //再删除根据token获取用户信息

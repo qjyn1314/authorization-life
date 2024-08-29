@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -100,7 +101,8 @@ public class Oauth2SecurityConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                      OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer) throws Exception {
+                                                                      OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer
+    ) throws Exception {
         // 参考: org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
@@ -108,12 +110,9 @@ public class Oauth2SecurityConfig {
                     // 配置自定义登录成功处理器, 即登录成功之后,在登录页面拼接参数后直接请求此路径, get请求: /oauth2/authorize 的成功处理器,用于重定向到相应的登录成功页面并携带临时code
                     .authorizationResponseHandler(new OAuth2SuccessHandler());
         });
-//        authorizationServerConfigurer.tokenRevocationEndpoint(endpointConfigurer -> {
-//           endpointConfigurer.revocationResponseHandler(new SsoLogoutHandle(authorizationService, redisUtil, ssoSecurityProperties, jwtService));
-//        });
-        // 接受用户信息和/或客户端注册的访问令牌
-        http.oauth2ResourceServer((resourceServer) -> resourceServer
-                .jwt(Customizer.withDefaults()));
+
+        //配置openid的配置项
+        authorizationServerConfigurer.oidc(Customizer.withDefaults());
 
 //        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
 //            endpointConfigurer
@@ -134,11 +133,12 @@ public class Oauth2SecurityConfig {
 
         //将oauth2.0自定义的配置托管给 SpringSecurity
         http.with(authorizationServerConfigurer, Customizer.withDefaults());
-        // 自定义设置accesstoken为jwt中的内容
+        // 自定义设置accesstoken中JwtToken-Claims中的内容
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
+
         // 配置 异常处理
         http.exceptionHandling(excHandle -> excHandle
-                //当未登录的情况下 该如何跳转。
+                //当未登录的情况下 自定义该如何跳转。
                 .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
         return http.build();
     }
@@ -199,6 +199,15 @@ public class Oauth2SecurityConfig {
                 //发布者的url地址,一般是本系统访问的根路径
                 .issuer(SecurityCoreService.DEFAULT_ISSUER)
                 .build();
+    }
+
+
+    @Bean //加载中文认证提示信息
+    public ReloadableResourceBundleMessageSource messageSource(){
+        ReloadableResourceBundleMessageSource messageSource = new   ReloadableResourceBundleMessageSource();
+        //加载org/springframework/security包下的中文提示信息 配置文件
+        messageSource.setBasename("classpath:messages/messages_zh_CN");
+        return messageSource;
     }
 
 }

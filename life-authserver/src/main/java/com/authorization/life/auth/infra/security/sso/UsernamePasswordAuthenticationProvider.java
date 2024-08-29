@@ -8,9 +8,9 @@ import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.message.StrForm;
-import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SecurityCoreService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -23,8 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户名密码登录的校验。
@@ -71,6 +73,8 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             UserDetails user = userDetailsService.loadUserByUsername(username);
             Assert.notNull(user, () -> new InternalAuthenticationServiceException(
                     "UserDetailsService returned null, which is an interface contract violation"));
+            Locale locale = LocaleContextHolder.getLocale();
+            log.info("locale-->{}", locale);
             return user;
         } catch (UsernameNotFoundException notFound) {
             log.debug("User '" + username + "' not found");
@@ -118,7 +122,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             int passwordErrorCount = Optional.ofNullable(redisUtil.get(cacheKey)).map(Integer::parseInt).orElse(0);
             if (passwordErrorCount >= 5 && passwordErrorCount < 10) {
                 // 未超过10次则密码错误累计次数+1
-                redisUtil.set(cacheKey, String.valueOf(passwordErrorCount + 1));
+                redisUtil.setEx(cacheKey, String.valueOf(passwordErrorCount + 1), 10, TimeUnit.MINUTES);
                 throw new VerificationCodeException("用户名或密码错误。");
             }
             if (passwordErrorCount >= 10) {
@@ -126,7 +130,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
                 userService.lock(((LifeUser) userDetails).getUserId(), 3);
             } else {
                 // 未超过10次则密码错误累计次数+1
-                redisUtil.set(cacheKey, String.valueOf(passwordErrorCount + 1));
+                redisUtil.setEx(cacheKey, String.valueOf(passwordErrorCount + 1), 10, TimeUnit.MINUTES);
             }
             throw new BadCredentialsException("用户名或密码错误。");
         }
@@ -137,6 +141,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
             Assert.notNull(registeredClient, () -> new RegClientException("未找到此 OauthClient 信息。"));
             //检查授权域
             Set<String> allowedScopes = registeredClient.getScopes();
+            //判断用户所在用户组与授权域是否相同
             boolean express = ((LifeUser) userDetails).getUserGroups().containsAll(allowedScopes);
             Assert.isTrue(express, () -> new InternalAuthenticationServiceException("用户名或密码错误"));
         }

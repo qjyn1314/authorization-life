@@ -58,10 +58,7 @@ public class SsoFailureHandler implements AuthenticationFailureHandler {
         }
         AuthCodeExceptionVO authCodeExceptionVO = new AuthCodeExceptionVO();
         AuthCodeExceptionVO.ErrorVO errorVO = new AuthCodeExceptionVO.ErrorVO();
-        boolean flag = false;
-        if (exception instanceof VerificationCodeException) {
-            flag = true;
-        }
+        boolean flag = exception instanceof VerificationCodeException;
         errorVO.setUsername("").setPassword("").setPhone("").setCaptchaCode("").setDefaultDesc("");
         if (exception instanceof ValiVerificationCodeException) {
             errorVO.setCaptchaCode(message);

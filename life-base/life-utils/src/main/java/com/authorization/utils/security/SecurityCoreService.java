@@ -118,6 +118,8 @@ public interface SecurityCoreService {
             //获取client信息接口
             "/oauth/**",
             "/oauth2/**",
+            "/connect/**",
+            "/userinfo",
     };
 
 

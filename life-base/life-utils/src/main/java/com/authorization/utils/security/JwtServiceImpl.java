@@ -168,10 +168,9 @@ public class JwtServiceImpl implements JwtService {
         KeyPair keyPair = generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        RSAKey rsaKey = new RSAKey.Builder(publicKey).privateKey(privateKey)
+        return new RSAKey.Builder(publicKey).privateKey(privateKey)
                 .keyID(java.util.UUID.randomUUID().toString())
                 .build();
-        return rsaKey;
     }
 
     private static KeyPair generateRsaKey() {

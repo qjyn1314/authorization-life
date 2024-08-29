@@ -60,7 +60,11 @@ public class UserServiceImpl implements UserService {
                 .eq(LifeUser::getUserId, lifeUser)
                 .set(LifeUser::getLockedFlag, Boolean.TRUE)
                 .set(LifeUser::getLockedTime, LocalDateTime.now().plusHours(lockTime));
-        mapper.update(lifeUser, updateWrapper);
+        LifeUser updateLifeUser = new LifeUser();
+        updateLifeUser.setUserId(userId);
+        updateLifeUser.setLockedFlag(Boolean.TRUE);
+        updateLifeUser.setLockedTime(LocalDateTime.now().plusHours(lockTime));
+        mapper.updateById(updateLifeUser);
     }
 
     @Override

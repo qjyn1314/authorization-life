@@ -84,7 +84,6 @@ export default {
         //将accessToken缓存到当前二级域名的cookie中，开始通过accessToken获取当前登录用户的信息
         setCookie('accessToken', this.accessToken.access_token)
         setCookie('tokenType', this.accessToken.token_type)
-        setCookie('refreshToken', this.accessToken.refresh_token)
         //一旦将access_token 存储到cookie中之后将跳转到正确的路径中。
       })
     },

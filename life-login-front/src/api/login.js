@@ -29,20 +29,20 @@ export function getOauth2TokenByCode(data) {
     })
 }
 
-// 通过code获取access token
-export function oauth2Revoke(data) {
-    return request({
-        url: `/${AUTH_SERVER}/oauth2/revoke`,
-        method: 'POST',
-        data: data
-    })
-}
-
-// 通过code获取access token
+// SpringSecurity的退出登录处理器
 export function oauthLogout(data) {
     return request({
         url: `/${AUTH_SERVER}/oauth/logout`,
         method: 'GET',
+        data: data
+    })
+}
+
+// 通过refreshToken刷新accessToken
+export function refreshTokenByAccessToken(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth2/token`,
+        method: 'POST',
         data: data
     })
 }

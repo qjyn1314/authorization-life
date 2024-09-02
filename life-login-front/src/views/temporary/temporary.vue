@@ -25,10 +25,10 @@
       <h3>{{ userInfo }}</h3>
       <hr/>
       <hr/>
-      <el-button type="danger" @click="logout">点击按钮退出登录: /oauth2/revoke</el-button>
-      <a href="/auth-life/oauth2/revoke">点击A链接退出登录: /auth-life/oauth2/revoke</a>
+      <el-button type="danger" @click="logout">点击按钮退出登录: /oauth/logout->配置了退出登录处理器</el-button>
       <hr/>
       退出登录时将redis缓存中的信息,会话中的信息,cookie中的信息删除, 并重定向到登录页.
+      <hr/>
       <hr/>
       <hr/>
       <hr/>
@@ -40,7 +40,7 @@
 <script>
 import {CODE_ACCESS_TOKEN} from '@/api/severApi'
 import {ContentLayout} from '@/components'
-import {getOauth2TokenByCode, oauth2Revoke, oauthLogout} from '@/api/login'
+import {getOauth2TokenByCode, oauthLogout,refreshTokenByAccessToken} from '@/api/login'
 import {getUserSelf} from '@/api/common'
 import {getCookie, setCookie} from '@/utils'
 
@@ -62,7 +62,8 @@ export default {
       },
       accessToken: {
         access_token: '',
-        token_type: ''
+        token_type: '',
+        refresh_token: '',
       },
       userInfo: {}
     }
@@ -83,6 +84,7 @@ export default {
         //将accessToken缓存到当前二级域名的cookie中，开始通过accessToken获取当前登录用户的信息
         setCookie('accessToken', this.accessToken.access_token)
         setCookie('tokenType', this.accessToken.token_type)
+        setCookie('refreshToken', this.accessToken.refresh_token)
         //一旦将access_token 存储到cookie中之后将跳转到正确的路径中。
       })
     },
@@ -92,13 +94,21 @@ export default {
       })
     },
     logout() {
-      // /auth-life/oauth2/revoke
       let accessToken = getCookie("accessToken");
-      // oauth2Revoke({"token":accessToken}).then(result => {
-      //   console.log(result);
-      // });
       oauthLogout({"token":accessToken}).then(result => {
         console.log(result);
+      });
+    },
+    refreshAccessToken(){
+      let refreshToken = getCookie("refreshToken");
+      // 请求过程中, 在转换
+      let params = {
+        "grant_type":"refresh_token",
+        "refresh_token": refreshToken,
+        "scope": "TENANT"
+      };
+      refreshTokenByAccessToken(params).then(res => {
+        console.log(res);
       });
     }
   }

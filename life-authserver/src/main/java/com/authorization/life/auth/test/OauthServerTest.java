@@ -14,7 +14,7 @@ public class OauthServerTest {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         //明文
-        String encode = passwordEncoder.encode("3MMoCFo4nTNjRtGZ");
+        String encode = passwordEncoder.encode("admin");
 
         log.info("密文-{}", encode);
 

@@ -130,6 +130,8 @@ https://blog.csdn.net/qq_38046739/article/details/127752149
 
 ![img.png](image/authorization-code.png)
 
+![sso授权码模式登录和退出演示.gif](image%2Fsso%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%99%BB%E5%BD%95%E5%92%8C%E9%80%80%E5%87%BA%E6%BC%94%E7%A4%BA.gif)
+
 ## 客户端凭证（client credentials）
 
 博文:

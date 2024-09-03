@@ -112,7 +112,7 @@ public class Oauth2SecurityConfig {
         });
 
         //配置openid的配置项
-        authorizationServerConfigurer.oidc(Customizer.withDefaults());
+//        authorizationServerConfigurer.oidc(Customizer.withDefaults());
 
 //        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
 //            endpointConfigurer

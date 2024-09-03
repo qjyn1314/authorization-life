@@ -3,8 +3,10 @@ package com.authorization.life.system.api.controller;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.authorization.common.log.LogAdvice;
+import com.authorization.core.security.entity.UserHelper;
 import com.authorization.life.system.infra.constant.ErrorMsgConstant;
 import com.authorization.utils.result.Result;
+import com.authorization.utils.security.UserDetail;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Validator;
@@ -57,6 +59,14 @@ public class UseController {
     public Result<Date> getIn18ByReturn() {
         String nowDateFormat = DateUtil.format(LocalDateTime.now(), DatePattern.CHINESE_DATE_TIME_PATTERN);
         return Result.fail(ErrorMsgConstant.DATA_NOT_EXIST.getMsgCode());
+    }
+
+
+    @Operation(summary = "在system中获取当前登录用户信息", description = "在system中获取当前登录用户信息")
+    @LogAdvice
+    @GetMapping("/system/self-user")
+    public Result<UserDetail> getSelfUser() {
+        return Result.ok(UserHelper.getUserDetail());
     }
 
 }

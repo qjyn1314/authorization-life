@@ -1,6 +1,6 @@
 package com.authorization.remote.authserver.service;
 
-import com.authorization.remote.authserver.AuthServerApiRes;
+import com.authorization.remote.authserver.AuthRemoteRes;
 import com.authorization.remote.authserver.vo.UserDetailVO;
 
 /**
@@ -11,8 +11,21 @@ import com.authorization.remote.authserver.vo.UserDetailVO;
  */
 public interface AuthServerRemoteService {
 
+    /**
+     * 通过解析Oauth2Server生成的accesstoken获取到用户信息
+     *
+     * @param accessToken
+     * @return UserDetailVO
+     */
+    AuthRemoteRes<UserDetailVO> getUserByAccessToken(String accessToken);
 
-    AuthServerApiRes<UserDetailVO> getUserByToken(String accessToken);
+    /**
+     * 通过解析网关工程创建jwtToken获取到用户信息
+     *
+     * @param jwtToken
+     * @return UserDetailVO
+     */
+    AuthRemoteRes<UserDetailVO> getUserByJwtToken(String jwtToken);
 
 
 }

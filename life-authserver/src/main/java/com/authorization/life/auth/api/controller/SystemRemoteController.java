@@ -1,7 +1,7 @@
 package com.authorization.life.auth.api.controller;
 
 import com.authorization.common.log.LogAdvice;
-import com.authorization.remote.system.SystemServerApiRes;
+import com.authorization.remote.system.SystemRemoteRes;
 import com.authorization.remote.system.service.SystemRemoteService;
 import com.authorization.utils.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +29,7 @@ public class SystemRemoteController {
     @LogAdvice
     @GetMapping("/remote-date")
     public Result<String> getSystemRemoteNowDate() {
-        SystemServerApiRes<String> remoteNowDate = systemRemoteService.getSystemRemoteNowDate();
+        SystemRemoteRes<String> remoteNowDate = systemRemoteService.getSystemRemoteNowDate();
         return Result.ok(remoteNowDate.getData());
     }
 

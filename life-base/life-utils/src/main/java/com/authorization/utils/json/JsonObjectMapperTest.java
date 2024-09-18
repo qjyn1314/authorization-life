@@ -47,7 +47,7 @@ public class JsonObjectMapperTest {
         /**
          * 租户ID
          */
-        private Long tenantId;
+        private String tenantId;
 
         @Override
         public String toString() {

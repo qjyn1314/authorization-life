@@ -24,9 +24,9 @@ public class UserDetail implements Serializable {
      */
     public static UserDetail anonymous() {
         UserDetail userDetail = new UserDetail();
-        userDetail.setUserId(0L);
-        userDetail.setEmpId(0L);
-        userDetail.setTenantId(0L);
+        userDetail.setUserId("0");
+        userDetail.setEmpId("0");
+        userDetail.setTenantId("0");
         userDetail.setLocale(Locale.CHINA);
         userDetail.setAnonymousFlag(true);
         return userDetail;
@@ -39,9 +39,9 @@ public class UserDetail implements Serializable {
      */
     public static UserDetail systemUser() {
         UserDetail userDetail = new UserDetail();
-        userDetail.setUserId(-1L);
-        userDetail.setEmpId(-1L);
-        userDetail.setTenantId(0L);
+        userDetail.setUserId("-1");
+        userDetail.setEmpId("-1");
+        userDetail.setTenantId("0");
         userDetail.setLocale(Locale.CHINA);
         return userDetail;
     }
@@ -53,7 +53,7 @@ public class UserDetail implements Serializable {
     /**
      * 用户Id
      */
-    private Long userId;
+    private String userId;
     /**
      * 用户编码(登录名称)
      */
@@ -105,11 +105,11 @@ public class UserDetail implements Serializable {
     /**
      * 员工ID
      */
-    private Long empId;
+    private String empId;
     /**
      * 员工租户ID
      */
-    private Long tenantId;
+    private String tenantId;
     /**
      * 员工编码
      */

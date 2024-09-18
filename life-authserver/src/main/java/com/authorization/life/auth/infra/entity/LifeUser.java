@@ -2,6 +2,7 @@ package com.authorization.life.auth.infra.entity;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.authorization.core.mybatis.AuditEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -31,10 +32,9 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TableName("lifetime_user")
-public class LifeUser implements Serializable, UserDetails {
+public class LifeUser extends AuditEntity implements Serializable, UserDetails {
 
     private static final long serialVersionUID = 1L;
 
@@ -64,7 +64,7 @@ public class LifeUser implements Serializable, UserDetails {
      * 用户表主键
      */
     @TableId
-    private Long userId;
+    private String userId;
     /**
      * 用户编码
      */
@@ -140,35 +140,11 @@ public class LifeUser implements Serializable, UserDetails {
     /**
      * 租户ID
      */
-    private Long tenantId;
+    private String tenantId;
     /**
      * 版本号
      */
     private Long versionNum;
-    /**
-     * 创建用户
-     */
-    private Long createdByUser;
-    /**
-     * 创建员工
-     */
-    private Long createdByEmp;
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdTime;
-    /**
-     * 最后更新用户
-     */
-    private Long updatedByUser;
-    /**
-     * 最后更新员工
-     */
-    private Long updatedByEmp;
-    /**
-     * 最后更新时间
-     */
-    private LocalDateTime updatedTime;
 
     /**
      * 用户组信息

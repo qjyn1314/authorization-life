@@ -61,5 +61,5 @@ public class OauthClientVO implements Serializable {
     /**
      * 租户ID
      */
-    private Long tenantId;
+    private String tenantId;
 }

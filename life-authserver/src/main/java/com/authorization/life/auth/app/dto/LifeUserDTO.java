@@ -101,34 +101,10 @@ public class LifeUserDTO implements Serializable {
     /**
      * 租户ID
      */
-    private Long tenantId;
+    private String tenantId;
     /**
      * 版本号
      */
     private Long versionNum;
-    /**
-     * 创建用户
-     */
-    private Long createdByUser;
-    /**
-     * 创建员工
-     */
-    private Long createdByEmp;
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdTime;
-    /**
-     * 最后更新用户
-     */
-    private Long updatedByUser;
-    /**
-     * 最后更新员工
-     */
-    private Long updatedByEmp;
-    /**
-     * 最后更新时间
-     */
-    private LocalDateTime updatedTime;
 
 }

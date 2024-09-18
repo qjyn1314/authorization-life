@@ -19,7 +19,7 @@ public class UserDetailVO implements Serializable {
     /**
      * 用户Id
      */
-    private Long userId;
+    private String userId;
     /**
      * 用户编码(登录名称)
      */
@@ -67,11 +67,11 @@ public class UserDetailVO implements Serializable {
     /**
      * 员工ID
      */
-    private Long empId;
+    private String empId;
     /**
      * 员工租户ID
      */
-    private Long tenantId;
+    private String tenantId;
     /**
      * 员工编码
      */

@@ -25,7 +25,7 @@ public class JsonObjectMapperTest {
         lovJson.setLovCode("sex");
         lovJson.setLovName("性别");
         lovJson.setLovTypeCode("fixed");
-        lovJson.setTenantId(0L);
+        lovJson.setTenantId("0");
     }
 
     @Getter

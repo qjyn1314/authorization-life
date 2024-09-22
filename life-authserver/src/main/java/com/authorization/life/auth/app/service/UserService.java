@@ -27,7 +27,7 @@ public interface UserService {
      * @param userId 用户ID
      * @param lockTime 锁定时间-单位：小时；
      */
-    void lock(Long userId , Integer lockTime);
+    void lock(String userId , Integer lockTime);
 
     PageInfo<LifeUserVO> page(LifeUserDTO lifeUser);
 

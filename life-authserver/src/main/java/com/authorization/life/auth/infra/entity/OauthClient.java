@@ -1,6 +1,7 @@
 package com.authorization.life.auth.infra.entity;
 
 import com.authorization.core.mybatis.AuditEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -47,7 +48,7 @@ public class OauthClient extends AuditEntity implements Serializable {
     /**
      * oauth客户端表主键
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private String oauthClientId;
     /**
      * 客户端域名

@@ -15,6 +15,6 @@ public interface UserGroupService {
     /**
      * 查找该用户所属的用户组
      */
-    List<UserGroup> selectByUserId(Long userId);
+    List<UserGroup> selectByUserId(String userId);
 
 }

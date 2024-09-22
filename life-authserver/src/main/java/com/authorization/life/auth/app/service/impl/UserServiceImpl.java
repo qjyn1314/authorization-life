@@ -53,13 +53,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void lock(Long userId, Integer lockTime) {
+    public void lock(String userId, Integer lockTime) {
         LifeUser lifeUser = mapper.selectOne(Wrappers.lambdaQuery(new LifeUser()).eq(LifeUser::getUserId, userId));
         Assert.notNull(lifeUser, "未找到该用户信息");
-        LambdaUpdateWrapper<LifeUser> updateWrapper = Wrappers.lambdaUpdate(new LifeUser())
-                .eq(LifeUser::getUserId, lifeUser)
-                .set(LifeUser::getLockedFlag, Boolean.TRUE)
-                .set(LifeUser::getLockedTime, LocalDateTime.now().plusHours(lockTime));
         LifeUser updateLifeUser = new LifeUser();
         updateLifeUser.setUserId(userId);
         updateLifeUser.setLockedFlag(Boolean.TRUE);

@@ -26,7 +26,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      * 查找该用户所属的用户组
      */
     @Override
-    public List<UserGroup> selectByUserId(Long userId) {
+    public List<UserGroup> selectByUserId(String userId) {
         return mapper.selectList(Wrappers.lambdaQuery(UserGroup.class).eq(UserGroup::getUserId, userId));
     }
 }

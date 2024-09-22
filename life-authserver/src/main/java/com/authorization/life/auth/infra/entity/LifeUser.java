@@ -3,11 +3,11 @@ package com.authorization.life.auth.infra.entity;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.core.mybatis.AuditEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,7 +63,7 @@ public class LifeUser extends AuditEntity implements Serializable, UserDetails {
     /**
      * 用户表主键
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private String userId;
     /**
      * 用户编码

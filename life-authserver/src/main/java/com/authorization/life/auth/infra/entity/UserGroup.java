@@ -1,11 +1,10 @@
 package com.authorization.life.auth.infra.entity;
 
-import com.authorization.core.mybatis.AuditEntity;
+import com.authorization.mybatis.start.entity.AuditEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,9 +22,8 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TableName("lifetime_user_group")
+@TableName("liam_user_group")
 public class UserGroup extends AuditEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

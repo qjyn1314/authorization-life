@@ -10,9 +10,9 @@ import com.authorization.utils.message.StrForm;
 public interface SecurityCoreService {
 
     /**
-     * 开启记住我的功能中所使用的域名
+     * 默认使用此域名查询client信息
      */
-    String DEFAULT_DOMAIN = "authorization.life";
+    String DEFAULT_DOMAIN = "www.authorization.life";
     /**
      * token在签发的时候使用的发行域名
      */

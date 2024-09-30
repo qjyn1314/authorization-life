@@ -2,7 +2,7 @@ package com.authorization.life.auth.infra.entity;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.core.mybatis.AuditEntity;
+import com.authorization.mybatis.start.entity.AuditEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -33,7 +33,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@TableName("lifetime_user")
+@TableName("liam_user")
 public class LifeUser extends AuditEntity implements Serializable, UserDetails {
 
     private static final long serialVersionUID = 1L;

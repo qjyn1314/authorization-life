@@ -28,7 +28,7 @@
         <include refid="lifetime_oauth_client_column">
             <property name="prefix" value="t1."/>
         </include>
-        FROM lifetime_oauth_client t1
+        FROM liam_oauth_client t1
     </select>
 
 </mapper>

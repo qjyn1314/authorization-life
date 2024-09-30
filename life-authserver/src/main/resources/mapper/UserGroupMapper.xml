@@ -20,7 +20,7 @@
         <include refid="lifetime_user_group_column">
             <property name="prefix" value="t1."/>
         </include>
-        FROM lifetime_user_group t1
+        FROM liam_user_group t1
     </select>
 
 </mapper>

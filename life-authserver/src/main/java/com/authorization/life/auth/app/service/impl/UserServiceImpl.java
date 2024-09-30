@@ -7,7 +7,6 @@ import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
 import com.authorization.utils.converter.BeanConverter;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -42,6 +41,7 @@ public class UserServiceImpl implements UserService {
     public LifeUser selectByUsername(String username) {
         return mapper.selectOne(Wrappers.lambdaQuery(LifeUser.class)
                 .or().eq(LifeUser::getPhone, username)
+                .or().eq(LifeUser::getUsername, username)
                 .or().eq(LifeUser::getEmail, username));
     }
 
@@ -54,6 +54,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void lock(String userId, Integer lockTime) {
+        Assert.notBlank(userId, "用户ID不能为空.");
+        Assert.notNull(lockTime, "锁定时长(小时)不能为空.");
         LifeUser lifeUser = mapper.selectOne(Wrappers.lambdaQuery(new LifeUser()).eq(LifeUser::getUserId, userId));
         Assert.notNull(lifeUser, "未找到该用户信息");
         LifeUser updateLifeUser = new LifeUser();
@@ -73,5 +75,13 @@ public class UserServiceImpl implements UserService {
         List<LifeUser> userList = mapper.page(BeanConverter.convert(lifeUser, LifeUser.class));
         return userList.stream().map(item -> BeanConverter.convert(item, LifeUserVO.class)).collect(Collectors.toList());
     }
+
+
+    @Override
+    public String register(LifeUserDTO lifeUser) {
+        
+        return "";
+    }
+
 
 }

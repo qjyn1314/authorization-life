@@ -1,4 +1,4 @@
-package com.authorization.core.mybatis;
+package com.authorization.mybatis.start.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,6 +19,14 @@ import java.time.LocalDateTime;
 @Getter
 @EqualsAndHashCode
 public class AuditEntity implements Serializable {
+
+    public static final String FIELD_CREATED_BY_USER = "createdByUser";
+    public static final String FIELD_CREATED_BY_EMP = "createdByEmp";
+    public static final String FIELD_CREATED_TIME = "createdTime";
+    public static final String FIELD_UPDATED_BY_USER = "updatedByUser";
+    public static final String FIELD_UPDATED_BY_EMP = "updatedByEmp";
+    public static final String FIELD_UPDATED_TIME = "updatedTime";
+
 
     /**
      * 创建用户

@@ -13,6 +13,6 @@ public interface OauthClientService {
 
     OauthClientVO selectClientByClientId(String id);
 
-    OauthClientVO clientByDomain(String domainName, String grantType);
+    OauthClientVO clientByDomain(String domainName);
 
 }

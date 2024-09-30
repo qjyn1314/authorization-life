@@ -27,12 +27,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Operation(summary = "用户注册")
-    @PostMapping("/register")
-    public Result<Void> register(@RequestBody LifeUserDTO lifeUser) {
-        return Result.ok();
-    }
-
     @Operation(summary = "用户列表")
     @PostMapping("/page")
     public Result<PageInfo<LifeUserVO>> page(@RequestBody LifeUserDTO lifeUser) {

@@ -37,7 +37,7 @@
         <include refid="lifetime_user_column">
             <property name="prefix" value="t1."/>
         </include>
-        FROM lifetime_user t1
+        FROM liam_user t1
     </select>
 
 </mapper>

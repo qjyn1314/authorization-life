@@ -24,11 +24,19 @@ public interface UserService {
     /**
      * 锁定用户几小时
      *
-     * @param userId 用户ID
+     * @param userId   用户ID
      * @param lockTime 锁定时间-单位：小时；
      */
-    void lock(String userId , Integer lockTime);
+    void lock(String userId, Integer lockTime);
 
     PageInfo<LifeUserVO> page(LifeUserDTO lifeUser);
+
+    /**
+     * 注册用户
+     *
+     * @param lifeUser 用户信息
+     * @return String-> 用户编码
+     */
+    String register(LifeUserDTO lifeUser);
 
 }

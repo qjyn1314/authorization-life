@@ -3,6 +3,7 @@ package com.authorization.life.auth.api.controller;
 import com.authorization.core.security.entity.UserHelper;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.util.Captcha;
 import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
@@ -36,20 +37,20 @@ public class OauthController {
     private RedisUtil redisUtil;
     @Autowired
     private OauthClientService oauthClientService;
+    @Autowired
+    private UserService userService;
 
-    @Operation(summary = "获取当前登录用户信息")
-    @GetMapping("/self-user")
-    public Result<UserDetail> getCurrentUser() {
-        return Result.ok(UserHelper.getUserDetail());
+    @Operation(summary = "通过请求路径中的域名获取client信息")
+    @GetMapping("/clientByDomain")
+    public Result<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
+                                                @RequestParam(name = "domainName") String domainName) {
+        return Result.ok(oauthClientService.clientByDomain(domainName));
     }
 
-    @Operation(summary = "通过请求的域名获取client信息.")
-    @GetMapping("/client-domain/{domainName}/grant-type/{grantType}")
-    public Result<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
-                                                @PathVariable String domainName,
-                                                @Parameter(description = "请求路径中的授权类型", example = "authorization_code", required = true)
-                                                @PathVariable String grantType) {
-        return Result.ok(oauthClientService.clientByDomain(domainName, grantType));
+    @Operation(summary = "用户注册")
+    @PostMapping("/register")
+    public Result<String> register(@RequestBody LifeUserDTO lifeUser) {
+        return Result.ok(userService.register(lifeUser));
     }
 
     @Operation(summary = "发送手机验证码")
@@ -66,6 +67,12 @@ public class OauthController {
         Captcha captcha = RedisCaptchaValidator.create(redisUtil);
         String code = captcha.getCode();
         return Result.ok(code);
+    }
+
+    @Operation(summary = "获取当前登录用户信息")
+    @GetMapping("/self-user")
+    public Result<UserDetail> getCurrentUser() {
+        return Result.ok(UserHelper.getUserDetail());
     }
 
     @Operation(summary = "图片验证码")

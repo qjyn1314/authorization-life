@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.Objects;
@@ -42,25 +41,16 @@ public class OauthClientServiceImpl implements OauthClientService {
      * 根据 domainName 没有查询到client信息时, 则查询 根据默认域名(www.authorization.life)查询client信息
      *
      * @param domainName 登录或注册时使用的域名
-     * @param grantType  授权类型
      * @return com.authorization.life.auth.app.vo.OauthClientVO
      */
     @Override
-    public OauthClientVO clientByDomain(String domainName, String grantType) {
+    public OauthClientVO clientByDomain(String domainName) {
+        Assert.notBlank(domainName, "域名不能为空. ");
         OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, domainName));
         if (Objects.isNull(oauthClient)) {
             oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, SecurityCoreService.DEFAULT_DOMAIN));
         }
-        if (Objects.isNull(oauthClient)) {
-            log.info("根据域名获取client信息失败,域名-{}", domainName);
-            return null;
-        }
-        String grantTypes = oauthClient.getGrantTypes();
-        if (!StringUtils.hasText(grantTypes) && !grantTypes.contains(grantType)) {
-            log.info("根据授权类型获取client信息,授权类型-{}", grantType);
-            return null;
-        }
-        oauthClient.setGrantTypes(grantType);
+        Assert.notNull(oauthClient, "根据域名未找到client信息.");
         return BeanConverter.convert(oauthClient, OauthClientVO.class, Map.of(OauthClient.FIELD_CLIENT_SECRET_BAK, OauthClient.FIELD_CLIENT_SECRET));
     }
 }

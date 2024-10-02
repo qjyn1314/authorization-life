@@ -28,7 +28,7 @@ public class Result<T> implements Serializable {
     private T data;
     private transient Object[] args;
 
-    public Result(String code, String msg, Object[] args, T data) {
+    private Result(String code, String msg, Object[] args, T data) {
         this.code = code;
         try {
             this.msg = Objects.nonNull(msg) ? MsgFormat.getMessageLocal(msg, args, null).getMessage() : null;

@@ -1,5 +1,7 @@
 package com.authorization.mybatis.start.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,26 +33,32 @@ public class AuditEntity implements Serializable {
     /**
      * 创建用户
      */
+    @TableField(fill = FieldFill.INSERT)
     private String createdByUser;
     /**
      * 创建员工
      */
+    @TableField(fill = FieldFill.INSERT)
     private String createdByEmp;
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdTime;
     /**
      * 最后更新用户
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updatedByUser;
     /**
      * 最后更新员工
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private String updatedByEmp;
     /**
      * 最后更新时间
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedTime;
 
 }

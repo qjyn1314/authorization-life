@@ -53,9 +53,9 @@ public class GatewayConfiguration {
                 // 时间窗口的大小为60秒
                 .slidingWindowSize(60)
                 // 在单位时间窗口期内最少需要10次调用才能开始进行统计计算
-                .minimumNumberOfCalls(5)
+                .minimumNumberOfCalls(10)
                 // 在单位时间窗口内调用失败率达到60%后会启动断路器
-                .failureRateThreshold(60)
+                .failureRateThreshold(40)
                 // 允许断路器自动由打开状态转换为半开状态
                 .enableAutomaticTransitionFromOpenToHalfOpen()
                 // 在半开状态下允许进行正常调用的次数
@@ -68,7 +68,7 @@ public class GatewayConfiguration {
         // 超时配置: timeLimiterConfig方法设置了超时时间，服务提供者如果超过200毫秒没有响应，Spring Cloud Gateway就会向调用者返回失败
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
                 // 设置超时时间为300毫秒,则进行触发返回
-                .timeoutDuration(Duration.ofMillis(3000))
+                .timeoutDuration(Duration.ofSeconds(30))
                 .build();
         ReactiveResilience4JCircuitBreakerFactory circuitBreakerFactory =
                 new ReactiveResilience4JCircuitBreakerFactory(circuitBreakerRegistry, timeLimiterRegistry, resilience4JConfigurationProperties);

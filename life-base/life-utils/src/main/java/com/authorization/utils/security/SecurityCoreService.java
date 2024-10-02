@@ -120,6 +120,7 @@ public interface SecurityCoreService {
             "/oauth2/**",
             "/connect/**",
             "/userinfo",
+            "/lsys/**",
     };
 
 

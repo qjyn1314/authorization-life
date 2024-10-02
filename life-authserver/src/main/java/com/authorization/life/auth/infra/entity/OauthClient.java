@@ -47,7 +47,7 @@ public class OauthClient extends AuditEntity implements Serializable {
     /**
      * oauth客户端表主键
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.ASSIGN_UUID)
     private String oauthClientId;
     /**
      * 客户端域名

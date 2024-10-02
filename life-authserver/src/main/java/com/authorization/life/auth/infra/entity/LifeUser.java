@@ -15,6 +15,7 @@ import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -63,7 +64,7 @@ public class LifeUser extends AuditEntity implements Serializable, UserDetails {
     /**
      * 用户表主键
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.ASSIGN_UUID)
     private String userId;
     /**
      * 用户编码

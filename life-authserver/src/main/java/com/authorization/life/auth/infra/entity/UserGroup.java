@@ -36,7 +36,7 @@ public class UserGroup extends AuditEntity implements Serializable {
     /**
      * 用户组表主键
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.ASSIGN_UUID)
     private String userGroupId;
     /**
      * 用户ID

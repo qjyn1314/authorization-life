@@ -1,6 +1,7 @@
 package com.authorization.core.security.entity;
 
 import com.authorization.utils.security.UserDetail;
+import com.authorization.utils.security.UserThreadUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +11,9 @@ import java.util.Objects;
 public class UserHelper {
 
     public static UserDetail getUserDetail() {
+        if (UserThreadUtil.getUserContext() != null) {
+            return UserThreadUtil.getUserContext();
+        }
         if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             return principal instanceof UserDetail ? (UserDetail) principal : null;
@@ -23,6 +27,7 @@ public class UserHelper {
         if (Objects.isNull(securityContext) || Objects.isNull(userInfo)) {
             return;
         }
+        UserThreadUtil.setUserContext(userInfo);
         // 如果是匿名用户则设置为未认证用户
         if (userInfo.getAnonymousFlag()) {
             securityContext.setAuthentication(UsernamePasswordAuthenticationToken.unauthenticated(userInfo, null));

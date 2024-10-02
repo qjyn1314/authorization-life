@@ -23,6 +23,8 @@
         <module>knife4j-start-life</module>
         <module>dubbo-start-life</module>
         <module>valid-start-life</module>
+        <module>mail-start-life</module>
+
     </modules>
 
     <dependencies>

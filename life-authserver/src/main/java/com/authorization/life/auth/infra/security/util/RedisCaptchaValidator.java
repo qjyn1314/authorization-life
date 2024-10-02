@@ -23,7 +23,7 @@ public final class RedisCaptchaValidator {
     private static final String CAPTCHA_CACHE_KEY = SecurityCoreService.CAPTCHA_CACHE_KEY;
 
     /**
-     * 默认时间 60 分钟
+     * 默认时间 10 分钟
      */
     private static final int DEFAULT_EXPIRE = 10;
     private static final int DEFAULT_COUNT = 6;
@@ -176,8 +176,33 @@ public final class RedisCaptchaValidator {
      * @return 通过验证为true，未通过为false
      */
     public static boolean verify(RedisUtil redisUtil, String uuid, String code) {
-        String okValue = redisUtil.get(StrUtil.format(CAPTCHA_CACHE_KEY, Map.of("uuid", uuid)));
-        return StrUtil.equalsIgnoreCase(code, okValue);
+        Assert.notNull(redisUtil, "redisUtil is null!");
+        if (StrUtil.isBlank(uuid) && StrUtil.isBlank(code)) {
+            return false;
+        }
+        String verifyKey = StrUtil.format(CAPTCHA_CACHE_KEY, Map.of("uuid", uuid));
+        String okValue = redisUtil.get(verifyKey);
+        boolean verifyFlag = StrUtil.equalsIgnoreCase(code, okValue);
+        if (verifyFlag) {
+            redisUtil.delete(verifyKey);
+        }
+        return verifyFlag;
+    }
+
+    /**
+     * 校验验证码有效期
+     *
+     * @param redisUtil redisUtil
+     * @param uuid      验证码缓存key
+     * @param code      待验证的验证码
+     * @return 通过验证为true，未通过为false
+     */
+    public static boolean verifyExpirationDate(RedisUtil redisUtil, String uuid, String code) {
+        Assert.notNull(redisUtil, "redisUtil is null!");
+        if (StrUtil.isBlank(uuid) && StrUtil.isBlank(code)) {
+            return false;
+        }
+        return Objects.nonNull(redisUtil.get(StrUtil.format(CAPTCHA_CACHE_KEY, Map.of("uuid", uuid))));
     }
 
 }

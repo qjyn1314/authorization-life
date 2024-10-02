@@ -48,6 +48,10 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>knife4j-start-life</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.authorization.life</groupId>
+            <artifactId>mail-start-life</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.authorization.life</groupId>

@@ -1,10 +1,15 @@
 package com.authorization.life.auth.app.dto;
 
+import com.authorization.valid.start.group.SaveGroup;
+import com.authorization.valid.start.group.ValidGroup;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -49,6 +54,8 @@ public class LifeUserDTO implements Serializable {
     /**
      * 密码
      */
+    @Length(min = 5, max = 20, groups = {SaveGroup.class}, message = "请输入密码.")
+    @Pattern(regexp = "^[\\W+|\\dA-Za-z]*", groups = {SaveGroup.class}, message = "密码必须是 字符, 大小写字母, 数字的组合, 请重新输入.")
     private String hashPassword;
     /**
      * 电话区号。
@@ -65,6 +72,8 @@ public class LifeUserDTO implements Serializable {
     /**
      * 邮箱
      */
+    @Length(min = 5, max = 120, groups = {SaveGroup.class, ValidGroup.class}, message = "请输入正确的邮箱.")
+    @Email(groups = {SaveGroup.class, ValidGroup.class}, message = "请输入正确的邮箱.")
     private String email;
     /**
      * 邮箱通过验证标识
@@ -106,5 +115,16 @@ public class LifeUserDTO implements Serializable {
      * 版本号
      */
     private Long versionNum;
+
+    /**
+     * redis中验证码的key
+     */
+    private String captchaUuid;
+
+    /**
+     * 验证码
+     */
+    @Length(min = 5, max = 20, groups = {SaveGroup.class}, message = "请输入验证码.")
+    private String captchaCode;
 
 }

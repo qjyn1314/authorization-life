@@ -47,4 +47,9 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
+    @Bean
+    public InitAuditMetaHandler auditMetaHandler() {
+        return new InitAuditMetaHandler();
+    }
+
 }

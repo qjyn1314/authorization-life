@@ -14,6 +14,8 @@ import com.github.pagehelper.PageInfo;
 public interface UserService {
 
 
+    PageInfo<LifeUserVO> page(LifeUserDTO lifeUser);
+
     /**
      * 登录查询使用
      *
@@ -29,14 +31,20 @@ public interface UserService {
      */
     void lock(String userId, Integer lockTime);
 
-    PageInfo<LifeUserVO> page(LifeUserDTO lifeUser);
-
     /**
      * 注册用户
      *
      * @param lifeUser 用户信息
      * @return String-> 用户编码
      */
-    String register(LifeUserDTO lifeUser);
+    String emailRegister(LifeUserDTO lifeUser);
+
+    /**
+     * 验证邮箱是否存在
+     *
+     * @param userDTO 用户注册邮箱
+     * @return Boolean
+     */
+    Boolean validateEmailExist(LifeUserDTO userDTO);
 
 }

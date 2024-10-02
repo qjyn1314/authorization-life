@@ -1,6 +1,7 @@
 package com.authorization.remote.system.service;
 
 import com.authorization.remote.system.SystemRemoteRes;
+import com.authorization.remote.system.vo.TempVO;
 
 /**
  * System-life 服务 暴露的远程接口
@@ -12,5 +13,7 @@ public interface SystemRemoteService {
 
 
     SystemRemoteRes<String> getSystemRemoteNowDate();
+
+    SystemRemoteRes<TempVO> getTempByCode(String code);
 
 }

@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             return UserDetail.anonymous();
         }
         Map<String, Object> fromJwtToken = jwtService.getClaimsFromJwtToken(interiorJwt);
-        return CollUtil.isNotEmpty(fromJwtToken) ? BeanUtil.toBean(fromJwtToken, UserDetail.class) : null;
+        return CollUtil.isNotEmpty(fromJwtToken) ? BeanUtil.toBean(fromJwtToken, UserDetail.class) : UserDetail.anonymous();
     }
 
 }

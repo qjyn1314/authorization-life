@@ -61,6 +61,7 @@
         <orika.version>1.5.4</orika.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jasypt.version>3.0.5</jasypt.version>
+        <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
     </properties>
 
     <modules>
@@ -70,7 +71,6 @@
         <module>life-gateway</module>
         <module>life-authserver</module>
         <module>life-system</module>
-
     </modules>
     <!--将规定默认引入的依赖有哪些-->
     <dependencies>
@@ -160,6 +160,11 @@
             </dependency>
             <dependency>
                 <groupId>com.authorization.life</groupId>
+                <artifactId>mail-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
                 <artifactId>dubbo-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -214,6 +219,11 @@
                 <groupId>com.github.ulisesbocchio</groupId>
                 <artifactId>jasypt-spring-boot-starter</artifactId>
                 <version>${jasypt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${transmittable-thread-local.version}</version>
             </dependency>
             <!--以上为工具包依赖-->
             <dependency>

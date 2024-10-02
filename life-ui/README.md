@@ -41,24 +41,27 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ```
 
 发送ajax请求
-npm install i axios
+npm install axios
 
 发布事件或订阅事件
-npm install i pubsub-js
+npm install pubsub-js
 
 uuid的生成
-npm install i uuid
+npm install uuid
 
 ElementUI导入
-npm install i element-ui
+npm install element-ui
 
 操作cookie
-npm install i js-cookie
+npm install js-cookie
 
 安装element-ui按需引入
-npm install i babel-plugin-component
+npm install babel-plugin-component
 
 表单提交的data序列化
-npm install i qs
+npm install qs
+
+bootstrap样式引入
+npm install bootstrap
 
 ```

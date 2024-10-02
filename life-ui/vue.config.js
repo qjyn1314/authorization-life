@@ -8,7 +8,7 @@ module.exports = defineConfig({
     //开启代理服务器
     devServer: {
         port: process.env.VUE_APP_PORT,
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         allowedHosts: "all",
         proxy: {
             [process.env.VUE_APP_BASE_API]: {

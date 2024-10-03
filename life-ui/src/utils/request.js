@@ -6,7 +6,7 @@ import {getToken} from '@/utils/cookie_util'
 // create an axios instance
 const service = axios.create({
     baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-    // withCredentials: true, // send cookies when cross-domain requests
+    withCredentials: true, // send cookies when cross-domain requests
     timeout: 5000 // request timeout
 })
 
@@ -14,7 +14,6 @@ const service = axios.create({
 service.interceptors.request.use(
     config => {
         // do something before request is sent
-
         if (store.getters.token) {
             // let each request carry token
             // ['X-Token'] is a custom headers key
@@ -25,8 +24,9 @@ service.interceptors.request.use(
     },
     error => {
         // do something with request error
-        console.log(error) // for debug
-        return Promise.reject(error)
+        console.log('request-error', error) // for debug
+        Message.error('系统异常,请稍后重试.');
+        return null;
     }
 )
 
@@ -44,16 +44,14 @@ service.interceptors.response.use(
      */
     response => {
         const res = response.data
+        console.log('response-result', response);
         // if the custom code is not 20000, it is judged as an error.
         if (res.code !== '0') {
-            Message({
-                message: res.message || 'Error',
-                type: 'error',
-                duration: 5 * 1000
-            })
-
-            // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-            if (res.code === '50008' || res.code === '50012' || res.code === '50014') {
+            if (res.code === '-1') {
+                // 默认接口错误, 需要将错误信息弹出
+                Message.error(res.message);
+            } else if (res.code === '50008' || res.code === '50012' || res.code === '50014') {
+                // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
                 // to re-login
                 MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
                     confirmButtonText: 'Re-Login',
@@ -65,20 +63,15 @@ service.interceptors.response.use(
                     })
                 })
             }
-
-            return Promise.reject(new Error(res.message || 'Error'))
+            return null;
         } else {
-            return res
+            return res;
         }
     },
     error => {
-        console.log('err' + error) // for debug
-        Message({
-            message: error.message,
-            type: 'error',
-            duration: 5 * 1000
-        })
-        return Promise.reject(error)
+        console.log('response-error', error) // for debug
+        Message.error('系统错误,请稍后重试.');
+        return null;
     }
 )
 

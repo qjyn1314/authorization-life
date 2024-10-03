@@ -55,7 +55,7 @@ npm install element-ui
 操作cookie
 npm install js-cookie
 
-安装element-ui按需引入
+安装element-ui按需引入-未安装
 npm install babel-plugin-component
 
 表单提交的data序列化

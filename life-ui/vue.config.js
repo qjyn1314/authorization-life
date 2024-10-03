@@ -10,6 +10,7 @@ module.exports = defineConfig({
         port: process.env.VUE_APP_PORT,
         host: '0.0.0.0',
         allowedHosts: "all",
+        open: true,
         proxy: {
             [process.env.VUE_APP_BASE_API]: {
                 target: process.env.VUE_APP_PROXY_TARGET,

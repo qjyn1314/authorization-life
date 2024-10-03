@@ -20,7 +20,7 @@ export function setValue(key, value) {
 
 export function getValue(key) {
     let value = Cookies.get(key);
-    console.log('从cookie中获取值..', key, value);
+    // console.log('从cookie中获取值..', key, value);
     return value;
 }
 

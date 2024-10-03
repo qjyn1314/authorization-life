@@ -17,7 +17,7 @@ const routes = [
     {
         path: '/temp',
         name: 'temp',
-        component: () => import('../views/temp')
+        component: () => import('../views/temp/TempPage.vue')
     }
 ]
 

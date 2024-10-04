@@ -1,8 +1,8 @@
 package com.authorization.life.system.api.controller;
 
-import com.authorization.life.system.infra.dto.LsysTempDTO;
-import com.authorization.life.system.infra.service.LsysTempService;
-import com.authorization.life.system.infra.vo.LsysTempVO;
+import com.authorization.life.system.app.dto.LsysTempDTO;
+import com.authorization.life.system.app.service.LsysTempService;
+import com.authorization.life.system.app.vo.LsysTempVO;
 import com.authorization.remote.system.vo.TempVO;
 import com.authorization.utils.result.Result;
 import com.github.pagehelper.PageInfo;
@@ -47,6 +47,24 @@ public class LsysTempController {
     @PostMapping("/page-temp")
     public Result<PageInfo<LsysTempVO>> pageTemp(@RequestBody LsysTempDTO sysTemp) {
         return Result.ok(lsysTempService.pageTemp(sysTemp));
+    }
+
+    @Operation(summary = "模板详情")
+    @PostMapping("/temp-one")
+    public Result<LsysTempVO> tempByParams(@RequestBody LsysTempDTO sysTemp) {
+        return Result.ok(lsysTempService.tempByParams(sysTemp));
+    }
+
+    @Operation(summary = "更新模板")
+    @PostMapping("/update-temp")
+    public Result<String> updateTemp(@RequestBody LsysTempDTO sysTemp) {
+        return Result.ok(lsysTempService.updateTemp(sysTemp));
+    }
+
+    @Operation(summary = "更新模板")
+    @PostMapping("/delete-temp")
+    public Result<String> deleteTemp(@RequestBody LsysTempDTO sysTemp) {
+        return Result.ok(lsysTempService.deleteTemp(sysTemp));
     }
 
 

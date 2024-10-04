@@ -3,7 +3,7 @@ package com.authorization.life.system.api.remote;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.authorization.common.log.LogAdvice;
-import com.authorization.life.system.infra.service.LsysTempService;
+import com.authorization.life.system.app.service.LsysTempService;
 import com.authorization.remote.system.SystemRemoteRes;
 import com.authorization.remote.system.service.SystemRemoteService;
 import com.authorization.remote.system.vo.TempVO;

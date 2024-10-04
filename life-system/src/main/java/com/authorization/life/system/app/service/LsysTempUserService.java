@@ -1,4 +1,4 @@
-package com.authorization.life.system.infra.service;
+package com.authorization.life.system.app.service;
 
 import com.authorization.life.system.infra.entity.LsysTempUser;
 

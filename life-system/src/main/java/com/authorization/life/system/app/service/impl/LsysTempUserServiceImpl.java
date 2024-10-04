@@ -1,8 +1,7 @@
-package com.authorization.life.system.infra.service.impl;
+package com.authorization.life.system.app.service.impl;
 
-import com.authorization.life.system.infra.entity.LsysTempUser;
 import com.authorization.life.system.infra.mapper.LsysTempUserMapper;
-import com.authorization.life.system.infra.service.LsysTempUserService;
+import com.authorization.life.system.app.service.LsysTempUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 

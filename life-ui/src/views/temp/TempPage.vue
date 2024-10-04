@@ -1,25 +1,50 @@
 <template>
   <el-container>
     <el-header>
-      <el-form :inline="true" :model="tempSearch">
-        <el-form-item label="模板编码">
-          <el-input v-model="tempSearch.tempCode" placeholder="模板编码"></el-input>
-        </el-form-item>
-        <el-form-item label="模版描述">
-          <el-input v-model="tempSearch.tempDesc" placeholder="模版描述"></el-input>
-        </el-form-item>
-        <el-form-item label="模板类型">
-          <el-select v-model="tempSearch.tempType" placeholder="模板类型">
-            <el-option label="邮件" value="EMAIL"></el-option>
-            <el-option label="短信" value="SMS"></el-option>
-            <el-option label="公告" value="ANNOUNCEMENT"></el-option>
-            <el-option label="站内信" value="MESSAGES"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="searchTable">查询</el-button>
-        </el-form-item>
+      <el-form :inline="true" :model="tableSearch">
+        <el-row class="el-row" :gutter="0">
+          <el-col :span="6">
+            <el-form-item label="模板编码">
+              <el-input v-model="tableSearch.tempCode" placeholder="模板编码"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="模版描述">
+              <el-input v-model="tableSearch.tempDesc" placeholder="模版描述"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="模板类型">
+              <el-select v-model="tableSearch.tempType" filterable clearable placeholder="请选择">
+                <el-option label="邮件" value="EMAIL"></el-option>
+                <el-option label="短信" value="SMS"></el-option>
+                <el-option label="公告" value="ANNOUNCEMENT"></el-option>
+                <el-option label="站内信" value="MESSAGES"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-form-item>
+              <el-button type="primary" round icon="el-icon-search" @click="searchTable">查询</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="1">
+            <el-form-item>
+              <el-button type="danger" round icon="el-icon-refresh-right" @click="resetSearch">重置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
+    </el-header>
+    <el-header>
+      <el-row>
+        <el-col :span="1">
+          <el-button round icon="el-icon-plus" @click="addData">新增</el-button>
+        </el-col>
+        <el-col :span="3" :offset="20">
+          <el-button type="success" plain round icon="el-icon-download">导出</el-button>
+        </el-col>
+      </el-row>
     </el-header>
     <el-main>
       <el-table
@@ -53,53 +78,217 @@
         <el-table-column
             fixed="right"
             label="操作"
-            width="100">
-          <template slot-scope="scope">
-            <el-button @click="detail(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            width="200">
+          <template v-slot="scope">
+            <el-row>
+              <el-col :span="6">
+                <el-button type="info" icon="el-icon-info" circle size="medium" @click="detail(scope.row)"></el-button>
+              </el-col>
+              <el-col :span="6">
+                <el-button type="primary" icon="el-icon-edit" circle size="medium"
+                           @click="edit(scope.row)"></el-button>
+              </el-col>
+              <el-col :span="6">
+                <el-popconfirm
+                    confirm-button-text='确定'
+                    cancel-button-text='暂不删除'
+                    icon="el-icon-info"
+                    icon-color="red"
+                    title="确定删除吗？"
+                    @confirm="del(scope.row)"
+                >
+                  <el-button type="danger" icon="el-icon-delete" circle size="medium" slot="reference"></el-button>
+                </el-popconfirm>
+              </el-col>
+            </el-row>
           </template>
         </el-table-column>
       </el-table>
     </el-main>
+    <el-footer>
+      <pagination v-show="pageInfo.total>0" :total="pageInfo.total" :page.sync="tableSearch.pageNum"
+                  :limit.sync="tableSearch.pageSize" @pagination="getPageInfo"/>
+    </el-footer>
+
+    <el-drawer
+        :title="drawerInfo.title"
+        :visible.sync="drawerInfo.viewFlag"
+        :direction="drawerInfo.direction"
+        :size="'65%'"
+        @close="closeDrawer"
+    >
+
+      <el-form ref="form" :model="addFormData" label-position="right" size="medium" label-width="100px"
+               label-suffix=":">
+        <el-row align="middle">
+          <el-col :span="20">
+            <el-form-item label="模板编码">
+              <el-input v-model="addFormData.tempCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="20">
+            <el-form-item label="模版描述">
+              <el-input v-model="addFormData.tempDesc"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="20">
+            <el-form-item label="模板类型">
+              <el-col :span="6">
+                <el-select v-model="addFormData.tempType" filterable clearable placeholder="请选择" size="medium">
+                  <el-option label="邮件" value="EMAIL"></el-option>
+                  <el-option label="短信" value="SMS"></el-option>
+                  <el-option label="公告" value="ANNOUNCEMENT"></el-option>
+                  <el-option label="站内信" value="MESSAGES"></el-option>
+                </el-select>
+              </el-col>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-col :span="20">
+          <el-form-item label="模版内容">
+            <el-input type="textarea" :rows="5" v-model="addFormData.content"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="是否启用">
+            <el-switch v-model="addFormData.enabledFlag">是否启用</el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="20">
+          <el-form-item :hidden="drawerInfo.hiddenFlag">
+            <el-button type="primary" plain @click="onSaveData">保存</el-button>
+            <el-button plain @click="onCancelSave">取消</el-button>
+          </el-form-item>
+        </el-col>
+      </el-form>
+
+    </el-drawer>
+
   </el-container>
 </template>
 
 <script>
-import {pageTemp} from "@/api/template";
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import {deleteTemp, oneTemp, pageTemp, saveTemp, updateTemp} from "@/api/template";
 
 export default {
   name: 'TempPage',
-  components: {},
+  components: {Pagination},
   data() {
     return {
-      tableData: [],
-      tempSearch: {
+      tableSearch: {
+        pageNum: 1,
+        pageSize: 10,
         tempCode: '',
         tempDesc: '',
         tempType: '',
-      }
+      },
+      initTableSearch: {
+        pageNum: 1,
+        pageSize: 10,
+        tempCode: '',
+        tempDesc: '',
+        tempType: '',
+      },
+      pageInfo: {total: 0},
+      tableData: [],
+      drawerInfo: {
+        title: '',
+        viewFlag: false,
+        direction: 'ltr',
+        hiddenFlag: false
+      },
+      addFormData: {},
+      initAddFormData: {},
     }
   },
   created() {
-    let params = {pageNum: 1, pageSize: 10}
-    pageTemp(params).then(res => {
-      console.log(res)
-      if (res.data === null) {
-        return;
-      }
-      this.tableData = res.data.list;
-    })
+    this.getPageInfo();
   },
   methods: {
-    detail(value) {
-      console.log(value);
+    getPageInfo() {
+      pageTemp(this.tableSearch).then(res => {
+        if (res.data === null) {
+          return;
+        }
+        this.tableData = res.data.list;
+        this.pageInfo = res.data;
+      })
+    },
+    getOneData(params) {
+      if (params === null) {
+        return
+      }
+      oneTemp(params).then(res => {
+        if (res.data === null) {
+          return;
+        }
+        this.addFormData = res.data;
+      })
     },
     searchTable() {
-
+      this.getPageInfo();
+    },
+    resetSearch() {
+      //浅拷贝对象, 赋值为初始化查询参数
+      this.tableSearch = Object.assign({}, this.initTableSearch);
+      this.getPageInfo();
+    },
+    addData() {
+      this.drawerInfo.title = '添加模板';
+      this.drawerInfo.viewFlag = true;
+      this.drawerInfo.hiddenFlag = false;
+      this.drawerInfo.direction = 'ltr';
+    },
+    detail(value) {
+      let params = {tempId: value.tempId};
+      this.getOneData(params)
+      this.drawerInfo.title = '模板详情';
+      this.drawerInfo.viewFlag = true;
+      this.drawerInfo.hiddenFlag = true;
+      this.drawerInfo.direction = 'rtl';
+    },
+    edit(value) {
+      let params = {tempId: value.tempId};
+      this.getOneData(params)
+      this.drawerInfo.title = '编辑模板';
+      this.drawerInfo.viewFlag = true;
+      this.drawerInfo.hiddenFlag = false;
+      this.drawerInfo.direction = 'rtl';
+    },
+    del(value) {
+      let params = {tempId: value.tempId};
+      deleteTemp(params).then((res) => {
+        if (res) {
+          this.resetSearch()
+        }
+      })
+    },
+    onSaveData() {
+      if (this.addFormData.tempId) {
+        updateTemp(this.addFormData).then((res) => {
+          if (res) {
+            this.closeDrawer();
+          }
+        })
+      } else {
+        saveTemp(this.addFormData).then((res) => {
+          if (res) {
+            this.closeDrawer();
+          }
+        })
+      }
+    },
+    onCancelSave() {
+      this.closeDrawer();
+    },
+    closeDrawer() {
+      this.drawerInfo.viewFlag = false;
+      this.addFormData = {};
+      this.resetSearch()
     }
   },
   mounted() {
-
   },
   beforeDestroy() {
   }
@@ -107,5 +296,16 @@ export default {
 </script>
 
 <style scoped>
+.el-row {
+  margin-bottom: 20px;
+  margin-top: 20px;
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.el-row el-col {
+  border-radius: 4px;
+}
 </style>

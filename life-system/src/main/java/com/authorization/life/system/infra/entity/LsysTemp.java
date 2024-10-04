@@ -73,7 +73,7 @@ public class LsysTemp extends AuditEntity implements Serializable {
     /**
      * 是否启用
      */
-    private Integer enabledFlag;
+    private Boolean enabledFlag;
     /**
      * 租户ID
      */

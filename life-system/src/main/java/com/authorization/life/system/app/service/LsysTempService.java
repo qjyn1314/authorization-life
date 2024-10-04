@@ -1,8 +1,7 @@
-package com.authorization.life.system.infra.service;
+package com.authorization.life.system.app.service;
 
-import com.authorization.life.system.infra.dto.LsysTempDTO;
-import com.authorization.life.system.infra.entity.LsysTemp;
-import com.authorization.life.system.infra.vo.LsysTempVO;
+import com.authorization.life.system.app.dto.LsysTempDTO;
+import com.authorization.life.system.app.vo.LsysTempVO;
 import com.authorization.remote.system.vo.TempVO;
 import com.github.pagehelper.PageInfo;
 
@@ -20,5 +19,11 @@ public interface LsysTempService {
     String saveTemp(LsysTempDTO sysTemp);
 
     PageInfo<LsysTempVO> pageTemp(LsysTempDTO sysTemp);
+
+    LsysTempVO tempByParams(LsysTempDTO sysTemp);
+
+    String updateTemp(LsysTempDTO sysTemp);
+
+    String deleteTemp(LsysTempDTO sysTemp);
 
 }

@@ -1,4 +1,4 @@
-package com.authorization.life.system.infra.constant;
+package com.authorization.life.system.app.constant;
 
 import com.authorization.core.exception.vo.ExceptionDefaultMsg;
 import com.authorization.core.exception.vo.ExceptionErrorCode;

@@ -1,7 +1,6 @@
 package com.authorization.life.system.api.controller;
 
-import com.authorization.life.system.infra.entity.LsysTempUser;
-import com.authorization.life.system.infra.service.LsysTempUserService;
+import com.authorization.life.system.app.service.LsysTempUserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

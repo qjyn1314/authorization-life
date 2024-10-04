@@ -24,8 +24,8 @@ service.interceptors.request.use(
     },
     error => {
         // do something with request error
-        console.log('request-error', error) // for debug
         Message.error('系统异常,请稍后重试.');
+        console.log('request-error', error) // for debug
         return null;
     }
 )
@@ -44,29 +44,27 @@ service.interceptors.response.use(
      */
     response => {
         const res = response.data
-        console.log('response-result', response);
         // if the custom code is not 20000, it is judged as an error.
-        if (res.code !== '0') {
-            if (res.code === '-1') {
-                // 默认接口错误, 需要将错误信息弹出
-                Message.error(res.message);
-            } else if (res.code === '50008' || res.code === '50012' || res.code === '50014') {
-                // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-                // to re-login
-                MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-                    confirmButtonText: 'Re-Login',
-                    cancelButtonText: 'Cancel',
-                    type: 'warning'
-                }).then(() => {
-                    store.dispatch('user/resetToken').then(() => {
-                        location.reload()
-                    })
-                })
-            }
-            return null;
-        } else {
+        if (res.code === '0') {
             return res;
         }
+        if (res.code === '-1') {
+            // 默认接口错误, 需要将错误信息弹出
+            Message.error(res.msg);
+        } else if (res.code === '50008' || res.code === '50012' || res.code === '50014') {
+            // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+            // to re-login
+            MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+                confirmButtonText: 'Re-Login',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                store.dispatch('user/resetToken').then(() => {
+                    location.reload()
+                })
+            })
+        }
+        return null;
     },
     error => {
         console.log('response-error', error) // for debug

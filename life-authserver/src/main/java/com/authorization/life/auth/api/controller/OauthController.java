@@ -1,6 +1,8 @@
 package com.authorization.life.auth.api.controller;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.intern.InternUtil;
+import cn.hutool.core.net.Ipv4Util;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.security.entity.UserHelper;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
@@ -15,8 +17,8 @@ import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.UserDetail;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -50,10 +52,9 @@ public class OauthController {
 
 
     @Operation(summary = "通过请求路径中的域名获取client信息")
-    @GetMapping("/clientByDomain")
-    public Result<OauthClientVO> clientByDomain(@Parameter(description = "请求路径中的域名", example = "www.authorization.life", required = true)
-                                                @RequestParam(name = "domainName") String domainName) {
-        return Result.ok(oauthClientService.clientByDomain(domainName));
+    @GetMapping("/client")
+    public Result<OauthClientVO> clientByHost(HttpServletRequest request) {
+        return Result.ok(oauthClientService.clientByHost(request));
     }
 
     @Operation(summary = "用户邮箱注册")
@@ -98,9 +99,7 @@ public class OauthController {
     @Operation(summary = "图片验证码")
     @GetMapping("/picture-code")
     public Result<Captcha> pictureCode() {
-        Captcha captcha = RedisCaptchaValidator.createNumCaptcha(redisUtil);
-        String code = captcha.getCode();
-        return Result.ok(captcha);
+        return Result.ok(RedisCaptchaValidator.create(redisUtil));
     }
 
     @Operation(summary = "用户重置密码")

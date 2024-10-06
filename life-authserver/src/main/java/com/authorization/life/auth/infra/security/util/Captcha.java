@@ -21,6 +21,5 @@ public final class Captcha {
 
     private String uuid;
     private String imageBase64;
-
     private String code;
 }

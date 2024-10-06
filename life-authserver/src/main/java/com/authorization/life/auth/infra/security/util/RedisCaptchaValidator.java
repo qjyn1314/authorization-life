@@ -26,8 +26,8 @@ public final class RedisCaptchaValidator {
      * 默认时间 10 分钟
      */
     private static final int DEFAULT_EXPIRE = 10;
-    private static final int DEFAULT_COUNT = 6;
-    private static final int DEFAULT_NUM_COUNT = 6;
+    private static final int DEFAULT_COUNT = 4;
+    private static final int DEFAULT_NUM_COUNT = 4;
     private static final int DEFAULT_WIDTH = 120;
     private static final int DEFAULT_HEIGHT = 32;
 

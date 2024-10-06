@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authorization.life.system.infra.mapper.LsysLovMapper">
+
+    <sql id="lsys_lov_column">
+        ${prefix}lov_id,
+        ${prefix}lov_code,
+        ${prefix}lov_type_code,
+        ${prefix}lov_name,
+        ${prefix}description,
+        ${prefix}enabled_flag,
+        ${prefix}tenant_id,
+        ${prefix}version_num,
+        ${prefix}created_by_user,
+        ${prefix}created_by_emp,
+        ${prefix}created_time,
+        ${prefix}updated_by_user,
+        ${prefix}updated_by_emp,
+        ${prefix}updated_time
+    </sql>
+
+    <select id="page" resultType="com.authorization.life.system.infra.entity.LsysLov">
+        select
+        <include refid="lsys_lov_column">
+            <property name="prefix" value="t1."/>
+        </include>
+        from lsys_lov t1
+    </select>
+
+</mapper>

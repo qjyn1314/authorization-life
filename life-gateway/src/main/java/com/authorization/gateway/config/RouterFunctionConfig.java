@@ -22,11 +22,17 @@ public class RouterFunctionConfig {
      *
      * @return 登录模块
      */
+//    @Bean
+//    public RouterFunction<ServerResponse> loginRouterFunction() {
+//        return RouterFunctions.route(
+//                RequestPredicates.GET("/"),
+//                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build());
+//    }
     @Bean
     public RouterFunction<ServerResponse> loginRouterFunction() {
         return RouterFunctions.route(
                 RequestPredicates.GET("/"),
-                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build());
+                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "ui")).build());
     }
 
 }

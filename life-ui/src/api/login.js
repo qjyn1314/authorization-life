@@ -1,6 +1,24 @@
 import request from '../utils/request'
 import {AUTH_SERVER} from './severApi'
-import Qs from "qs";
+// import Qs from "qs";
+
+//  获取图片验证码
+export function pictureCode(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/picture-code`,
+        method: 'GET',
+        data: data
+    })
+}
+
+//  获取client信息
+export function getClient(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/client`,
+        method: 'GET',
+        data: data
+    })
+}
 
 //  账号登录
 export function getAuthLogin(data) {
@@ -46,3 +64,5 @@ export function refreshTokenByAccessToken(data) {
         data: data
     })
 }
+
+

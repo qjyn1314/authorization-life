@@ -5,12 +5,12 @@ Vue.use(VueRouter)
 
 const routes = [
     {
-        path: '/',
+        path: '/login',
         name: 'index',
         component: () => import('../views/dashboard/DashboardView.vue')
     },
     {
-        path: '/login',
+        path: '/',
         name: 'login',
         component: () => import('../views/login/LoginView.vue')
     },
@@ -18,10 +18,16 @@ const routes = [
         path: '/temp',
         name: 'temp',
         component: () => import('../views/temp/TempPage.vue')
+    },
+    {
+        path: '/lov',
+        name: 'lov',
+        component: () => import('../views/lov/LovPage.vue')
     }
 ]
 
 const router = new VueRouter({
+    mode: 'history',
     routes
 })
 

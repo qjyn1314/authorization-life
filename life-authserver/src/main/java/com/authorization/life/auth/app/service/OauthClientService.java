@@ -1,6 +1,7 @@
 package com.authorization.life.auth.app.service;
 
 import com.authorization.life.auth.app.vo.OauthClientVO;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * oauth客户端表
@@ -14,5 +15,7 @@ public interface OauthClientService {
     OauthClientVO selectClientByClientId(String id);
 
     OauthClientVO clientByDomain(String domainName);
+
+    OauthClientVO clientByHost(HttpServletRequest request);
 
 }

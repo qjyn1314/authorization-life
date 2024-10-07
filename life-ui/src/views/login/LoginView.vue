@@ -7,15 +7,15 @@
         <el-main>
           <el-form label-position="left" label-width="80px" :model="loginForm">
             <el-form-item label="账号">
-              <el-input v-model="loginForm.username"></el-input>
+              <el-input v-model="loginForm.username" placeholder="邮箱"></el-input>
             </el-form-item>
             <el-form-item label="密码">
-              <el-input v-model="loginForm.password"></el-input>
+              <el-input v-model="loginForm.password" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item label="验证码">
               <el-row>
                 <el-col :span="12">
-                  <el-input v-model="loginForm.captchaCode"></el-input>
+                  <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
                 </el-col>
                 <el-col :span="12">
                   <div style="width: 190px;height: 40px; line-height: 40px">
@@ -25,6 +25,17 @@
               </el-row>
             </el-form-item>
           </el-form>
+          <el-row>
+              <el-col :span="6" :offset="6">
+                忘记密码
+              </el-col>
+              <el-col :span="6">
+                QQ
+              </el-col>
+              <el-col :span="6">
+                微信
+              </el-col>
+          </el-row>
         </el-main>
       </el-container>
     </el-container>
@@ -51,16 +62,17 @@ export default {
     }
   },
   created() {
-    // 刷新图片验证码
-    this.flushedPictureCode();
-    // 根据浏览器地址获取认证信息
-
+    this.pictureAndClient();
   },
   methods: {
-    flushedPictureCode() {
-      getClient().then((res) => {
+    pictureAndClient() {
+      // 使用URL API来获取域名
+      const url = new URL(window.location.href);
+      // 根据浏览器地址获取认证信息
+      getClient({domain: url.hostname}).then((res) => {
         console.log(res)
       })
+      // 刷新图片验证码
       pictureCode().then((res) => {
         if (!res) {
           return

@@ -9,15 +9,12 @@ import com.authorization.life.auth.infra.mapper.OauthClientMapper;
 import com.authorization.utils.converter.BeanConverter;
 import com.authorization.utils.security.SecurityCoreService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * oauth客户端表
@@ -49,6 +46,7 @@ public class OauthClientServiceImpl implements OauthClientService {
     @Override
     public OauthClientVO clientByDomain(String domainName) {
         Assert.notBlank(domainName, "域名不能为空. ");
+        log.info("此次请求的域名是->{}", domainName);
         OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, domainName));
         if (Objects.isNull(oauthClient)) {
             oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, SecurityCoreService.DEFAULT_DOMAIN));
@@ -57,14 +55,4 @@ public class OauthClientServiceImpl implements OauthClientService {
         return BeanConverter.convert(oauthClient, OauthClientVO.class, Map.of(OauthClient.FIELD_CLIENT_SECRET_BAK, OauthClient.FIELD_CLIENT_SECRET));
     }
 
-    @Override
-    public OauthClientVO clientByHost(HttpServletRequest request) {
-        String host = request.getHeader("host");
-        log.info("此次请求获取到的host是->{}", host);
-        Matcher matcher = Pattern.compile("^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$",
-                Pattern.CASE_INSENSITIVE).matcher(host);
-        String searchDomain = matcher.matches() ? host : SecurityCoreService.DEFAULT_DOMAIN;
-        log.info("此次根据--{}--获取client信息->", searchDomain);
-        return clientByDomain(searchDomain);
-    }
 }

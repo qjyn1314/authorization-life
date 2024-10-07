@@ -16,6 +16,4 @@ public interface OauthClientService {
 
     OauthClientVO clientByDomain(String domainName);
 
-    OauthClientVO clientByHost(HttpServletRequest request);
-
 }

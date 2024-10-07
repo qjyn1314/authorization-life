@@ -1,4 +1,4 @@
-import {getValue, setValue} from '@/utils/cookie_util'
+import {getValue, setValue} from '@/utils/cookie-util'
 //认证服务和授权服务
 let AUTH_SERVER = getValue(`auth-life`) || `auth-life`
 //使用token的服务

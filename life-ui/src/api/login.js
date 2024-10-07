@@ -15,7 +15,7 @@ export function pictureCode(data) {
 export function getClient(data) {
     return request({
         url: `/${AUTH_SERVER}/oauth/client`,
-        method: 'GET',
+        method: 'POST',
         data: data
     })
 }

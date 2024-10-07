@@ -33,10 +33,14 @@ const router = new VueRouter({
 
 //白名单路径
 // let weightPath = ['/login', '/']
-//
-// router.beforeEach((to, from, next) => {
-//
-// })
+
+router.beforeEach((to, from, next) => {
+
+    console.log('to', to)
+
+    next();
+
+})
 
 
 export default router

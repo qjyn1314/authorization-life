@@ -14,6 +14,10 @@ public interface SecurityCoreService {
      */
     String DEFAULT_DOMAIN = "www.authorization.life";
     /**
+     * 默认使用此域名查询client信息
+     */
+    String DEFAULT_COOKIE_DOMAIN = "authorization.life";
+    /**
      * token在签发的时候使用的发行域名
      */
     String DEFAULT_ISSUER = "https://authorization.life";

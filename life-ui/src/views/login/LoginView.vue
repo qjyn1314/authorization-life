@@ -1,40 +1,59 @@
 <template>
   <div>
-    <el-container>
-      <el-aside :width="'890px'">Aside</el-aside>
+    <el-container class="login_view_container">
+      <el-aside class="login_view_aside" :width="'890px'"></el-aside>
       <el-container>
-        <el-header :height="'180px'">改变命运系统</el-header>
+        <el-header :height="'180px'">
+          <h1>命运之门</h1>
+        </el-header>
         <el-main>
-          <el-form label-position="left" label-width="80px" :model="loginForm">
-            <el-form-item label="账号">
-              <el-input v-model="loginForm.username" placeholder="邮箱"></el-input>
-            </el-form-item>
-            <el-form-item label="密码">
-              <el-input v-model="loginForm.password" placeholder="密码"></el-input>
-            </el-form-item>
-            <el-form-item label="验证码">
-              <el-row>
-                <el-col :span="12">
-                  <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
-                </el-col>
-                <el-col :span="12">
-                  <div style="width: 190px;height: 40px; line-height: 40px">
-                    <el-image :src="captcha.imageBase64"></el-image>
-                  </div>
-                </el-col>
-              </el-row>
-            </el-form-item>
-          </el-form>
           <el-row>
-              <el-col :span="6" :offset="6">
-                忘记密码
-              </el-col>
-              <el-col :span="6">
-                QQ
-              </el-col>
-              <el-col :span="6">
-                微信
-              </el-col>
+            <el-col :span="20">
+              <el-form label-width="100px" :model="loginForm">
+                <el-form-item>
+                  <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-input v-model="loginForm.password" placeholder="密码"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-row>
+                    <el-col :span="12">
+                      <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
+                    </el-col>
+                    <el-col :span="12">
+                      <div style="width: 190px;height: 40px; line-height: 40px">
+                        <el-image :src="captcha.imageBase64"></el-image>
+                      </div>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item>
+                  <el-row>
+                    <el-col :span="6" :offset="18">
+                      <el-button type="text" size="small">忘记密码</el-button>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item>
+                  <el-row>
+                    <el-col :span="24">
+                      <el-button type="danger" style="width: 100%;">登录</el-button>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item>
+                  <el-row>
+                    <el-col :span="6">
+                      <el-button type="text" icon="el-icon-chat-round">微信</el-button>
+                    </el-col>
+                    <el-col :span="6" :offset="12">
+                      <el-button type="text">立即注册</el-button>
+                    </el-col>
+                  </el-row>
+                </el-form-item>
+              </el-form>
+            </el-col>
           </el-row>
         </el-main>
       </el-container>
@@ -83,7 +102,12 @@ export default {
     }
   },
   mounted() {
-
+    //生命周期钩子
+    // eslint-disable-next-line vue/valid-next-tick
+    this.$nextTick(() => {
+      //在页面加载成功后为username输入框获取焦点事件
+      this.$refs.username.focus();
+    }, 12)
   },
   beforeDestroy() {
   }
@@ -92,9 +116,16 @@ export default {
 </script>
 <style scoped>
 .el-aside {
-  background-color: #D3DCE6;
   text-align: center;
-  line-height: 690px;
+  line-height: 100%;
+}
+
+.login_view_container {
+  height: 100%;
+}
+
+.login_view_aside {
+  //background: url("../../assets/images/loginback.png") no-repeat center;
 }
 
 .el-header {

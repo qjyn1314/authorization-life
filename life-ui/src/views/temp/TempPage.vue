@@ -239,7 +239,7 @@ export default {
   methods: {
     getPageInfo() {
       pageTemp(this.tableSearch).then(res => {
-        if (res.data === null) {
+        if (res === null || res.data === null) {
           return;
         }
         this.tableData = res.data.list;
@@ -251,7 +251,7 @@ export default {
         return
       }
       oneTemp(params).then(res => {
-        if (res.data === null) {
+        if (res === null || res.data === null) {
           return;
         }
         this.addFormData = res.data;

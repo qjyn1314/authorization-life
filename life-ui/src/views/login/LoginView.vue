@@ -4,30 +4,30 @@
       <el-aside class="login_view_aside" :width="'890px'"></el-aside>
       <el-container>
         <el-header :height="'180px'">
-          <h1>命运之门</h1>
+          <h1>命运迷雾</h1>
         </el-header>
         <el-main>
           <el-row>
             <el-col :span="20">
-              <el-form label-width="100px" :model="loginForm">
-                <el-form-item>
+              <el-form label-width="100px" :model="loginForm" :rules="rules" ref="ruleForm">
+                <el-form-item prop="username">
                   <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
                 </el-form-item>
-                <el-form-item>
-                  <el-input v-model="loginForm.password" placeholder="密码"></el-input>
+                <el-form-item prop="password">
+                  <el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
                 </el-form-item>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="12">
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item prop="captchaCode">
                       <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
-                    </el-col>
-                    <el-col :span="12">
-                      <div style="width: 190px;height: 40px; line-height: 40px">
-                        <el-image :src="captcha.imageBase64"></el-image>
-                      </div>
-                    </el-col>
-                  </el-row>
-                </el-form-item>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px" @click="refreshCode">
+                      <el-image :src="captcha.imageBase64"></el-image>
+                    </div>
+                  </el-col>
+                </el-row>
                 <el-form-item>
                   <el-row>
                     <el-col :span="6" :offset="18">
@@ -38,7 +38,7 @@
                 <el-form-item>
                   <el-row>
                     <el-col :span="24">
-                      <el-button type="danger" style="width: 100%;">登录</el-button>
+                      <el-button type="danger" style="width: 100%;" @click="ssoLogin">登录</el-button>
                     </el-col>
                   </el-row>
                 </el-form-item>
@@ -63,6 +63,7 @@
 
 <script>
 import {getClient, pictureCode} from '@/api/login'
+import store from "@/store";
 
 export default {
   name: 'TempPage',
@@ -74,9 +75,17 @@ export default {
         password: '',
         captchaUuid: '',
         captchaCode: '',
+        client_id: '',
+        client_secret: '',
+        redirect_uri: '',
       },
       captcha: {
         imageBase64: '',
+      },
+      rules: {
+        username: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'},],
+        captchaCode: [{required: true, message: '请输入验证码', trigger: 'blur'},],
       }
     }
   },
@@ -89,8 +98,17 @@ export default {
       const url = new URL(window.location.href);
       // 根据浏览器地址获取认证信息
       getClient({domain: url.hostname}).then((res) => {
-        console.log(res)
+        if (!res) {
+          return;
+        }
+        this.loginForm.client_id = res.data.clientId;
+        this.loginForm.client_secret = res.data.clientSecret;
+        this.loginForm.redirect_uri = res.data.redirectUri;
       })
+      this.refreshCode();
+    },
+    refreshCode() {
+      console.log('0000')
       // 刷新图片验证码
       pictureCode().then((res) => {
         if (!res) {
@@ -99,6 +117,16 @@ export default {
         this.captcha.imageBase64 = res.data.imageBase64;
         this.loginForm.captchaUuid = res.data.uuid;
       })
+    },
+    ssoLogin() {
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          store.dispatch('securityLogin', this.loginForm)
+        } else {
+          alert("qqq")
+          return false;
+        }
+      });
     }
   },
   mounted() {
@@ -117,11 +145,11 @@ export default {
 <style scoped>
 .el-aside {
   text-align: center;
-  line-height: 100%;
+  line-height: 685px;
 }
 
 .login_view_container {
-  height: 100%;
+  height: 685px;
 }
 
 .login_view_aside {

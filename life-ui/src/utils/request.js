@@ -51,6 +51,9 @@ service.interceptors.response.use(
         if (res.code === '-1') {
             // 默认接口错误, 需要将错误信息弹出
             Message.error(res.msg);
+        } else if (res.code === '-2') {
+            console.log('rescode=-2', res)
+            Message.error(res.msg);
         } else if (res.code === '50008' || res.code === '50012' || res.code === '50014') {
             // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
             // to re-login

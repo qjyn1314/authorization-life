@@ -108,7 +108,6 @@ export default {
       this.refreshCode();
     },
     refreshCode() {
-      console.log('0000')
       // 刷新图片验证码
       pictureCode().then((res) => {
         if (!res) {

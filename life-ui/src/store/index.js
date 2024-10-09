@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getClient} from '@/api/login'
+import {getClient, oauth2AuthorizeCode, oauthLogin} from '@/api/login'
 
 Vue.use(Vuex)
 
@@ -18,7 +18,6 @@ const store = new Vuex.Store({
             additionalInformation: "",
             tenantId: "0"
         }
-
     },
     getters: {},
     actions: {
@@ -39,8 +38,17 @@ const store = new Vuex.Store({
             console.log('mutations->state', state)
             console.log('mutations->value', value)
             //请求登录接口
-
-        }
+            oauthLogin(value).then((res) => {
+                if (!res) {
+                    return
+                }
+                //登录成功将直接请求
+                // 使用windows.href直接请求接口
+                oauth2AuthorizeCode().then((result) => {
+                    console.log(result)
+                })
+            })
+        },
     },
     modules: {}
 })

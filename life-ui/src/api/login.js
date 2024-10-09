@@ -21,9 +21,28 @@ export function getClient(data) {
 }
 
 //  账号登录
-export function getAuthLogin(data) {
+export function oauthLogin(data) {
     return request({
         url: `/${AUTH_SERVER}/oauth/login`,
+        method: 'POST',
+        data: data,
+        //设置请求头-Content-Type
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    })
+}
+
+//授权码模式并获取code
+export function oauth2AuthorizeCode(response_type, client_id, scope, state, redirect_uri) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth2/authorize?response_type=${response_type}&client_id=${client_id}&scope=${scope}&state=${state}&redirect_uri=${redirect_uri}`,
+        method: 'GET',
+    })
+}
+
+// 通过code获取access token
+export function getOauth2TokenByCode(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth2/token`,
         method: 'POST',
         data: data
     })
@@ -33,15 +52,6 @@ export function getAuthLogin(data) {
 export function getLoginSms(data) {
     return request({
         url: `/${AUTH_SERVER}/login/sms`,
-        method: 'POST',
-        data: data
-    })
-}
-
-// 通过code获取access token
-export function getOauth2TokenByCode(data) {
-    return request({
-        url: `/${AUTH_SERVER}/oauth2/token`,
         method: 'POST',
         data: data
     })

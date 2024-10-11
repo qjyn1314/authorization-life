@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getClient, oauth2AuthorizeCode, oauthLogin} from '@/api/login'
+import {getClient, oauthLogin} from '@/api/login'
+import {AUTH_SERVER} from '@/api/severApi'
 
 Vue.use(Vuex)
 
@@ -42,11 +43,14 @@ const store = new Vuex.Store({
                 if (!res) {
                     return
                 }
-                //登录成功将直接请求
+                // 登录成功将直接请求
                 // 使用windows.href直接请求接口
-                oauth2AuthorizeCode().then((result) => {
-                    console.log(result)
-                })
+                console.log("授权码模式...")
+                console.log("请求授权确认...", `${process.env.VUE_APP_PROXY_TARGET}/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`)
+                window.location.href = `${process.env.VUE_APP_PROXY_TARGET}/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`
+                // oauth2AuthorizeCode().then((result) => {
+                //     console.log(result)
+                // })
             })
         },
     },

@@ -3,6 +3,7 @@ package com.authorization.life.auth.api.controller;
 import cn.hutool.core.lang.Assert;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.security.entity.UserHelper;
+import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserService;
@@ -74,6 +75,8 @@ public class OauthController {
         //验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(lifeUser);
         Assert.isFalse(emailExist, "邮箱已注册.");
+        //邮箱验证码是否在十分钟内重复发送.
+        RedisKeyValid.validEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
         //生成验证码
         Captcha captcha = RedisCaptchaValidator.createNumCaptcha(redisUtil);
         //发送邮件
@@ -82,6 +85,7 @@ public class OauthController {
         } catch (Exception e) {
             log.error("发送邮件异常", e);
             RedisCaptchaValidator.verify(redisUtil, captcha.getUuid(), captcha.getCode());
+            RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");
         }
         return Result.ok(captcha.getUuid());
@@ -95,7 +99,9 @@ public class OauthController {
 
     @Operation(summary = "图片验证码")
     @GetMapping("/picture-code")
-    public Result<Captcha> pictureCode() {
+    public Result<Captcha> pictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
+        boolean repeatPictureCode = RedisCaptchaValidator.verifyRepeatPictureCode(redisUtil, uuid);
+        Assert.isFalse(repeatPictureCode, "验证码未验证, 请勿重新获取.");
         return Result.ok(RedisCaptchaValidator.create(redisUtil));
     }
 

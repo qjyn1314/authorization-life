@@ -11,6 +11,11 @@ const routes = [
         component: () => import('../views/dashboard/DashboardView.vue')
     },
     {
+        path: '/auth-redirect',
+        name: 'dashboard',
+        component: () => import('../views/dashboard/DashboardView.vue')
+    },
+    {
         path: '/login',
         name: 'login',
         component: () => import('../views/login/LoginView.vue')
@@ -52,6 +57,7 @@ router.beforeEach((to, from, next) => {
             next(`/login?redirect=${to.path}`)
         }
     }
+    console.log("--->需要跳转的页面路由...", to)
 })
 
 export default router

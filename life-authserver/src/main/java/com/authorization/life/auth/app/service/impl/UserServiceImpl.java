@@ -2,6 +2,8 @@ package com.authorization.life.auth.app.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
+import com.authorization.common.util.RequestUtils;
+import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.LifeUserVO;

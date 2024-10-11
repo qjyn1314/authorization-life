@@ -182,11 +182,7 @@ public final class RedisCaptchaValidator {
         }
         String verifyKey = StrUtil.format(CAPTCHA_CACHE_KEY, Map.of("uuid", uuid));
         String okValue = redisUtil.get(verifyKey);
-        boolean verifyFlag = StrUtil.equalsIgnoreCase(code, okValue);
-        if (verifyFlag) {
-            redisUtil.delete(verifyKey);
-        }
-        return verifyFlag;
+        return StrUtil.equalsIgnoreCase(code, okValue);
     }
 
     /**
@@ -200,6 +196,21 @@ public final class RedisCaptchaValidator {
     public static boolean verifyExpirationDate(RedisUtil redisUtil, String uuid, String code) {
         Assert.notNull(redisUtil, "redisUtil is null!");
         if (StrUtil.isBlank(uuid) && StrUtil.isBlank(code)) {
+            return false;
+        }
+        return Objects.nonNull(redisUtil.get(StrUtil.format(CAPTCHA_CACHE_KEY, Map.of("uuid", uuid))));
+    }
+
+    /**
+     * 校验验证码是否重复发送
+     *
+     * @param redisUtil redisUtil
+     * @param uuid      验证码缓存key
+     * @return 通过验证为true，未通过为false
+     */
+    public static boolean verifyRepeatPictureCode(RedisUtil redisUtil, String uuid) {
+        Assert.notNull(redisUtil, "redisUtil is null!");
+        if (StrUtil.isBlank(uuid)) {
             return false;
         }
         return Objects.nonNull(redisUtil.get(StrUtil.format(CAPTCHA_CACHE_KEY, Map.of("uuid", uuid))));

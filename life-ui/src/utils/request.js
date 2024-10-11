@@ -2,6 +2,7 @@ import axios from 'axios'
 import {Message, MessageBox} from 'element-ui'
 import store from '@/store'
 import {getToken} from '@/utils/cookie-util'
+import pubsub from 'pubsub-js';
 
 // create an axios instance
 const service = axios.create({
@@ -53,6 +54,10 @@ service.interceptors.response.use(
             Message.error(res.msg);
         } else if (res.code === '-2') {
             console.log('rescode=-2', res)
+            if(res.data.showCaptchaCode){
+                //发送消息给登录组件并显示验证码框
+                pubsub.publish('showCaptcha', {showCaptcha: true});
+            }
             Message.error(res.msg);
         } else if (res.code === '50008' || res.code === '50012' || res.code === '50014') {
             // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;

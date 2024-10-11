@@ -16,7 +16,7 @@
                 <el-form-item prop="password">
                   <el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
                 </el-form-item>
-                <el-row>
+                <el-row v-if="showCaptcha">
                   <el-col :span="12">
                     <el-form-item prop="captchaCode">
                       <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
@@ -63,13 +63,16 @@
 
 <script>
 import {getClient, pictureCode} from '@/api/login'
+import {Message} from 'element-ui'
 import store from "@/store";
+import pubsub from 'pubsub-js';
 
 export default {
   name: 'TempPage',
   components: {},
   data() {
     return {
+      showCaptcha: false,
       loginForm: {
         username: '',
         password: '',
@@ -84,8 +87,7 @@ export default {
       },
       rules: {
         username: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
-        password: [{required: true, message: '请输入密码', trigger: 'blur'},],
-        captchaCode: [{required: true, message: '请输入验证码', trigger: 'blur'},],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'},]
       }
     }
   },
@@ -108,6 +110,9 @@ export default {
       this.refreshCode();
     },
     refreshCode() {
+      if (!this.showCaptcha) {
+        return
+      }
       // 刷新图片验证码
       pictureCode().then((res) => {
         if (!res) {
@@ -120,9 +125,12 @@ export default {
     ssoLogin() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          store.dispatch('securityLogin', this.loginForm)
+          if (this.showCaptcha && this.loginForm.captchaCode === '') {
+            Message.error("请输入验证码.")
+          } else {
+            store.dispatch('securityLogin', this.loginForm)
+          }
         } else {
-          alert("qqq")
           return false;
         }
       });
@@ -135,8 +143,16 @@ export default {
       //在页面加载成功后为username输入框获取焦点事件
       this.$refs.username.focus();
     }, 12)
+
+    //在组件生命周期中, 一旦加载页面, 就开始订阅消息 订阅消息 名称为: pubsub_001
+    this.pubsubId = pubsub.subscribe('showCaptcha', (name, value) => {
+      this.showCaptcha = value.showCaptcha;
+      this.refreshCode();
+    })
+
   },
   beforeDestroy() {
+    pubsub.unsubscribe(this.pubsubId);
   }
 }
 

@@ -93,6 +93,52 @@ export default {
   },
   created() {
     this.pictureAndClient();
+
+    let statusStr = "<lable style=\"background-color:#EBEDF1; padding:10px; color: #7A7B92;border-radius: 12px;\">未提交</label>";
+    let number = statusStr.indexOf('未提交');
+    console.log("number-->", number)
+
+    let testArr = [
+      {
+        id: 10,
+        name: "zhangsan",
+        age: 25
+      },
+      {
+        id: 11,
+        name: "zhangsan",
+        age: 26
+      },
+      {
+        id: 12,
+        name: "李四",
+        age: 27
+      },
+      {
+        id: 14,
+        name: "李四",
+        age: 270
+      },
+      {
+        id: 13,
+        name: "王五",
+        age: 28
+      },
+    ]
+
+    let count = 0;
+    for (let i = 0; i < testArr.length; i++) {
+      for (let j = 1; j < testArr.length; j++) {
+        if (testArr[i].id !== testArr[j].id && testArr[i].name + testArr[i].age === testArr[j].name + testArr[j].age) {
+          ++count;
+        }
+      }
+    }
+    console.log('count-->', count)
+    if (count > 0) {
+      Message.info("有重复数据.")
+    }
+
   },
   methods: {
     pictureAndClient() {

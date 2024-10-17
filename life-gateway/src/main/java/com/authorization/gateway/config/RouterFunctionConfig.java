@@ -32,7 +32,7 @@ public class RouterFunctionConfig {
     public RouterFunction<ServerResponse> loginRouterFunction() {
         return RouterFunctions.route(
                 RequestPredicates.GET("/*"),
-                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "/ui/")).build());
+                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "ui")).build());
     }
 
 }

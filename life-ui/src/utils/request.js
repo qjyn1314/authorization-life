@@ -75,7 +75,7 @@ service.interceptors.response.use(
         return null;
     },
     error => {
-        console.log('response-error', error) // for debug
+        console.error('response-error', error.message) // for debug
         Message.error('系统错误,请稍后重试.');
         return null;
     }

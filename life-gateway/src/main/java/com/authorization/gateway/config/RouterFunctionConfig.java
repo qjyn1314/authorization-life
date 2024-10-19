@@ -20,18 +20,12 @@ public class RouterFunctionConfig {
     /**
      * 访问根目录时将重定向到登录模块
      *
-     * @return 登录模块
+     * @return 前端根路径的跳转
      */
-//    @Bean
-//    public RouterFunction<ServerResponse> loginRouterFunction() {
-//        return RouterFunctions.route(
-//                RequestPredicates.GET("/"),
-//                request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "login")).build());
-//    }
     @Bean
     public RouterFunction<ServerResponse> loginRouterFunction() {
         return RouterFunctions.route(
-                RequestPredicates.GET("/*"),
+                RequestPredicates.GET("/"),
                 request -> ServerResponse.temporaryRedirect(URI.create(request.uri() + "ui")).build());
     }
 

@@ -40,13 +40,13 @@ const routes = [
 ]
 
 const router = new VueRouter({
+    //此处必须使用 history 模式. 因为有回调函数
     mode: 'history',
-    base: process.env.BASE_URL,
     routes
 })
 
 //白名单路径
-const whiteList = ['/login', '/auth-redirect','/404'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/404'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
     console.log('to', to)

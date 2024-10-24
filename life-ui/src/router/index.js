@@ -36,7 +36,7 @@ const routes = [
         component: () => import('../views/error/404.vue')
     },
     // 404 page must be placed at the end !!!
-    // {path: '*', redirect: '/404', hidden: true}
+    {path: '*', redirect: '/404', hidden: true}
 ]
 
 const router = new VueRouter({

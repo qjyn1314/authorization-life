@@ -1,6 +1,10 @@
 package com.authorization.life.system.app.service;
 
-import com.authorization.life.system.infra.entity.LsysLov;
+import com.authorization.life.system.app.dto.LsysLovDTO;
+import com.authorization.life.system.app.vo.LsysLovVO;
+import com.github.pagehelper.PageInfo;
+
+import java.util.List;
 
 /**
  * 字典主表
@@ -11,4 +15,8 @@ import com.authorization.life.system.infra.entity.LsysLov;
 public interface LsysLovService {
 
 
+    PageInfo<LsysLovVO> page(LsysLovDTO lovDTO);
+
+
+    List<LsysLovVO> listByParams(LsysLovDTO lovDTO);
 }

@@ -28,7 +28,8 @@ import java.util.Set;
 public class LsysLovDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    private Integer pageNum;
+    private Integer pageSize;
     /**
      * 值集主键
      */

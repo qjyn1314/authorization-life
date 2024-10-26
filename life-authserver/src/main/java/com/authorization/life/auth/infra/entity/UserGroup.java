@@ -31,7 +31,6 @@ public class UserGroup extends AuditEntity implements Serializable {
     public static final String FIELD_USER_GROUP_ID = "userGroupId";
     public static final String FIELD_USER_ID = "userId";
     public static final String FIELD_USER_GROUP_CODE = "userGroupCode";
-    public static final String FIELD_TENANT_ID = "tenantId";
 
     /**
      * 用户组表主键
@@ -46,9 +45,6 @@ public class UserGroup extends AuditEntity implements Serializable {
      * 用户组编码, 与SCOPE编码保持一致
      */
     private String userGroupCode;
-    /**
-     * 租户ID
-     */
-    private String tenantId;
+
 
 }

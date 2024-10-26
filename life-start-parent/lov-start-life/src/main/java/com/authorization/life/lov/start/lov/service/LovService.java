@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface LovService {
 
-    LovDetail selectLov(Long tenantId, String lovCode);
+    LovDetail selectLov(String tenantId, String lovCode);
 
-    List<LovValueDetail> selectLovValue(Long tenantId, String lovCode);
+    List<LovValueDetail> selectLovValue(String tenantId, String lovCode);
 
 }

@@ -15,8 +15,9 @@ public interface LovTranslator {
 
     /**
      * 翻译对象目标字段
+     *
      * @param targetField 目标字段
-     * @param object 对象
+     * @param object      对象
      * @return 翻译后的对象
      */
     Object translateObject(String[] targetField, Object object);
@@ -29,15 +30,16 @@ public interface LovTranslator {
     @Setter
     @ToString
     @EqualsAndHashCode
-    class LocalCacheKey{
-        private Long tenantId;
+    class LocalCacheKey {
+        private String tenantId;
         private String lovCode;
 
-        private LocalCacheKey(Long tenantId, String lovCode) {
+        private LocalCacheKey(String tenantId, String lovCode) {
             this.tenantId = tenantId;
             this.lovCode = lovCode;
         }
-        public static LocalCacheKey of(Long tenantId, String lovCode){
+
+        public static LocalCacheKey of(String tenantId, String lovCode) {
             return new LocalCacheKey(tenantId, lovCode);
         }
     }

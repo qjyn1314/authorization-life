@@ -5,7 +5,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
-import com.authorization.redis.start.util.RedisService;
+import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.UserDetail;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,14 +30,14 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
 
     private final SecurityAuthUserService securityAuthUserService;
     private final OauthClientService oauthClientService;
-    private final RedisService stringRedisService;
+    private final RedisUtil redisUtil;
     private final HttpServletRequest servletRequest;
 
     public CustomizerOAuth2Token(SecurityAuthUserService securityAuthUserService, OauthClientService oauthClientService,
-                                 RedisService stringRedisService, HttpServletRequest servletRequest) {
+                                 RedisUtil redisUtil, HttpServletRequest servletRequest) {
         this.securityAuthUserService = securityAuthUserService;
         this.oauthClientService = oauthClientService;
-        this.stringRedisService = stringRedisService;
+        this.redisUtil = redisUtil;
         this.servletRequest = servletRequest;
     }
 
@@ -81,7 +81,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         // token过期的秒数
         long tokenOverdueSeconds = registeredClient.getTokenSettings().getAccessTokenTimeToLive().getSeconds();
         log.info("生成gateway服务解析redis存储jwtToken的key是:{},过期时间是:{}秒,默认是 86400秒(24小时) ,此token作为key，用户信息作为value存储到redis中", userTokenKey, tokenOverdueSeconds);
-        stringRedisService.strSet(userTokenKey, userDetail, tokenOverdueSeconds, TimeUnit.SECONDS);
+        redisUtil.strSet(userTokenKey, userDetail, tokenOverdueSeconds, TimeUnit.SECONDS);
         //也可以在此处将当前登录用户的信息存放到jwt中，但是这样就不再安全。
         context.getClaims().claim(SecurityCoreService.CLAIM_TOKEN_KEY, token).build();
     }

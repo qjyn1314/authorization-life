@@ -3,32 +3,40 @@ package com.authorization.life.lov.start.lov.service;
 import cn.hutool.core.collection.CollUtil;
 import com.authorization.life.lov.start.lov.entity.LovDetail;
 import com.authorization.life.lov.start.lov.entity.LovValueDetail;
+import com.authorization.remote.system.SystemRemoteRes;
+import com.authorization.remote.system.service.SystemRemoteService;
+import com.authorization.remote.system.vo.LsysLovRemoteVO;
+import com.authorization.remote.system.vo.LsysLovValueRemoteVO;
+import com.authorization.utils.converter.BeanConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class LovServiceImpl implements LovService {
 
-    public static final List<LovValueDetail> lovValueList = CollUtil.newArrayList();
-    public static final ConcurrentHashMap<String, LovDetail> lovMap = new ConcurrentHashMap<>();
+    @Autowired
+    private SystemRemoteService systemRemoteService;
 
-    static {
-        lovValueList.add(LovValueDetail.of("USER_SEX", "0", "未知"));
-        lovValueList.add(LovValueDetail.of("USER_SEX", "1", "男"));
-        lovValueList.add(LovValueDetail.of("USER_SEX", "2", "女"));
-        lovMap.put("USER_SEX", LovDetail.of("USER_SEX", "用户性别"));
+    @Override
+    public LovDetail selectLov(String tenantId, String lovCode) {
+        SystemRemoteRes<LsysLovRemoteVO> remoteRes = systemRemoteService.selectLov(tenantId, lovCode);
+        if (Objects.isNull(remoteRes.getData())) {
+            return null;
+        }
+        return BeanConverter.convert(remoteRes.getData(), LovDetail.class);
     }
 
     @Override
-    public LovDetail selectLov(Long tenantId, String lovCode) {
-        return lovMap.get(lovCode);
-    }
-
-    @Override
-    public List<LovValueDetail> selectLovValue(Long tenantId, String lovCode) {
-        return lovValueList;
+    public List<LovValueDetail> selectLovValue(String tenantId, String lovCode) {
+        SystemRemoteRes<List<LsysLovValueRemoteVO>> remoteRes = systemRemoteService.selectLovValue(tenantId, lovCode);
+        if (CollUtil.isEmpty(remoteRes.getData())) {
+            return null;
+        }
+        return remoteRes.getData().stream().map(item -> BeanConverter.convert(item, LovValueDetail.class)).collect(Collectors.toList());
     }
 
 

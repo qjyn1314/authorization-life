@@ -4,7 +4,7 @@ import com.alibaba.ttl.TransmittableThreadLocal;
 
 /**
  * <p>
- *
+ * 此处是为了将当前登录用户的信息临时存放
  * </p>
  *
  * @author wangjunming

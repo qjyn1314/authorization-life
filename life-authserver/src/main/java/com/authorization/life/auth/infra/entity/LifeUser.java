@@ -58,7 +58,6 @@ public class LifeUser extends AuditEntity implements Serializable, UserDetails {
     public static final String FIELD_LOCKED_FLAG = "lockedFlag";
     public static final String FIELD_LOCKED_TIME = "lockedTime";
     public static final String FIELD_ENABLED_FLAG = "enabledFlag";
-    public static final String FIELD_TENANT_ID = "tenantId";
     public static final String FIELD_VERSION_NUM = "versionNum";
 
     /**
@@ -138,10 +137,6 @@ public class LifeUser extends AuditEntity implements Serializable, UserDetails {
      * 状态：1-启用；0-未启用
      */
     private Boolean enabledFlag;
-    /**
-     * 租户ID
-     */
-    private String tenantId;
     /**
      * 版本号
      */

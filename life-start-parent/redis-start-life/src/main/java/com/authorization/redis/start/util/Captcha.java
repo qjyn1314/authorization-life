@@ -1,4 +1,4 @@
-package com.authorization.life.auth.infra.security.util;
+package com.authorization.redis.start.util;
 
 import cn.hutool.captcha.GifCaptcha;
 import lombok.Getter;

@@ -1,9 +1,7 @@
 package com.authorization.redis.start.config;
 
 import com.authorization.redis.start.listener.RedisSubscription;
-import com.authorization.redis.start.util.RedisService;
 import com.authorization.redis.start.util.RedisUtil;
-import com.authorization.utils.excutor.ExecutorManager;
 import com.authorization.utils.json.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -16,12 +14,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * <p>
@@ -36,16 +31,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 @AutoConfigureBefore(RedisAutoConfiguration.class)
 public class RedisTempAutoConfig {
 
-    @Bean
-    public RedisService redisService(StringRedisTemplate stringRedisTemplate) {
-        log.info("initialed redis-start-life RedisService");
-        return new RedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
-    }
+//    @Bean
+//    public RedisService redisService(StringRedisTemplate stringRedisTemplate) {
+//        log.info("initialed redis-start-life RedisService");
+//        return new RedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
+//    }
 
     @Bean
     public RedisUtil redisUtil(StringRedisTemplate stringRedisTemplate) {
         log.info("initialed redis-start-life RedisUtil");
-        return new RedisUtil().setRedisTemplate(stringRedisTemplate);
+        return new RedisUtil().setRedisTemplate(stringRedisTemplate).setObjectMapper(JsonHelper.getObjectMapper());
     }
 
     @Bean

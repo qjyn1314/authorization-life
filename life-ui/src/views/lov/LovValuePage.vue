@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="2">
         <h3 @click="goBack">
-          <el-button type="success" icon="el-icon-back" circle></el-button>
+          <el-button type="text" icon="el-icon-back" circle>返回</el-button>
         </h3>
       </el-col>
       <el-col :span="22">

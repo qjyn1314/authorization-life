@@ -9,6 +9,8 @@ import com.authorization.life.system.infra.entity.LsysLov;
 import com.authorization.life.system.infra.entity.LsysLovValue;
 import com.authorization.life.system.infra.mapper.LsysLovMapper;
 import com.authorization.life.system.infra.mapper.LsysLovValueMapper;
+import com.authorization.remote.system.vo.LsysLovRemoteVO;
+import com.authorization.remote.system.vo.LsysLovValueRemoteVO;
 import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.UpdateGroup;
@@ -107,5 +109,22 @@ public class LsysLovServiceImpl implements LsysLovService {
         mapper.deleteById(lsysLov.getLovId());
         return lsysLov.getLovId();
     }
+
+    @Override
+    public LsysLovRemoteVO lovCacheAndDataSource(String tenantId, String lovCode) {
+        Assert.notBlank(tenantId, "租户ID不能为空.");
+        Assert.notBlank(lovCode, "值集编码不能为空.");
+        List<LsysLov> lsysLovList = mapper.selectList(Wrappers.lambdaQuery(new LsysLov()).eq(LsysLov::getLovCode, lovCode).eq(LsysLov::getTenantId, tenantId));
+        return lsysLovList.stream().findFirst().map(item -> BeanConverter.convert(item, LsysLovRemoteVO.class)).orElse(null);
+    }
+
+    @Override
+    public List<LsysLovValueRemoteVO> lovvalueCacheAndDataSource(String tenantId, String lovCode) {
+        Assert.notBlank(tenantId, "租户ID不能为空.");
+        Assert.notBlank(lovCode, "值集编码不能为空.");
+        List<LsysLovValue> lsysLovValues = lovValueMapper.selectList(Wrappers.lambdaQuery(new LsysLovValue()).eq(LsysLovValue::getLovCode, lovCode).eq(LsysLovValue::getTenantId, tenantId));
+        return lsysLovValues.stream().map(item -> BeanConverter.convert(item, LsysLovValueRemoteVO.class)).collect(Collectors.toList());
+    }
+
 
 }

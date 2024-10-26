@@ -2,14 +2,12 @@ package com.authorization.life.auth.app.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
-import com.authorization.common.util.RequestUtils;
-import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
-import com.authorization.life.auth.infra.security.util.RedisCaptchaValidator;
+import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;

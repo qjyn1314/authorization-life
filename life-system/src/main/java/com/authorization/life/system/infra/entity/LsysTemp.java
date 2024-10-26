@@ -40,14 +40,7 @@ public class LsysTemp extends AuditEntity implements Serializable {
     public static final String FIELD_TEMP_TYPE = "temp_type";
     public static final String FIELD_CONTENT = "content";
     public static final String FIELD_ENABLED_FLAG = "enabled_flag";
-    public static final String FIELD_TENANT_ID = "tenant_id";
     public static final String FIELD_VERSION_NUM = "version_num";
-    public static final String FIELD_CREATED_BY_USER = "created_by_user";
-    public static final String FIELD_CREATED_BY_EMP = "created_by_emp";
-    public static final String FIELD_CREATED_TIME = "created_time";
-    public static final String FIELD_UPDATED_BY_USER = "updated_by_user";
-    public static final String FIELD_UPDATED_BY_EMP = "updated_by_emp";
-    public static final String FIELD_UPDATED_TIME = "updated_time";
 
     /**
      * 模版ID
@@ -74,10 +67,6 @@ public class LsysTemp extends AuditEntity implements Serializable {
      * 是否启用
      */
     private Boolean enabledFlag;
-    /**
-     * 租户ID
-     */
-    private String tenantId;
     /**
      * 版本号
      */

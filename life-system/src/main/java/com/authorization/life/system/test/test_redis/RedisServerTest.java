@@ -4,11 +4,9 @@ package com.authorization.life.system.test.test_redis;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import com.authorization.common.log.LogAdvice;
-import com.authorization.redis.start.util.RedisService;
 import com.authorization.redis.start.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +17,13 @@ import java.time.LocalDateTime;
 public class RedisServerTest {
 
     @Autowired
-    private RedisService redisService;
+    private RedisUtil redisUtil;
 
     /**
      * 定时任务进行redis的消息发布。
      */
     @LogAdvice(name = "定时任务进行redis的消息发布")
-    @Scheduled(cron = "0/5 * * * * ?") //每秒执行一次
+    @Scheduled(cron = "0/15 * * * * ?") //每秒执行一次
     public void redisNewsRelease() {
         //获取当前时间并设置时分秒为 00:00:00 ，即 2020-05-13 00:00:00
 //        LocalDateTime zeroTime = LocalDateTime.now().withHour(0).withSecond(0).withMinute(0);
@@ -35,7 +33,7 @@ public class RedisServerTest {
         String nowTimeFormat = DateUtil.format(nowTime, DatePattern.NORM_DATETIME_PATTERN);
         log.info("执行发布-消息内容是-{}", nowTimeFormat);
         //发布消息
-        redisService.convertAndSend(RedisTestConstants.REDIS_TEST_TOPIC_01, nowTimeFormat);
+        redisUtil.convertAndSend(RedisTestConstants.REDIS_TEST_TOPIC_01, nowTimeFormat);
     }
 
 //    /**

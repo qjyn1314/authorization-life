@@ -1,11 +1,18 @@
 package com.authorization.redis.start.util;
 
+import cn.hutool.core.util.StrUtil;
+import com.authorization.redis.start.constant.RedisConstant;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -15,12 +22,19 @@ import java.util.concurrent.TimeUnit;
  *
  * @version 1.1 (GitHub文档: https://github.com/whvcse/RedisUtil )
  */
+@Slf4j
 public class RedisUtil {
 
     private StringRedisTemplate redisTemplate;
+    private ObjectMapper objectMapper;
 
     public RedisUtil setRedisTemplate(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
+        return this;
+    }
+
+    public RedisUtil setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         return this;
     }
 
@@ -182,6 +196,113 @@ public class RedisUtil {
     /** -------------------string相关操作--------------------- */
 
     /**
+     * String 获取值
+     *
+     * @param key key
+     * @return object
+     */
+    public String strGet(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * String 获取值
+     *
+     * @param key    key
+     * @param expire expire
+     * @return object
+     */
+    public String strGet(String key, long expire, TimeUnit timeUnit) {
+        String value = redisTemplate.opsForValue().get(key);
+        if (!Objects.equals(expire, RedisConstant.NOT_EXPIRE)) {
+            this.setExpire(key, expire, timeUnit == null ? TimeUnit.SECONDS : timeUnit);
+        }
+        return value;
+    }
+
+    /**
+     * String 获取值
+     *
+     * @param key   key
+     * @param clazz clazz
+     * @return object
+     */
+    public <T> T strGet(String key, Class<T> clazz) {
+        String value = redisTemplate.opsForValue().get(key);
+        return value == null ? null : fromJson(value, clazz);
+    }
+
+    /**
+     * String 设置值
+     *
+     * @param key    key
+     * @param clazz  clazz
+     * @param expire expire
+     * @return object
+     */
+    public <T> T strGet(String key, Class<T> clazz, long expire, TimeUnit timeUnit) {
+        String value = redisTemplate.opsForValue().get(key);
+        if (!Objects.equals(expire, RedisConstant.NOT_EXPIRE)) {
+            this.setExpire(key, expire, timeUnit == null ? TimeUnit.SECONDS : timeUnit);
+        }
+        return value == null ? null : fromJson(value, clazz);
+    }
+
+    /**
+     * String 获取值
+     *
+     * @param key   key
+     * @param start start
+     * @param end   end
+     * @return object
+     */
+    public String strGet(String key, Long start, Long end) {
+        return redisTemplate.opsForValue().get(key, start, end);
+    }
+
+    /**
+     * String 设置值
+     *
+     * @param key    key
+     * @param value  value
+     * @param expire expire
+     */
+    public void strSet(String key, String value, long expire, TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key, value, expire, timeUnit);
+    }
+
+    /**
+     * String 设置值
+     *
+     * @param key    key
+     * @param value  value
+     * @param expire expire
+     */
+    public <T> void strSet(String key, T value, long expire, TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key, this.toJson(value), expire, timeUnit);
+    }
+
+    /**
+     * String 设置值
+     *
+     * @param key   key
+     * @param value value
+     */
+    public void strSet(String key, String value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
+
+    /**
+     * String 设置值
+     *
+     * @param key   key
+     * @param value value
+     */
+    public <T> void strSet(String key, T value) {
+        redisTemplate.opsForValue().set(key, this.toJson(value));
+    }
+
+    /**
      * 设置指定 key 的值
      *
      * @param key
@@ -256,6 +377,41 @@ public class RedisUtil {
     public boolean setBit(String key, long offset, boolean value) {
         return redisTemplate.opsForValue().setBit(key, offset, value);
     }
+
+
+    /**
+     * 设置过期时间,默认一天
+     *
+     * @param key key
+     * @return object Boolean
+     */
+    public Boolean setExpire(String key) {
+        return this.setExpire(key, RedisConstant.DEFAULT_EXPIRE, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 设置过期时间,默认时间单位:秒
+     *
+     * @param key    key
+     * @param expire expire 存活时长
+     * @return object
+     */
+    public Boolean setExpire(String key, long expire) {
+        return this.setExpire(key, expire, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 设置过期时间
+     *
+     * @param key      key
+     * @param expire   expire 存活时长
+     * @param timeUnit 时间单位
+     * @return object
+     */
+    public Boolean setExpire(String key, long expire, TimeUnit timeUnit) {
+        return redisTemplate.expire(key, expire, timeUnit == null ? TimeUnit.SECONDS : timeUnit);
+    }
+
 
     /**
      * 将值 value 关联到 key ，并将 key 的过期时间设为 timeout
@@ -1335,5 +1491,103 @@ public class RedisUtil {
         return redisTemplate.type(key);
     }
 
+
+    /**
+     * Object转成JSON数据
+     *
+     * @param object object
+     * @param <T>    object预期类型
+     * @return object
+     */
+    public <T> String toJson(T object) {
+        if (object == null) {
+            return RedisConstant.STR_EMPTY;
+        }
+        if (object instanceof Integer || object instanceof Long || object instanceof Float || object instanceof Double
+                || object instanceof Boolean || object instanceof String) {
+            return String.valueOf(object);
+        }
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            return RedisConstant.STR_EMPTY;
+        }
+    }
+
+    /**
+     * JSON数据，转成Object
+     *
+     * @param json  json字符串
+     * @param clazz 预期类型
+     * @param <T>   泛型
+     * @return object
+     */
+    public <T> T fromJson(String json, Class<T> clazz) {
+        if (StrUtil.isBlank(json) || clazz == null) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (Exception e) {
+            if (log.isErrorEnabled()) {
+                log.error(e.getMessage(), e);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * JSON数据，转成 List<Object>
+     *
+     * @param json  json
+     * @param clazz clazz
+     * @param <T>   list 泛型
+     * @return object
+     */
+    public <T> List<T> fromJsonList(String json, Class<T> clazz) {
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, clazz);
+        try {
+            return objectMapper.readValue(json, javaType);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * 将对象直接以json数据不设置过期时间的方式保存
+     *
+     * @param key    key 键
+     * @param object object
+     */
+    public <T> void objectSet(String key, T object) {
+        this.set(key, this.toJson(object));
+    }
+
+    /**
+     * 根据一个前缀来删除所有匹配的key
+     *
+     * @param keyPrefix Prefix 前缀
+     * @return object 删除的数量
+     */
+    public int deleteKeysWithPrefix(String keyPrefix) {
+        Set<String> keys = redisTemplate.keys(keyPrefix + '*');
+        if (keys == null || keys.isEmpty()) {
+            return 0;
+        }
+        redisTemplate.delete(keys);
+        return keys.size();
+    }
+
+
+    /**
+     * 像订阅通道发布消息
+     *
+     * @param channel 订阅topic
+     * @param message 消息
+     */
+    public void convertAndSend(String channel, Object message) {
+        redisTemplate.convertAndSend(channel, toJson(message));
+    }
 
 }

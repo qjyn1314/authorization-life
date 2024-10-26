@@ -4,7 +4,7 @@ import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
-import com.authorization.redis.start.util.RedisService;
+import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -149,9 +149,9 @@ public class Oauth2SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
                                                                         OauthClientService oauthClientService,
-                                                                        RedisService stringRedisService,
+                                                                        RedisUtil redisUtil,
                                                                         HttpServletRequest servletRequest) {
-        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, stringRedisService, servletRequest);
+        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, redisUtil, servletRequest);
     }
 
     /**
@@ -203,8 +203,8 @@ public class Oauth2SecurityConfig {
 
 
     @Bean //加载中文认证提示信息
-    public ReloadableResourceBundleMessageSource messageSource(){
-        ReloadableResourceBundleMessageSource messageSource = new   ReloadableResourceBundleMessageSource();
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         //加载org/springframework/security包下的中文提示信息 配置文件
         messageSource.setBasename("classpath:messages/messages_zh_CN");
         return messageSource;

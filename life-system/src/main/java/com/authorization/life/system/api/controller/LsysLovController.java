@@ -1,8 +1,11 @@
 package com.authorization.life.system.api.controller;
 
 import com.authorization.life.system.app.dto.LsysLovDTO;
+import com.authorization.life.system.app.dto.LsysLovValueDTO;
 import com.authorization.life.system.app.service.LsysLovService;
 import com.authorization.life.system.app.vo.LsysLovVO;
+import com.authorization.remote.system.vo.LsysLovRemoteVO;
+import com.authorization.remote.system.vo.LsysLovValueRemoteVO;
 import com.authorization.utils.result.Result;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -58,6 +63,18 @@ public class LsysLovController {
     @PostMapping("/delete-lov")
     public Result<String> deleteLov(@RequestBody LsysLovDTO sysLov) {
         return Result.ok(lsysLovService.deleteLov(sysLov));
+    }
+
+    @Operation(summary = "从缓存中获取值集主数据")
+    @PostMapping("/lov-by-cache")
+    public Result<LsysLovRemoteVO> lovCacheAndDataSource(@RequestBody LsysLovDTO sysLov) {
+        return Result.ok(lsysLovService.lovCacheAndDataSource(sysLov.getTenantId(), sysLov.getLovCode()));
+    }
+
+    @Operation(summary = "从缓存中获取值代码")
+    @PostMapping("/lovvalue-by-cache")
+    public Result<List<LsysLovValueRemoteVO>> lovvalueCacheAndDataSource(@RequestBody LsysLovValueDTO lovValue) {
+        return Result.ok(lsysLovService.lovvalueCacheAndDataSource(lovValue.getTenantId(), lovValue.getLovCode()));
     }
 
 

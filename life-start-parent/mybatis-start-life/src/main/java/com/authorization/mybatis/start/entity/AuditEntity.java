@@ -28,7 +28,12 @@ public class AuditEntity implements Serializable {
     public static final String FIELD_UPDATED_BY_USER = "updatedByUser";
     public static final String FIELD_UPDATED_BY_EMP = "updatedByEmp";
     public static final String FIELD_UPDATED_TIME = "updatedTime";
+    public static final String FIELD_TENANT_ID = "tenantId";
 
+    /**
+     * 租户ID
+     */
+    private String tenantId;
 
     /**
      * 创建用户

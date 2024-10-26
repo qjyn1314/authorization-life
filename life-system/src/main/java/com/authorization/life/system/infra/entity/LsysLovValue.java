@@ -34,7 +34,6 @@ public class LsysLovValue extends AuditEntity implements Serializable {
     public static final String FIELD_VALUE_CODE = "value_code";
     public static final String FIELD_VALUE_CONTENT = "value_content";
     public static final String FIELD_DESCRIPTION = "description";
-    public static final String FIELD_TENANT_ID = "tenant_id";
     public static final String FIELD_VALUE_ORDER = "value_order";
     public static final String FIELD_ENABLED_FLAG = "enabled_flag";
     public static final String FIELD_VERSION_NUM = "version_num";
@@ -64,10 +63,6 @@ public class LsysLovValue extends AuditEntity implements Serializable {
      * 描述
      */
     private String description;
-    /**
-     * 租户ID
-     */
-    private String tenantId;
     /**
      * 排序号
      */

@@ -9,11 +9,12 @@ import com.authorization.life.lov.start.lov.entity.LovValueDetail;
 import com.authorization.life.lov.start.lov.exception.LovException;
 import com.authorization.life.lov.start.lov.helper.LovUserHelper;
 import com.authorization.life.lov.start.lov.service.LovService;
+import com.authorization.utils.contsant.BaseConstants;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.NonNull;
@@ -111,7 +112,8 @@ public class DefaultLovTranslator implements LovTranslator {
                 this.processObject(targetFields, object);
             }
             log.debug("lov translate end");
-        } catch (IllegalAccessException | NoSuchFieldException | IllegalArgumentException | SecurityException | ExecutionException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | IllegalArgumentException | SecurityException |
+                 ExecutionException e) {
             log.error(e.getMessage(), e);
         }
         return object;
@@ -121,7 +123,7 @@ public class DefaultLovTranslator implements LovTranslator {
     public LovDetail getLov(String lovCode) {
         try {
             return lovCache.get(LocalCacheKey
-                    .of(Optional.ofNullable(lovUserHelper.getTenantId()).orElse(0L), lovCode));
+                    .of(Optional.ofNullable(lovUserHelper.getTenantId()).orElse(BaseConstants.DEFAULT_TENANT_ID), lovCode));
         } catch (ExecutionException e) {
             return null;
         }
@@ -131,7 +133,7 @@ public class DefaultLovTranslator implements LovTranslator {
     public Map<String, String> getLovValue(String lovCode) {
         try {
             return lovValueCache.get(LocalCacheKey
-                    .of(Optional.ofNullable(lovUserHelper.getTenantId()).orElse(0L), lovCode));
+                    .of(Optional.ofNullable(lovUserHelper.getTenantId()).orElse(BaseConstants.DEFAULT_TENANT_ID), lovCode));
         } catch (ExecutionException e) {
             return Collections.emptyMap();
         }
@@ -163,8 +165,9 @@ public class DefaultLovTranslator implements LovTranslator {
 
     /**
      * 处理对象
+     *
      * @param targetFields 待处理字段名称
-     * @param object 待处理对象
+     * @param object       待处理对象
      */
     protected void processObject(String[] targetFields, Object object) throws IllegalAccessException,
             NoSuchFieldException, ExecutionException {
@@ -208,6 +211,7 @@ public class DefaultLovTranslator implements LovTranslator {
 
     /**
      * 直接处理当前对象
+     *
      * @param obj 当前对象
      */
     private void processOne(Object obj) throws IllegalAccessException, ExecutionException {
@@ -222,7 +226,7 @@ public class DefaultLovTranslator implements LovTranslator {
         Field contentField;
         Object value;
         String lovCode;
-        Long tenantId = Optional.ofNullable(lovUserHelper.getTenantId()).orElse(0L);
+        String tenantId = Optional.ofNullable(lovUserHelper.getTenantId()).orElse(BaseConstants.DEFAULT_TENANT_ID);
         log.debug("current tenantId is: [{}]", tenantId);
         // 循环处理对象中的所有字段
         for (Field field : fields) {
@@ -233,7 +237,7 @@ public class DefaultLovTranslator implements LovTranslator {
             }
             // 准备数据
             lovCode = lovValueAnnotation.lovCode();
-            Assert.notBlank(lovCode,"zcb-client-tenant.error.lov-code-not-null");
+            Assert.notBlank(lovCode, "zcb-client-tenant.error.lov-code-not-null");
             field.setAccessible(true);
             value = field.get(obj);
             if (value == null) {
@@ -242,11 +246,11 @@ public class DefaultLovTranslator implements LovTranslator {
                 continue;
             }
             LovDetail lov = lovCache.get(LocalCacheKey.of(tenantId, lovCode));
-            if(lov == null || lov.getLovTypeCode() == null) {
+            if (lov == null || lov.getLovTypeCode() == null) {
                 log.debug("invalid lov define [{}]", lovCode);
                 // 无效的值集头
                 content = null;
-            }else {
+            } else {
                 lovValueMap = lovValueCache.get(LocalCacheKey.of(tenantId, lovCode));
                 content = valueCode2Content(lovValueMap, value, lov);
             }
@@ -269,7 +273,7 @@ public class DefaultLovTranslator implements LovTranslator {
                 continue;
             }
             // 没有找到有效的content时, 如果@LovValue指定了默认值,则使用该默认值, 否则使用value的原值
-            if(content == null) {
+            if (content == null) {
                 log.warn("can not get any translate result by lov code [{}] and value [{}], do fallback process", lovCode, value);
                 content = StrUtil.isBlank(lovValueAnnotation.defaultContent())
                         ? String.valueOf(value) : lovValueAnnotation.defaultContent();
@@ -282,14 +286,15 @@ public class DefaultLovTranslator implements LovTranslator {
 
     /**
      * 值代码转换为值内容
+     *
      * @param lovValueMap 固定值集map
-     * @param valueCode 值代码
-     * @param lov 值集
+     * @param valueCode   值代码
+     * @param lov         值集
      * @return 值内容
      */
     private String valueCode2Content(Map<String, String> lovValueMap, Object valueCode, LovDetail lov) {
         String content;
-        if (!Objects.equals(lov.getLovTypeCode(), LovDetail.LovType.FIXED)){
+        if (!Objects.equals(lov.getLovTypeCode(), LovDetail.LovType.FIXED)) {
             // 非法的值集类型
             throw new LovException("此处获取得到的不是固定值集，请检查代码。");
         }
@@ -324,14 +329,15 @@ public class DefaultLovTranslator implements LovTranslator {
 
     /**
      * 支持集合类映射
+     *
      * @param lovValueMap lovValue缓存map
-     * @param value 待翻译的值
+     * @param value       待翻译的值
      * @return 翻译后的值
      */
-    private String getContent(Map<String, String> lovValueMap, Object value){
-        if(value instanceof Collection){
+    private String getContent(Map<String, String> lovValueMap, Object value) {
+        if (value instanceof Collection) {
             StringBuilder builder = new StringBuilder("[");
-            for (Object part : (Collection<?>) value){
+            for (Object part : (Collection<?>) value) {
                 String partValue = String.valueOf(part);
                 String partMeaning = lovValueMap.get(partValue);
                 builder.append(",").append(partMeaning);

@@ -19,6 +19,7 @@ public class InitAuditMetaHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
+        this.setFieldValByName(AuditEntity.FIELD_TENANT_ID, UserThreadUtil.getUserContext().getTenantId(), metaObject);
         this.setFieldValByName(AuditEntity.FIELD_CREATED_TIME, LocalDateTime.now(), metaObject);
         this.setFieldValByName(AuditEntity.FIELD_CREATED_BY_USER, UserThreadUtil.getUserContext().getUserId(), metaObject);
         this.setFieldValByName(AuditEntity.FIELD_CREATED_BY_EMP, UserThreadUtil.getUserContext().getEmpId(), metaObject);

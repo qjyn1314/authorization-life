@@ -1,5 +1,6 @@
 package com.authorization.life.lov.start.lov.entity;
 
+import com.authorization.utils.contsant.BaseConstants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,18 +33,18 @@ public class LovDetail implements java.io.Serializable {
     /**
      * 租户ID
      */
-    private Long tenantId;
+    private String tenantId;
 
 
     private LovDetail(String lovCode, String lovName) {
         this.lovCode = lovCode;
         this.lovName = lovName;
         this.lovTypeCode = LovType.FIXED;
-        this.tenantId = 0L;
+        this.tenantId = BaseConstants.DEFAULT_TENANT_ID;
     }
 
-    public static LovDetail of(String lovCode, String lovName){
-        return new LovDetail(lovCode,lovName);
+    public static LovDetail of(String lovCode, String lovName) {
+        return new LovDetail(lovCode, lovName);
     }
 
 }

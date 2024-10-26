@@ -26,6 +26,7 @@ module.exports = defineConfig({
         webSocketServer: false,
         allowedHosts: "all",
         open: true,
+        hot: true,
         proxy: {
             /*[process.env.VUE_APP_BASE_API]: {
                 target: process.env.VUE_APP_PROXY_TARGET,

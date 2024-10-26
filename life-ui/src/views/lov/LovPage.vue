@@ -108,8 +108,8 @@
                 </el-popconfirm>
               </el-col>
               <el-col :span="4">
-                <el-button type="primary" icon="el-icon-circle-plus-outline" plain size="medium"
-                           @click="addChild(row)">明细
+                <el-button type="text" icon="el-icon-plus" round size="medium"
+                           @click="addChild(row)">添加明细
                 </el-button>
               </el-col>
             </el-row>
@@ -311,7 +311,6 @@ export default {
       return value ? '已启用' : '未启用';
     },
     addChild(value) {
-      console.log(value)
       this.$router.push({
         path: '/lovValue',
         query: {lovId: value.lovId}

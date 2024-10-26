@@ -89,9 +89,5 @@ public class OauthClient extends AuditEntity implements Serializable {
      * 附加信息
      */
     private String additionalInformation;
-    /**
-     * 租户ID
-     */
-    private String tenantId;
 
 }

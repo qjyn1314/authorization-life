@@ -38,7 +38,7 @@
     </el-header>
     <el-header>
       <el-row :gutter="10">
-        <el-col :span="2">
+        <el-col :span="3">
           <el-button round icon="el-icon-plus" @click="addData">新增</el-button>
         </el-col>
         <el-col :span="3">

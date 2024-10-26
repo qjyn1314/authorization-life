@@ -58,6 +58,7 @@
         <slf4j-api.version>2.0.13</slf4j-api.version>
         <hutool.version>5.8.29</hutool.version>
         <guava.version>33.2.1-jre</guava.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
         <orika.version>1.5.4</orika.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jasypt.version>3.0.5</jasypt.version>
@@ -90,6 +91,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -168,6 +173,11 @@
                 <artifactId>dubbo-start-life</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>com.authorization.life</groupId>
+                <artifactId>lov-start-life</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!--对于api工程可以在各个子服务工程中引入并设置版本号-start-->
             <dependency>
                 <groupId>com.authorization.life</groupId>
@@ -197,6 +207,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
             <!--bean之间的转换-->
             <dependency>

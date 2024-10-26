@@ -12,13 +12,13 @@ module.exports = defineConfig({
     // 放置静态资源的地方 (js/css/img/font/...)
     assetsDir: 'assets',
     // 默认在生成的静态资源文件名中包含 hash 以便更好的控制缓存
-    filenameHashing: true,
+    // filenameHashing: true,
     //默认情况下 babel-loader 会忽略所有 node_modules 中的文件。你可以启用本选项，以避免构建后的代码中出现未转译的第三方依赖。
-    transpileDependencies: true,
+    // transpileDependencies: true,
     // 默认代码语法检查为true
     lintOnSave: false,
     //是否使用包含运行时编译器的 Vue 构建版本。设置为 true 后你就可以在 Vue 组件中使用 template 选项了，但是这会让你的应用额外增加 10kb 左右。
-    runtimeCompiler: true,
+    // runtimeCompiler: true,
     //开启代理服务器
     devServer: {
         port: process.env.VUE_APP_PORT,

@@ -24,7 +24,7 @@
         <module>dubbo-start-life</module>
         <module>valid-start-life</module>
         <module>mail-start-life</module>
-
+        <module>lov-start-life</module>
     </modules>
 
     <dependencies>

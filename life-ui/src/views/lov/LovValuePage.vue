@@ -1,42 +1,18 @@
 <template>
   <el-container>
-    <el-header>
-      <el-form :inline="true" :model="tableSearch">
-        <el-row class="el-row" :gutter="0">
-          <el-col :span="6">
-            <el-form-item label="值集编码">
-              <el-input v-model="tableSearch.lovCode" placeholder="值集编码"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="值集名称">
-              <el-input v-model="tableSearch.lovName" placeholder="值集名称"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="值集类型">
-              <el-select v-model="tableSearch.lovTypeCode" filterable clearable placeholder="请选择">
-                <el-option label="常量" value="FIXED"></el-option>
-                <el-option label="URL" value="URL"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="2">
-            <el-form-item>
-              <el-button type="primary" round icon="el-icon-search" @click="searchTable">查询</el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="1">
-            <el-form-item>
-              <el-button type="danger" round icon="el-icon-refresh-right" @click="resetSearch">重置</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </el-header>
+    <el-row>
+      <el-col :span="2">
+        <h3 @click="goBack">
+          <el-button type="success" icon="el-icon-back" circle></el-button>
+        </h3>
+      </el-col>
+      <el-col :span="22">
+        <h2>名称:【{{ this.initLovData.lovName || '' }}】编码:『{{ this.initLovData.lovCode || '' }}』的明细</h2>
+      </el-col>
+    </el-row>
     <el-header>
       <el-row :gutter="10">
-        <el-col :span="3">
+        <el-col :span="2">
           <el-button round icon="el-icon-plus" @click="addData">新增</el-button>
         </el-col>
         <el-col :span="1">
@@ -51,27 +27,22 @@
           style="width: 100%">
         <el-table-column
             fixed
-            prop="lovCode"
-            label="值集代码">
+            prop="valueCode"
+            label="值代码">
         </el-table-column>
         <el-table-column
-            prop="lovName"
-            label="值集名称">
-        </el-table-column>
-        <el-table-column
-            prop="lovTypeCode"
-            label="值集类型"
-            width="100">
-          <template slot-scope="{row}">
-            <el-tag type="success">
-              {{ row.lovTypeCode }}
-            </el-tag>
-          </template>
+            prop="valueContent"
+            label="值内容">
         </el-table-column>
         <el-table-column
             prop="description"
             label="描述"
-            width="400">
+            width="200">
+        </el-table-column>
+        <el-table-column
+            prop="valueOrder"
+            label="排序号"
+            width="90">
         </el-table-column>
         <el-table-column
             label="是否启用"
@@ -85,32 +56,27 @@
         <el-table-column
             fixed="right"
             label="操作"
-            width="300">
+            width="200">
           <template slot-scope="{row}">
             <el-row>
-              <el-col :span="4">
+              <el-col :span="6">
                 <el-button type="info" icon="el-icon-info" circle size="medium" @click="detail(row)"></el-button>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="6">
                 <el-button type="primary" icon="el-icon-edit" circle size="medium"
                            @click="edit(row)"></el-button>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="6">
                 <el-popconfirm
                     confirm-button-text='确定'
                     cancel-button-text='暂不删除'
                     icon="el-icon-info"
                     icon-color="red"
-                    title="确定删除记录以及其下的值集明细值数据吗？"
+                    title="确定删除吗？"
                     @confirm="del(row)"
                 >
                   <el-button type="danger" icon="el-icon-delete" circle size="medium" slot="reference"></el-button>
                 </el-popconfirm>
-              </el-col>
-              <el-col :span="4">
-                <el-button type="primary" icon="el-icon-circle-plus-outline" plain size="medium"
-                           @click="addChild(row)">明细
-                </el-button>
               </el-col>
             </el-row>
           </template>
@@ -135,26 +101,21 @@
                label-suffix=":">
         <el-row align="middle">
           <el-col :span="20">
-            <el-form-item label="值集编码">
-              <el-input v-model="addFormData.lovCode"></el-input>
+            <el-form-item label="值代码">
+              <el-input v-model="addFormData.valueCode"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="20">
-            <el-form-item label="值集名称">
-              <el-input v-model="addFormData.lovName"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="20">
-            <el-form-item label="值集类型">
-              <el-col :span="6">
-                <el-select v-model="addFormData.lovTypeCode" filterable clearable placeholder="请选择" size="medium">
-                  <el-option label="常量" value="FIXED"></el-option>
-                  <el-option label="URL" value="URL"></el-option>
-                </el-select>
-              </el-col>
+            <el-form-item label="值内容">
+              <el-input v-model="addFormData.valueContent"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+        <el-col :span="6">
+          <el-form-item label="排序号">
+            <el-input-number v-model="addFormData.valueOrder" :min="1" :max="999999" :step="3"></el-input-number>
+          </el-form-item>
+        </el-col>
         <el-col :span="20">
           <el-form-item label="值集描述">
             <el-input type="textarea" :rows="5" v-model="addFormData.description"></el-input>
@@ -180,10 +141,11 @@
 
 <script>
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import {deleteLov, oneLov, pageLov, saveLov, updateLov,} from "@/api/lov";
+import {deleteLovValue, oneLov, oneLovValue, pageLovValue, saveLovValue, updateLovValue} from "@/api/lov";
+import {Message} from "element-ui";
 
 export default {
-  name: 'LovPage',
+  name: 'LovValuePage',
   components: {Pagination},
   filters: {
     enabledFlagFilter(status) {
@@ -199,16 +161,7 @@ export default {
       tableSearch: {
         pageNum: 1,
         pageSize: 10,
-        lovCode: '',
-        lovName: '',
-        lovTypeCode: '',
-      },
-      initTableSearch: {
-        pageNum: 1,
-        pageSize: 10,
-        lovCode: '',
-        lovName: '',
-        lovTypeCode: '',
+        lovId: '',
       },
       pageInfo: {total: 0},
       tableData: [],
@@ -220,14 +173,34 @@ export default {
       },
       addFormData: {},
       initAddFormData: {},
+      initLovData: {}
     }
   },
   created() {
-    this.getPageInfo();
+    this.initLovValuePahe();
   },
   methods: {
+    initLovValuePahe() {
+      if (!this.$route.query.lovId) {
+        Message.error("未找到值集主信息")
+      }
+      this.getLovData({lovId: this.$route.query.lovId})
+    },
+    getLovData(params) {
+      if (params === null) {
+        return
+      }
+      oneLov(params).then(res => {
+        if (!res.data.lovName || !res.data.lovCode) {
+          Message.error("未找到值集主信息")
+        }
+        this.initLovData = res.data;
+        this.getPageInfo();
+      })
+    },
     getPageInfo() {
-      pageLov(this.tableSearch).then(res => {
+      this.tableSearch.lovId = this.initLovData.lovId
+      pageLovValue(this.tableSearch).then(res => {
         if (res.data === null) {
           return;
         }
@@ -239,60 +212,54 @@ export default {
       if (params === null) {
         return
       }
-      oneLov(params).then(res => {
+      oneLovValue(params).then(res => {
         if (res.data === null) {
           return;
         }
         this.addFormData = res.data;
       })
     },
-    searchTable() {
-      this.getPageInfo();
-    },
-    resetSearch() {
-      //浅拷贝对象, 赋值为初始化查询参数
-      this.tableSearch = Object.assign({}, this.initTableSearch);
-      this.getPageInfo();
-    },
     addData() {
-      this.drawerInfo.title = '添加值集';
+      this.drawerInfo.title = '添加值集明细';
       this.drawerInfo.viewFlag = true;
       this.drawerInfo.hiddenFlag = false;
       this.drawerInfo.direction = 'ltr';
     },
     detail(value) {
-      let params = {lovId: value.lovId};
+      let params = {lovValueId: value.lovValueId};
       this.getOneData(params)
-      this.drawerInfo.title = '值集详情';
+      this.drawerInfo.title = '值集明细详情';
       this.drawerInfo.viewFlag = true;
       this.drawerInfo.hiddenFlag = true;
       this.drawerInfo.direction = 'rtl';
     },
     edit(value) {
-      let params = {lovId: value.lovId};
+      let params = {lovValueId: value.lovValueId};
       this.getOneData(params)
-      this.drawerInfo.title = '编辑值集';
+      this.drawerInfo.title = '编辑值集明细';
       this.drawerInfo.viewFlag = true;
       this.drawerInfo.hiddenFlag = false;
       this.drawerInfo.direction = 'rtl';
     },
     del(value) {
-      let params = {lovId: value.lovId};
-      deleteLov(params).then((res) => {
+      let params = {lovValueId: value.lovValueId};
+      deleteLovValue(params).then((res) => {
         if (res) {
-          this.resetSearch()
+          this.initLovValuePahe();
         }
       })
     },
     onSaveData() {
-      if (this.addFormData.lovId) {
-        updateLov(this.addFormData).then((res) => {
+      this.addFormData.lovId = this.initLovData.lovId
+      this.addFormData.lovCode = this.initLovData.lovCode
+      if (this.addFormData.lovValueId) {
+        updateLovValue(this.addFormData).then((res) => {
           if (res) {
             this.closeDrawer();
           }
         })
       } else {
-        saveLov(this.addFormData).then((res) => {
+        saveLovValue(this.addFormData).then((res) => {
           if (res) {
             this.closeDrawer();
           }
@@ -305,17 +272,13 @@ export default {
     closeDrawer() {
       this.drawerInfo.viewFlag = false;
       this.addFormData = {};
-      this.resetSearch()
+      this.initLovValuePahe();
     },
     conversionEnabled(value) {
       return value ? '已启用' : '未启用';
     },
-    addChild(value) {
-      console.log(value)
-      this.$router.push({
-        path: '/lovValue',
-        query: {lovId: value.lovId}
-      });
+    goBack() {
+      this.$router.push({path: '/lov'});
     }
   },
   mounted() {

@@ -61,7 +61,7 @@ public class LsysTempController {
         return Result.ok(lsysTempService.updateTemp(sysTemp));
     }
 
-    @Operation(summary = "更新模板")
+    @Operation(summary = "删除模板")
     @PostMapping("/delete-temp")
     public Result<String> deleteTemp(@RequestBody LsysTempDTO sysTemp) {
         return Result.ok(lsysTempService.deleteTemp(sysTemp));

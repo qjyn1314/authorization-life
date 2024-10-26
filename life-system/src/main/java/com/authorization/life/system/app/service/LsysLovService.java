@@ -19,4 +19,17 @@ public interface LsysLovService {
 
 
     List<LsysLovVO> listByParams(LsysLovDTO lovDTO);
+
+
+    String saveLov(LsysLovDTO sysLov);
+
+
+    LsysLovVO lovByParams(LsysLovDTO sysLov);
+
+
+    String updateLov(LsysLovDTO sysLov);
+
+
+    String deleteLov(LsysLovDTO sysLov);
+
 }

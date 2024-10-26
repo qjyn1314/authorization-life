@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import {getToken} from '@/utils/cookie-util'
 
 Vue.use(VueRouter)
 
@@ -31,6 +30,11 @@ const routes = [
         component: () => import('../views/lov/LovPage.vue')
     },
     {
+        path: '/lovValue',
+        name: 'lovValue',
+        component: () => import('../views/lov/LovValuePage.vue')
+    },
+    {
         path: '/404',
         name: '404',
         component: () => import('../views/error/404.vue')
@@ -48,23 +52,23 @@ const router = new VueRouter({
 //白名单路径
 const whiteList = ['/login', '/auth-redirect', '/404'] // no redirect whitelist
 
-router.beforeEach((to, from, next) => {
-    console.log('to', to)
-    let token = getToken();
-    console.log('token-->', token)
-    console.log('window.location.origin-->', window.location.origin)
-    if (token) {
-        // 有登录信息将跳转至首页
-        next({path: '/'});
-    } else {
-        //没有登录信息且跳转的路径中包含了白名单路径则跳转, 否则跳转至登录页
-        if (whiteList.indexOf(to.path) !== -1) {
-            next()
-        } else {
-            next(`/login?redirect=${to.path}`)
-        }
-    }
-    console.log("--->需要跳转的页面路由...", to)
-})
+// router.beforeEach((to, from, next) => {
+//     console.log('to', to)
+//     let token = getToken();
+//     console.log('token-->', token)
+//     console.log('window.location.origin-->', window.location.origin)
+//     if (token) {
+//         // 有登录信息将跳转至首页
+//         next({path: '/'});
+//     } else {
+//         //没有登录信息且跳转的路径中包含了白名单路径则跳转, 否则跳转至登录页
+//         if (whiteList.indexOf(to.path) !== -1) {
+//             next()
+//         } else {
+//             next(`/login?redirect=${to.path}`)
+//         }
+//     }
+//     console.log("--->需要跳转的页面路由...", to)
+// })
 
 export default router

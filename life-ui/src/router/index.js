@@ -52,6 +52,7 @@ router.beforeEach((to, from, next) => {
     console.log('to', to)
     let token = getToken();
     console.log('token-->', token)
+    console.log('window.location.origin-->', window.location.origin)
     if (token) {
         // 有登录信息将跳转至首页
         next({path: '/'});

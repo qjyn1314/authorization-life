@@ -27,14 +27,42 @@ module.exports = defineConfig({
         allowedHosts: "all",
         open: true,
         proxy: {
-            [process.env.VUE_APP_BASE_API]: {
+            /*[process.env.VUE_APP_BASE_API]: {
                 target: process.env.VUE_APP_PROXY_TARGET,
                 changeOrigin: true,
                 ws: true,
                 pathRewrite: {
                     ['^' + process.env.VUE_APP_BASE_API]: ''
                 }
+            }*/
+            '/dev-api': {
+                target: process.env.VUE_APP_PROXY_TARGET,
+                changeOrigin: true,
+                ws: true,
+                pathRewrite: {
+                    '^/dev-api': ''
+                }
+            },
+            '/test-api': {
+                target: process.env.VUE_APP_PROXY_TARGET,
+                changeOrigin: true,
+                ws: true,
+                pathRewrite: {
+                    '^/test-api': ''
+                }
+            },
+            '/prod-api': {
+                target: process.env.VUE_APP_PROXY_TARGET,
+                changeOrigin: true,
+                ws: true,
+                pathRewrite: {
+                    '^/prod-api/': ''
+                }
             }
+        },
+        headers: {
+            // 微前端子应用，允许跨域
+            'Access-Control-Allow-Origin': '*',
         },
     },
 })

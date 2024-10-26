@@ -53,6 +53,7 @@ service.interceptors.response.use(
             // 默认接口错误, 需要将错误信息弹出
             Message.error(res.msg);
         } else if (res.code === '-2') {
+            //此处是登录接口报错信息
             console.log('rescode=-2', res)
             if(res.data.showCaptchaCode){
                 //发送消息给登录组件并显示验证码框

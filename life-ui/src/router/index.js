@@ -18,7 +18,7 @@ const routes = [
     {
         path: '/auth-redirect',
         name: 'auth-redirect',
-        component: () => import('../views/dashboard/DashboardView.vue')
+        component: () => import('../components/Temporary.vue')
     },
     {
         path: '/login',
@@ -62,10 +62,13 @@ router.beforeEach((to, from, next) => {
     console.log('to', to)
     let token = getToken();
     console.log('token-->', token)
-    console.log('window.location.origin-->', window.location.origin)
     if (token) {
-        // 有登录信息将跳转至首页
-        next({path: '/'});
+        if (whiteList.indexOf(to.path) !== -1) {
+            //如果已经登录还是有白名单的请求路径则跳转至 dashboard
+            next(`/dashboard`)
+        } else {
+            next()
+        }
     } else {
         //没有登录信息且跳转的路径中包含了白名单路径则跳转, 否则跳转至登录页
         if (whiteList.indexOf(to.path) !== -1) {
@@ -75,7 +78,6 @@ router.beforeEach((to, from, next) => {
             next(`/login`)
         }
     }
-    console.log("--->需要跳转的页面路由...", to)
 })
 
 export default router

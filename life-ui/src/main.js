@@ -16,6 +16,4 @@ const vm = new Vue({
     render: h => h(App)
 }).$mount('#app')
 
-console.log('process.env-->', process.env)
-
 export default vm

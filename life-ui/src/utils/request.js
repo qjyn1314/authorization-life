@@ -15,7 +15,7 @@ const service = axios.create({
 service.interceptors.request.use(
     config => {
         // do something before request is sent
-        if (store.getters.token) {
+        if (getToken()) {
             // let each request carry token
             // ['X-Token'] is a custom headers key
             // please modify it according to the actual situation
@@ -55,7 +55,7 @@ service.interceptors.response.use(
         } else if (res.code === '-2') {
             //此处是登录接口报错信息
             console.log('rescode=-2', res)
-            if(res.data.showCaptchaCode){
+            if (res.data.showCaptchaCode) {
                 //发送消息给登录组件并显示验证码框
                 pubsub.publish('showCaptcha', {showCaptcha: true});
             }
@@ -72,8 +72,10 @@ service.interceptors.response.use(
                     location.reload()
                 })
             })
+        } else {
+            // 如果没有data则直接返回 response
+            return response
         }
-        return null;
     },
     error => {
         console.error('response-error', error.message) // for debug

@@ -1,37 +1,23 @@
 import {getClient, getCurrentUser, getOauth2TokenByCode, oauthLogin} from '@/api/login'
 import {AUTH_SERVER} from '@/api/severApi'
-import {setToken, setValue} from '@/utils/cookie-util'
+import {setToken, setValueExpires} from '@/utils/cookie-util'
 
 export default {
     name: 'ssoAuth',
     namespaced: true,
     state: {
         clientInfo: {
-            domainName: "",
-            clientId: "",
-            clientSecret: "",
-            grantTypes: "",
-            scopes: "",
-            redirectUri: "",
-            accessTokenTimeout: 86400,
-            refreshTokenTimeout: 108000,
-            additionalInformation: "",
+            domainName: '',
+            clientId: '',
+            clientSecret: '',
+            grantTypes: '',
+            scopes: '',
+            redirectUri: '',
+            accessTokenTimeout: 0,
+            refreshTokenTimeout: 0,
+            additionalInformation: '',
             tenantId: "0"
-        },
-        tokenByCode: {
-            grant_type: '',
-            code: '',
-            state: '',
-            redirect_uri: '',
-            client_id: '',
-            client_secret: ''
-        },
-        accessToken: {
-            access_token: '',
-            token_type: '',
-            refresh_token: '',
-        },
-        userInfo: {}
+        }
     },
     getters: {},
     actions: {
@@ -51,25 +37,24 @@ export default {
         oauth2AccessTokenByCode(context, value) {
             //请求并获取client信息为获取accessToken使用
             getClient({domain: new URL(window.location.href).hostname}).then((res) => {
-                if (!res) {
+                if (!res || !res.data || !res.data.clientId) {
                     return;
                 }
                 context.state.clientInfo = res.data;
-                //默认的client信息
-                context.state.tokenByCode.grant_type = 'authorization_code'
-                context.state.tokenByCode.redirect_uri = context.state.clientInfo.redirectUri
-                context.state.tokenByCode.client_id = context.state.clientInfo.clientId
-                context.state.tokenByCode.client_secret = context.state.clientInfo.clientSecret
-                //路径中的临时code
-                context.state.tokenByCode.code = value.code
-                context.state.tokenByCode.state = value.state
-                console.log("context.state.tokenByCode", context.state.tokenByCode)
-                debugger
-                getOauth2TokenByCode(context.state.tokenByCode).then((res) => {
+                let clientInfo = res.data
+                let accessTokenByCode = {
+                    grant_type: 'authorization_code',
+                    redirect_uri: clientInfo.redirectUri,
+                    client_id: clientInfo.clientId,
+                    client_secret: clientInfo.clientSecret,
+                    code: value.code,
+                    state: value.state
+                };
+                getOauth2TokenByCode(accessTokenByCode).then((res) => {
                     if (!res) {
-                        return
+                        return;
                     }
-                    context.state.accessToken = res.data;
+                    //将返回的accesstoken信息存放至cookie中, 并访问当前登录用户信息接口
                     context.commit('SELF_USER', res.data)
                 })
             })
@@ -82,7 +67,6 @@ export default {
                 if (!res) {
                     return
                 }
-
                 // 登录成功将直接请求授权码模式接口,将跳转至临时授权页面
                 // 使用windows.href直接请求接口
                 // console.log("授权码模式...")
@@ -91,13 +75,13 @@ export default {
             })
         },
         SELF_USER(state, value) {
-            console.log("value-->{}", value)
-            //将accessToken存放到cookie中
-            setToken(state.accessToken.access_token);
+            //将accessToken存放到cookie中并设置过期时间
+            setToken("access_token_info", JSON.stringify(value), value.expires_in);
+            setToken(value.access_token, value.expires_in);
             //此处将获取当前登录用户信息并重定向到首页保存用户信息至cookie中
             getCurrentUser().then((res) => {
-                console.log("res", res)
-                setValue("userInfo", res.data);
+                setValueExpires("userInfo", JSON.stringify(res.data), value.expires_in);
+                window.location.href = `${process.env.VUE_APP_PROXY_TARGET}/dashboard`
             })
         }
     },

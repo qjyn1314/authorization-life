@@ -293,7 +293,6 @@ export default {
           if (self.loginCur == 0) {
             getAuthLogin(self.ruleForm).then(resdata => {
               let result = resdata.data
-              console.log(result);
               // eslint-disable-next-line eqeqeq
               if (result.code == '-2') {
                 self.formRules = result.data.errorVO || {} // 后台返回的错误信息赋值给变量errorMsg

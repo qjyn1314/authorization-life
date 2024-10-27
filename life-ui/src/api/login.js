@@ -43,14 +43,16 @@ export function getOauth2TokenByCode(data) {
     return request({
         url: `/${AUTH_SERVER}/oauth2/token`,
         method: 'POST',
-        data: data
+        data: data,
+        //设置请求头-Content-Type
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     })
 }
 
 // 获取当前登录用户的信息
 export function getCurrentUser() {
     return request({
-        url: `/${AUTH_SERVER}/oauth2/self-user`,
+        url: `/${AUTH_SERVER}/oauth/self-user`,
         method: 'GET',
     })
 }

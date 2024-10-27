@@ -202,8 +202,9 @@ public class Oauth2SecurityConfig {
     }
 
 
-    @Bean //加载中文认证提示信息
+    @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
+        //加载中文认证提示信息
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         //加载org/springframework/security包下的中文提示信息 配置文件
         messageSource.setBasename("classpath:messages/messages_zh_CN");

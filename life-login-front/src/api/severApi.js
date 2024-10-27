@@ -28,11 +28,9 @@ window.changeRoute = function (code, route) {
     switch (code) {
         case AUTH_SERVER:
             AUTH_SERVER = route
-            console.log(AUTH_SERVER)
             break;
         case SYSTEM_SERVER:
             SYSTEM_SERVER = route
-            console.log(SYSTEM_SERVER)
             break;
     }
 }

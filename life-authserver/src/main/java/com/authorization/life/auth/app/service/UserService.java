@@ -47,4 +47,11 @@ public interface UserService {
      */
     Boolean validateEmailExist(LifeUserDTO userDTO);
 
+    /**
+     * 重置密码
+     *
+     * @param lifeUser 用户邮箱信息
+     */
+    void resetPassword(LifeUserDTO lifeUser);
+
 }

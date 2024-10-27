@@ -31,6 +31,11 @@ const routes = [
         component: () => import('../views/reg/SignIn.vue')
     },
     {
+        path: '/reset-pwd',
+        name: 'resetPwd',
+        component: () => import('../views/password/ResetPassword.vue')
+    },
+    {
         path: '/temp',
         name: 'temp',
         component: () => import('../views/temp/TempPage.vue')
@@ -61,7 +66,7 @@ const router = new VueRouter({
 })
 
 //白名单路径
-const whiteList = ['/login', '/register', '/auth-redirect', '/404'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/reset-pwd', '/auth-redirect', '/404'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
     let token = getToken();

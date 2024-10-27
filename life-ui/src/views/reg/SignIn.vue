@@ -73,9 +73,6 @@ export default {
         captchaUuid: '',
         captchaCode: '',
       },
-      captcha: {
-        imageBase64: '',
-      },
       rules: {
         email: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
         hashPassword: [{required: true, message: '请输入密码', trigger: 'blur'},]

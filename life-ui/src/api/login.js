@@ -83,3 +83,21 @@ export function emailRegister(data) {
         data: data
     })
 }
+
+// 发送邮箱注册验证码
+export function sendEmailCodeResetPwd(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/send-email-code-reset-pwd`,
+        method: 'POST',
+        data: data
+    })
+}
+
+// 邮箱注册
+export function resetPassword(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/reset-password`,
+        method: 'POST',
+        data: data
+    })
+}

@@ -14,6 +14,7 @@ import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.ValidGroup;
 import com.authorization.valid.start.util.ValidUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -139,6 +140,41 @@ public class UserServiceImpl implements UserService {
         Assert.notBlank(lifeUser.getEmail(), "邮箱不能为空.");
         ValidUtil.validateAndThrow(lifeUser, ValidGroup.class);
         return mapper.selectCount(Wrappers.lambdaQuery(new LifeUser()).eq(LifeUser::getEmail, lifeUser.getEmail())) > 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void resetPassword(LifeUserDTO lifeUser) {
+        ValidUtil.validateAndThrow(lifeUser, LifeUserDTO.ResetPwdGroup.class);
+        Assert.isTrue(lifeUser.getHashPassword().equals(lifeUser.getValidHashPassword()), "两次输入密码不一致,请重新输入.");
+
+        boolean verifiedExpirationDate = RedisCaptchaValidator.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        Assert.isTrue(verifiedExpirationDate, "验证码已过期, 请重新获取.");
+        boolean verify = RedisCaptchaValidator.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        Assert.isTrue(verify, "验证码不正确,请重新输入.");
+
+        //此处是验证通过, 将删除缓存中的验证码和邮箱校验逻辑
+        RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
+        RedisKeyValid.delEmailRegSendCode(redisUtil, lifeUser.getCaptchaUuid());
+
+        LambdaQueryWrapper<LifeUser> queryEmailWrapper = Wrappers.lambdaQuery(new LifeUser())
+                .eq(LifeUser::getEmail, lifeUser.getEmail());
+        LifeUser lifeUserOne = mapper.selectOne(queryEmailWrapper);
+        Assert.notNull(lifeUserOne, "未找到所需要重置的邮箱信息.");
+
+        String oldHashPassword = lifeUser.getHashPassword();
+        log.info("加密前->{}", oldHashPassword);
+        String newHashPassword = passwordEncoder.encode(oldHashPassword);
+        log.info("加密后->{}", newHashPassword);
+
+        boolean matches = passwordEncoder.matches(oldHashPassword, newHashPassword);
+        log.info("验证是否生成成功->{}", matches);
+
+        LifeUser updateUser = new LifeUser();
+        updateUser.setUserId(lifeUserOne.getUserId());
+        updateUser.setHashPassword(newHashPassword);
+        mapper.updateById(updateUser);
+
     }
 
 }

@@ -183,6 +183,8 @@ export default {
     initLovValuePahe() {
       if (!this.$route.query.lovId) {
         Message.error("未找到值集主信息")
+        this.initLovData = {};
+        return
       }
       this.getLovData({lovId: this.$route.query.lovId})
     },
@@ -195,7 +197,9 @@ export default {
           Message.error("未找到值集主信息")
         }
         this.initLovData = res.data;
-        this.getPageInfo();
+        if (this.initLovData.lovId) {
+          this.getPageInfo();
+        }
       })
     },
     getPageInfo() {
@@ -284,6 +288,7 @@ export default {
   mounted() {
   },
   beforeDestroy() {
+    this.initLovData.lovId = null;
   }
 }
 </script>

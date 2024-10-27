@@ -2,6 +2,14 @@ import request from '../utils/request'
 import {AUTH_SERVER} from './severApi'
 // import Qs from "qs";
 
+//  获取获取一个励志的句子
+export function inspirational() {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/sentence`,
+        method: 'POST',
+    })
+}
+
 //  获取图片验证码
 export function pictureCode(uuid) {
     return request({
@@ -36,6 +44,14 @@ export function getOauth2TokenByCode(data) {
         url: `/${AUTH_SERVER}/oauth2/token`,
         method: 'POST',
         data: data
+    })
+}
+
+// 获取当前登录用户的信息
+export function getCurrentUser() {
+    return request({
+        url: `/${AUTH_SERVER}/oauth2/self-user`,
+        method: 'GET',
     })
 }
 

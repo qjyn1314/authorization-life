@@ -7,16 +7,17 @@
 </template>
 
 <script>
+import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Temporary',
   components: {},
   created() {
-    console.log("需要拿到当前路径中的临时code参数.")
+    console.log("需要拿到当前路径中的临时code参数.", this.$route.query)
+    store.dispatch("ssoAuth/oauth2AccessTokenByCode", this.$route.query)
   },
   mounted() {
-
   },
   beforeDestroy() {
   }

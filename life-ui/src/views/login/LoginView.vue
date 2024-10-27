@@ -1,7 +1,11 @@
 <template>
   <div>
     <el-container class="login_view_container">
-      <el-aside class="login_view_aside" :width="'890px'"></el-aside>
+      <el-aside class="login_view_aside" :width="'890px'">
+        <div class="login_view_aside_inspirational">
+          <p>{{ inspirational }}</p>
+        </div>
+      </el-aside>
       <el-container>
         <el-header :height="'180px'">
           <h1>命运迷雾</h1>
@@ -62,7 +66,7 @@
 </template>
 
 <script>
-import {getClient, pictureCode} from '@/api/login'
+import {getClient, inspirational, pictureCode} from '@/api/login'
 import {Message} from 'element-ui'
 import store from "@/store";
 import pubsub from 'pubsub-js';
@@ -72,6 +76,7 @@ export default {
   components: {},
   data() {
     return {
+      inspirational: '',
       showCaptcha: false,
       loginForm: {
         username: '',
@@ -93,6 +98,7 @@ export default {
   },
   created() {
     this.pictureAndClient();
+    this.inspirationalSentence();
 
     let statusStr = "<lable style=\"background-color:#EBEDF1; padding:10px; color: #7A7B92;border-radius: 12px;\">未提交</label>";
     let number = statusStr.indexOf('未提交');
@@ -141,6 +147,11 @@ export default {
 
   },
   methods: {
+    inspirationalSentence() {
+      inspirational().then((res) => {
+        this.inspirational = res.data;
+      });
+    },
     pictureAndClient() {
       // 使用URL API来获取域名
       const url = new URL(window.location.href);
@@ -174,7 +185,8 @@ export default {
           if (this.showCaptcha && this.loginForm.captchaCode === '') {
             Message.error("请输入验证码.")
           } else {
-            store.dispatch('securityLogin', this.loginForm)
+            //交给store进行登录并进行存储token以及当前登录用户信息
+            store.dispatch('ssoAuth/securityLogin', this.loginForm)
           }
         } else {
           return false;
@@ -204,9 +216,24 @@ export default {
 
 </script>
 <style scoped>
+
+.login_view_aside_inspirational {
+  display: flex;
+  width: auto;
+  height: 200px;
+  margin-top: 270px;
+  text-align: center;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.login_view_aside_inspirational p {
+  font-size: 30px;
+  font-weight: bold;
+}
+
 .el-aside {
   text-align: center;
-  line-height: 685px;
 }
 
 .login_view_container {
@@ -214,7 +241,9 @@ export default {
 }
 
 .login_view_aside {
-  //background: url("../../assets/images/loginback.png") no-repeat center;
+  background: url("../../assets/images/loginback.png") no-repeat center;
+  //background: url("../../assets/images/天气之子.jpg") no-repeat center;
+  //background: url("../../assets/images/云和山风景4K壁纸_彼岸图网.jpg") no-repeat center;
 }
 
 .el-header {

@@ -3,15 +3,16 @@ package com.authorization.life.auth.api.controller;
 import cn.hutool.core.lang.Assert;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.security.entity.UserHelper;
+import com.authorization.life.auth.app.constant.Inspirational;
 import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
-import com.authorization.redis.start.util.Captcha;
-import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.life.mail.start.MailConstant;
 import com.authorization.life.mail.start.MailSendService;
+import com.authorization.redis.start.util.Captcha;
+import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.UserDetail;
@@ -119,6 +120,12 @@ public class OauthController {
     public Result<Map<String, Object>> decodeJwt(@RequestParam("jwtToken") String jwtToken) {
         Jwt decode = jwtDecoder.decode(jwtToken);
         return Result.ok(decode.getClaims());
+    }
+
+    @Operation(summary = "获取随机的励志句子")
+    @PostMapping("/sentence")
+    public Result<String> getSentence() {
+        return Result.ok(Inspirational.getSentence());
     }
 
 }

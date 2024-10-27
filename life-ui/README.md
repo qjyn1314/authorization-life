@@ -65,3 +65,80 @@ bootstrap样式引入
 npm install bootstrap
 
 ```
+
+### nginx的配置项-开发环境
+
+```
+
+    server {
+        listen       80;
+        server_name  dev.authorization.life;
+
+        #后端服务gateway
+        location /dev-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+                proxy_pass http://127.0.0.1:8888;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+        }
+
+    }
+
+```
+
+### nginx配置项-测试和生产环境
+
+```
+    # 测试环境的nginx配置项
+    server {
+        listen       80;
+        server_name  test.authorization.life;
+
+        #后端服务gateway
+        location /test-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+            root html/test_dist;
+            try_files $uri $uri/ /index.html;
+        }
+
+    }
+
+    # 生产环境的配置项
+    server {
+        listen       80;
+        server_name  prod.authorization.life;
+		#后端服务gateway
+        location /prod-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+            root html/prod_dist;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+```

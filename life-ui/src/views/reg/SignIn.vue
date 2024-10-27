@@ -8,17 +8,17 @@
       </el-aside>
       <el-container>
         <el-header :height="'180px'">
-          <h1>命运迷雾</h1>
+          <h1>欢迎注册《命运迷雾》</h1>
         </el-header>
         <el-main>
           <el-row>
             <el-col :span="20">
               <el-form label-width="100px" :model="loginForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="username">
-                  <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
+                  <el-input ref="username" v-model="loginForm.email" placeholder="邮箱"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                  <el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
+                  <el-input type="password" v-model="loginForm.hashPassword" placeholder="密码"></el-input>
                 </el-form-item>
                 <el-row v-if="showCaptcha">
                   <el-col :span="12">
@@ -27,35 +27,22 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px" @click="refreshCode">
-                      <el-image :src="captcha.imageBase64"></el-image>
+                    <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px;" @click="refreshCode">
+                      <el-button type="text" :disabled="this.sendBtn !== '发送验证码'">{{ sendBtn }}</el-button>
                     </div>
                   </el-col>
                 </el-row>
-                <el-row v-if="showCaptcha">
-                  <h6 style="color: red">密码输入错误十次将锁定三小时.</h6>
-                </el-row>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="6" :offset="18">
-                      <el-button type="text" size="small">忘记密码</el-button>
-                    </el-col>
-                  </el-row>
-                </el-form-item>
                 <el-form-item>
                   <el-row>
                     <el-col :span="24">
-                      <el-button type="danger" style="width: 100%;" @click="ssoLogin">登录</el-button>
+                      <el-button type="danger" style="width: 100%;" @click="ssoReg">注册</el-button>
                     </el-col>
                   </el-row>
                 </el-form-item>
                 <el-form-item>
                   <el-row>
                     <el-col :span="6">
-                      <el-button type="text" icon="el-icon-chat-round">微信</el-button>
-                    </el-col>
-                    <el-col :span="6" :offset="12">
-                      <el-button type="text" @click="goReg">立即注册</el-button>
+                      <el-button type="text" @click="goLogin">已有账号</el-button>
                     </el-col>
                   </el-row>
                 </el-form-item>
@@ -69,38 +56,33 @@
 </template>
 
 <script>
-import {getClient, inspirational, pictureCode} from '@/api/login'
+import {emailRegister, inspirational, sendEmailCode} from '@/api/login'
 import {Message} from 'element-ui'
-import store from "@/store";
-import pubsub from 'pubsub-js';
 
 export default {
-  name: 'LoginView',
+  name: 'SignIn',
   components: {},
   data() {
     return {
       inspirational: '',
-      showCaptcha: false,
+      sendBtn: '发送验证码',
+      showCaptcha: true,
       loginForm: {
-        username: '',
-        password: '',
+        email: '',
+        hashPassword: '',
         captchaUuid: '',
         captchaCode: '',
-        client_id: '',
-        client_secret: '',
-        redirect_uri: '',
       },
       captcha: {
         imageBase64: '',
       },
       rules: {
-        username: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
-        password: [{required: true, message: '请输入密码', trigger: 'blur'},]
+        email: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
+        hashPassword: [{required: true, message: '请输入密码', trigger: 'blur'},]
       }
     }
   },
   created() {
-    this.pictureAndClient();
     this.inspirationalSentence();
   },
   methods: {
@@ -109,49 +91,67 @@ export default {
         this.inspirational = res.data;
       });
     },
-    pictureAndClient() {
-      // 使用URL API来获取域名
-      const url = new URL(window.location.href);
-      // 根据浏览器地址获取认证信息
-      getClient({domain: url.hostname}).then((res) => {
-        if (!res) {
-          return;
-        }
-        this.loginForm.client_id = res.data.clientId;
-        this.loginForm.client_secret = res.data.clientSecret;
-        this.loginForm.redirect_uri = res.data.redirectUri;
-      })
-      this.refreshCode();
-    },
     refreshCode() {
       if (!this.showCaptcha) {
         return
       }
-      // 刷新图片验证码
-      pictureCode().then((res) => {
+      if (!this.loginForm.email || this.loginForm.email === '') {
+        Message.error("请输入邮箱.")
+        return;
+      }
+      let emailParams = {email: this.loginForm.email};
+      // 重新发送邮箱验证码
+      sendEmailCode(emailParams).then((res) => {
         if (!res) {
           return
         }
-        this.captcha.imageBase64 = res.data.imageBase64;
-        this.loginForm.captchaUuid = res.data.uuid;
+        this.loginForm.captchaUuid = res.data;
+        Message.success("邮箱注册验证码已发送,请登录邮箱查收.")
+        //在发送成功后进行倒计时描述更改 sendBtn 的值.60秒倒计时开始
+        this.countdownTime();
       })
     },
-    ssoLogin() {
+    countdownTime() {
+
+      // 设定倒计时时间（单位：秒）
+      let secondsRemaining = 60;
+      // 初始化倒计时
+      this.intervalId = setInterval(() => {
+        // 每秒递减倒计时
+        secondsRemaining = secondsRemaining - 1;
+        if (secondsRemaining >= 0) {
+          this.sendBtn = secondsRemaining
+          if (secondsRemaining <= 0) {
+            clearInterval(this.intervalId);
+            this.sendBtn = '发送验证码'
+          }
+        }
+      }, 1000);
+
+    },
+    ssoReg() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           if (this.showCaptcha && this.loginForm.captchaCode === '') {
             Message.error("请输入验证码.")
           } else {
             //交给store进行登录并进行存储token以及当前登录用户信息
-            store.dispatch('ssoAuth/securityLogin', this.loginForm)
+            emailRegister(this.loginForm).then((res) => {
+              if (!res) {
+                return
+              }
+              this.loginForm = {};
+              Message.success("邮箱注册注册成功, 请登录.")
+              this.goLogin()
+            })
           }
         } else {
           return false;
         }
       });
     },
-    goReg() {
-      this.$router.push({path: '/register'});
+    goLogin() {
+      this.$router.push({path: '/login'});
     }
   },
   mounted() {
@@ -161,14 +161,8 @@ export default {
       //在页面加载成功后为username输入框获取焦点事件
       this.$refs.username.focus();
     }, 12)
-    //在组件生命周期中, 一旦加载页面, 就开始订阅消息 订阅消息 名称为: pubsub_001
-    this.pubsubId = pubsub.subscribe('showCaptcha', (name, value) => {
-      this.showCaptcha = value.showCaptcha;
-      this.refreshCode();
-    })
   },
   beforeDestroy() {
-    pubsub.unsubscribe(this.pubsubId);
   }
 }
 

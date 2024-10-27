@@ -124,7 +124,7 @@ public class LifeUserDTO implements Serializable {
     /**
      * 验证码
      */
-    @Length(min = 5, max = 20, groups = {SaveGroup.class}, message = "请输入验证码.")
+    @Length(min = 1, max = 10, groups = {SaveGroup.class}, message = "请输入验证码.")
     private String captchaCode;
 
 }

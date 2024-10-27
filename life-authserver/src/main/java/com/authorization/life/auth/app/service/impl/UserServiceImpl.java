@@ -2,6 +2,7 @@ package com.authorization.life.auth.app.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
+import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.LifeUserVO;
@@ -100,6 +101,11 @@ public class UserServiceImpl implements UserService {
         Assert.isTrue(verifiedExpirationDate, "验证码已过期, 请重新获取.");
         boolean verify = RedisCaptchaValidator.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
+
+        //此处是验证通过, 将删除缓存中的验证码和邮箱校验逻辑
+        RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
+        RedisKeyValid.delEmailRegSendCode(redisUtil, lifeUser.getCaptchaUuid());
+
 
         LifeUser insertUser = new LifeUser();
         insertUser.setUsername(getUserName());

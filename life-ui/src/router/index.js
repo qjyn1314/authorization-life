@@ -26,6 +26,11 @@ const routes = [
         component: () => import('../views/login/LoginView.vue')
     },
     {
+        path: '/register',
+        name: 'register',
+        component: () => import('../views/reg/SignIn.vue')
+    },
+    {
         path: '/temp',
         name: 'temp',
         component: () => import('../views/temp/TempPage.vue')
@@ -56,14 +61,12 @@ const router = new VueRouter({
 })
 
 //白名单路径
-const whiteList = ['/login', '/auth-redirect', '/404'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/auth-redirect', '/404'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
-    console.log('to', to)
     let token = getToken();
-    console.log('token-->', token)
     if (token) {
-        if (whiteList.indexOf(to.path) !== -1) {
+        if (whiteList.indexOf(to.path) !== -1 || to.path === '/') {
             //如果已经登录还是有白名单的请求路径则跳转至 dashboard
             next(`/dashboard`)
         } else {

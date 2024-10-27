@@ -65,3 +65,21 @@ export function oauthLogout(data) {
         data: data
     })
 }
+
+// 发送邮箱注册验证码
+export function sendEmailCode(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/send-email-code`,
+        method: 'POST',
+        data: data
+    })
+}
+
+// 邮箱注册
+export function emailRegister(data) {
+    return request({
+        url: `/${AUTH_SERVER}/oauth/email-register`,
+        method: 'POST',
+        data: data
+    })
+}

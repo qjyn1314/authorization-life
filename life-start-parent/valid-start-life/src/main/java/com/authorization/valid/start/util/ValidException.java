@@ -11,8 +11,8 @@ public class ValidException extends RuntimeException {
 
     private static final String DEFAULT_MESSAGE = "校验异常";
 
-    public ValidException(String code) {
-        super(DEFAULT_MESSAGE);
+    public ValidException(String msg) {
+        super(msg);
     }
 
 }

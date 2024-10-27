@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class RedisCaptchaValidator {
 
-    private static final String CAPTCHA_CACHE_KEY = SecurityCoreService.CAPTCHA_CACHE_KEY;
+    public static final String CAPTCHA_CACHE_KEY = SecurityCoreService.CAPTCHA_CACHE_KEY;
 
     /**
      * 默认时间 10 分钟

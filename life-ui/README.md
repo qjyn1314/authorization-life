@@ -68,6 +68,10 @@ npm install bootstrap
 
 ### nginx的配置项-开发环境
 
+#### 详细部署说明
+
+部署vue项目的详细配置 : https://www.bilibili.com/read/cv20095657/
+
 ```
 
     server {

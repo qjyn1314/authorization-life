@@ -1,74 +1,58 @@
 // 导入二次封装axios
-import koi from "@/utils/axios.ts";
-// 引入接口类型
-import type { ILoginParams } from "./type.ts";
+import server from "@/utils/axios.ts";
+import { AUTH_SERVER } from "@/utils/global.ts";
 
-// 统一管理接口
-enum API {
-  KOI_LOGIN = "/auth/login",
-  KOI_DYNAMIC_DATA = "/koi/sysLoginUser/getLoginUserInfo",
-  KOI_USERINFO = "/user/info",
-  LIST_PAGE = "/koi/sysLoginUser/listPage",
-  GET_BY_ID = "/koi/sysLoginUser/getById",
-  UPDATE = "/koi/sysLoginUser/update",
-  ADD = "/koi/sysLoginUser/add",
-  DELETE = "/koi/sysLoginUser/deleteById",
-  BATCH_DELETE = "/koi/sysLoginUser/batchDelete",
-  UPDATE_STATUS = "/koi/sysLoginUser/updateStatus"
-}
-// 暴露请求函数
-// 登录接口方法
-export const koiLogin = (params: ILoginParams) => {
-  return koi.post(API.KOI_LOGIN, params);
+// 随机获取一个励志的句子
+export const inspirational = () => {
+  return server.post(`/${AUTH_SERVER}/oauth/sentence`);
 };
 
-// 通过token查询相关用户信息、按钮权限、菜单权限数据，token必须有效
-export const koiDynamicData = () => {
-  return koi.get(API.KOI_DYNAMIC_DATA);
+// 获取图片验证码
+export const pictureCode = (uuid: string) => {
+  return server.get(`/${AUTH_SERVER}/oauth/picture-code?uuid=${uuid}`);
 };
 
-// 查询用户信息
-export const koiUserInfo = (params: ILoginParams) => {
-  return koi.get(API.KOI_USERINFO, params);
+// 获取client信息
+export const getClient = (data: any) => {
+  return server.post(`/${AUTH_SERVER}/oauth/client`, data);
 };
 
-// 多条件分页查询数据
-export const listPage = (params: any) => {
-  return koi.get(API.LIST_PAGE, params);
+// 登录接口
+export const oauthLogin = (data: any) => {
+  return server.postForm(`/${AUTH_SERVER}/oauth/login`, data,);
 };
 
-// 根据ID进行查询
-export const getById = (id: any) => {
-  return koi.get(API.GET_BY_ID + "/" + id);
+// 通过code获取access token
+export const getOauth2TokenByCode = (data: any) => {
+  return server.postForm(`/${AUTH_SERVER}/oauth2/token`, data);
 };
 
-// 根据ID进行修改
-export const update = (data: any) => {
-  return koi.post(API.UPDATE, data);
+// 查询当前登录用户信息, 包含角色, 菜单, 按钮, 以及基本信息
+export const currentUserInfo = () => {
+  return server.get(`/${AUTH_SERVER}/oauth/self-user`);
 };
 
-// 添加
-export const add = (data: any) => {
-  if (!data.postIds || data.postIds.length === 0) {
-    data.postIds = [-1];
-  }
-  if (!data.roleIds || data.roleIds.length === 0) {
-    data.roleIds = [-1];
-  }
-  return koi.post(API.ADD, data);
+// SpringSecurity的退出登录处理器
+export const oauthLogout = (data: any) => {
+  return server.get(`/${AUTH_SERVER}/oauth/logout`, data);
 };
 
-// 删除
-export const deleteById = (id: any) => {
-  return koi.post(API.DELETE + "/" + id);
+// 发送邮箱注册验证码
+export const sendEmailCode = (data: any) => {
+  return server.post(`/${AUTH_SERVER}/oauth/send-email-code`, data);
 };
 
-// 批量删除
-export const batchDelete = (ids: any) => {
-  return koi.post(API.BATCH_DELETE, ids); // 第一种传参方式
+// 邮箱注册
+export const emailRegister = (data: any) => {
+  return server.post(`/${AUTH_SERVER}/oauth/email-register`, data);
 };
 
-// 修改状态
-export const updateStatus = (id: any, status: any) => {
-  return koi.post(API.UPDATE_STATUS + "/" + id + "/" + status); // 第一种传参方式
+// 发送邮箱重置密码时的验证码
+export const sendEmailCodeResetPwd = (data: any) => {
+  return server.post(`/${AUTH_SERVER}/oauth/send-email-code-reset-pwd`, data);
+};
+
+// 邮箱注册
+export const resetPassword = (data: any) => {
+  return server.post(`/${AUTH_SERVER}/oauth/reset-password`, data);
 };

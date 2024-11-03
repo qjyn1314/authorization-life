@@ -1,10 +1,11 @@
 // 定义权限小仓库[选择式Api写法]
-import { defineStore } from "pinia";
-import { staticRouter } from "@/routers/modules/staticRouter";
-import authMenu from "@/assets/json/authMenu.json";
-import authUser from "@/assets/json/authUser.json";
-import { generateRoutes, generateFlattenRoutes } from "@/utils/filterRoute.ts";
-import { getShowStaticAndDynamicMenuList, getAllBreadcrumbList } from "@/utils/index.ts";
+import {defineStore} from "pinia";
+import {oauthLogin} from "@/api/system/user";
+import useClientStore from "@/stores/modules/client.ts";
+import {AUTH_SERVER} from "@/utils/global.ts";
+// import {staticRouter} from "@/routers/modules/staticRouter";
+// import {generateRoutes, generateFlattenRoutes} from "@/utils/filterRoute.ts";
+// import {getShowStaticAndDynamicMenuList, getAllBreadcrumbList} from "@/utils/index.ts";
 
 // 权限数据，不进行持久化。否则刷新浏览器无法获取新的数据。
 const authStore = defineStore("auth", {
@@ -32,24 +33,51 @@ const authStore = defineStore("auth", {
   },
   // 该函数没有上下文数据，所以获取state中的变量需要使用this
   actions: {
-    // 获取后端菜单数据
-    async listRouters() {
-      // res.data是后端接口原始数据，进行扁平化路由数据。
-      this.menuList = generateFlattenRoutes(authMenu.data);
-      // 持久化递归菜单数据，左侧菜单栏渲染，这里的菜单将后端数据进行递归，需要将动态路由 isHide == 0 的隐藏菜单剔除，将静态路由 isHide == 0 的隐藏菜单剔除
-      this.recursiveMenuList = getShowStaticAndDynamicMenuList(staticRouter).concat(
-        generateRoutes(getShowStaticAndDynamicMenuList(authMenu.data), 0)
-      );
-      // 面包屑需要静态和动态所有的数据，无论是否隐藏
-      this.breadcrumbList = staticRouter.concat(generateRoutes(authMenu.data, 0));
+    // 请求登录接口
+    async ssoLogin(loginParams: any) {
+      console.log(loginParams)
+      oauthLogin(loginParams).then((res) => {
+        console.log(res);
+        if (!res) {
+          return
+        } else {
+          this.oauth2Authorize()
+        }
+      })
     },
-    // 获取角色数据 AND 按钮数据 AND 用户信息
-    async getLoginUserInfo() {
-      console.log("用户信息数据", authUser.data);
-      this.roleList = authUser.data.roles;
-      this.buttonList = authUser.data.buttons;
-      this.loginUser = authUser.data.loginUser;
+    oauth2Authorize() {
+      const clientStore = useClientStore();
+      console.log(clientStore);
+      console.log(AUTH_SERVER)
+      debugger
+      let host_target = import.meta.env.VITE_SERVER;
+      let base_api = import.meta.env.VITE_WEB_BASE_API;
+
+// 登录成功将直接请求授权码模式接口,将跳转至临时授权页面
+// 使用windows.href直接请求接口
+// console.log("授权码模式...")
+// console.log("请求授权确认...", `${process.env.VUE_APP_PROXY_TARGET}/dev-api/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`)
+      window.location.href = `${host_target}/${base_api}/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${clientStore.clientId}&scope=${clientStore.scopes}&state=${clientStore.grantTypes}&redirect_uri=${clientStore.redirectUri}`
+
     }
+    // // 获取后端菜单数据
+    // async listRouters() {
+    //   // res.data是后端接口原始数据，进行扁平化路由数据。
+    //   this.menuList = generateFlattenRoutes(authMenu.data);
+    //   // 持久化递归菜单数据，左侧菜单栏渲染，这里的菜单将后端数据进行递归，需要将动态路由 isHide == 0 的隐藏菜单剔除，将静态路由 isHide == 0 的隐藏菜单剔除
+    //   this.recursiveMenuList = getShowStaticAndDynamicMenuList(staticRouter).concat(
+    //     generateRoutes(getShowStaticAndDynamicMenuList(authMenu.data), 0)
+    //   );
+    //   // 面包屑需要静态和动态所有的数据，无论是否隐藏
+    //   this.breadcrumbList = staticRouter.concat(generateRoutes(authMenu.data, 0));
+    // },
+    // // 获取角色数据 AND 按钮数据 AND 用户信息
+    // async getLoginUserInfo() {
+    //   console.log("用户信息数据", authUser.data);
+    //   this.roleList = authUser.data.roles;
+    //   this.buttonList = authUser.data.buttons;
+    //   this.loginUser = authUser.data.loginUser;
+    // }
   },
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
   getters: {
@@ -60,7 +88,7 @@ const authStore = defineStore("auth", {
     // 菜单权限列表 ==> 左侧菜单栏渲染，这里的菜单将后端数据进行递归，需要将动态路由 isHide == 0 的隐藏菜单剔除, 将静态路由 isHide == 0 的隐藏菜单剔除
     showMenuList: state => state.recursiveMenuList,
     // 递归处理后的所有面包屑导航列表
-    getBreadcrumbList: state => getAllBreadcrumbList(state.breadcrumbList)
+    // getBreadcrumbList: state => getAllBreadcrumbList(state.breadcrumbList)
   }
 });
 

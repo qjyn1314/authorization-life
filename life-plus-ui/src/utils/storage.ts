@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, PINIA_PREFIX} from "@/config";
+import {ACCESS_TOKEN, PINIA_PREFIX} from "@/config";
 // @ts-ignore
 import cookies from "js-cookie";
 

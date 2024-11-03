@@ -63,6 +63,14 @@ class Yu {
           // 这里的后端可能是code OR status 和 msg OR message需要看后端传递的是什么？
           // console.log("200状态", status);
           return res.data;
+        } else if (status == '0') {
+          return res.data;
+        } else if (status == '-2') {
+          koiMsgError(res.data.msg);
+          return null;
+        } else if (status == '-1') {
+          koiMsgError(res.data.msg);
+          return null;
         } else if (status == 401) {
           // console.log("401状态", status);
           const userStore = useUserStore();

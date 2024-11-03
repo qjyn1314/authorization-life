@@ -21,4 +21,4 @@ export const SVG_PREFIX: string = "koi-";
 export const DEFAULT_THEME: string = "#2992FF";
 
 // 路由白名单地址[本地存在的路由 staticRouter.ts 中]
-export const ROUTER_WHITE_LIST: string[] = ["/500"];
+export const ROUTER_WHITE_LIST: string[] = ["/login", "/auth-redirect", "/500", "/400"];

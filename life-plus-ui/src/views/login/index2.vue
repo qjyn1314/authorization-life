@@ -4,8 +4,8 @@
     <div class="box" ref="box" v-if="!isMobile">
       <!-- 滑动盒子 -->
       <div class="slide-box" ref="slideRef">
-        <h1 class="slide-title" v-if="switchLock">欢迎登录-KOI-ADMIN🌻</h1>
-        <h1 class="slide-title" v-if="!switchLock">欢迎注册-KOI-ADMIN🌻</h1>
+        <h1 class="slide-title" v-if="switchLock">欢迎登录-命运迷雾🌻</h1>
+        <h1 class="slide-title" v-if="!switchLock">欢迎注册-命运迷雾🌻</h1>
         <p class="slide-title">JOIN US</p>
         <div class="img-box">
           <img class="select-none" :src="switchLogo" alt="LOGO" />
@@ -146,7 +146,7 @@ import { koiMsgError, koiNoticeSuccess, koiMsgSuccess } from "@/utils/koi.ts";
 import { useRouter } from "vue-router";
 import { koiMsgWarning } from "@/utils/koi.ts";
 // import { koiLogin } from "@/api/mock/index.ts";
-import authLogin from "@/assets/json/authLogin.json";
+// import authLogin from "@/assets/json/authLogin.json";
 import useUserStore from "@/stores/modules/user.ts";
 import useKeepAliveStore from "@/stores/modules/keepAlive.ts";
 import { HOME_URL } from "@/config/index.ts";
@@ -217,6 +217,8 @@ const handleKoiLogin = () => {
         // console.log("tokenValue", res.data.tokenValue);
         // userStore.setToken(res.data.tokenValue);
         userStore.setToken(authLogin.data.tokenValue);
+
+        userStore
 
         // 2、添加动态路由 AND 用户按钮 AND 角色信息 AND 用户个人信息
         await initDynamicRouter();

@@ -49,16 +49,15 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   }
   let token = userStore.token;
   if (token) {
-    // 4、判断访问页面是否在路由白名单地址[静态路由]中，如果存在直接放行。
+    debugger
+    //已登录将直接跳转到home首页
+    next({path: HOME_URL, replace: true});
+  } else {
+    //没有登录且在白名单的范围内, 将直接跳转
     if (ROUTER_WHITE_LIST.includes(to.path)) {
       next();
     } else {
-      next(HOME_URL);
-    }
-  }else{
-    if (ROUTER_WHITE_LIST.includes(to.path)) {
-      next();
-    }else{
+      //否则将跳转到登录页面
       next({path: LOGIN_URL, replace: true});
     }
   }

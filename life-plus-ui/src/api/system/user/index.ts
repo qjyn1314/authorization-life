@@ -1,6 +1,6 @@
 // 导入二次封装axios
 import server from "@/utils/axios.ts";
-import { AUTH_SERVER } from "@/utils/global.ts";
+import {AUTH_SERVER} from "@/utils/global.ts";
 
 // 随机获取一个励志的句子
 export const inspirational = () => {
@@ -24,7 +24,7 @@ export const oauthLogin = (data: any) => {
 
 // 通过code获取access token
 export const getOauth2TokenByCode = (data: any) => {
-  return server.postForm(`/${AUTH_SERVER}/oauth2/token`, data);
+  return server.postEncodeForm(`/${AUTH_SERVER}/oauth2/token`, data);
 };
 
 // 查询当前登录用户信息, 包含角色, 菜单, 按钮, 以及基本信息

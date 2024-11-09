@@ -55,31 +55,23 @@ class Yu {
     // 请求返回之后的拦截器：数据或者状态
     this.instance.interceptors.response.use(
       (res: AxiosResponse) => {
-        // console.log("axios返回数据：", res);
-        // console.log("服务器状态",res.status);
-        const status = res.data.status || res.data.code; // 后端返回数据状态
-        if (status == 200) {
-          // 服务器连接状态，非后端返回的status 或者 code
-          // 这里的后端可能是code OR status 和 msg OR message需要看后端传递的是什么？
-          // console.log("200状态", status);
-          return res.data;
-        } else if (status == '0') {
-          return res.data;
-        } else if (status == '-2') {
-          koiMsgError(res.data.msg);
-          return null;
-        } else if (status == '-1') {
-          koiMsgError(res.data.msg);
-          return null;
-        } else if (status == 401) {
-          // console.log("401状态", status);
+        if (res.status === 200) {
+          const success = res.data.code; // 后端返回数据状态
+          if (success === '0') {
+            return res.data;
+          } else if (success === '-1' || success === '-2') {
+            koiMsgError(res.data.msg);
+          } else {
+            return res.data;
+          }
+        } else if (res.status === 401) {
           const userStore = useUserStore();
           userStore.setToken(""); // 清空token必须使用这个，不能使用session清空，因为登录的时候js会获取一遍token还会存在。
           koiMsgError("登录身份过期，请重新登录🌻");
           router.replace(LOGIN_URL);
           return Promise.reject(res.data);
         } else {
-          // console.log("后端返回数据：",res.data.msg)
+          console.log("后端返回数据：", res.data.msg)
           koiMsgError(res.data.msg + "🌻" || "服务器偷偷跑到火星去玩了🌻");
           return Promise.reject(res.data.msg + "🌻" || "服务器偷偷跑到火星去玩了🌻"); // 可以将异常信息延续到页面中处理，使用try{}catch(error){};
         }
@@ -168,6 +160,15 @@ class Yu {
     return this.instance.post(url, data, {
       headers: {
         "Content-Type": "multipart/form-data"
+      }
+    });
+  }
+
+  // Post请求form表单请求
+  postEncodeForm<T = Result>(url: string, data?: object): Promise<T> {
+    return this.instance.post(url, data, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
       }
     });
   }

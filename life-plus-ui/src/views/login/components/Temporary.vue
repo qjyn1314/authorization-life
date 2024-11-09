@@ -12,13 +12,15 @@ import useAuthStore from "@/stores/modules/auth.ts";
 
 export default {
   setup(props, context) {
+    console.log(props)
+    console.log(context)
     const router = useRouter();
     // 打印
     console.log('router:', router.currentRoute.value.query)
     console.log("已进入临时授权页面..")
     const authStore = useAuthStore();
     //将请求获取accessToken接口
-
+    authStore.genAccessToken(router.currentRoute.value.query)
     return {}
   },
   created() {

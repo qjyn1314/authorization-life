@@ -9,7 +9,7 @@
     "url": "https://gitee.com/BigCatHome/koi-ui"
   },
   "scripts": {
-    "local": "vite --mode local",
+    "local": "vite --mode dev",
     "dev": "vite --mode development",
     "prod": "vite --mode production",
     "test": "vite --mode test",

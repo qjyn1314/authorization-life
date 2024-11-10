@@ -66,7 +66,7 @@ class Yu {
           }
         } else if (res.status === 401) {
           const userStore = useUserStore();
-          userStore.setToken(""); // 清空token必须使用这个，不能使用session清空，因为登录的时候js会获取一遍token还会存在。
+          userStore.clearToken(); // 清空token必须使用这个，不能使用session清空，因为登录的时候js会获取一遍token还会存在。
           koiMsgError("登录身份过期，请重新登录🌻");
           router.replace(LOGIN_URL);
           return Promise.reject(res.data);

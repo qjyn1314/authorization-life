@@ -13,28 +13,27 @@ const userStore = defineStore("user", {
   // 存储数据state
   state: (): any => {
     return {
-      token: cookie.get(ACCESS_TOKEN),
-      access_token: '',
-      refresh_token: '',
-      scope: '',
-      token_type: '',
-      expires_in: '',
+      accessToken: '',
     };
   },
   // 该函数没有上下文数据，所以获取state中的变量需要使用this
   actions: {
     // Set Token
-    async setToken(token: string, expires_in: number) {
+    setToken(token: string, expires_in: number) {
       // 并指定过期秒
       cookie.setEx(ACCESS_TOKEN, token, expires_in);
     },
-    async setAccessToken(token: any) {
+    // 获取cookie中的token
+    getToken() {
+      return cookie.get(ACCESS_TOKEN);
+    },
+    //清除token
+    clearToken() {
+      this.accessToken = "";
+    },
+    setAccessToken(token: any) {
       this.setToken(token.access_token, token.expires_in);
-      this.access_token = token.access_token;
-      this.refresh_token = token.refresh_token;
-      this.scope = token.scope;
-      this.token_type = token.token_type;
-      this.expires_in = token.expires_in;
+      this.accessToken = token.access_token;
     }
   },
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值

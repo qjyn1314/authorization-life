@@ -43,7 +43,7 @@ node_modules
 
 
 # local env files
-.env.local
+life-plus-ui/.env.dev
 .env.*.local
 
 # Log files

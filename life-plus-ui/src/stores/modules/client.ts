@@ -27,7 +27,7 @@ const clientStore = defineStore("client", {
   // 该函数没有上下文数据，所以获取state中的变量需要使用this
   actions: {
     // Set client
-    async setClientInfo(clientInfo:any) {
+    setClientInfo(clientInfo:any) {
       this.domainName = clientInfo.domainName;
       this.clientId = clientInfo.clientId;
       this.clientSecret = clientInfo.clientSecret;
@@ -38,6 +38,18 @@ const clientStore = defineStore("client", {
       this.refreshTokenTimeout = clientInfo.refreshTokenTimeout;
       this.additionalInformation = clientInfo.additionalInformation;
       this.tenantId = clientInfo.tenantId;
+    },
+    clearClient() {
+      this.domainName = "";
+      this.clientId = "";
+      this.clientSecret = "";
+      this.grantTypes = "";
+      this.scopes = "";
+      this.redirectUri = "";
+      this.accessTokenTimeout = "";
+      this.refreshTokenTimeout = "";
+      this.additionalInformation = "";
+      this.tenantId = "";
     }
   },
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值

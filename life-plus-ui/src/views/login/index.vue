@@ -219,7 +219,9 @@ const oauthSsoLogin = () => {
   (loginFormRef.value as any).validate(async (valid: any, fields: any) => {
     if (valid) {
       loading.value = true;
-      await authStore.ssoLogin(loginForm);
+      // 使用同步
+      authStore.ssoLogin(loginForm);
+      loading.value = false;
     } else {
       console.log("登录校验失败", fields);
       koiMsgError("校验失败，信息填写有误🌻");

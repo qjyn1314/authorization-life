@@ -38,8 +38,9 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   const authStore = useAuthStore();
   const globalStore = useGlobalStore();
 
+  console.log("前置路由", to, from)
   // 1、NProgress 开始
-  // nprogress.start();
+  nprogress.start();
 
   // 2、标题切换，没有防止后置路由，是因为页面路径不存在，title会变成undefined
   if (globalStore.language === 'en') {
@@ -47,58 +48,29 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   } else {
     document.title = to.meta.title || import.meta.env.VITE_WEB_TITLE;
   }
-  let token = userStore.token;
+  //从cookie中获取token信息
+  let token = userStore.getToken();
+  console.log("token--->", token)
   if (token) {
-    debugger
-    //已登录将直接跳转到home首页
-    next({path: HOME_URL, replace: true});
+    //进入页面都将获取登录用户信息
+    await authStore.realTimeUserInfo();
+    if (ROUTER_WHITE_LIST.includes(to.path)) {
+      //如果已登录, 且在白名单里面, 则直接跳转至首页
+      next(HOME_URL)
+    } else {
+      //否则跳转至相应的页面
+      next()
+    }
   } else {
     //没有登录且在白名单的范围内, 将直接跳转
     if (ROUTER_WHITE_LIST.includes(to.path)) {
-      next();
+      //包含在白名单里, 则直接跳转
+      return next();
     } else {
       //否则将跳转到登录页面
-      next({path: LOGIN_URL, replace: true});
+      return next({path: LOGIN_URL, replace: true});
     }
   }
-
-  //
-  // // 4、判断访问页面是否在路由白名单地址[静态路由]中，如果存在直接放行。
-  // if (ROUTER_WHITE_LIST.includes(to.path)) {
-  //   if (!userStore.token) {
-  //     next({path: LOGIN_URL, replace: true});
-  //   }
-  // }
-  //
-  // // 5、判断是否有 Token，没有重定向到 login 页面。
-  // if (!userStore.token) {
-  //   next({path: LOGIN_URL, replace: true});
-  // }
-
-  // 3、判断是访问登陆页，有Token访问当前页面，token过期访问接口，axios封装则自动跳转登录页面，没有Token重置路由到登陆页。
-  // if (to.path.toLocaleLowerCase() === LOGIN_URL) {
-  //   // 有Token访问当前页面
-  //   if (userStore.getToken) {
-  //     return next(from.fullPath);
-  //   } else {
-  //     koiMsgWarning("账号身份已过期，请重新登录🌻");
-  //   }
-  //   // 没有Token重置路由到登陆页。
-  //   // resetRouter();
-  //   return next();
-  // }
-
-
-  // 6、如果没有菜单列表[一级扁平化路由 OR 递归菜单路由数据判断是否存在都阔以]，就重新请求菜单列表并添加动态路由。
-  // if (!authStore.getMenuList.length) {
-  //   // 注意：authStore.getMenuList，不能持久化菜单数据，否则这里一直有值，就不会走这里，而且持久化之后还会被篡改数据。
-  //   // 获取相关菜单数据 && 按钮数据 && 角色数据 && 用户信息。
-  //   // console.log("刷新页面");
-  //   await initDynamicRouter();
-  //   return next({...to, replace: true}); // ...to 保证路由添加完了再进入页面 (可以理解为重进一次) replace: true 重进一次, 不保留重复历史
-  // }
-  // 7、正常访问页面。
-  // next();
 });
 
 /**
@@ -129,8 +101,10 @@ router.onError(error => {
 // @ts-ignore
 router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   // console.log("后置守卫", to, from);
+  //所有路由信息
+  console.log(router.getRoutes())
   // 结束全屏动画
-  // nprogress.done();
+  nprogress.done();
 });
 
 export default router;

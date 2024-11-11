@@ -102,6 +102,7 @@ export default {
   created() {
     this.pictureAndClient();
     this.inspirationalSentence();
+    this.testJavaScript();
   },
   methods: {
     inspirationalSentence() {
@@ -155,7 +156,7 @@ export default {
     },
     goResetPwd() {
       this.$router.push({path: '/reset-pwd'});
-    }
+    },
   },
   mounted() {
     //生命周期钩子

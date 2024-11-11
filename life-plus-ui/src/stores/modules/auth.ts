@@ -12,11 +12,17 @@ import {staticRouter} from "@/routers/modules/staticRouter";
 import authMenu from "@/assets/json/authMenu.json";
 import {generateFlattenRoutes, generateRoutes} from "@/utils/filterRoute.ts";
 import {getAllBreadcrumbList, getShowStaticAndDynamicMenuList} from "@/utils/index.ts";
-import {HOME_URL} from "@/config";
+import {HOME_URL, PINIA_PREFIX} from "@/config";
 
 
 // 权限数据，不进行持久化。否则刷新浏览器无法获取新的数据。
 const authStore = defineStore("auth", {
+    // 开启数据持久化
+  persist: {
+    // enabled: true, // true 表示开启持久化保存
+    key: PINIA_PREFIX + "auth", // 默认会以 store 的 id 作为 key
+    storage: localStorage
+  },
   // 存储数据state
   state: (): any => {
     return {

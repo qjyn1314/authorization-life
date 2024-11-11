@@ -66,7 +66,7 @@ const router = new VueRouter({
 })
 
 //白名单路径
-const whiteList = ['/login', '/register', '/reset-pwd', '/auth-redirect', '/404'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/reset-pwd', '/auth-redirect', '/404',"/dashboard"] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
     let token = getToken();

@@ -1,21 +1,21 @@
-import { defineConfig, loadEnv, ConfigEnv, UserConfig } from "vite";
+import {defineConfig, loadEnv, ConfigEnv, UserConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 // keepAlive 组件name
 import vueSetupExtend from "vite-plugin-vue-setup-extend";
 // 引入svg需要的插件
-import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import {createSvgIconsPlugin} from "vite-plugin-svg-icons";
 import Unocss from "unocss/vite";
 // 数据mock配置
-import { viteMockServe } from "vite-plugin-mock";
+import {viteMockServe} from "vite-plugin-mock";
 // gzip压缩
 import viteCompression from "vite-plugin-compression";
 // 图片压缩
-import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
+import {ViteImageOptimizer} from 'vite-plugin-image-optimizer';
 import path from "path";
 
 // https://vitejs.dev/config/
 // 配置mock根据官网，这里写法将改成箭头函数
-export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
+export default defineConfig(({command, mode}: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd()); // 获取配置文件别名配置
   return {
     plugins: [
@@ -72,9 +72,12 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         }
       }
     },
+    build: {
+      // outDir: path.resolve(__dirname, env.VITE_DIR)
+    },
     esbuild: {
       // 在生产环境全部去除console 和 debugger
-      drop: env.VITE_DROP_CONSOLE.length < 5 ? ["console", "debugger"] : []
+      // drop: env.VITE_DROP_CONSOLE.length < 5 ? ["console", "debugger"] : []
     },
     // 预编译，增加访问速度，针对node_modules
     optimizeDeps: {

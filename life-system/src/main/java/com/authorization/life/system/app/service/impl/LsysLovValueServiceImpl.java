@@ -40,7 +40,9 @@ public class LsysLovValueServiceImpl implements LsysLovValueService {
 
     @Override
     public PageInfo<LsysLovValueVO> page(LsysLovValueDTO lovValueDTO) {
-        return PageHelper.startPage(lovValueDTO.getPageNum(), lovValueDTO.getPageSize())
+        Assert.notNull(lovValueDTO.getPageNo(), "第几页不能为空.");
+        Assert.notNull(lovValueDTO.getPageSize(), "每页显示记录数不能为空.");
+        return PageHelper.startPage(lovValueDTO.getPageNo(), lovValueDTO.getPageSize())
                 .doSelectPageInfo(() -> {
                     listByParams(lovValueDTO);
                 });

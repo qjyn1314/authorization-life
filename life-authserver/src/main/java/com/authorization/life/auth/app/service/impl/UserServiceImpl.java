@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageInfo<LifeUserVO> page(LifeUserDTO lifeUser) {
-        return PageHelper.startPage(lifeUser.getPageNum(), lifeUser.getPageSize())
+        return PageHelper.startPage(lifeUser.getPageNo(), lifeUser.getPageSize())
                 .doSelectPageInfo(() -> handleUserPage(lifeUser));
     }
 

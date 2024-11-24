@@ -65,7 +65,9 @@ public class LsysTempServiceImpl implements LsysTempService {
 
     @Override
     public PageInfo<LsysTempVO> pageTemp(LsysTempDTO sysTemp) {
-        return PageHelper.startPage(sysTemp.getPageNum(), sysTemp.getPageSize()).doSelectPageInfo(() -> {
+        Assert.notNull(sysTemp.getPageNo(), "第几页不能为空.");
+        Assert.notNull(sysTemp.getPageSize(), "每页显示记录数不能为空.");
+        return PageHelper.startPage(sysTemp.getPageNo(), sysTemp.getPageSize()).doSelectPageInfo(() -> {
             handleTempList(sysTemp);
         });
     }

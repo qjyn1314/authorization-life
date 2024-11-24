@@ -1,29 +1,22 @@
 // 定义权限小仓库[选择式Api写法]
-import {defineStore} from "pinia";
-import {currentUserInfo, getOauth2TokenByCode, oauthLogin} from "@/api/system/user";
+import { defineStore } from "pinia";
+import { currentUserInfo, getOauth2TokenByCode, oauthLogin } from "@/api/system/user";
 import useClientStore from "@/stores/modules/client.ts";
-import {AUTH_SERVER} from "@/utils/global.ts";
+import { AUTH_SERVER } from "@/utils/global.u.ts";
 import useUserStore from "@/stores/modules/user.ts";
 
 // TS OR JS 中不能直接导入 import { useRouter } from "vue-router";
 import router from "@/routers/index";
 
-import {staticRouter} from "@/routers/modules/staticRouter";
+import { staticRouter } from "@/routers/modules/staticRouter";
 import authMenu from "@/assets/json/authMenu.json";
-import {generateFlattenRoutes, generateRoutes} from "@/utils/filterRoute.ts";
-import {getAllBreadcrumbList, getShowStaticAndDynamicMenuList} from "@/utils/index.ts";
-import {HOME_URL, PINIA_PREFIX} from "@/config";
-
+import authUser from "@/assets/json/authUser.json";
+import { generateFlattenRoutes, generateRoutes } from "@/utils/filterRoute.ts";
+import { getAllBreadcrumbList, getShowStaticAndDynamicMenuList } from "@/utils/index.ts";
+import { HOME_URL } from "@/config";
 
 // 权限数据，不进行持久化。否则刷新浏览器无法获取新的数据。
 const authStore = defineStore("auth", {
-    // 开启数据持久化
-  persist: {
-    // enabled: true, // true 表示开启持久化保存
-    key: PINIA_PREFIX + "auth", // 默认会以 store 的 id 作为 key
-    storage: localStorage
-  },
-  // 存储数据state
   state: (): any => {
     return {
       // 扁平化路由数据
@@ -54,12 +47,13 @@ const authStore = defineStore("auth", {
     ssoLogin(loginParams: any) {
       oauthLogin(loginParams).then((res) => {
         if (!res) {
-          return
+          return;
         } else {
-          this.oauth2Authorize()
+          this.oauth2Authorize();
         }
-      })
+      });
     },
+    // 在security中验证成功之后, 将请求授权码模式中的请求获取临时code接口, 并跳转到临时授权页面
     oauth2Authorize() {
       //将携带此次认证信息跳转至临时授权页面
       const clientStore = useClientStore();
@@ -71,12 +65,12 @@ const authStore = defineStore("auth", {
       // console.log("请求授权确认...", `${process.env.VUE_APP_PROXY_TARGET}/dev-api/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`)
       window.location.href = `${host_target}/${base_api}/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${clientStore.clientId}&scope=${clientStore.scopes}&state=${clientStore.grantTypes}&redirect_uri=${clientStore.redirectUri}`
     },
+    // 在临时授权页面中, 通过临时code获取accessToken, 并存储至cookie中
     genAccessToken(tempParams: any) {
-      //在临时授权页面中, 通过临时code获取accessToken, 并存储至cookie中
       const clientStore = useClientStore();
       //请求的参数
       let params = {
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         redirect_uri: clientStore.redirectUri,
         client_id: clientStore.clientId,
         client_secret: clientStore.clientSecret,
@@ -95,35 +89,35 @@ const authStore = defineStore("auth", {
         //   "expires_in": 10800
         // }
         //将AccessToken设置到本地cookie和localstorage中.
-        userStore.setAccessToken(res)
+        userStore.setToken(res);
         const clientStore = useClientStore();
         //在登录成功后清除掉client信息
         clientStore.clearClient();
-        // 根据当前登录用户的菜单和按钮和角色.
+        // 根据accessToken当前登录用户的菜单和按钮和角色.
         this.genUserInfo();
       });
     },
-    //登录成功后获取用户信息
+    //登录成功后获取当前用户信息
     async genUserInfo() {
-      await currentUserInfo().then(async (res) => {
+      await currentUserInfo().then(async res => {
         await this.setUserInfo(res.data);
-      })
-      //将跳转至登录页面
+      });
+      //登录成功并获取到token后将跳转至登录页面
       router.replace(HOME_URL);
     },
     //每次刷新页面后进行获取用户信息不再进行跳转到首页
     async realTimeUserInfo() {
       await currentUserInfo().then((res) => {
         this.setUserInfo(res.data);
-      })
+      });
     },
-    async setUserInfo(user: any) {
+    async setUserInfo(user: object) {
       //设置当前登录用户信息
       this.loginUser = user;
       //设置角色
       this.roleList = [];
       //设置按钮
-      this.buttonList = [];
+      this.buttonList = authUser.data.buttons;
       //生成用户的菜单
       this.listRouters(authMenu.data);
     },
@@ -137,7 +131,6 @@ const authStore = defineStore("auth", {
       );
       // 面包屑需要静态和动态所有的数据，无论是否隐藏
       this.breadcrumbList = staticRouter.concat(generateRoutes(authMenu, 0));
-
       //生成路由信息
       this.menuList.forEach((item: any) => {
         // if (item.component && typeof item.component == "string") {
@@ -151,8 +144,7 @@ const authStore = defineStore("auth", {
           router.addRoute("layout", item);
         }
       });
-
-    },
+    }
   },
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
   getters: {

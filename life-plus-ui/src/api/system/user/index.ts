@@ -1,6 +1,6 @@
 // 导入二次封装axios
 import server from "@/utils/axios.ts";
-import {AUTH_SERVER} from "@/utils/global.ts";
+import {AUTH_SERVER} from "@/utils/global.u.ts";
 
 // 随机获取一个励志的句子
 export const inspirational = () => {

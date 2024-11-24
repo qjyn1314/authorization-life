@@ -26,7 +26,7 @@ import java.io.Serializable;
 public class LsysLovValueDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Integer pageNum;
+    private Integer pageNo;
     private Integer pageSize;
     /**
      * 固定值集主键

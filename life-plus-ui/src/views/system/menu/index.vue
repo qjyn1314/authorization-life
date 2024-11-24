@@ -331,14 +331,14 @@ import { koiNoticeSuccess, koiNoticeError, koiMsgError, koiMsgWarning, koiMsgBox
 import { handleTree } from "@/utils/index.ts";
 import {
   list,
-  cascaderList,
-  getById,
-  add,
-  update,
-  deleteById,
-  batchDelete,
-  updateStatus,
-  updateSpread
+  // cascaderList,
+  // getById,
+  // add,
+  // update,
+  // deleteById,
+  // batchDelete,
+  // updateStatus,
+  // updateSpread
 } from "@/api/system/menu/index.ts";
 import { useKoiDict } from "@/hooks/dicts/index.ts";
 
@@ -348,104 +348,7 @@ const loading = ref(false);
 /** 是否显示搜索表单 */
 const showSearch = ref<boolean>(true); // 默认显示搜索条件
 
-// 数据表格数据
-const tableList = ref([
-  {
-    menuId: 1,
-    menuName: "系统管理🌻",
-    menuType: "1",
-    icon: "Tools",
-    auth: "system:menu:list",
-    component: "system/menu/Index",
-    isSpread: "1",
-    menuStatus: "0",
-    isHide: "1",
-    path: "system",
-    sorted: 1,
-    children: [
-      {
-        menuId: 3,
-        menuName: "用户管理🌻",
-        menuType: "2",
-        icon: "UserFilled",
-        auth: "system:menu:list",
-        component: "system/menu/Index",
-        isSpread: "1",
-        menuStatus: "0",
-        isHide: "1",
-        path: "system",
-        sorted: 3
-      },
-      {
-        menuId: 4,
-        menuName: "角色管理🌻",
-        menuType: "2",
-        icon: "CameraFilled",
-        auth: "system:menu:list",
-        component: "system/menu/Index",
-        isSpread: "1",
-        menuStatus: "0",
-        isHide: "1",
-        path: "system",
-        sorted: 4
-      },
-      {
-        menuId: 9,
-        menuName: "菜单管理🌻",
-        menuType: "2",
-        icon: "Menu",
-        auth: "system:menu:list",
-        component: "system/menu/Index",
-        isSpread: "1",
-        menuStatus: "0",
-        isHide: "1",
-        path: "system",
-        sorted: 5
-      }
-    ]
-  },
-  {
-    menuId: 2,
-    menuName: "监控管理🌻",
-    menuType: "1",
-    icon: "Search",
-    auth: "system:menu:list",
-    component: "system/menu/Index",
-    isSpread: "1",
-    menuStatus: "0",
-    isHide: "1",
-    path: "system",
-    sorted: 2,
-    children: [
-      {
-        menuId: 5,
-        menuName: "熊出没🌻",
-        menuType: "2",
-        icon: "CameraFilled",
-        auth: "system:menu:list",
-        component: "system/menu/Index",
-        isSpread: "1",
-        menuStatus: "0",
-        isHide: "1",
-        path: "system",
-        sorted: 6
-      },
-      {
-        menuId: 6,
-        menuName: "海绵宝宝🌻",
-        menuType: "2",
-        icon: "Menu",
-        auth: "system:menu:list",
-        component: "system/menu/Index",
-        isSpread: "1",
-        menuStatus: "0",
-        isHide: "1",
-        path: "system",
-        sorted: 7
-      }
-    ]
-  }
-]);
+const tableList = ref([]);
 
 // 查询参数
 const searchParams = ref({
@@ -478,18 +381,18 @@ const resetSearch = () => {
 
 /** 树形表格查询 */
 const handleTreeList = async () => {
-  // try {
-  //   loading.value = true;
-  //   tableList.value = []; // 重置表格数据
-  //   const res: any = await list(searchParams.value);
-  //   console.log("菜单数据表格数据->", res.data);
-  //   handleExpandKey(res.data);
-  //   tableList.value = handleTree(res.data, "menuId");
-  //   loading.value = false;
-  // } catch (error) {
-  //   console.log(error);
-  //   koiNoticeError("数据查询失败，请刷新重试🌻");
-  // }
+  try {
+    loading.value = true;
+    tableList.value = []; // 重置表格数据
+    const res: any = await list(searchParams.value);
+    console.log("菜单数据表格数据->", res.data);
+    handleExpandKey(res.data);
+    tableList.value = handleTree(res.data, "menuId");
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+    koiNoticeError("数据查询失败，请刷新重试🌻");
+  }
 };
 
 /** 树形表格[删除、批量删除等刷新使用] */

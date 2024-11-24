@@ -6,7 +6,7 @@ import cookies from "js-cookie";
  * 封装获取用户信息的方法
  */
 export const getToken = () => {
-  return cookies.get(ACCESS_TOKEN)
+  return cookie.get(ACCESS_TOKEN)
 };
 
 /**
@@ -96,8 +96,7 @@ export const cookie = {
     cookies.set(key, value);
   },
   get(key: string) {
-    const value: any = cookies.get(key);
-    return value;
+    return cookies.get(key);
   },
   remove(key: string) {
     cookies.remove(key);

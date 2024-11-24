@@ -3,7 +3,7 @@ import {errorRouter, layoutRouter, staticRouter} from "@/routers/modules/staticR
 import nprogress from "@/utils/nprogress";
 import useUserStore from "@/stores/modules/user.ts";
 import useAuthStore from "@/stores/modules/auth.ts";
-import {HOME_URL, LOGIN_URL, ROUTER_WHITE_LIST} from "@/config/index.ts";
+import {LOGIN_URL, ROUTER_WHITE_LIST} from "@/config/index.ts";
 import useGlobalStore from "@/stores/modules/global.ts";
 
 // .env配置文件读取
@@ -37,31 +37,22 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   const userStore = useUserStore();
   const authStore = useAuthStore();
   const globalStore = useGlobalStore();
-
-  console.log("前置路由", to, from)
+  console.log("前置路由", to, from);
   // 1、NProgress 开始
   nprogress.start();
 
   // 2、标题切换，没有防止后置路由，是因为页面路径不存在，title会变成undefined
-  if (globalStore.language === 'en') {
+  if (globalStore.language === "en") {
     document.title = to.meta.enName || import.meta.env.VITE_WEB_EN_TITLE;
   } else {
     document.title = to.meta.title || import.meta.env.VITE_WEB_TITLE;
   }
   //从cookie中获取token信息
   let token = userStore.getToken();
-  console.log("token--->", token)
-  if (token) {
-    //进入页面都将获取登录用户信息
-    await authStore.realTimeUserInfo();
-    if (ROUTER_WHITE_LIST.includes(to.path)) {
-      //如果已登录, 且在白名单里面, 则直接跳转至首页
-      next(HOME_URL)
-    } else {
-      //否则跳转至相应的页面
-      next()
-    }
-  } else {
+  console.log("token--->", token);
+  if (!token) {
+    // 没有Token重置路由到登陆页。
+    resetRouter();
     //没有登录且在白名单的范围内, 将直接跳转
     if (ROUTER_WHITE_LIST.includes(to.path)) {
       //包含在白名单里, 则直接跳转
@@ -71,6 +62,13 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
       return next({path: LOGIN_URL, replace: true});
     }
   }
+  if (token) {
+    // 进入页面都将获取登录用户信息
+    await authStore.realTimeUserInfo();
+  }
+  // 所有路由信息
+  console.log(router.getRoutes());
+  next();
 });
 
 /**
@@ -86,23 +84,16 @@ export const resetRouter = () => {
   });
 };
 
-/**
- * @description 路由跳转错误
- */
 router.onError(error => {
   // 结束全屏动画
   nprogress.done();
   console.warn("路由错误", error.message);
 });
 
-/**
- * @description 后置路由
- */
-// @ts-ignore
-router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
-  // console.log("后置守卫", to, from);
-  //所有路由信息
-  console.log(router.getRoutes())
+router.afterEach(async (to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+  console.log("后置守卫", to, from);
+  // 所有路由信息
+  console.log(router.getRoutes());
   // 结束全屏动画
   nprogress.done();
 });

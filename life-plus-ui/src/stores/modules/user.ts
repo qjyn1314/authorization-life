@@ -6,33 +6,30 @@ import {ACCESS_TOKEN, PINIA_PREFIX} from "@/config";
 const userStore = defineStore("user", {
   // 开启数据持久化
   persist: {
-    // enabled: true, // true 表示开启持久化保存
+    enabled: true, // true 表示开启持久化保存
     key: PINIA_PREFIX + "user", // 默认会以 store 的 id 作为 key
     storage: localStorage
   },
   // 存储数据state
   state: (): any => {
     return {
-      accessToken: '',
+      accessToken: ""
     };
   },
   // 该函数没有上下文数据，所以获取state中的变量需要使用this
   actions: {
-    // Set Token
-    setToken(token: string, expires_in: number) {
-      // 并指定过期秒
-      cookie.setEx(ACCESS_TOKEN, token, expires_in);
-    },
     // 获取cookie中的token
     getToken() {
-      return cookie.get(ACCESS_TOKEN);
+      return cookie.get(ACCESS_TOKEN) || this.accessToken;
     },
     //清除token
     clearToken() {
       this.accessToken = "";
+      cookie.remove(ACCESS_TOKEN);
     },
-    setAccessToken(token: any) {
-      this.setToken(token.access_token, token.expires_in);
+    setToken(token: any) {
+      // 并指定过期秒
+      cookie.setEx(ACCESS_TOKEN, token.access_token, token.expires_in);
       this.accessToken = token.access_token;
     }
   },

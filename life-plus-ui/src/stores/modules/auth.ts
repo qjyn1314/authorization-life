@@ -131,19 +131,6 @@ const authStore = defineStore("auth", {
       );
       // 面包屑需要静态和动态所有的数据，无论是否隐藏
       this.breadcrumbList = staticRouter.concat(generateRoutes(authMenu, 0));
-      //生成路由信息
-      this.menuList.forEach((item: any) => {
-        // if (item.component && typeof item.component == "string") {
-        //   // 扁平化路由也需要构造component路由函数
-        //   item.component = modules["/src/views/" + item.component + ".vue"];
-        // }
-        if (item.isFull == "0") {
-          // 如果是全屏的话，直接为整个页面
-          router.addRoute(item);
-        } else {
-          router.addRoute("layout", item);
-        }
-      });
     }
   },
   // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值

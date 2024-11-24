@@ -5,6 +5,7 @@ import useUserStore from "@/stores/modules/user.ts";
 import useAuthStore from "@/stores/modules/auth.ts";
 import {LOGIN_URL, ROUTER_WHITE_LIST} from "@/config/index.ts";
 import useGlobalStore from "@/stores/modules/global.ts";
+import {initDynamicRouter} from "@/routers/modules/dynamicRouter.ts";
 
 // .env配置文件读取
 const mode = import.meta.env.VITE_ROUTER_MODE;
@@ -47,25 +48,12 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   } else {
     document.title = to.meta.title || import.meta.env.VITE_WEB_TITLE;
   }
-  //从cookie中获取token信息
+  //如果包含在白名单中, 则直接跳转
+  if (ROUTER_WHITE_LIST.includes(to.path)) return next();
+  //从cookie或者localStorage中获取token信息
   let token = userStore.getToken();
-  console.log("token--->", token);
-  if (!token) {
-    // 没有Token重置路由到登陆页。
-    resetRouter();
-    //没有登录且在白名单的范围内, 将直接跳转
-    if (ROUTER_WHITE_LIST.includes(to.path)) {
-      //包含在白名单里, 则直接跳转
-      return next();
-    } else {
-      //否则将跳转到登录页面
-      return next({path: LOGIN_URL, replace: true});
-    }
-  }
-  if (token) {
-    // 进入页面都将获取登录用户信息
-    await authStore.realTimeUserInfo();
-  }
+  // 如果没有token则直接跳转到登录页
+  if (!token) return next({ path: LOGIN_URL, replace: true });
   // 所有路由信息
   console.log(router.getRoutes());
   next();

@@ -41,6 +41,12 @@ public class LsysLovController {
         return Result.ok(lsysLovService.page(lovDTO));
     }
 
+    @Operation(summary = "值集主表不分页")
+    @PostMapping("/list")
+    public Result<List<LsysLovVO>> list(@RequestBody LsysLovDTO lovDTO) {
+        return Result.ok(lsysLovService.listByParams(lovDTO));
+    }
+
     @Operation(summary = "保存值集")
     @PostMapping("/save-lov")
     public Result<String> saveLov(@RequestBody LsysLovDTO sysLov) {
@@ -59,10 +65,22 @@ public class LsysLovController {
         return Result.ok(lsysLovService.updateLov(sysLov));
     }
 
+    @Operation(summary = "更新值集")
+    @PostMapping("/updateStatus")
+    public Result<String> updateStatus(@RequestBody LsysLovDTO sysLov) {
+        return Result.ok(lsysLovService.updateLov(sysLov));
+    }
+
     @Operation(summary = "删除值集")
     @PostMapping("/delete-lov")
     public Result<String> deleteLov(@RequestBody LsysLovDTO sysLov) {
         return Result.ok(lsysLovService.deleteLov(sysLov));
+    }
+
+    @Operation(summary = "删除值集")
+    @PostMapping("/deleteByIds")
+    public Result<String> deleteLovByIds(@RequestBody List<String> lovIds) {
+        return Result.ok(lsysLovService.deleteLovByIds(lovIds));
     }
 
     @Operation(summary = "从缓存中获取值集主数据")

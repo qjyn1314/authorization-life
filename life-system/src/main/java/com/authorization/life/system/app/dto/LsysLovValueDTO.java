@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 字典明细表
@@ -38,6 +39,10 @@ public class LsysLovValueDTO implements Serializable {
      */
     @Length(min = 1, max = 120, message = "值集编码不能为空.", groups = {SaveGroup.class, UpdateGroup.class})
     private String lovId;
+    /**
+     * 值集代码
+     */
+    private String lovName;
     /**
      * 值集代码
      */

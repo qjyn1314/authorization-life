@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 /**
  * 字典明细表
@@ -34,6 +36,12 @@ public class LsysLovValueController {
     @PostMapping("/page")
     public Result<PageInfo<LsysLovValueVO>> page(@RequestBody LsysLovValueDTO lovValueDTO) {
         return Result.ok(lsysLovValueService.page(lovValueDTO));
+    }
+
+    @Operation(summary = "值集明细与值集主表分页")
+    @PostMapping("/lovValuePage")
+    public Result<PageInfo<LsysLovValueVO>> lovValuePage(@RequestBody LsysLovValueDTO lovValueDTO) {
+        return Result.ok(lsysLovValueService.lovValuePage(lovValueDTO));
     }
 
     @Operation(summary = "保存值集")
@@ -58,6 +66,12 @@ public class LsysLovValueController {
     @PostMapping("/delete-lov-value")
     public Result<String> deleteLovValue(@RequestBody LsysLovValueDTO lovValueDTO) {
         return Result.ok(lsysLovValueService.deleteLovValue(lovValueDTO));
+    }
+
+    @Operation(summary = "删除值集")
+    @PostMapping("/batchDeleteLovValue")
+    public Result<String> batchDeleteLovValue(@RequestBody List<String> lovValueIds) {
+        return Result.ok(lsysLovValueService.batchDeleteLovValue(lovValueIds));
     }
 
 

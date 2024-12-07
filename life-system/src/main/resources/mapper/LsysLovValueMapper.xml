@@ -28,5 +28,36 @@
         </include>
         from lsys_lov_value t1
     </select>
+    <select id="listLovValueByParams" resultType="com.authorization.life.system.app.vo.LsysLovValueVO">
+        SELECT t2.lov_code,
+               t2.lov_name,
+               t2.lov_id,
+               t1.lov_value_id,
+               t1.value_code,
+               t1.value_content,
+               t1.description,
+               t1.value_order,
+               t1.enabled_flag,
+               t1.created_time
+        FROM lsys_lov_value t1
+                 LEFT JOIN lsys_lov t2 ON t1.lov_id = t2.lov_id
+        <where>
+            <if test="lovId != null and lovId != ''">
+                and t2.lov_id = #{lovId}
+            </if>
+            <if test="lovCode != null and lovCode != ''">
+                and t2.lov_code = #{lovCode}
+            </if>
+            <if test="lovName != null and lovName != ''">
+                <bind name="lovName" value="'%'+lovName+'%'"/>
+                and t2.lov_name like #{lovName}
+            </if>
+            <if test="valueContent != null and valueContent != ''">
+                <bind name="valueContent" value="'%'+valueContent+'%'"/>
+                and t1.value_content like #{valueContent}
+            </if>
+        </where>
+        order by t1.value_order desc
+    </select>
 
 </mapper>

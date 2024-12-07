@@ -6,13 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.math.BigDecimal;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * 字典明细表
@@ -37,6 +32,10 @@ public class LsysLovValueVO implements Serializable {
      * 值集表主键, ztnt_lov.lovid
      */
     private String lovId;
+    /**
+     * 值集名称
+     */
+    private String lovName;
     /**
      * 值集代码
      */
@@ -69,5 +68,10 @@ public class LsysLovValueVO implements Serializable {
      * 版本号
      */
     private Long versionNum;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createdTime;
 
 }

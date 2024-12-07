@@ -20,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,6 +71,7 @@ public class LsysLovValueServiceImpl implements LsysLovValueService {
         Assert.isFalse(selectTempCodeCount > 0, "值代码已存在.");
         LsysLovValue lsysLovValueInsert = new LsysLovValue();
         BeanUtils.copyProperties(lovValueDTO, lsysLovValueInsert);
+        lsysLovValueInsert.setLovCode(lsysLov.getLovCode());
         mapper.insert(lsysLovValueInsert);
         return lsysLovValueInsert.getLovValueId();
     }
@@ -109,4 +111,35 @@ public class LsysLovValueServiceImpl implements LsysLovValueService {
         mapper.deleteById(lsysLovValue.getLovValueId());
         return lsysLovValue.getLovValueId();
     }
+
+    @Override
+    public PageInfo<LsysLovValueVO> lovValuePage(LsysLovValueDTO lovValueDTO) {
+        Assert.notNull(lovValueDTO.getPageNo(), "第几页不能为空.");
+        Assert.notNull(lovValueDTO.getPageSize(), "每页显示记录数不能为空.");
+        return PageHelper.startPage(lovValueDTO.getPageNo(), lovValueDTO.getPageSize())
+                .doSelectPageInfo(() -> {
+                    listLovValueByParams(lovValueDTO);
+                });
+    }
+
+    @Override
+    public List<LsysLovValueVO> listLovValueByParams(LsysLovValueDTO lovValueDTO) {
+        return mapper.listLovValueByParams(lovValueDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String batchDeleteLovValue(List<String> lovValueIds) {
+        Assert.notEmpty(lovValueIds, "ID集合不能为空.");
+        List<LsysLovValue> lsysLovValues = mapper.selectBatchIds(lovValueIds);
+        Assert.notEmpty(lovValueIds, "根据ID集合未找到数据");
+
+        boolean enableFlag = lsysLovValues.stream().anyMatch(LsysLovValue::getEnabledFlag);
+        Assert.isFalse(enableFlag, "仅支持未启用的值集进行删除.");
+        LambdaQueryWrapper<LsysLovValue> deleteWrapper = Wrappers.lambdaQuery(LsysLovValue.class)
+                .in(LsysLovValue::getLovValueId, lovValueIds);
+        mapper.delete(deleteWrapper);
+        return String.join(",", lovValueIds);
+    }
+
 }

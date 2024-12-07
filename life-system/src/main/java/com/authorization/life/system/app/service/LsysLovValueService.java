@@ -33,4 +33,10 @@ public interface LsysLovValueService {
     String deleteLovValue(LsysLovValueDTO lovValueDTO);
 
 
+    PageInfo<LsysLovValueVO> lovValuePage(LsysLovValueDTO lovValueDTO);
+
+    List<LsysLovValueVO> listLovValueByParams(LsysLovValueDTO lovValueDTO);
+
+    String batchDeleteLovValue(List<String> lovValueIds);
+
 }

@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +56,12 @@ public class LsysLovServiceImpl implements LsysLovService {
 
     @Override
     public List<LsysLovVO> listByParams(LsysLovDTO lovDTO) {
-        List<LsysLov> page = mapper.page(new LsysLov());
+        LambdaQueryWrapper<LsysLov> queryWrapper = Wrappers.lambdaQuery(LsysLov.class)
+                .like(StrUtil.isNotBlank(lovDTO.getLovCode()), LsysLov::getLovCode, lovDTO.getLovCode())
+                .like(StrUtil.isNotBlank(lovDTO.getLovName()), LsysLov::getLovName, lovDTO.getLovName())
+                .eq(Objects.nonNull(lovDTO.getEnabledFlag()), LsysLov::getEnabledFlag, lovDTO.getEnabledFlag())
+                ;
+        List<LsysLov> page =   mapper.selectList(queryWrapper);
         return page.stream().map(item -> BeanConverter.convert(item, LsysLovVO.class))
                 .collect(Collectors.toList());
     }
@@ -126,6 +133,26 @@ public class LsysLovServiceImpl implements LsysLovService {
         Assert.notBlank(lovCode, "值集编码不能为空.");
         List<LsysLovValue> lsysLovValues = lovValueMapper.selectList(Wrappers.lambdaQuery(new LsysLovValue()).eq(LsysLovValue::getLovCode, lovCode).eq(LsysLovValue::getTenantId, tenantId));
         return lsysLovValues.stream().map(item -> BeanConverter.convert(item, LsysLovValueRemoteVO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteLovByIds(List<String> lovIds) {
+        Assert.notEmpty(lovIds, "ID集合不能为空.");
+        List<LsysLov> lsysLov = mapper.selectBatchIds(lovIds);
+        Assert.notEmpty(lsysLov, "根据ID集合未找到值集数据");
+
+        boolean enableFlag = lsysLov.stream().anyMatch(LsysLov::getEnabledFlag);
+        Assert.isFalse(enableFlag, "仅支持未启用的值集进行删除.");
+
+        List<String> lovCodes = lsysLov.stream().map(LsysLov::getLovCode).collect(Collectors.toList());
+        //先删除子表
+        LambdaQueryWrapper<LsysLovValue> deleteWrapper = Wrappers.lambdaQuery(LsysLovValue.class)
+                .in(LsysLovValue::getLovCode, lovCodes);
+        lovValueMapper.delete(deleteWrapper);
+        //再次删除主表
+        mapper.deleteByIds(lovIds);
+        return String.join(",", lovCodes);
     }
 
 

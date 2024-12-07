@@ -24,7 +24,7 @@
         <include refid="lsys_lov_column">
             <property name="prefix" value="t1."/>
         </include>
-        from lsys_lov t1
+        from lsys_lov t1 order by created_time desc
     </select>
 
 </mapper>

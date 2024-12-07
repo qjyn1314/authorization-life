@@ -41,4 +41,6 @@ public interface LsysLovService {
 
     List<LsysLovValueRemoteVO> lovvalueCacheAndDataSource(String tenantId, String lovCode);
 
+    String deleteLovByIds(List<String> lovIds);
+
 }

@@ -1,0 +1,63 @@
+/* ElementPlus 横向布局内置样式修改 */
+:root {
+  --el-menu-sub-item-height: $aside-menu-height !important;
+  // --el-menu-horizontal-sub-item-height: 40px !important; // 横向菜单高度覆盖
+}
+
+/* 当前页面最大化CSS，选项卡也行要去掉可以加上.el-tabs */
+.main-maximize {
+  .aside-split,
+  .el-aside,
+  .el-header,
+  .el-footer,
+  .tabs-box {
+    display: none !important;
+  }
+}
+
+/* 图标颜色 */
+.koi-icon {
+  // 翻转色字体颜色
+  color: var(--el-header-text-color);
+  outline: none; // 去除伪元素
+  &:hover {
+    color: var(--el-color-primary);
+    cursor: pointer;
+  }
+}
+
+/* el-table表头颜色配置 */
+.el-table .el-table__header-wrapper th {
+  font-weight: 500;
+  color: #303133;
+  @apply dark:c-#FFFFFFE6;
+}
+
+/* DIV 顶级自适应 */
+.koi-flex {
+  @apply flex flex-col flex-1 h-100%;
+}
+
+/* DIV el-tabs 或 el-segmented 中 el-table 自适应 */
+.koi-flex-tabs {
+  @apply flex flex-col flex-1 overflow-hidden h-100%;
+}
+
+/* el-table 表格样式 和 表格自适应 */
+.el-table {
+  flex: 1;
+  // 修复 safari 浏览器表格错位
+  table {
+    width: 100%;
+  }
+  // 解决表格数据为空时样式不居中问题[仅在element-plus中]
+  .el-table__empty-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .table-empty {
+      line-height: 30px;
+    }
+  }
+}

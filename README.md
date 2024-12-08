@@ -401,12 +401,12 @@ admin
 # [life-ui-v2](life-ui-v2) 的演示效果
 
 
-
+![sso授权码模式登录和退出演示_02.gif](image/sso%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%99%BB%E5%BD%95%E5%92%8C%E9%80%80%E5%87%BA%E6%BC%94%E7%A4%BA_02.gif)
 
 # [life-ui-v3](life-ui-v3) 的演示效果
 
 
-
+![sso授权码模式登录和退出演示_03.gif](image/sso%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%99%BB%E5%BD%95%E5%92%8C%E9%80%80%E5%87%BA%E6%BC%94%E7%A4%BA_03.gif)
 
 ## 项目中遇到的问题
 

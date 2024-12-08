@@ -39,6 +39,10 @@ public class ReactiveExceptionHandler implements ErrorWebExceptionHandler {
         if (ex instanceof ResponseStatusException) {
             response.setStatusCode(((ResponseStatusException) ex).getStatusCode());
         }
+        // 当抛出此异常则返回状态码为 401
+        if (ex instanceof UnauthorizedException) {
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        }
 
         return response.writeWith(Mono.fromSupplier(() -> {
             DataBufferFactory bufferFactory = response.bufferFactory();

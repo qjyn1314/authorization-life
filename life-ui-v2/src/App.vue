@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
+    <DashboardView>
+
+    </DashboardView>
   </div>
 </template>
 
@@ -13,3 +15,11 @@
   color: #2c3e50;
 }
 </style>
+<script>
+import {defineComponent} from "vue";
+import DashboardView from "@/views/dashboard/DashboardView.vue";
+
+export default defineComponent({
+  components: {DashboardView}
+})
+</script>

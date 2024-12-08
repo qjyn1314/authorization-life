@@ -272,6 +272,142 @@ http {
 
 ```
 
+# 数据库表说明
+关于 oauth2 授权认证的三张表, 仍然是
+liam_user_group  用户组表(scope)  
+liam_user  用户表
+liam_oauth_client  oauth2客户端表(每一个域名对应一个clientId)
+
+新增了用户权限, 字典, 模板 等相关表
+
+最新的数据库初始化脚本:
+life-init-2024-12-08.sql
+
+# 本地的域名映射
+#### 127.0.0.1 dev.authorization.life
+#### 127.0.0.1 test.authorization.life
+#### 127.0.0.1 ui.authorization.life
+
+# 此处为最新的nginx配置说明
+### dev.authorization.life 对应 [life-ui-v2](life-ui-v2) 文件夹
+
+### ui.authorization.life 对应 [life-ui-v3](life-ui-v3) 文件夹
+
+### test.authorization.life 对应 测试环境的配置, 将前段工程打包后的配置示例
+
+```nginx configuration
+
+#user  nobody;
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+	server_names_hash_max_size 		2048;# 【值为域名长度总和】
+	server_names_hash_bucket_size 	2048;# 【上升值】
+
+	map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    server {
+        listen       80;
+        server_name  dev.authorization.life;
+        #后端服务gateway
+        location /dev-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+                proxy_pass http://127.0.0.1:18888;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+        }
+    }
+
+    server {
+        listen       80;
+        server_name  ui.authorization.life;
+        #后端服务gateway
+        location /dev-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+                proxy_pass http://127.0.0.1:9999;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+        }
+    }
+
+    server {
+        listen       80;
+        server_name  test.authorization.life;
+        #后端服务gateway
+        location /test-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+            root html/dist;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+}
+
+```
+
+# 账号密码
+qjyn1314@163.com
+admin
+
+# [life-ui-v2](life-ui-v2) 的演示效果
+
+
+
+
+# [life-ui-v3](life-ui-v3) 的演示效果
+
+
+
+
 ## 项目中遇到的问题
 
 ### 一. 项目中使用 jdk17 + orika 序列化框架,项目中使用到了 orikaBean转换工具类会出现以下错误信息

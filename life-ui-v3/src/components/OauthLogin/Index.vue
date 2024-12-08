@@ -16,6 +16,7 @@ export default {
   setup(props, context) {
     const router = useRouter();
     const oauthStore = useOauthStore();
+    debugger
     //将请求获取accessToken接口
     oauthStore.genAccessToken(router.currentRoute.value.query)
     return {}

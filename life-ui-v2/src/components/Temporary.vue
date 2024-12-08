@@ -14,6 +14,7 @@ export default {
   name: 'Temporary',
   components: {},
   created() {
+    debugger
     console.log("需要拿到当前路径中的临时code参数.", this.$route.query)
     store.dispatch("ssoAuth/oauth2AccessTokenByCode", this.$route.query)
   },

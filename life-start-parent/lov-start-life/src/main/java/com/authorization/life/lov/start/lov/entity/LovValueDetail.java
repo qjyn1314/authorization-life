@@ -28,6 +28,9 @@ public class LovValueDetail implements java.io.Serializable {
      */
     private String tenantId;
 
+    public LovValueDetail() {
+    }
+
     private LovValueDetail(String lovCode, String valueCode, String valueContent) {
         this.lovCode = lovCode;
         this.valueCode = valueCode;

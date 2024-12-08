@@ -2,6 +2,8 @@ package com.authorization.life.system.app.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import com.authorization.core.proxy.CurrentProxy;
+import com.authorization.life.lov.start.lov.anno.TranslateLov;
 import com.authorization.life.system.app.dto.LsysLovDTO;
 import com.authorization.life.system.app.service.LsysLovService;
 import com.authorization.life.system.app.vo.LsysLovVO;
@@ -24,9 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +38,7 @@ import java.util.stream.Collectors;
  * @date 2024-10-05 19:21:32
  */
 @Service
-public class LsysLovServiceImpl implements LsysLovService {
+public class LsysLovServiceImpl implements LsysLovService, CurrentProxy<LsysLovService> {
 
     @Autowired
     private LsysLovMapper mapper;
@@ -48,20 +50,24 @@ public class LsysLovServiceImpl implements LsysLovService {
     public PageInfo<LsysLovVO> page(LsysLovDTO lovDTO) {
         Assert.notNull(lovDTO.getPageNo(), "第几页不能为空.");
         Assert.notNull(lovDTO.getPageSize(), "每页显示记录数不能为空.");
-        return PageHelper.startPage(lovDTO.getPageNo(), lovDTO.getPageSize())
+        AtomicReference<List<LsysLovVO>> lsysLovVOS = new AtomicReference<>();
+        PageInfo<LsysLovVO> selectPageInfo = PageHelper.startPage(lovDTO.getPageNo(), lovDTO.getPageSize())
                 .doSelectPageInfo(() -> {
-                    listByParams(lovDTO);
+                    lsysLovVOS.set(this.self().listByParams(lovDTO));
                 });
+        selectPageInfo.setList(lsysLovVOS.get());
+        return selectPageInfo;
     }
 
     @Override
+    @TranslateLov
     public List<LsysLovVO> listByParams(LsysLovDTO lovDTO) {
         LambdaQueryWrapper<LsysLov> queryWrapper = Wrappers.lambdaQuery(LsysLov.class)
                 .like(StrUtil.isNotBlank(lovDTO.getLovCode()), LsysLov::getLovCode, lovDTO.getLovCode())
                 .like(StrUtil.isNotBlank(lovDTO.getLovName()), LsysLov::getLovName, lovDTO.getLovName())
-                .eq(Objects.nonNull(lovDTO.getEnabledFlag()), LsysLov::getEnabledFlag, lovDTO.getEnabledFlag())
-                ;
-        List<LsysLov> page =   mapper.selectList(queryWrapper);
+                .eq(Objects.nonNull(lovDTO.getEnabledFlag()), LsysLov::getEnabledFlag, lovDTO.getEnabledFlag());
+        queryWrapper.orderByDesc(LsysLov::getCreatedTime);
+        List<LsysLov> page = mapper.selectList(queryWrapper);
         return page.stream().map(item -> BeanConverter.convert(item, LsysLovVO.class))
                 .collect(Collectors.toList());
     }

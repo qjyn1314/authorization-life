@@ -35,6 +35,8 @@ public class LovDetail implements java.io.Serializable {
      */
     private String tenantId;
 
+    public LovDetail() {
+    }
 
     private LovDetail(String lovCode, String lovName) {
         this.lovCode = lovCode;

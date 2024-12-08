@@ -1,18 +1,14 @@
 package com.authorization.life.system.app.vo;
 
+import com.authorization.life.lov.start.lov.anno.LovValue;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.math.BigDecimal;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * 字典主表
@@ -40,7 +36,12 @@ public class LsysLovVO implements Serializable {
     /**
      * LOV类型：FIXED/URL
      */
+    @LovValue(lovCode = "SYS_LOV_TYPE")
     private String lovTypeCode;
+    /**
+     * LOV类型：FIXED/URL
+     */
+    private String lovTypeCodeContent;
     /**
      * 值集名称
      */
@@ -52,7 +53,12 @@ public class LsysLovVO implements Serializable {
     /**
      * 是否启用
      */
+    @LovValue(lovCode = "FLAG_STATUS")
     private Boolean enabledFlag;
+    /**
+     * 是否启用
+     */
+    private String enabledFlagContent;
     /**
      * 租户ID
      */
@@ -62,4 +68,10 @@ public class LsysLovVO implements Serializable {
      */
     private Long versionNum;
 
+     /**
+     * 创建时间
+     */
+    private LocalDateTime createdTime;
+
+    private LocalDateTime updatedTime;
 }

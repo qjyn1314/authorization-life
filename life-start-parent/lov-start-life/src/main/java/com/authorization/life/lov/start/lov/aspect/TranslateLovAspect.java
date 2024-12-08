@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
  * 翻译aop
  */
 @Aspect
-@Component
 public class TranslateLovAspect {
 
     @Autowired

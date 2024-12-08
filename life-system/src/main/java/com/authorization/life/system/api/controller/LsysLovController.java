@@ -1,5 +1,6 @@
 package com.authorization.life.system.api.controller;
 
+import com.authorization.life.lov.start.lov.anno.TranslateLov;
 import com.authorization.life.system.app.dto.LsysLovDTO;
 import com.authorization.life.system.app.dto.LsysLovValueDTO;
 import com.authorization.life.system.app.service.LsysLovService;

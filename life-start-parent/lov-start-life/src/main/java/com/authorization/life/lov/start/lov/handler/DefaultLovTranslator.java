@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
  * LovTranslator 默认实现
  */
 @Slf4j
-@Component
 public class DefaultLovTranslator implements LovTranslator {
 
     /**

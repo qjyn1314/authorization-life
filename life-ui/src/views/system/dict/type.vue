@@ -68,7 +68,7 @@
             </RouterLink>
           </template>
         </el-table-column>
-        <el-table-column label="字典类型" prop="lovTypeCode" width="90" align="center"></el-table-column>
+        <el-table-column label="字典类型" prop="lovTypeCodeContent" width="90" align="center"></el-table-column>
         <el-table-column
           label="字典备注"
           prop="description"
@@ -79,6 +79,9 @@
         <el-table-column label="创建时间" prop="createdTime" width="175" align="center"></el-table-column>
         <!-- 注意：如果后端数据返回的是字符串"0" OR "1"，这里的active-value AND inactive-value不需要加冒号，会认为是字符串，否则：后端返回是0 AND 1数字，则需要添加冒号 -->
         <el-table-column label="字典状态" prop="enabledFlag" width="100" align="center">
+          <template #default="scope">
+            <KoiTag :tagOptions="koiDicts.FLAG_STATUS" :value="scope.row.enabledFlag" ></KoiTag>
+          </template>
         </el-table-column>
         <el-table-column label="修改时间" prop="updatedTime" width="175" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="130" fixed="right">
@@ -187,6 +190,9 @@ import {
 } from "@/utils/koi.ts";
 // @ts-ignore
 import { add, batchDelete, getById, listPage, update } from "@/api/system/dict/index.ts";
+import { useKoiDict } from "@/hooks/dicts/index.ts";
+
+const { koiDicts } = useKoiDict(["FLAG_STATUS"]);
 
 // 表格加载动画Loading
 const loading = ref(false);

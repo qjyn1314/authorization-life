@@ -6,7 +6,7 @@ export function useKoiDict(dictType: Array<string>) {
   onMounted(async () => {
     if (dictType.length > 0) {
       for (const type of dictType) {
-        const res: any = await lovValueByLovCode(type);
+        const res: any = await lovValueByLovCode({"lovCode":type});
         if (res.data != null) {
           koiDicts[type] = res.data;
         }

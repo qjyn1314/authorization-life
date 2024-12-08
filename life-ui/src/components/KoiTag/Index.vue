@@ -2,19 +2,13 @@
   <div>
     <template v-for="item in tagOptions">
       <el-tag
-        v-if="value != null && value.toString() === item.dictValue.toString()"
+        v-if="value != null && value.toString() === item.valueCode.toString()"
         :disable-transitions="true"
-        :key="item.dictLabel"
-        :type="item.dictTag"
-        :index="item.dictLabel + item.dictValue.toString()"
-        :effect="item.dictColor.length === 0 ? effect : 'dark'"
-        :size="size"
-        :style="{
-            'border-color': item.dictColor,
-            background: item.dictColor
-          }"
+        :key="item.valueCode"
+        :index="item.valueCode + item.valueContent.toString()"
+        :effect="item.valueCode.length === 0 ? effect : 'dark'"
       >
-        {{ item.dictLabel }}
+        {{ item.valueContent }}
       </el-tag>
     </template>
   </div>

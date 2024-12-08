@@ -59,7 +59,7 @@ export const batchDeleteLovValue = (ids: any) => {
 
 // 获取值集代码对应的值代码和值内容
 export const lovValueByLovCode = (data: any) => {
-  data = data.concat({"tenantId":"0"});
+  data.tenantId = "0";
   return service.post(`${SYSTEM_SERVER}/lsys/lov/lovvalue-by-cache`, data);
 };
 

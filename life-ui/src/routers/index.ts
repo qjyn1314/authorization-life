@@ -50,12 +50,12 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   } else {
     document.title = to.meta.title || import.meta.env.VITE_WEB_TITLE;
   }
-  debugger
+  
   // 3、判断是访问登陆页，有Token访问当前页面，token过期访问接口，axios封装则自动跳转登录页面，没有Token重置路由到登陆页。
   if (to.path.toLocaleLowerCase() === LOGIN_URL) {
     // 有Token访问当前页面
     if (userStore.token) {
-      debugger
+      
       return next(from.fullPath);
     } else {
       koiMsgWarning("账号身份已过期，请重新登录🌻");
@@ -67,13 +67,13 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
 
   // 4、判断访问页面是否在路由白名单地址[静态路由]中，如果存在直接放行。
   if (ROUTER_WHITE_LIST.includes(to.path)) return next();
-  debugger
+  
   // 5、判断是否有 Token，没有重定向到 login 页面。
   if (!userStore.token) return next({ path: LOGIN_URL, replace: true });
-  debugger
+  
   // 6、如果没有菜单列表[一级扁平化路由 OR 递归菜单路由数据判断是否存在都阔以]，就重新请求菜单列表并添加动态路由。
   if (!authStore.getMenuList.length) {
-      debugger
+      
     // 注意：authStore.getMenuList，不能持久化菜单数据，否则这里一直有值，就不会走这里，而且持久化之后还会被篡改数据。
     // 获取相关菜单数据 && 按钮数据 && 角色数据 && 用户信息。
     // console.log("刷新页面");

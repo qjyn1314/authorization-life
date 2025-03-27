@@ -16,12 +16,17 @@ const routes = [
         component: () => import('../views/dashboard/DashboardView.vue')
     },
     {
+        path: '/clients',
+        name: 'clients',
+        component: () => import('../views/clients/ClientsPage.vue')
+    },
+    {
         path: '/auth-redirect',
         name: 'auth-redirect',
         component: () => import('../components/Temporary.vue')
     },
     {
-        path: '/ssoLogin',
+        path: '/login',
         name: 'login',
         component: () => import('../views/login/LoginView.vue')
     },
@@ -65,16 +70,17 @@ const routes = [
 ]
 
 const router = new VueRouter({
-    //此处必须使用 history 模式. 因为有回调函数
+    //此处必须使用 history 模式. 因为有登录成功后的回调函数
     mode: 'history',
     routes
 })
 
 //白名单路径
-const whiteList = ['/ssoLogin', '/register', '/reset-pwd', '/auth-redirect', '/404', '/test'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/reset-pwd', '/auth-redirect', '/404', '/test','/clients'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
     let token = getToken();
+    console.log("token", token);
     if (token) {
         if (whiteList.indexOf(to.path) !== -1 || to.path === '/') {
             //如果已经登录还是有白名单的请求路径则跳转至 dashboard
@@ -88,7 +94,7 @@ router.beforeEach((to, from, next) => {
             next()
         } else {
             // next(`/login?redirect=${to.path}`)
-            next(`/ssoLogin`)
+            next(`/login`)
         }
     }
 })

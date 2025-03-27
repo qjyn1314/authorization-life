@@ -6,7 +6,7 @@ import {AUTH_SERVER} from './severApi'
 export function inspirational() {
     return request({
         url: `/${AUTH_SERVER}/oauth/sentence`,
-        method: 'POST',
+        method: 'GET',
     })
 }
 

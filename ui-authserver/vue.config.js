@@ -3,6 +3,7 @@ const {defineConfig} = require('@vue/cli-service')
 // const IS_DEV = process.env.NODE_ENV === 'development';
 // 配置文件参考: https://blog.csdn.net/L_R_H_/article/details/140602086
 // 配置文件参考: https://blog.csdn.net/a123456234/article/details/140966496
+console.log("process.env", process.env)
 module.exports = defineConfig({
     // vue-cli-service build --mode 区分多个环境 参考:  https://www.cnblogs.com/grow-up-up/p/17210430.html
     // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为

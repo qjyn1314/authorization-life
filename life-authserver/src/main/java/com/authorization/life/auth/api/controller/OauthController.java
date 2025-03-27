@@ -50,7 +50,7 @@ public class OauthController {
     private MailSendService mailSendService;
 
     @Operation(summary = "获取随机的励志句子")
-    @PostMapping("/sentence")
+    @GetMapping("/sentence")
     public Result<String> getSentence() {
         return Result.ok(Inspirational.getSentence());
     }

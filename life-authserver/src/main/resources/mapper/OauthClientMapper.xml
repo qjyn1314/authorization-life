@@ -29,6 +29,16 @@
             <property name="prefix" value="t1."/>
         </include>
         FROM liam_oauth_client t1
+        <where>
+            <if test="searchKey != null and searchKey != ''">
+                <bind name="searchKey" value="'%'+searchKey+'%'"/>
+                and (
+                t1.domain_name like #{searchKey} or t1.client_id like #{searchKey}
+                or t1.redirect_uri like #{searchKey} or t1.client_secret_bak like #{searchKey}
+                or t1.grant_types like #{searchKey} or t1.scopes like #{searchKey}
+                )
+            </if>
+        </where>
     </select>
 
 </mapper>

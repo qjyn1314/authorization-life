@@ -23,6 +23,15 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+安装依赖命令:
+
+npm install uuid
+
+或者
+
+npm install uuid --save 
+
+
 element-plus/icons-vue  图标
 
 vueuse/core  更快捷的使用vue3

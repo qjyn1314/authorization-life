@@ -3,6 +3,7 @@ package com.authorization.life.auth.app.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.common.util.RequestUtils;
 import com.authorization.core.exception.handle.CommonException;
@@ -20,7 +21,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,13 +74,34 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
     }
 
     private List<OauthClientVO> clientList(OauthClientDTO clientDTO) {
-        clientDTO = Objects.isNull(clientDTO) ? new OauthClientDTO() : clientDTO;
-        OauthClient clientQuery = Convert.convert(OauthClient.class, clientDTO);
-        List<OauthClient> oauthClients = mapper.page(clientQuery);
+        List<OauthClient> oauthClients = mapper.page(clientDTO);
         return oauthClients.stream().map(oauthClient ->
                 Convert.convert(OauthClientVO.class, oauthClient)).collect(Collectors.toList());
     }
 
+    private static final String REDIRECT_URI = "http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc";
+
+    private static final String AUTHORIZATION_REQUEST = UriComponentsBuilder
+            .fromPath("/oauth2/authorize")
+            .queryParam("response_type", "code")
+            .queryParam("client_id", "messaging-client")
+            .queryParam("scope", "openid")
+            .queryParam("state", UUID.fastUUID().toString())
+            .queryParam("redirect_uri", REDIRECT_URI)
+            .toUriString();
+
+
+    // OidcScopes
+    public static String genAuthorizationCodeUrl(String hostOrigin, String redirectUri) {
+        return hostOrigin + UriComponentsBuilder
+                .fromPath("/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", "messaging-client")
+                .queryParam("scope", "openid")
+                .queryParam("state", UUID.fastUUID().toString())
+                .queryParam("redirect_uri", redirectUri)
+                .toUriString();
+    }
 
     @Override
     public List<OauthClientVO> genAuthorizationUrl(String clientId, String hostOrigin) {
@@ -86,6 +110,12 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         if (StrUtil.isBlank(redirectUri)) {
             return List.of();
         }
+        String scopes = oauthClientVO.getScopes();
+        if (StrUtil.isBlank(scopes)) {
+            return List.of();
+        }
+        String openid = OidcScopes.OPENID;
+
         Set<String> urlList = Arrays.stream(redirectUri.split(StrUtil.COMMA)).collect(Collectors.toSet());
 
         // 获取到此次请求的域名和请求方式
@@ -106,9 +136,8 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         List<OauthClientVO> clientUrls = CollUtil.newArrayList();
         for (String url : urlList) {
             OauthClientVO oauthClient = Convert.convert(OauthClientVO.class, oauthClientVO);
-
-
-            oauthClient.setRedirectUri(contextPath);
+            String authUrl = genAuthorizationCodeUrl(hostOrigin, url);
+            oauthClient.setRedirectUri(authUrl);
             clientUrls.add(oauthClient);
         }
 

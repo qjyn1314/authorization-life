@@ -2,13 +2,13 @@
   <div class="common-layout">
     <el-container>
       <el-header>
-        <el-form :inline="true" :model="searchParams">
-          <el-form-item label="searchKey">
-            <el-input v-model="searchParams.searchKey" placeholder="searchKey" clearable/>
+        <el-form :inline="true" :model="tableSearch">
+          <el-form-item label="关键词">
+            <el-input v-model="tableSearch.searchKey" placeholder="关键词" clearable/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onQuery">Query</el-button>
-            <el-button type="warning" @click="onReset">Reset</el-button>
+            <el-button type="primary" @click="onQuery">查询</el-button>
+            <el-button type="warning" @click="onReset">重置</el-button>
           </el-form-item>
         </el-form>
       </el-header>
@@ -19,41 +19,69 @@
           <el-descriptions-item>
             <!--折叠面板-->
             <el-collapse v-model="authorizationUrls">
-              <el-collapse-item title="路径001" name="1">
+              <el-collapse-item title="路径001">
                 <div>
                   Consistent with real life: in line with the process and logic of real
                   life, and comply with languages and habits that the users are used to;
                 </div>
                 <div>
-                  <el-button type="primary">复制路径</el-button>
-                  <el-button type="primary">点击开始授权</el-button>
+                  <el-button link type="primary">复制路径</el-button>
+                  <el-button link type="primary">点击请求授权</el-button>
                 </div>
               </el-collapse-item>
             </el-collapse>
           </el-descriptions-item>
         </el-descriptions>
+        <el-row :gutter="20">
+          <el-col :span="1">
+            <el-button type="primary" :icon="DocumentAdd">新增</el-button>
+          </el-col>
+        </el-row>
         <!-- table表格 -->
-        <el-table :data="pageData" style="width: 100%">
-          <el-table-column fixed prop="domainName" label="客户端域名" width="150"/>
-          <el-table-column prop="clientId" label="CLIENT_ID" width="120"/>
-          <el-table-column prop="clientSecret" label="CLIENT_SECRET" width="120"/>
-          <el-table-column prop="grantTypes" label="授权类型" width="120"/>
-          <el-table-column prop="accessTokenTimeout" label="访问授权超时时间" width="600"/>
-          <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间" width="120"/>
+        <el-table :data="pageInfo.list" border style="width: 100%" max-height="800">
+          <el-table-column fixed prop="clientId" label="CLIENT_ID" width="230"/>
+          <el-table-column prop="clientSecretBak" label="CLIENT_SECRET" width="230">
+            <template #default="scope">
+              <el-popover effect="light" trigger="hover" placement="top" width="auto">
+                <template #default>
+                  <div>真实密钥: {{ scope.row.clientSecretBak }}</div>
+                  <div>验证密钥: {{ scope.row.clientSecret }}</div>
+                </template>
+                <template #reference>
+                  <el-tag>{{ scope.row.clientSecretBak }}</el-tag>
+                </template>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column prop="domainName" label="客户端域名" width="230"/>
+          <el-table-column prop="redirectUri" label="授权URI" width="280"/>
+          <el-table-column prop="grantTypes" show-overflow-tooltip label="授权类型" width="160"/>
+          <el-table-column prop="accessTokenTimeout" label="访问授权超时时间(毫秒)" width="80"/>
+          <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间(毫秒)" width="80"/>
           <el-table-column prop="tenantId" label="租户ID" width="120"/>
-          <el-table-column fixed="right" label="操作" min-width="120">
+          <el-table-column fixed="right" label="操作" min-width="150">
             <template #default="{row}">
-              <el-button link type="primary" size="small">
-                Detail
+              <el-button link type="primary" size="large" @click="authorizationURL(row)">生成授权路径</el-button>
+              <el-button link type="success" size="large" :icon="Reading">EDIT</el-button>
+              <el-button link type="primary" size="large" :icon="Notebook">
+                DETAIL
               </el-button>
-              <el-button link type="primary" size="small">Edit</el-button>
-              <el-button link type="danger" size="small" @click="authorizationURL(row)">生成授权路径</el-button>
+              <el-button link type="danger" size="large" :icon="DocumentDelete">
+                DELETE
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
 
       </el-main>
-      <el-footer>Footer</el-footer>
+      <el-footer>
+        <el-pagination v-show="pageInfo.total > 0" background layout="total, sizes, prev, pager, next, jumper "
+                       :total="pageInfo.total"
+                       v-model:current-page="tableSearch.pageNum" v-model:page-size="tableSearch.pageSize"
+                       @change="getTableData"/>
+
+      </el-footer>
+
     </el-container>
   </div>
 </template>
@@ -61,28 +89,52 @@
 <script>
 
 import {clientPage} from "@/api/api-clients";
+import {DocumentAdd, DocumentDelete, Notebook, Reading} from "@element-plus/icons-vue";
 
 export default {
   name: "ClientsPage",
+  computed: {
+    DocumentDelete() {
+      return DocumentDelete
+    },
+    Notebook() {
+      return Notebook
+    },
+    Reading() {
+      return Reading
+    },
+    DocumentAdd() {
+      return DocumentAdd
+    }
+  },
+  components: {},
   created() {
-    this.initData();
+    this.getTableData();
   },
   data() {
     return {
-      searchParams: {
+      tableSearch: {
         searchKey: "",
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 3,
       },
-      pageData: [],
-      authorizationUrls: []
+      defTableSearch: {
+        searchKey: "",
+        pageNum: 1,
+        pageSize: 3,
+      },
+      pageInfo: {total: 0},
+      authorizationUrls: [],
     }
   },
   methods: {
-    initData() {
-      clientPage(this.searchParams).then(res => {
+    getTableData() {
+      clientPage(this.tableSearch).then(res => {
+        if (res.data === null) {
+          return;
+        }
         console.log(res);
-        this.pageData = res.data.list;
+        this.pageInfo = res.data;
       });
     },
     authorizationURL(row) {
@@ -91,15 +143,24 @@ export default {
       console.log(origin);
     },
     onQuery() {
-
+      this.getTableData()
     },
     onReset() {
-
+      this.tableSearch = this.defTableSearch;
+      this.getTableData()
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-
+<style >
+.el-row {
+  margin-bottom: 12px;
+}
+.el-row:last-child {
+  margin-bottom: 0;
+}
+.el-col {
+  border-radius: 4px;
+}
 </style>

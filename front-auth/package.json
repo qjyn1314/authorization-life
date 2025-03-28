@@ -29,6 +29,7 @@
     "pinia-plugin-persistedstate": "^4.2.0",
     "pubsub-js": "^1.9.5",
     "qs": "^6.14.0",
+    "uuid": "^11.1.0",
     "vue": "^3.2.13",
     "vue-router": "^4.5.0",
     "vuex": "^4.1.0"

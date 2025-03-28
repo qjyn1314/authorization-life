@@ -1,7 +1,10 @@
 package com.authorization.life.auth.app.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
+import com.authorization.common.util.RequestUtils;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
@@ -19,9 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +43,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         Assert.notBlank(id, () -> new CommonException("clientId不能为空."));
         OauthClient oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getClientId, id));
         Assert.notNull(oauthClient, () -> new CommonException("根据clientId未找到Client信息."));
-        return BeanConverter.convert(oauthClient, OauthClientVO.class);
+        return Convert.convert(OauthClientVO.class, oauthClient);
     }
 
     /**
@@ -75,6 +76,42 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         List<OauthClient> oauthClients = mapper.page(clientQuery);
         return oauthClients.stream().map(oauthClient ->
                 Convert.convert(OauthClientVO.class, oauthClient)).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<OauthClientVO> genAuthorizationUrl(String clientId) {
+        OauthClientVO oauthClientVO = selectClientByClientId(clientId);
+        String redirectUri = oauthClientVO.getRedirectUri();
+        if (StrUtil.isBlank(redirectUri)) {
+            return List.of();
+        }
+        Set<String> urlList = Arrays.stream(redirectUri.split(StrUtil.COMMA)).collect(Collectors.toSet());
+
+        // 获取到此次请求的域名和请求方式
+        String contextPath = RequestUtils.getRequest().getContextPath();
+        String servletPath = RequestUtils.getRequest().getServletPath();
+        String remoteAddr = RequestUtils.getRequest().getRemoteAddr();
+        String remoteHost = RequestUtils.getRequest().getRemoteHost();
+        int remotePort = RequestUtils.getRequest().getRemotePort();
+        String localAddr = RequestUtils.getRequest().getLocalAddr();
+        String localName = RequestUtils.getRequest().getLocalName();
+        int localPort = RequestUtils.getRequest().getLocalPort();
+        String serverName = RequestUtils.getRequest().getServerName();
+        int serverPort = RequestUtils.getRequest().getServerPort();
+        String scheme = RequestUtils.getRequest().getScheme();
+
+
+        List<OauthClientVO> clientUrls = CollUtil.newArrayList();
+        for (String url : urlList) {
+            OauthClientVO oauthClient = Convert.convert(OauthClientVO.class, oauthClientVO);
+
+
+            oauthClient.setRedirectUri(contextPath);
+            clientUrls.add(oauthClient);
+        }
+
+        return clientUrls;
     }
 
 }

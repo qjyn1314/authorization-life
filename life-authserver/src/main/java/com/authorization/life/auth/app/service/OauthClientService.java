@@ -22,4 +22,7 @@ public interface OauthClientService {
 
     PageInfo<OauthClientVO> page(OauthClientDTO clientDTO);
 
+    List<OauthClientVO> genAuthorizationUrl(String clientId);
+
+
 }

@@ -1,4 +1,31 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
+// 引入路由
+import router from "./routers";
+// 引入仓库pinia
+import pinia from "./stores";
+// 引入animate
+import "animate.css";
+// 引入ElementPlus
+import ElementPlus from "element-plus";
+// 引入ElementPlus的css
+import "element-plus/dist/index.css";
+// 引入ElementPlus所有图标
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
-createApp(App).mount('#app')
+const app = createApp(App);
+// 注册ElementPlus
+app.use(ElementPlus, {
+    locale: zhCn
+});
+// 注册ElementPlus所有图标
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component);
+}
+// 注册路由
+app.use(router);
+// 注册pinia
+app.use(pinia);
+// 挂载
+app.mount('#app')

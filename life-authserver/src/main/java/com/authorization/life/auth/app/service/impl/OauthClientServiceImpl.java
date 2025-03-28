@@ -1,7 +1,10 @@
 package com.authorization.life.auth.app.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import com.authorization.core.exception.handle.CommonException;
+import com.authorization.core.proxy.CurrentProxy;
+import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.entity.OauthClient;
@@ -9,12 +12,17 @@ import com.authorization.life.auth.infra.mapper.OauthClientMapper;
 import com.authorization.utils.converter.BeanConverter;
 import com.authorization.utils.security.SecurityCoreService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * oauth客户端表
@@ -24,7 +32,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class OauthClientServiceImpl implements OauthClientService {
+public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<OauthClientService> {
 
     @Autowired
     private OauthClientMapper mapper;
@@ -53,6 +61,20 @@ public class OauthClientServiceImpl implements OauthClientService {
         }
         Assert.notNull(oauthClient, "根据域名未找到client信息.");
         return BeanConverter.convert(oauthClient, OauthClientVO.class, Map.of(OauthClient.FIELD_CLIENT_SECRET_BAK, OauthClient.FIELD_CLIENT_SECRET));
+    }
+
+    @Override
+    public PageInfo<OauthClientVO> page(OauthClientDTO clientDTO) {
+        Page<OauthClientVO> startPage = PageHelper.startPage(clientDTO.getPageNum(), clientDTO.getPageSize());
+        return startPage.doSelectPageInfo(() -> clientList(clientDTO));
+    }
+
+    private List<OauthClientVO> clientList(OauthClientDTO clientDTO) {
+        clientDTO = Objects.isNull(clientDTO) ? new OauthClientDTO() : clientDTO;
+        OauthClient clientQuery = Convert.convert(OauthClient.class, clientDTO);
+        List<OauthClient> oauthClients = mapper.page(clientQuery);
+        return oauthClients.stream().map(oauthClient ->
+                Convert.convert(OauthClientVO.class, oauthClient)).collect(Collectors.toList());
     }
 
 }

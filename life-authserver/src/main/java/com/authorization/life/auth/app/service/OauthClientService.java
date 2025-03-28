@@ -1,7 +1,11 @@
 package com.authorization.life.auth.app.service;
 
+import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.github.pagehelper.PageInfo;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * oauth客户端表
@@ -15,5 +19,7 @@ public interface OauthClientService {
     OauthClientVO selectClientByClientId(String id);
 
     OauthClientVO clientByDomain(String domainName);
+
+    PageInfo<OauthClientVO> page(OauthClientDTO clientDTO);
 
 }

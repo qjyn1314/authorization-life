@@ -125,6 +125,7 @@ public interface SecurityCoreService {
             "/connect/**",
             "/userinfo",
             "/lsys/**",
+            "/client/**",
     };
 
 

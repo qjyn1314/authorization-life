@@ -37,8 +37,9 @@ public class ClientController {
 
     @Operation(summary = "生成授权路径")
     @GetMapping("/genAuthorizationUrl")
-    public Result<List<OauthClientVO>> genAuthorizationUrl(@RequestParam("clientId") String clientId) {
-        return Result.ok(oauthClientService.genAuthorizationUrl(clientId));
+    public Result<List<OauthClientVO>> genAuthorizationUrl(@RequestParam("clientId") String clientId,
+                                                           @RequestParam("hostOrigin") String hostOrigin) {
+        return Result.ok(oauthClientService.genAuthorizationUrl(clientId, hostOrigin));
     }
 
 

@@ -80,7 +80,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
 
 
     @Override
-    public List<OauthClientVO> genAuthorizationUrl(String clientId) {
+    public List<OauthClientVO> genAuthorizationUrl(String clientId, String hostOrigin) {
         OauthClientVO oauthClientVO = selectClientByClientId(clientId);
         String redirectUri = oauthClientVO.getRedirectUri();
         if (StrUtil.isBlank(redirectUri)) {
@@ -101,6 +101,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         int serverPort = RequestUtils.getRequest().getServerPort();
         String scheme = RequestUtils.getRequest().getScheme();
 
+        log.info("hostOrigin->{}", hostOrigin);
 
         List<OauthClientVO> clientUrls = CollUtil.newArrayList();
         for (String url : urlList) {

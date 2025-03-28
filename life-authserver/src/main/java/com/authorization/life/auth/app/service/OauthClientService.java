@@ -3,7 +3,6 @@ package com.authorization.life.auth.app.service;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.github.pagehelper.PageInfo;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface OauthClientService {
 
     PageInfo<OauthClientVO> page(OauthClientDTO clientDTO);
 
-    List<OauthClientVO> genAuthorizationUrl(String clientId);
+    List<OauthClientVO> genAuthorizationUrl(String clientId, String hostOrigin);
 
 
 }

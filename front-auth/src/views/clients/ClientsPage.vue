@@ -71,7 +71,7 @@ export default {
     return {
       searchParams: {
         searchKey: "",
-        pageNo: 1,
+        pageNum: 1,
         pageSize: 5,
       },
       pageData: [],
@@ -87,7 +87,8 @@ export default {
     },
     authorizationURL(row) {
       console.log('row', row.clientId);
-
+      let origin = window.location.origin;
+      console.log(origin);
     },
     onQuery() {
 

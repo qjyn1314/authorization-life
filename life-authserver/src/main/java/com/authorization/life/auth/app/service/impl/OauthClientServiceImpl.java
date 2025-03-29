@@ -15,6 +15,7 @@ import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.mapper.OauthClientMapper;
 import com.authorization.utils.converter.BeanConverter;
 import com.authorization.utils.security.SecurityCoreService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -146,6 +148,33 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         }
 
         return clientUrls;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public OauthClientVO saveClient(OauthClientDTO clientDTO) {
+        OauthClient oauthClient = Convert.convert(OauthClient.class, clientDTO);
+        if (Objects.isNull(oauthClient.getOauthClientId())) {
+            mapper.insert(oauthClient);
+        } else {
+            mapper.updateById(oauthClient);
+        }
+        return Convert.convert(OauthClientVO.class, oauthClient);
+    }
+
+    @Override
+    public OauthClientVO getClient(String clientId) {
+        return selectClientByClientId(clientId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean delClient(String clientId) {
+        OauthClientVO oauthClientVO = selectClientByClientId(clientId);
+        LambdaQueryWrapper<OauthClient> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(OauthClient::getClientId, clientId);
+        int delete = mapper.delete(wrapper);
+        return delete > 0;
     }
 
 }

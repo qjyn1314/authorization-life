@@ -43,4 +43,25 @@ public class ClientController {
     }
 
 
+    @Operation(summary = "保存client信息")
+    @PostMapping("/saveClient")
+    public Result<OauthClientVO> saveClient(@RequestBody OauthClientDTO clientDTO) {
+        return Result.ok(oauthClientService.saveClient(clientDTO));
+    }
+
+
+    @Operation(summary = "获取client详情")
+    @GetMapping("/getClient")
+    public Result<OauthClientVO> getClient(@RequestParam("clientId") String clientId) {
+        return Result.ok(oauthClientService.getClient(clientId));
+    }
+
+
+    @Operation(summary = "获取client详情")
+    @GetMapping("/delClient")
+    public Result<Boolean> delClient(@RequestParam("clientId") String clientId) {
+        return Result.ok(oauthClientService.delClient(clientId));
+    }
+
+
 }

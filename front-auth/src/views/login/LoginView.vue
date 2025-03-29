@@ -1,13 +1,27 @@
+<template>
+  <div>
+    <h3>我是登录页</h3>
+  </div>
+</template>
 <script>
 export default {
-  name: "LoginView.vue"
+  name: "LoginView.vue",
+  setup() {
+
+  },
+  created() {
+
+  },
+  data() {
+    return {}
+  },
+  mounted() {
+
+  }
+
 }
 </script>
 
-<template>
-
-</template>
-
-<style scoped lang="scss">
+<style>
 
 </style>

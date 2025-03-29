@@ -40,7 +40,7 @@
         <!--    分割线    -->
         <el-row :gutter="20">
           <el-col :span="1">
-            <el-button type="primary" :icon="DocumentAdd">新增</el-button>
+            <el-button type="primary" :icon="DocumentAdd" @click="createClient">新增</el-button>
           </el-col>
         </el-row>
         <!-- table表格 -->
@@ -70,13 +70,26 @@
               <el-button link type="primary" size="large" @click="authorizationURL(row)" :icon="Collection">
                 生成授权路径
               </el-button>
-              <el-button link type="success" size="large" :icon="Reading">EDIT</el-button>
-              <el-button link type="primary" size="large" :icon="Notebook">
+              <el-button link type="success" size="large" :icon="Reading" @click="updateClient(row.clientId)">EDIT
+              </el-button>
+              <el-button link type="primary" size="large" :icon="Notebook" @click="detailClient(row.clientId)">
                 DETAIL
               </el-button>
-              <el-button link type="danger" size="large" :icon="DocumentDelete">
-                DELETE
-              </el-button>
+
+              <el-popconfirm
+                  class="box-item"
+                  title="确定删除此客户端授权信息吗？"
+                  placement="top-start"
+                  confirm-button-type="danger"
+                  width="250"
+                  @confirm="removeClient(row.clientId)"
+              >
+                <template #reference>
+                  <el-button link type="danger" size="large" :icon="DocumentDelete">
+                    DELETE
+                  </el-button>
+                </template>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -89,6 +102,45 @@
                        @change="getTableData"/>
       </el-footer>
     </el-container>
+
+    <!--  添加/编辑client信息表单的抽屉  -->
+    <el-drawer v-model="drawer.visible" :show-close="false"
+               :direction="drawer.direction" size="50%" @close-auto-focus="drawerClose()">
+      <template #header="{ close, titleId, titleClass }">
+        <p :id="titleId" :class="titleClass">{{ drawer.header }}</p>
+        <el-button type="danger" @click="close" :icon="CircleCloseFilled">
+          关闭
+        </el-button>
+      </template>
+      <!--   添加或编辑的表单   -->
+      <el-form :model="clientInfo" size="large" label-position="right" label-width="auto"
+               style="max-width: 1000px;max-height: 1000px;">
+        <el-form-item label="CLIENT_ID">
+          <el-input v-model="clientInfo.clientId"/>
+        </el-form-item>
+        <el-form-item label="CLIENT_SECRET">
+          <el-input v-model="clientInfo.clientSecretBak"/>
+        </el-form-item>
+        <el-form-item label="客户端域名">
+          <el-input v-model="clientInfo.domainName"/>
+        </el-form-item>
+        <el-form-item label="回调URI">
+          <el-input v-model="clientInfo.redirectUri"/>
+        </el-form-item>
+        <el-form-item label="授权类型">
+        </el-form-item>
+        <el-form-item label="访问授权超时时间(毫秒)">
+          <el-input v-model="clientInfo.accessTokenTimeout"/>
+        </el-form-item>
+        <el-form-item label="刷新授权超时时间(毫秒)">
+          <el-input v-model="clientInfo.refreshTokenTimeout"/>
+        </el-form-item>
+        <el-form-item v-show="drawer.submit">
+          <el-button type="primary" @click="onSubmit">Create</el-button>
+          <el-button @click="drawer.visible = false">Cancel</el-button>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </div>
 </template>
 
@@ -96,6 +148,7 @@
 
 import {clientPage, genAuthorizationUrl} from "@/api/api-clients";
 import {
+  CircleCloseFilled,
   Collection,
   DocumentAdd,
   DocumentCopy,
@@ -132,6 +185,17 @@ export default {
       },
       pageInfo: {total: 0},
       authorizationUrls: [],
+      drawer: {
+        visible: false,
+        header: '',
+        direction: 'rtl',
+        submit: true
+      },
+      clientInfo: {
+        clientId: "",
+        clientSecretBak: "",
+        domainName: ""
+      }
     }
   },
   methods: {
@@ -166,13 +230,45 @@ export default {
       let copied = this.copied;
       copied ? prompt.success("复制成功") : prompt.error("复制失败")
     },
-    requestUrl(url) {
-      //在新标签中打开url路径
-      console.log(url)
+    createClient() {
+      this.drawer.visible = true;
+      this.drawer.header = '手工添加客户端授权信息';
+      this.drawer.direction = 'rtl';
+      this.drawer.submit = true;
+    },
+    updateClient(clientId) {
+      this.detail(clientId)
+      console.log(clientId)
+      this.drawer.visible = true;
+      this.drawer.header = '编辑客户端授权信息';
+      this.drawer.direction = 'ltr';
+      this.drawer.submit = true;
+    },
+    detailClient(clientId) {
+      console.log(clientId)
+      this.detail(clientId)
+      this.drawer.visible = true;
+      this.drawer.header = '客户端授权信息';
+      this.drawer.direction = 'btt';
+      this.drawer.submit = false;
+    },
+    drawerClose() {
+      console.log(this.drawer);
+      // 清空表单
 
+    },
+    detail(clientId) {
+      console.log(clientId)
+
+    },
+    removeClient(clientId) {
+      console.log(clientId)
     }
   },
   computed: {
+    CircleCloseFilled() {
+      return CircleCloseFilled
+    },
     DocumentCopy() {
       return DocumentCopy
     },

@@ -34,6 +34,30 @@ const frameOut = [
         meta: {
             title: '管理OAuth2Client',
         },
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import('@/views/login/LoginView.vue'),
+        meta: {
+            title: 'Oauth2SSOLogin',
+        },
+    },
+    {
+        path: '/reg',
+        name: 'reg',
+        component: () => import('@/views/login/RegView.vue'),
+        meta: {
+            title: 'Oauth2SSOReg',
+        },
+    },
+    {
+        path: '/resetPwd',
+        name: 'resetPwd',
+        component: () => import('@/views/login/ResetPwdView.vue'),
+        meta: {
+            title: 'Oauth2SSOResetPwd',
+        },
     }
 ]
 

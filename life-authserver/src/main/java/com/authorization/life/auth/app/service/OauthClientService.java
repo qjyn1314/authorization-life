@@ -23,5 +23,10 @@ public interface OauthClientService {
 
     List<OauthClientVO> genAuthorizationUrl(String clientId, String hostOrigin);
 
+    OauthClientVO saveClient(OauthClientDTO clientDTO);
+
+    OauthClientVO getClient(String clientId);
+
+    Boolean delClient(String clientId);
 
 }

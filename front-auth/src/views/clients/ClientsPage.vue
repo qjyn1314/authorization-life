@@ -19,14 +19,16 @@
           <el-descriptions-item>
             <!--折叠面板-->
             <el-collapse v-model="authorizationUrls">
-              <el-collapse-item title="路径001">
+              <el-collapse-item v-for="(urlData,index) in authorizationUrls" :key="index"
+                                :title="'域名：' + urlData.domainName + '；CLIENT_ID：' + urlData.clientId" :name="index">
                 <div>
-                  Consistent with real life: in line with the process and logic of real
-                  life, and comply with languages and habits that the users are used to;
+                  <h3><span>授权范围：</span>{{ urlData.scopes }}</h3>
+                  <span>授权路径：</span>
+                  <h4>{{ urlData.redirectUri }}</h4>
                 </div>
                 <div>
-                  <el-button link type="primary">复制路径</el-button>
-                  <el-button link type="primary">点击请求授权</el-button>
+                  <el-button link type="primary" @click="copyUrl(urlData.redirectUri)">复制</el-button>
+                  <el-button link type="warning" @click="requestUrl(urlData.redirectUri)">点击请求授权</el-button>
                 </div>
               </el-collapse-item>
             </el-collapse>
@@ -54,10 +56,10 @@
             </template>
           </el-table-column>
           <el-table-column prop="domainName" label="客户端域名" width="230"/>
-          <el-table-column prop="redirectUri" label="授权URI" width="280"/>
+          <el-table-column prop="redirectUri" label="回调URI" width="280"/>
           <el-table-column prop="grantTypes" show-overflow-tooltip label="授权类型" width="160"/>
-          <el-table-column prop="accessTokenTimeout" label="访问授权超时时间(毫秒)" width="80"/>
-          <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间(毫秒)" width="80"/>
+          <el-table-column prop="accessTokenTimeout" label="访问授权超时时间(毫秒)" width="100"/>
+          <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间(毫秒)" width="100"/>
           <el-table-column prop="tenantId" label="租户ID" width="120"/>
           <el-table-column fixed="right" label="操作" min-width="150">
             <template #default="{row}">
@@ -88,8 +90,9 @@
 
 <script>
 
-import {clientPage} from "@/api/api-clients";
+import {clientPage, genAuthorizationUrl} from "@/api/api-clients";
 import {DocumentAdd, DocumentDelete, Notebook, Reading} from "@element-plus/icons-vue";
+import {AUTH_SERVER} from "@/utils/global-util";
 
 export default {
   name: "ClientsPage",
@@ -138,9 +141,15 @@ export default {
       });
     },
     authorizationURL(row) {
-      console.log('row', row.clientId);
-      let origin = window.location.origin;
-      console.log(origin);
+      this.authorizationUrls = [];
+      let hostOrigin = window.location.origin + process.env.VUE_APP_BASE_API + AUTH_SERVER;
+      console.log(hostOrigin);
+      genAuthorizationUrl({clientId: row.clientId, hostOrigin: hostOrigin}).then(res => {
+        if (res.data == null) {
+          return;
+        }
+        this.authorizationUrls = res.data;
+      })
     },
     onQuery() {
       this.getTableData()
@@ -148,18 +157,27 @@ export default {
     onReset() {
       this.tableSearch = this.defTableSearch;
       this.getTableData()
+    },
+    copyUrl(url) {
+      console.log(url)
+    },
+    requestUrl(url) {
+      //在新标签中打开url路径
+      console.log(url)
     }
   }
 }
 </script>
 
-<style >
+<style>
 .el-row {
   margin-bottom: 12px;
 }
+
 .el-row:last-child {
   margin-bottom: 0;
 }
+
 .el-col {
   border-radius: 4px;
 }

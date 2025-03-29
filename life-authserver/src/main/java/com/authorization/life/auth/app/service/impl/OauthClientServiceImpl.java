@@ -92,13 +92,13 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
 
 
     // OidcScopes
-    public static String genAuthorizationCodeUrl(String hostOrigin, String redirectUri) {
+    public static String genAuthorizationCodeUrl(String hostOrigin, String redirectUri, String scope) {
         return hostOrigin + UriComponentsBuilder
                 .fromPath("/oauth2/authorize")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", "messaging-client")
-                .queryParam("scope", "openid")
-                .queryParam("state", UUID.fastUUID().toString())
+                .queryParam("scope", scope)
+                .queryParam("state", UUID.fastUUID().toString(true))
                 .queryParam("redirect_uri", redirectUri)
                 .toUriString();
     }
@@ -115,6 +115,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
             return List.of();
         }
         String openid = OidcScopes.OPENID;
+        Set<String> scopeSet = Arrays.stream(scopes.split(",")).collect(Collectors.toSet());
 
         Set<String> urlList = Arrays.stream(redirectUri.split(StrUtil.COMMA)).collect(Collectors.toSet());
 
@@ -135,10 +136,13 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
 
         List<OauthClientVO> clientUrls = CollUtil.newArrayList();
         for (String url : urlList) {
-            OauthClientVO oauthClient = Convert.convert(OauthClientVO.class, oauthClientVO);
-            String authUrl = genAuthorizationCodeUrl(hostOrigin, url);
-            oauthClient.setRedirectUri(authUrl);
-            clientUrls.add(oauthClient);
+            for (String scope : scopeSet) {
+                OauthClientVO oauthClient = Convert.convert(OauthClientVO.class, oauthClientVO);
+                String authUrl = genAuthorizationCodeUrl(hostOrigin, url, scope);
+                oauthClient.setRedirectUri(authUrl);
+                oauthClient.setScopes(scope);
+                clientUrls.add(oauthClient);
+            }
         }
 
         return clientUrls;

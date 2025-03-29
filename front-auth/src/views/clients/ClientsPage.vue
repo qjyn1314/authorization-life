@@ -18,22 +18,26 @@
           <!--第一个描述项-->
           <el-descriptions-item>
             <!--折叠面板-->
-            <el-collapse v-model="authorizationUrls">
+            <el-collapse>
               <el-collapse-item v-for="(urlData,index) in authorizationUrls" :key="index"
-                                :title="'域名：' + urlData.domainName + '；CLIENT_ID：' + urlData.clientId" :name="index">
+                                :title="'域名：' + urlData.domainName + '；CLIENT_ID：' + urlData.clientId">
                 <div>
                   <h3><span>授权范围：</span>{{ urlData.scopes }}</h3>
                   <span>授权路径：</span>
                   <h4>{{ urlData.redirectUri }}</h4>
-                </div>
-                <div>
-                  <el-button link type="primary" @click="copyUrl(urlData.redirectUri)">复制</el-button>
-                  <el-button link type="warning" @click="requestUrl(urlData.redirectUri)">点击请求授权</el-button>
+                  <el-button link type="primary" @click="copyUrl(urlData.redirectUri)" :icon="DocumentCopy">
+                    复制到剪切板
+                  </el-button>
+                  |
+                  <el-link type="warning" underline :href="urlData.redirectUri" target="_blank" :icon="Promotion">
+                    请求授权
+                  </el-link>
                 </div>
               </el-collapse-item>
             </el-collapse>
           </el-descriptions-item>
         </el-descriptions>
+        <!--    分割线    -->
         <el-row :gutter="20">
           <el-col :span="1">
             <el-button type="primary" :icon="DocumentAdd">新增</el-button>
@@ -63,7 +67,9 @@
           <el-table-column prop="tenantId" label="租户ID" width="120"/>
           <el-table-column fixed="right" label="操作" min-width="150">
             <template #default="{row}">
-              <el-button link type="primary" size="large" @click="authorizationURL(row)">生成授权路径</el-button>
+              <el-button link type="primary" size="large" @click="authorizationURL(row)" :icon="Collection">
+                生成授权路径
+              </el-button>
               <el-button link type="success" size="large" :icon="Reading">EDIT</el-button>
               <el-button link type="primary" size="large" :icon="Notebook">
                 DETAIL
@@ -81,9 +87,7 @@
                        :total="pageInfo.total"
                        v-model:current-page="tableSearch.pageNum" v-model:page-size="tableSearch.pageSize"
                        @change="getTableData"/>
-
       </el-footer>
-
     </el-container>
   </div>
 </template>
@@ -91,26 +95,26 @@
 <script>
 
 import {clientPage, genAuthorizationUrl} from "@/api/api-clients";
-import {DocumentAdd, DocumentDelete, Notebook, Reading} from "@element-plus/icons-vue";
+import {
+  Collection,
+  DocumentAdd,
+  DocumentCopy,
+  DocumentDelete,
+  Notebook,
+  Promotion,
+  Reading
+} from "@element-plus/icons-vue";
 import {AUTH_SERVER} from "@/utils/global-util";
+import {prompt} from "@/utils/msg-util";
+import {useClipboard} from "@vueuse/core";
 
 export default {
   name: "ClientsPage",
-  computed: {
-    DocumentDelete() {
-      return DocumentDelete
-    },
-    Notebook() {
-      return Notebook
-    },
-    Reading() {
-      return Reading
-    },
-    DocumentAdd() {
-      return DocumentAdd
-    }
+  setup() {
+    // 复制到剪切板功能: 在http路径下复制失败, 需要添加 legacy: true 参数即可.
+    const {copied, copy} = useClipboard({legacy: true});
+    return {copy, copied}
   },
-  components: {},
   created() {
     this.getTableData();
   },
@@ -136,7 +140,6 @@ export default {
         if (res.data === null) {
           return;
         }
-        console.log(res);
         this.pageInfo = res.data;
       });
     },
@@ -159,11 +162,37 @@ export default {
       this.getTableData()
     },
     copyUrl(url) {
-      console.log(url)
+      this.copy(url)
+      let copied = this.copied;
+      copied ? prompt.success("复制成功") : prompt.error("复制失败")
     },
     requestUrl(url) {
       //在新标签中打开url路径
       console.log(url)
+
+    }
+  },
+  computed: {
+    DocumentCopy() {
+      return DocumentCopy
+    },
+    Collection() {
+      return Collection
+    },
+    Promotion() {
+      return Promotion
+    },
+    DocumentDelete() {
+      return DocumentDelete
+    },
+    Notebook() {
+      return Notebook
+    },
+    Reading() {
+      return Reading
+    },
+    DocumentAdd() {
+      return DocumentAdd
     }
   }
 }

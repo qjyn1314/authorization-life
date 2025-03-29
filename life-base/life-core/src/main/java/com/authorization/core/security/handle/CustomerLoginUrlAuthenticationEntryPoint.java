@@ -18,7 +18,7 @@ import java.net.URI;
  * 自定义的未授权时所需要跳转的页面
  */
 @Slf4j
-public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomerLoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     public static final String LOGIN_URL = SsoSecurityProperties.SSO_LOGIN_FORM_PAGE;
 
@@ -26,17 +26,17 @@ public class LoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoin
 
     private final String loginPath;
 
-    public LoginUrlAuthenticationEntryPoint() {
+    public CustomerLoginUrlAuthenticationEntryPoint() {
         this.loginPath = LOGIN_URL;
     }
 
-    public LoginUrlAuthenticationEntryPoint(String loginPath) {
+    public CustomerLoginUrlAuthenticationEntryPoint(String loginPath) {
         this.loginPath = loginPath;
     }
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        log.warn("进入-未登录处理器-LoginUrlAuthenticationEntryPoint-请求路径->{}-->重定向地址是->{}", request.getRequestURI(), request.getParameter("redirect_uri"));
+        log.warn("进入-未登录处理器-CustomerLoginUrlAuthenticationEntryPoint-请求路径->{}-->重定向地址是->{}", request.getRequestURI(), request.getParameter("redirect_uri"));
         URI uri = URI.create(loginPath);
         String query = uri.getQuery();
         String redirectUri = request.getParameter("redirect_uri");

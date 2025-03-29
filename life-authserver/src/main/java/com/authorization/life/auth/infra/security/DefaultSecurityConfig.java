@@ -2,7 +2,6 @@ package com.authorization.life.auth.infra.security;
 
 import com.authorization.core.security.UserDetailService;
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.handle.LoginUrlAuthenticationEntryPoint;
 import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.security.handler.sso.SsoFailureHandler;
@@ -30,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -100,7 +100,7 @@ public class DefaultSecurityConfig {
         http.exceptionHandling(exceHandle ->
                 exceHandle
                         //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint()));
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE)));
 
         // 配置退出登录配置
         http.logout(logout -> logout

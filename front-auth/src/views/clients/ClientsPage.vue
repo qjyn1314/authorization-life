@@ -22,14 +22,16 @@
               <el-collapse-item v-for="(urlData,index) in authorizationUrls" :key="index"
                                 :title="'域名：' + urlData.domainName + '；CLIENT_ID：' + urlData.clientId">
                 <div>
-                  <h3><span>授权范围：</span>{{ urlData.scopes }}</h3>
+                  <h3><span>授权模式：</span>{{ urlData.grantTypes }}</h3>
+                  <h3><span>授权域：</span>{{ urlData.scopes }}</h3>
+                  <h3><span>回调URI：</span>{{ urlData.redirectUri }}</h3>
                   <span>授权路径：</span>
-                  <h4>{{ urlData.redirectUri }}</h4>
-                  <el-button link type="primary" @click="copySource(urlData.redirectUri)" :icon="DocumentCopy">
+                  <h4>{{ urlData.redirectUrl }}</h4>
+                  <el-button link type="primary" @click="copySource(urlData.redirectUrl)" :icon="DocumentCopy">
                     复制到剪切板
                   </el-button>
                   |
-                  <el-link type="warning" underline :href="urlData.redirectUri" target="_blank" :icon="Promotion">
+                  <el-link type="warning" underline :href="urlData.redirectUrl" target="_blank" :icon="Promotion">
                     请求授权
                   </el-link>
                 </div>
@@ -60,8 +62,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="domainName" label="客户端域名" width="230"/>
+          <el-table-column prop="grantTypes" show-overflow-tooltip label="授权模式" width="160"/>
+          <el-table-column prop="scopes" show-overflow-tooltip label="授权域" width="160"/>
           <el-table-column prop="redirectUri" label="回调URI" width="280"/>
-          <el-table-column prop="grantTypes" show-overflow-tooltip label="授权类型" width="160"/>
           <el-table-column prop="accessTokenTimeout" label="访问授权超时时间(毫秒)" width="100"/>
           <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间(毫秒)" width="100"/>
           <el-table-column prop="tenantId" label="租户ID" width="120"/>
@@ -159,10 +162,10 @@
             </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="授权类型">
+        <el-form-item label="授权模式">
           <el-select v-model="redirectUrlFooter.grantType"
                      clearable multiple
-                     placeholder="添加并选择授权类型">
+                     placeholder="添加并选择授权模式">
             <el-option
                 v-for="item in redirectUrlFooter.grantTypeOption"
                 :key="item.value"
@@ -235,6 +238,9 @@
         <el-form-item label="刷新授权超时时间(毫秒)">
           <el-input v-model="clientInfo.refreshTokenTimeout"/>
         </el-form-item>
+        <el-form-item label="附加信息">
+          <el-input type="textarea" v-model="clientInfo.additionalInformation"/>
+        </el-form-item>
         <el-form-item v-show="drawer.submit">
           <el-button type="primary" @click="onSubmit">Create</el-button>
           <el-button @click="drawer.visible = false">Cancel</el-button>
@@ -246,7 +252,7 @@
 
 <script>
 
-import {clientPage, genAuthorizationUrl} from "@/api/api-clients";
+import {clientPage, genAuthorizationUrl, saveClient} from "@/api/api-clients";
 import {
   CircleCloseFilled,
   Collection,
@@ -356,14 +362,12 @@ export default {
     },
     updateClient(clientId) {
       this.detail(clientId)
-      console.log(clientId)
       this.drawer.visible = true;
       this.drawer.header = '编辑客户端授权信息';
       this.drawer.direction = 'ltr';
       this.drawer.submit = true;
     },
     detailClient(clientId) {
-      console.log(clientId)
       this.detail(clientId)
       this.drawer.visible = true;
       this.drawer.header = '客户端授权信息';
@@ -397,7 +401,6 @@ export default {
         return;
       }
       if (type === 'url') {
-        console.log('url')
         let filterArr = this.redirectUrlFooter.redirectUrlOption.filter(item => {
           return item.label === this.redirectUrlFooter.optionName;
         })
@@ -448,6 +451,19 @@ export default {
       this.clientInfo.scopes = this.redirectUrlFooter.scope.join(",");
       console.log(this.clientInfo);
       console.log(this.redirectUrlFooter);
+
+      saveClient(this.clientInfo).then((res) => {
+        if (!res.data) {
+          return;
+        }
+        if (res.code === '-1') {
+          prompt.error(res.msg)
+        } else {
+          prompt.success("保存成功.")
+          this.getTableData();
+        }
+      });
+
     }
   },
   computed: {

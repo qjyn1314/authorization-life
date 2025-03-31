@@ -46,6 +46,10 @@ public class OauthClientVO implements Serializable {
      */
     private String redirectUri;
     /**
+     * 重定向地址
+     */
+    private String redirectUrl;
+    /**
      * 访问授权超时时间
      */
     private Integer accessTokenTimeout;

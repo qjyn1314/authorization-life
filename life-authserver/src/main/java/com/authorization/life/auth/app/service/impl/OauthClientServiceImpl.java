@@ -21,8 +21,9 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -42,6 +43,8 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
 
     @Autowired
     private OauthClientMapper mapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public OauthClientVO selectClientByClientId(String id) {
@@ -94,11 +97,11 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
 
 
     // OidcScopes
-    public static String genAuthorizationCodeUrl(String hostOrigin, String redirectUri, String scope) {
+    public static String genAuthorizationCodeUrl(String hostOrigin, String code, String clientId, String scope, String redirectUri) {
         return hostOrigin + UriComponentsBuilder
                 .fromPath("/oauth2/authorize")
-                .queryParam("response_type", "code")
-                .queryParam("client_id", "messaging-client")
+                .queryParam("response_type", code)
+                .queryParam("client_id", clientId)
                 .queryParam("scope", scope)
                 .queryParam("state", UUID.fastUUID().toString(true))
                 .queryParam("redirect_uri", redirectUri)
@@ -116,7 +119,12 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         if (StrUtil.isBlank(scopes)) {
             return List.of();
         }
-        String openid = OidcScopes.OPENID;
+        String grantTypes = oauthClientVO.getGrantTypes();
+        if (StrUtil.isBlank(grantTypes)) {
+            return List.of();
+        }
+        Set<String> grantTypeSet = Arrays.stream(grantTypes.split(",")).collect(Collectors.toSet());
+
         Set<String> scopeSet = Arrays.stream(scopes.split(",")).collect(Collectors.toSet());
 
         Set<String> urlList = Arrays.stream(redirectUri.split(StrUtil.COMMA)).collect(Collectors.toSet());
@@ -135,15 +143,21 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         String scheme = RequestUtils.getRequest().getScheme();
 
         log.info("hostOrigin->{}", hostOrigin);
-
+        Set<String> authUrlSet = new HashSet<>();
         List<OauthClientVO> clientUrls = CollUtil.newArrayList();
-        for (String url : urlList) {
+        for (String code : grantTypeSet) {
             for (String scope : scopeSet) {
-                OauthClientVO oauthClient = Convert.convert(OauthClientVO.class, oauthClientVO);
-                String authUrl = genAuthorizationCodeUrl(hostOrigin, url, scope);
-                oauthClient.setRedirectUri(authUrl);
-                oauthClient.setScopes(scope);
-                clientUrls.add(oauthClient);
+                for (String url : urlList) {
+                    String authUrl = genAuthorizationCodeUrl(hostOrigin, code, clientId, scope, url);
+                    if (authUrlSet.contains(authUrl)) {
+                        continue;
+                    }
+                    authUrlSet.add(authUrl);
+                    OauthClientVO oauthClient = new OauthClientVO();
+                    BeanUtils.copyProperties(oauthClientVO, oauthClient);
+                    oauthClient.setRedirectUrl(authUrl);
+                    clientUrls.add(oauthClient);
+                }
             }
         }
 
@@ -154,6 +168,10 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
     @Transactional(rollbackFor = Exception.class)
     public OauthClientVO saveClient(OauthClientDTO clientDTO) {
         OauthClient oauthClient = Convert.convert(OauthClient.class, clientDTO);
+
+        String encode = passwordEncoder.encode(oauthClient.getClientSecretBak());
+        oauthClient.setClientSecret(encode);
+
         if (Objects.isNull(oauthClient.getOauthClientId())) {
             mapper.insert(oauthClient);
         } else {

@@ -25,7 +25,7 @@
                   <h3><span>授权范围：</span>{{ urlData.scopes }}</h3>
                   <span>授权路径：</span>
                   <h4>{{ urlData.redirectUri }}</h4>
-                  <el-button link type="primary" @click="copyUrl(urlData.redirectUri)" :icon="DocumentCopy">
+                  <el-button link type="primary" @click="copySource(urlData.redirectUri)" :icon="DocumentCopy">
                     复制到剪切板
                   </el-button>
                   |
@@ -125,9 +125,45 @@
           <el-input v-model="clientInfo.domainName"/>
         </el-form-item>
         <el-form-item label="回调URI">
-          <el-input v-model="clientInfo.redirectUri"/>
+          <el-select v-model="redirectUrlFooter.redirectUrl"
+                     clearable multiple
+                     placeholder="手动添加回调URI">
+            <el-option
+                v-for="item in redirectUrlFooter.redirectUrlOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            />
+            <template #footer>
+              <el-button v-if="!redirectUrlFooter.isAdding" text bg size="small" @click="onAddUrlOption">
+                添加一个选项
+              </el-button>
+              <template v-else>
+                <el-input
+                    v-model="redirectUrlFooter.optionName"
+                    clearable
+                    class="option-input"
+                    placeholder="添加一个选项"
+                    size="large"
+                />
+                <el-divider>
+                  <el-icon>
+                    <star-filled/>
+                  </el-icon>
+                </el-divider>
+                <el-button type="primary" size="small" @click="onAddUrlConfirm">
+                  添加选项
+                </el-button>
+                <el-button size="small" @click="onAddUrlClear">关闭输入框</el-button>
+              </template>
+            </template>
+          </el-select>
         </el-form-item>
         <el-form-item label="授权类型">
+          <el-input v-model="clientInfo.grantTypes"/>
+        </el-form-item>
+        <el-form-item label="授权域">
+          <el-input v-model="clientInfo.scopes"/>
         </el-form-item>
         <el-form-item label="访问授权超时时间(毫秒)">
           <el-input v-model="clientInfo.accessTokenTimeout"/>
@@ -155,7 +191,8 @@ import {
   DocumentDelete,
   Notebook,
   Promotion,
-  Reading
+  Reading,
+  StarFilled
 } from "@element-plus/icons-vue";
 import {AUTH_SERVER} from "@/utils/global-util";
 import {prompt} from "@/utils/msg-util";
@@ -163,6 +200,7 @@ import {useClipboard} from "@vueuse/core";
 
 export default {
   name: "ClientsPage",
+  components: {StarFilled},
   setup() {
     // 复制到剪切板功能: 在http路径下复制失败, 需要添加 legacy: true 参数即可.
     const {copied, copy} = useClipboard({legacy: true});
@@ -194,7 +232,22 @@ export default {
       clientInfo: {
         clientId: "",
         clientSecretBak: "",
-        domainName: ""
+        domainName: "",
+        redirectUri: "",
+        grantTypes: "",
+        scopes: "",
+        accessTokenTimeout: 0,
+        refreshTokenTimeout: 0,
+      },
+      redirectUrlFooter: {
+        isAdding: false,
+        optionName: "",
+        redirectUrl: [],
+        redirectUrlOption: [],
+        grantType: [],
+        grantTypeOption: [],
+        scope: [],
+        scopeOption: [],
       }
     }
   },
@@ -225,10 +278,9 @@ export default {
       this.tableSearch = this.defTableSearch;
       this.getTableData()
     },
-    copyUrl(url) {
-      this.copy(url)
-      let copied = this.copied;
-      copied ? prompt.success("复制成功") : prompt.error("复制失败")
+    copySource(source) {
+      this.copy(source)
+      this.copied ? prompt.success("复制成功") : prompt.error("复制失败")
     },
     createClient() {
       this.drawer.visible = true;
@@ -263,6 +315,39 @@ export default {
     },
     removeClient(clientId) {
       console.log(clientId)
+    },
+    onAddUrlOption() {
+      this.redirectUrlFooter.isAdding = true;
+    },
+    onAddUrlConfirm() {
+      if (!this.redirectUrlFooter.optionName) {
+        return;
+      }
+      let filterArr = this.redirectUrlFooter.redirectUrlOption.filter(item => {
+        return item.label === this.redirectUrlFooter.optionName;
+      })
+      if (filterArr.length > 0) {
+        prompt.warning("请勿添加重复项.")
+        return;
+      }
+      this.redirectUrlFooter.redirectUrlOption.push({
+        label: this.redirectUrlFooter.optionName,
+        value: this.redirectUrlFooter.optionName
+      });
+    },
+    onAddUrlClear() {
+      this.redirectUrlFooter.optionName = ''
+      this.redirectUrlFooter.isAdding = false
+    },
+    onSubmit() {
+      this.clientInfo.redirectUri = this.redirectUrlFooter.redirectUrl.join(",");
+      this.clientInfo.grantTypes = this.redirectUrlFooter.grantType.join(",");
+      this.clientInfo.scopes = this.redirectUrlFooter.scope.join(",");
+      console.log(this.clientInfo);
+      console.log(this.redirectUrlFooter);
+    },
+    ConvertArrToStr(arr) {
+      return arr.join(",");
     }
   },
   computed: {

@@ -127,7 +127,7 @@
         <el-form-item label="回调URI">
           <el-select v-model="redirectUrlFooter.redirectUrl"
                      clearable multiple
-                     placeholder="手动添加回调URI">
+                     placeholder="添加并选择回调URI">
             <el-option
                 v-for="item in redirectUrlFooter.redirectUrlOption"
                 :key="item.value"
@@ -135,7 +135,7 @@
                 :value="item.value"
             />
             <template #footer>
-              <el-button v-if="!redirectUrlFooter.isAdding" text bg size="small" @click="onAddUrlOption">
+              <el-button v-if="!redirectUrlFooter.isUrlAdding" text bg size="small" @click="onAddUrlOption('url')">
                 添加一个选项
               </el-button>
               <template v-else>
@@ -143,7 +143,7 @@
                     v-model="redirectUrlFooter.optionName"
                     clearable
                     class="option-input"
-                    placeholder="添加一个选项"
+                    placeholder="请输入一个选项"
                     size="large"
                 />
                 <el-divider>
@@ -151,7 +151,7 @@
                     <star-filled/>
                   </el-icon>
                 </el-divider>
-                <el-button type="primary" size="small" @click="onAddUrlConfirm">
+                <el-button type="primary" size="small" @click="onAddUrlConfirm('url')">
                   添加选项
                 </el-button>
                 <el-button size="small" @click="onAddUrlClear">关闭输入框</el-button>
@@ -160,10 +160,74 @@
           </el-select>
         </el-form-item>
         <el-form-item label="授权类型">
-          <el-input v-model="clientInfo.grantTypes"/>
+          <el-select v-model="redirectUrlFooter.grantType"
+                     clearable multiple
+                     placeholder="添加并选择授权类型">
+            <el-option
+                v-for="item in redirectUrlFooter.grantTypeOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            />
+            <template #footer>
+              <el-button v-if="!redirectUrlFooter.isGrantAdding" text bg size="small" @click="onAddUrlOption('grant')">
+                添加一个选项
+              </el-button>
+              <template v-else>
+                <el-input
+                    v-model="redirectUrlFooter.optionName"
+                    clearable
+                    class="option-input"
+                    placeholder="请输入一个选项"
+                    size="large"
+                />
+                <el-divider>
+                  <el-icon>
+                    <star-filled/>
+                  </el-icon>
+                </el-divider>
+                <el-button type="primary" size="small" @click="onAddUrlConfirm('grant')">
+                  添加选项
+                </el-button>
+                <el-button size="small" @click="onAddUrlClear">关闭输入框</el-button>
+              </template>
+            </template>
+          </el-select>
         </el-form-item>
         <el-form-item label="授权域">
-          <el-input v-model="clientInfo.scopes"/>
+          <el-select v-model="redirectUrlFooter.scope"
+                     clearable multiple
+                     placeholder="添加并选择授权域">
+            <el-option
+                v-for="item in redirectUrlFooter.scopeOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            />
+            <template #footer>
+              <el-button v-if="!redirectUrlFooter.isScopeAdding" text bg size="small" @click="onAddUrlOption('scope')">
+                添加一个选项
+              </el-button>
+              <template v-else>
+                <el-input
+                    v-model="redirectUrlFooter.optionName"
+                    clearable
+                    class="option-input"
+                    placeholder="请输入一个选项"
+                    size="large"
+                />
+                <el-divider>
+                  <el-icon>
+                    <star-filled/>
+                  </el-icon>
+                </el-divider>
+                <el-button type="primary" size="small" @click="onAddUrlConfirm('scope')">
+                  添加选项
+                </el-button>
+                <el-button size="small" @click="onAddUrlClear">关闭输入框</el-button>
+              </template>
+            </template>
+          </el-select>
         </el-form-item>
         <el-form-item label="访问授权超时时间(毫秒)">
           <el-input v-model="clientInfo.accessTokenTimeout"/>
@@ -240,7 +304,9 @@ export default {
         refreshTokenTimeout: 0,
       },
       redirectUrlFooter: {
-        isAdding: false,
+        isUrlAdding: false,
+        isGrantAdding: false,
+        isScopeAdding: false,
         optionName: "",
         redirectUrl: [],
         redirectUrlOption: [],
@@ -316,28 +382,65 @@ export default {
     removeClient(clientId) {
       console.log(clientId)
     },
-    onAddUrlOption() {
-      this.redirectUrlFooter.isAdding = true;
+    onAddUrlOption(type) {
+      this.redirectUrlFooter.optionName = '';
+      if (type === 'url') {
+        this.redirectUrlFooter.isUrlAdding = true;
+      } else if (type === 'grant') {
+        this.redirectUrlFooter.isGrantAdding = true;
+      } else if (type === 'scope') {
+        this.redirectUrlFooter.isScopeAdding = true;
+      }
     },
-    onAddUrlConfirm() {
+    onAddUrlConfirm(type) {
       if (!this.redirectUrlFooter.optionName) {
         return;
       }
-      let filterArr = this.redirectUrlFooter.redirectUrlOption.filter(item => {
-        return item.label === this.redirectUrlFooter.optionName;
-      })
-      if (filterArr.length > 0) {
-        prompt.warning("请勿添加重复项.")
-        return;
+      if (type === 'url') {
+        console.log('url')
+        let filterArr = this.redirectUrlFooter.redirectUrlOption.filter(item => {
+          return item.label === this.redirectUrlFooter.optionName;
+        })
+        if (filterArr.length > 0) {
+          prompt.warning("请勿添加重复项.")
+          return;
+        }
+        this.redirectUrlFooter.redirectUrlOption.push({
+          label: this.redirectUrlFooter.optionName,
+          value: this.redirectUrlFooter.optionName
+        });
+      } else if (type === 'grant') {
+        let filterArr = this.redirectUrlFooter.grantTypeOption.filter(item => {
+          return item.label === this.redirectUrlFooter.optionName;
+        })
+        if (filterArr.length > 0) {
+          prompt.warning("请勿添加重复项.")
+          return;
+        }
+        this.redirectUrlFooter.grantTypeOption.push({
+          label: this.redirectUrlFooter.optionName,
+          value: this.redirectUrlFooter.optionName
+        });
+      } else if (type === 'scope') {
+        let filterArr = this.redirectUrlFooter.scopeOption.filter(item => {
+          return item.label === this.redirectUrlFooter.optionName;
+        })
+        if (filterArr.length > 0) {
+          prompt.warning("请勿添加重复项.")
+          return;
+        }
+        this.redirectUrlFooter.scopeOption.push({
+          label: this.redirectUrlFooter.optionName,
+          value: this.redirectUrlFooter.optionName
+        });
       }
-      this.redirectUrlFooter.redirectUrlOption.push({
-        label: this.redirectUrlFooter.optionName,
-        value: this.redirectUrlFooter.optionName
-      });
+      this.redirectUrlFooter.optionName = '';
     },
     onAddUrlClear() {
       this.redirectUrlFooter.optionName = ''
-      this.redirectUrlFooter.isAdding = false
+      this.redirectUrlFooter.isUrlAdding = false
+      this.redirectUrlFooter.isGrantAdding = false
+      this.redirectUrlFooter.isScopeAdding = false
     },
     onSubmit() {
       this.clientInfo.redirectUri = this.redirectUrlFooter.redirectUrl.join(",");
@@ -345,9 +448,6 @@ export default {
       this.clientInfo.scopes = this.redirectUrlFooter.scope.join(",");
       console.log(this.clientInfo);
       console.log(this.redirectUrlFooter);
-    },
-    ConvertArrToStr(arr) {
-      return arr.join(",");
     }
   },
   computed: {

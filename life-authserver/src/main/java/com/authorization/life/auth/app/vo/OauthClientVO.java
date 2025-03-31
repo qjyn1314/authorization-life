@@ -33,6 +33,7 @@ public class OauthClientVO implements Serializable {
      * 客户端密钥
      */
     private String clientSecret;
+    private String clientSecretBak;
     /**
      * 授权类型
      */

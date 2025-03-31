@@ -6,6 +6,11 @@ export function clientPage(param) {
 }
 
 
+export function getSelectVal(param) {
+    return axiosService.get(`/${AUTH_SERVER}/client/getSelectVal`, param)
+}
+
+
 export function genAuthorizationUrl(param) {
     return axiosService.get(`/${AUTH_SERVER}/client/genAuthorizationUrl`, param)
 }

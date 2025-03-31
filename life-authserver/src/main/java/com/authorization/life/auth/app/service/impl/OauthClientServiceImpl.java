@@ -169,12 +169,15 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
     public OauthClientVO saveClient(OauthClientDTO clientDTO) {
         OauthClient oauthClient = Convert.convert(OauthClient.class, clientDTO);
 
+        OauthClient existOauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getClientId, clientDTO.getClientId()));
+
         String encode = passwordEncoder.encode(oauthClient.getClientSecretBak());
         oauthClient.setClientSecret(encode);
-
-        if (Objects.isNull(oauthClient.getOauthClientId())) {
+        if (Objects.isNull(existOauthClient)) {
             mapper.insert(oauthClient);
         } else {
+            String oauthClientId = existOauthClient.getOauthClientId();
+            oauthClient.setOauthClientId(oauthClientId);
             mapper.updateById(oauthClient);
         }
         return Convert.convert(OauthClientVO.class, oauthClient);

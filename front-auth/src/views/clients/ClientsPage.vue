@@ -20,7 +20,7 @@
             <!--折叠面板-->
             <el-collapse>
               <el-collapse-item v-for="(urlData,index) in authorizationUrls" :key="index"
-                                :title="'域名：' + urlData.domainName + '；CLIENT_ID：' + urlData.clientId">
+                                :title="'域名：' + urlData.domainName + '；CLIENT_KEY：' + urlData.clientId">
                 <div>
                   <h3><span>授权模式：</span>{{ urlData.grantTypes }}</h3>
                   <h3><span>授权域：</span>{{ urlData.scopes }}</h3>
@@ -47,13 +47,13 @@
         </el-row>
         <!-- table表格 -->
         <el-table :data="pageInfo.list" border style="width: 100%" max-height="800">
-          <el-table-column fixed prop="clientId" label="CLIENT_ID" width="230"/>
+          <el-table-column fixed prop="clientId" label="CLIENT_KEY" width="230"/>
           <el-table-column prop="clientSecretBak" label="CLIENT_SECRET" width="230">
             <template #default="scope">
               <el-popover effect="light" trigger="hover" placement="top" width="auto">
                 <template #default>
                   <div>真实密钥: {{ scope.row.clientSecretBak }}</div>
-                  <div>验证密钥: {{ scope.row.clientSecret }}</div>
+                  <div>加密密钥: {{ scope.row.clientSecret }}</div>
                 </template>
                 <template #reference>
                   <el-tag>{{ scope.row.clientSecretBak }}</el-tag>
@@ -65,8 +65,8 @@
           <el-table-column prop="grantTypes" show-overflow-tooltip label="授权模式" width="160"/>
           <el-table-column prop="scopes" show-overflow-tooltip label="授权域" width="160"/>
           <el-table-column prop="redirectUri" label="回调URI" width="280"/>
-          <el-table-column prop="accessTokenTimeout" label="访问授权超时时间(毫秒)" width="100"/>
-          <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间(毫秒)" width="100"/>
+          <el-table-column prop="accessTokenTimeout" label="访问授权超时时间(秒)" width="100"/>
+          <el-table-column prop="refreshTokenTimeout" label="刷新授权超时时间(秒)" width="100"/>
           <el-table-column prop="tenantId" label="租户ID" width="120"/>
           <el-table-column fixed="right" label="操作" min-width="150">
             <template #default="{row}">
@@ -118,16 +118,24 @@
       <!--   添加或编辑的表单   -->
       <el-form :model="clientInfo" size="large" label-position="right" label-width="auto"
                style="max-width: 1000px;max-height: 1000px;">
-        <el-form-item label="CLIENT_ID">
-          <el-input v-model="clientInfo.clientId"/>
-        </el-form-item>
-        <el-form-item label="CLIENT_SECRET">
-          <el-input v-model="clientInfo.clientSecretBak"/>
-        </el-form-item>
-        <el-form-item label="客户端域名">
+        <el-form-item label="客户端域名" :rules="[
+        { required: true, message: '客户端域名必填项' },
+      ]">
           <el-input v-model="clientInfo.domainName"/>
         </el-form-item>
-        <el-form-item label="回调URI">
+        <el-form-item label="CLIENT_KEY" :rules="[
+        { required: true, message: 'CLIENT_KEY必填项' },
+      ]">
+          <el-input v-model="clientInfo.clientId"/>
+        </el-form-item>
+        <el-form-item label="CLIENT_SECRET" :rules="[
+        { required: true, message: 'CLIENT_SECRET必填项' },
+      ]">
+          <el-input v-model="clientInfo.clientSecretBak"/>
+        </el-form-item>
+        <el-form-item label="回调URI" :rules="[
+        { required: true, message: '回调URI必填项' },
+      ]">
           <el-select v-model="redirectUrlFooter.redirectUrl"
                      clearable multiple
                      placeholder="添加并选择回调URI">
@@ -162,42 +170,23 @@
             </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="授权模式">
+        <el-form-item label="授权模式" :rules="[
+        { required: true, message: '授权模式必填项' },
+      ]">
           <el-select v-model="redirectUrlFooter.grantType"
                      clearable multiple
-                     placeholder="添加并选择授权模式">
+                     placeholder="选择授权模式">
             <el-option
                 v-for="item in redirectUrlFooter.grantTypeOption"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
             />
-            <template #footer>
-              <el-button v-if="!redirectUrlFooter.isGrantAdding" text bg size="small" @click="onAddUrlOption('grant')">
-                添加一个选项
-              </el-button>
-              <template v-else>
-                <el-input
-                    v-model="redirectUrlFooter.optionName"
-                    clearable
-                    class="option-input"
-                    placeholder="请输入一个选项"
-                    size="large"
-                />
-                <el-divider>
-                  <el-icon>
-                    <star-filled/>
-                  </el-icon>
-                </el-divider>
-                <el-button type="primary" size="small" @click="onAddUrlConfirm('grant')">
-                  添加选项
-                </el-button>
-                <el-button size="small" @click="onAddUrlClear">关闭输入框</el-button>
-              </template>
-            </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="授权域">
+        <el-form-item label="授权域" :rules="[
+        { required: true, message: '授权域必填项' },
+      ]">
           <el-select v-model="redirectUrlFooter.scope"
                      clearable multiple
                      placeholder="添加并选择授权域">
@@ -232,11 +221,23 @@
             </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="访问授权超时时间(毫秒)">
-          <el-input v-model="clientInfo.accessTokenTimeout"/>
+        <p style="text-align: left;color: royalblue;">
+          30分钟：1800 秒；1小时：3600 秒；24小时：86 400 秒；
+        </p>
+        <el-form-item label="访问授权超时时间(秒)"
+                      :rules="[
+        { required: true, message: '时间(秒)必填项' },
+        { type: 'number', message: '时间(秒)必须是数字' },
+      ]">
+          <el-input-number v-model="clientInfo.accessTokenTimeout"/>
+
         </el-form-item>
-        <el-form-item label="刷新授权超时时间(毫秒)">
-          <el-input v-model="clientInfo.refreshTokenTimeout"/>
+        <el-form-item label="刷新授权超时时间(秒)"
+                      :rules="[
+        { required: true, message: '时间(秒)必填项' },
+        { type: 'number', message: '时间(秒)必须是数字' },
+      ]">
+          <el-input-number v-model="clientInfo.refreshTokenTimeout"/>
         </el-form-item>
         <el-form-item label="附加信息">
           <el-input type="textarea" v-model="clientInfo.additionalInformation"/>
@@ -252,7 +253,7 @@
 
 <script>
 
-import {clientPage, genAuthorizationUrl, saveClient} from "@/api/api-clients";
+import {clientPage, delClient, genAuthorizationUrl, getClient, getSelectVal, saveClient} from "@/api/api-clients";
 import {
   CircleCloseFilled,
   Collection,
@@ -262,7 +263,8 @@ import {
   Notebook,
   Promotion,
   Reading,
-  StarFilled
+  StarFilled,
+  Warning
 } from "@element-plus/icons-vue";
 import {AUTH_SERVER} from "@/utils/global-util";
 import {prompt} from "@/utils/msg-util";
@@ -278,6 +280,7 @@ export default {
   },
   created() {
     this.getTableData();
+    this.initGrantTypes();
   },
   data() {
     return {
@@ -309,6 +312,16 @@ export default {
         accessTokenTimeout: 0,
         refreshTokenTimeout: 0,
       },
+      clearClientInfo: {
+        clientId: "",
+        clientSecretBak: "",
+        domainName: "",
+        redirectUri: "",
+        grantTypes: "",
+        scopes: "",
+        accessTokenTimeout: 0,
+        refreshTokenTimeout: 0,
+      },
       redirectUrlFooter: {
         isUrlAdding: false,
         isGrantAdding: false,
@@ -331,6 +344,16 @@ export default {
         }
         this.pageInfo = res.data;
       });
+    },
+    initGrantTypes() {
+      getSelectVal().then(res => {
+        res.data['grantType'].forEach(item => {
+          this.redirectUrlFooter.grantTypeOption.push({label: item, value: item});
+        });
+        res.data['scope'].forEach(item => {
+          this.redirectUrlFooter.scopeOption.push({label: item, value: item});
+        });
+      })
     },
     authorizationURL(row) {
       this.authorizationUrls = [];
@@ -371,27 +394,60 @@ export default {
       this.detail(clientId)
       this.drawer.visible = true;
       this.drawer.header = '客户端授权信息';
-      this.drawer.direction = 'btt';
+      this.drawer.direction = 'ttb';
       this.drawer.submit = false;
     },
     drawerClose() {
-      console.log(this.drawer);
-      // 清空表单
-
+      this.clientInfo = this.clearClientInfo;
+      this.drawer.visible = false;
+      this.redirectUrlFooter.grantType = [];
+      this.redirectUrlFooter.scope = [];
+      this.redirectUrlFooter.redirectUrl = [];
     },
     detail(clientId) {
-      console.log(clientId)
+      getClient({clientId: clientId}).then((res) => {
+        if (res.code === '-1') {
+          prompt.error(res.msg)
+        } else {
+          this.initClientDetail(res.data);
+        }
+      })
+    },
+    initClientDetail(clientInfo) {
+      console.log(clientInfo);
+      this.clientInfo = clientInfo;
+
+      let redirectUris = clientInfo.redirectUri.split(",");
+      this.redirectUrlFooter.redirectUrl = redirectUris;
+      redirectUris.forEach((item, index) => {
+        this.redirectUrlFooter.redirectUrlOption.push({label: item, value: item});
+      })
+
+      this.redirectUrlFooter.grantType = clientInfo.grantTypes.split(",");
+
+      let scopesList = clientInfo.scopes.split(",");
+      this.redirectUrlFooter.scope = scopesList;
+      scopesList.forEach((item, index) => {
+        this.redirectUrlFooter.scopeOption.push({label: item, value: item});
+      })
+      this.redirectUrlFooter.scopeOption = Array.from(new Set(this.redirectUrlFooter.scopeOption))
 
     },
     removeClient(clientId) {
-      console.log(clientId)
+      delClient({clientId: clientId}).then((res) => {
+        console.log(res)
+        if (res.code === '-1') {
+          prompt.error(res.msg)
+        } else {
+          prompt.success("删除成功.")
+          this.getTableData();
+        }
+      })
     },
     onAddUrlOption(type) {
       this.redirectUrlFooter.optionName = '';
       if (type === 'url') {
         this.redirectUrlFooter.isUrlAdding = true;
-      } else if (type === 'grant') {
-        this.redirectUrlFooter.isGrantAdding = true;
       } else if (type === 'scope') {
         this.redirectUrlFooter.isScopeAdding = true;
       }
@@ -409,18 +465,6 @@ export default {
           return;
         }
         this.redirectUrlFooter.redirectUrlOption.push({
-          label: this.redirectUrlFooter.optionName,
-          value: this.redirectUrlFooter.optionName
-        });
-      } else if (type === 'grant') {
-        let filterArr = this.redirectUrlFooter.grantTypeOption.filter(item => {
-          return item.label === this.redirectUrlFooter.optionName;
-        })
-        if (filterArr.length > 0) {
-          prompt.warning("请勿添加重复项.")
-          return;
-        }
-        this.redirectUrlFooter.grantTypeOption.push({
           label: this.redirectUrlFooter.optionName,
           value: this.redirectUrlFooter.optionName
         });
@@ -442,7 +486,6 @@ export default {
     onAddUrlClear() {
       this.redirectUrlFooter.optionName = ''
       this.redirectUrlFooter.isUrlAdding = false
-      this.redirectUrlFooter.isGrantAdding = false
       this.redirectUrlFooter.isScopeAdding = false
     },
     onSubmit() {
@@ -450,23 +493,23 @@ export default {
       this.clientInfo.grantTypes = this.redirectUrlFooter.grantType.join(",");
       this.clientInfo.scopes = this.redirectUrlFooter.scope.join(",");
       console.log(this.clientInfo);
-      console.log(this.redirectUrlFooter);
 
       saveClient(this.clientInfo).then((res) => {
-        if (!res.data) {
-          return;
-        }
         if (res.code === '-1') {
           prompt.error(res.msg)
         } else {
           prompt.success("保存成功.")
           this.getTableData();
+          this.drawerClose();
         }
       });
 
     }
   },
   computed: {
+    Warning() {
+      return Warning
+    },
     CircleCloseFilled() {
       return CircleCloseFilled
     },

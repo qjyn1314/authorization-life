@@ -22,18 +22,26 @@
               <el-collapse-item v-for="(urlData,index) in authorizationUrls" :key="index"
                                 :title="'域名：' + urlData.domainName + '；CLIENT_KEY：' + urlData.clientId">
                 <div>
-                  <h3><span>授权模式：</span>{{ urlData.grantTypes }}</h3>
-                  <h3><span>授权域：</span>{{ urlData.scopes }}</h3>
-                  <h3><span>回调URI：</span>{{ urlData.redirectUri }}</h3>
-                  <span>授权路径：</span>
-                  <h4>{{ urlData.redirectUrl }}</h4>
-                  <el-button link type="primary" @click="copySource(urlData.redirectUrl)" :icon="DocumentCopy">
-                    复制到剪切板
-                  </el-button>
-                  |
-                  <el-link type="warning" underline :href="urlData.redirectUrl" target="_blank" :icon="Promotion">
-                    请求授权
-                  </el-link>
+                  <p><span>授权模式：</span>{{ urlData.grantTypes }}</p>
+                  <p><span>授权域：</span>{{ urlData.scopes }}</p>
+                  <p><span>回调URI：</span>{{ urlData.redirectUri }}</p>
+                  <p><span>请求方式：</span>{{ urlData.method }}</p>
+                  <p><span>授权URL：</span>{{ urlData.redirectUrl }}</p>
+                  <div v-if="urlData.method === 'POST'">
+                    <p>请求参数：</p>
+                    <json-viewer :value="urlData.params" theme="jv-dark" boxed sort/>
+                  </div>
+                  <p>
+                    <el-button link type="primary" @click="copySource(urlData.redirectUrl)" :icon="DocumentCopy">
+                      复制URL到剪切板
+                    </el-button>
+                    <el-space v-if="urlData.method === 'GET'">
+                      <el-link type="success" underline :href="urlData.redirectUrl"
+                               target="_blank" :icon="Promotion">
+                        请求授权URL
+                      </el-link>
+                    </el-space>
+                  </p>
                 </div>
               </el-collapse-item>
             </el-collapse>
@@ -222,7 +230,7 @@
           </el-select>
         </el-form-item>
         <p style="text-align: left;color: royalblue;">
-          30分钟：1800 秒；1小时：3600 秒；24小时：86 400 秒；
+          30分钟：1800 秒；1小时：3600 秒；24小时：86400 秒；
         </p>
         <el-form-item label="访问授权超时时间(秒)"
                       :rules="[
@@ -269,10 +277,12 @@ import {
 import {AUTH_SERVER} from "@/utils/global-util";
 import {prompt} from "@/utils/msg-util";
 import {useClipboard} from "@vueuse/core";
+import {JsonViewer} from "vue3-json-viewer";
+
 
 export default {
   name: "ClientsPage",
-  components: {StarFilled},
+  components: {StarFilled, JsonViewer},
   setup() {
     // 复制到剪切板功能: 在http路径下复制失败, 需要添加 legacy: true 参数即可.
     const {copied, copy} = useClipboard({legacy: true});
@@ -549,5 +559,11 @@ export default {
 
 .el-col {
   border-radius: 4px;
+}
+
+.json_box {
+  width: 1000px;
+  margin: auto;
+  margin-top: 35px;
 }
 </style>

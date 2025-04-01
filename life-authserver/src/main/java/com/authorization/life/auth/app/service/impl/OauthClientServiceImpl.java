@@ -5,7 +5,6 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.common.util.RequestUtils;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
@@ -24,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -84,19 +85,17 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
                 Convert.convert(OauthClientVO.class, oauthClient)).collect(Collectors.toList());
     }
 
-    private static final String REDIRECT_URI = "http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc";
 
-    private static final String AUTHORIZATION_REQUEST = UriComponentsBuilder
-            .fromPath("/oauth2/authorize")
-            .queryParam("response_type", "code")
-            .queryParam("client_id", "messaging-client")
-            .queryParam("scope", "openid")
-            .queryParam("state", UUID.fastUUID().toString())
-            .queryParam("redirect_uri", REDIRECT_URI)
-            .toUriString();
-
-
-    // OidcScopes
+    /**
+     * 授权码模式中-生成获取临时code的URL
+     *
+     * @param hostOrigin  授权服务器域名前缀
+     * @param code        授权码模式
+     * @param clientId    客户端
+     * @param scope       授权域
+     * @param redirectUri 客户端的回调路径
+     * @return String
+     */
     public static String genAuthorizationCodeUrl(String hostOrigin, String code, String clientId, String scope, String redirectUri) {
         return hostOrigin + UriComponentsBuilder
                 .fromPath("/oauth2/authorize")
@@ -108,56 +107,112 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
                 .toUriString();
     }
 
+    /**
+     * 生成获取accessToken的URL
+     *
+     * @param hostOrigin 授权服务器域名前缀
+     * @param grantType  授权模式
+     * @return String
+     */
+    public static String genAuthorizationTokenUrl(String hostOrigin, AuthorizationGrantType grantType) {
+        String url = "";
+        if (AuthorizationGrantType.AUTHORIZATION_CODE.equals(grantType)) {
+            url = hostOrigin + UriComponentsBuilder
+                    .fromPath("/oauth2/token")
+                    .toUriString();
+        } else if (AuthorizationGrantType.CLIENT_CREDENTIALS.equals(grantType)) {
+            url = hostOrigin + UriComponentsBuilder
+                    .fromPath("/oauth2/authorize")
+                    .toUriString();
+        }
+        return url;
+    }
+
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+
+    /**
+     * 用于构建post请求的参数
+     *
+     * @param grantType 授权模式
+     * @return map
+     */
+    public static Map<String, String> paramsMap(AuthorizationGrantType grantType, String redirectUri, String clientId, String clientSecret) {
+        if (AuthorizationGrantType.AUTHORIZATION_CODE.equals(grantType)) {
+            Map<String, String> params = new HashMap<>(6);
+            params.put(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.AUTHORIZATION_CODE.getValue());
+            params.put(OAuth2ParameterNames.REDIRECT_URI, redirectUri);
+            params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
+            params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecret);
+            params.put(OAuth2ParameterNames.CODE, "URL中的临时CODE");
+            params.put(OAuth2ParameterNames.STATE, "URL中的state");
+            return params;
+        } else if (AuthorizationGrantType.CLIENT_CREDENTIALS.equals(grantType)) {
+            Map<String, String> params = new HashMap<>(3);
+            params.put(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue());
+            params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
+            params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecret);
+            return params;
+        }
+
+        return Map.of();
+    }
+
+
     @Override
     public List<OauthClientVO> genAuthorizationUrl(String clientId, String hostOrigin) {
         OauthClientVO oauthClientVO = selectClientByClientId(clientId);
+        String clientSecretBak = oauthClientVO.getClientSecretBak();
         String redirectUri = oauthClientVO.getRedirectUri();
-        if (StrUtil.isBlank(redirectUri)) {
-            return List.of();
-        }
         String scopes = oauthClientVO.getScopes();
-        if (StrUtil.isBlank(scopes)) {
-            return List.of();
-        }
         String grantTypes = oauthClientVO.getGrantTypes();
-        if (StrUtil.isBlank(grantTypes)) {
+        if (StrUtil.isBlank(redirectUri) || StrUtil.isBlank(scopes) || StrUtil.isBlank(grantTypes)) {
             return List.of();
         }
-        Set<String> grantTypeSet = Arrays.stream(grantTypes.split(",")).collect(Collectors.toSet());
 
-        Set<String> scopeSet = Arrays.stream(scopes.split(",")).collect(Collectors.toSet());
-
+        Set<String> grantTypeSet = Arrays.stream(grantTypes.split(StrUtil.COMMA)).sorted().collect(Collectors.toCollection(TreeSet::new));
+        Set<String> scopeSet = Arrays.stream(scopes.split(StrUtil.COMMA)).collect(Collectors.toSet());
         Set<String> urlList = Arrays.stream(redirectUri.split(StrUtil.COMMA)).collect(Collectors.toSet());
-
-        // 获取到此次请求的域名和请求方式
-        String contextPath = RequestUtils.getRequest().getContextPath();
-        String servletPath = RequestUtils.getRequest().getServletPath();
-        String remoteAddr = RequestUtils.getRequest().getRemoteAddr();
-        String remoteHost = RequestUtils.getRequest().getRemoteHost();
-        int remotePort = RequestUtils.getRequest().getRemotePort();
-        String localAddr = RequestUtils.getRequest().getLocalAddr();
-        String localName = RequestUtils.getRequest().getLocalName();
-        int localPort = RequestUtils.getRequest().getLocalPort();
-        String serverName = RequestUtils.getRequest().getServerName();
-        int serverPort = RequestUtils.getRequest().getServerPort();
-        String scheme = RequestUtils.getRequest().getScheme();
 
         log.info("hostOrigin->{}", hostOrigin);
         Set<String> authUrlSet = new HashSet<>();
         List<OauthClientVO> clientUrls = CollUtil.newArrayList();
         for (String code : grantTypeSet) {
-            for (String scope : scopeSet) {
-                for (String url : urlList) {
-                    String authUrl = genAuthorizationCodeUrl(hostOrigin, code, clientId, scope, url);
-                    if (authUrlSet.contains(authUrl)) {
-                        continue;
+            if (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(code)) {
+                for (String scope : scopeSet) {
+                    for (String url : urlList) {
+                        String authUrl = genAuthorizationCodeUrl(hostOrigin, code, clientId, scope, url);
+                        if (authUrlSet.contains(authUrl)) {
+                            continue;
+                        }
+                        authUrlSet.add(authUrl);
+                        OauthClientVO oauthClient = new OauthClientVO();
+                        BeanUtils.copyProperties(oauthClientVO, oauthClient);
+                        oauthClient.setGrantTypes(code);
+                        oauthClient.setScopes(scope);
+                        oauthClient.setMethod(GET);
+                        oauthClient.setRedirectUrl(authUrl);
+                        clientUrls.add(oauthClient);
+
+                        OauthClientVO oauthClient02 = new OauthClientVO();
+                        BeanUtils.copyProperties(oauthClientVO, oauthClient02);
+                        oauthClient02.setGrantTypes(code);
+                        oauthClient02.setScopes(scope);
+                        oauthClient02.setMethod(POST);
+                        oauthClient02.setRedirectUrl(genAuthorizationTokenUrl(hostOrigin, AuthorizationGrantType.AUTHORIZATION_CODE));
+                        oauthClient02.setParams(paramsMap(AuthorizationGrantType.AUTHORIZATION_CODE, redirectUri, clientId, clientSecretBak));
+                        clientUrls.add(oauthClient02);
                     }
-                    authUrlSet.add(authUrl);
-                    OauthClientVO oauthClient = new OauthClientVO();
-                    BeanUtils.copyProperties(oauthClientVO, oauthClient);
-                    oauthClient.setRedirectUrl(authUrl);
-                    clientUrls.add(oauthClient);
                 }
+
+            } else if (AuthorizationGrantType.CLIENT_CREDENTIALS.getValue().equals(code)) {
+                OauthClientVO oauthClient02 = new OauthClientVO();
+                BeanUtils.copyProperties(oauthClientVO, oauthClient02);
+                oauthClient02.setGrantTypes(code);
+                oauthClient02.setMethod(POST);
+                oauthClient02.setRedirectUrl(genAuthorizationTokenUrl(hostOrigin, AuthorizationGrantType.CLIENT_CREDENTIALS));
+                oauthClient02.setParams(paramsMap(AuthorizationGrantType.CLIENT_CREDENTIALS, redirectUri, clientId, clientSecretBak));
+                clientUrls.add(oauthClient02);
             }
         }
 

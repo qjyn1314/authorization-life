@@ -14,7 +14,12 @@ import "element-plus/dist/index.css";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
+import {JsonViewer} from "vue3-json-viewer";
+import "vue3-json-viewer/dist/index.css"
+
 const app = createApp(App);
+//注册json格式化显示
+app.use(JsonViewer)
 // 注册ElementPlus
 app.use(ElementPlus, {
     locale: zhCn

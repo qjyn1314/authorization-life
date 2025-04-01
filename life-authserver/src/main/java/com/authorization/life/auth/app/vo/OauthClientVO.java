@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * oauth客户端表的返回值
@@ -67,4 +69,10 @@ public class OauthClientVO implements Serializable {
      * 租户ID
      */
     private String tenantId;
+
+    private String method;
+
+    private Map<String, String> params = new HashMap<>();
+
+
 }

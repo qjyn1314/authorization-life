@@ -58,6 +58,14 @@ const frameOut = [
         meta: {
             title: 'Oauth2SSOResetPwd',
         },
+    },
+    {
+        path: '/auth-redirect',
+        name: 'resetPwd',
+        component: () => import('@/views/auth/TemporaryAuth.vue'),
+        meta: {
+            title: 'Oauth2SSOTemporaryAuth',
+        },
     }
 ]
 

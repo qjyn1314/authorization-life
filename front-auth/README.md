@@ -58,3 +58,60 @@ mitt  mitt是一个轻量级的事件总线库,用于实现跨组件通信
 
 nprogress  进度条
 
+
+# nginx的配置信息
+
+```
+    # 进入到网站的首页
+    server {
+        # 监听浏览器的80端口
+        listen       80;
+        # 访问域名
+        server_name  www.authorization.life;
+        #后端服务gateway
+        location /dev-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+                proxy_pass http://127.0.0.1:18888;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+        }
+    }
+    # 点击登录按钮时进行发起授权请求,并跳转到登录页->
+    server {
+        # 监听浏览器的80端口
+        listen       80;
+        # 访问域名
+        server_name  passport-dev.authorization.life;
+        #后端服务gateway
+        location /dev-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+                proxy_pass http://127.0.0.1:18888;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+        }
+    }
+```

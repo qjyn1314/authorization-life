@@ -112,7 +112,7 @@ public class Oauth2SecurityConfig {
         });
 
         //配置openid的配置项
-        authorizationServerConfigurer.oidc(Customizer.withDefaults());
+//        authorizationServerConfigurer.oidc(Customizer.withDefaults());
 
 //        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
 //            endpointConfigurer
@@ -129,6 +129,7 @@ public class Oauth2SecurityConfig {
                         .requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll()
                         //除以上的请求之外，都需要token
                         .anyRequest().authenticated())
+                // 禁用此路径下的所有csrf(伪造防护)
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
 
         //将oauth2.0自定义的配置托管给 SpringSecurity

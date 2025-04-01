@@ -97,6 +97,10 @@ const handleRequestError = (error) => {
                 console.error('服务器内部错误:', error.response.data.message);
                 prompt.error(error.response.data.message || '服务器内部错误')
                 return Promise.reject({error: '服务器内部错误', message: error.response.data.message});
+            case 504:
+                console.error('服务器内部错误:', error.response.data.message);
+                prompt.error(error.response.data.message || '服务器请求超时')
+                return Promise.reject({error: '服务器请求超时', message: error.response.data.message});
             default:
                 prompt.error('服务器响应错误')
                 console.error('服务器响应错误:', error.response.data);

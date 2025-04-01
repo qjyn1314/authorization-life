@@ -18,8 +18,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class ExceptionHandle {
 
-    @ExceptionHandler(Throwable.class)
-    public Result<Object> handleDefaultException(Throwable defaultEx) {
+    @ExceptionHandler(Exception.class)
+    public Result<Object> handleDefaultException(Exception defaultEx) {
         log.error("处理异常信息的通知内容->{}", defaultEx.getMessage());
         log.error("处理异常信息的通知->", defaultEx);
         if (defaultEx instanceof CommonException) {

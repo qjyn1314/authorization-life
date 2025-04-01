@@ -119,13 +119,18 @@ public interface SecurityCoreService {
             "/public/**",
             //监控服务路径
             "/actuator/**",
-            //获取client信息接口
+            // oauth2相关所有请求-开始
             "/oauth/**",
-            "/oauth2/**",
             "/connect/**",
             "/userinfo",
-            "/lsys/**",
+            //获取client信息接口
             "/client/**",
+            "/oauth2/**",
+            //临时授权页面也不需要验证
+            "/auth-redirect",
+            // oauth2相关所有请求-结束
+            // 自定义请求路径
+            "/lsys/**",
     };
 
 

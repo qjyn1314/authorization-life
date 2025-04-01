@@ -5,6 +5,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
+import com.authorization.common.util.RequestUtils;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
@@ -96,10 +97,10 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
      * @param redirectUri 客户端的回调路径
      * @return String
      */
-    public static String genAuthorizationCodeUrl(String hostOrigin, String code, String clientId, String scope, String redirectUri) {
+    public static String genAuthorizationCodeUrl(String hostOrigin, String clientId, String scope, String redirectUri) {
         return hostOrigin + UriComponentsBuilder
                 .fromPath("/oauth2/authorize")
-                .queryParam("response_type", code)
+                .queryParam("response_type", "code")
                 .queryParam("client_id", clientId)
                 .queryParam("scope", scope)
                 .queryParam("state", UUID.fastUUID().toString(true))
@@ -170,6 +171,8 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
             return List.of();
         }
 
+        requestInfo();
+
         Set<String> grantTypeSet = Arrays.stream(grantTypes.split(StrUtil.COMMA)).sorted().collect(Collectors.toCollection(TreeSet::new));
         Set<String> scopeSet = Arrays.stream(scopes.split(StrUtil.COMMA)).collect(Collectors.toSet());
         Set<String> urlList = Arrays.stream(redirectUri.split(StrUtil.COMMA)).collect(Collectors.toSet());
@@ -181,7 +184,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
             if (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(code)) {
                 for (String scope : scopeSet) {
                     for (String url : urlList) {
-                        String authUrl = genAuthorizationCodeUrl(hostOrigin, code, clientId, scope, url);
+                        String authUrl = genAuthorizationCodeUrl(hostOrigin, clientId, scope, url);
                         if (authUrlSet.contains(authUrl)) {
                             continue;
                         }
@@ -217,6 +220,46 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         }
 
         return clientUrls;
+    }
+
+    private void requestInfo() {
+        String contextPath = RequestUtils.getRequest().getContextPath();
+        log.info("contextPath->{}", contextPath);
+        String servletPath = RequestUtils.getRequest().getServletPath();
+        log.info("servletPath->{}", servletPath);
+        String remoteAddr = RequestUtils.getRequest().getRemoteAddr();
+        log.info("remoteAddr->{}", remoteAddr);
+        String remoteHost = RequestUtils.getRequest().getRemoteHost();
+        log.info("remoteHost->{}", remoteHost);
+        int remotePort = RequestUtils.getRequest().getRemotePort();
+        log.info("remotePort->{}", remotePort);
+        String localAddr = RequestUtils.getRequest().getLocalAddr();
+        log.info("localAddr->{}", localAddr);
+        String localName = RequestUtils.getRequest().getLocalName();
+        log.info("localName->{}", localName);
+        int localPort = RequestUtils.getRequest().getLocalPort();
+        log.info("localPort->{}", localPort);
+        String serverName = RequestUtils.getRequest().getServerName();
+        log.info("serverName->{}", serverName);
+        int serverPort = RequestUtils.getRequest().getServerPort();
+        log.info("serverPort->{}", serverPort);
+        String scheme = RequestUtils.getRequest().getScheme();
+        log.info("scheme->{}", scheme);
+
+        Enumeration<String> headerNames = RequestUtils.getRequest().getHeaderNames();
+        log.info("headerNames->{}", headerNames);
+
+        Iterator<String> iterator = headerNames.asIterator();
+        while (iterator.hasNext()) {
+            String headerName = iterator.next();
+            String headerValue = RequestUtils.getRequest().getHeader(headerName);
+            log.info("headerName->{}", headerName);
+            log.info("headerValue->{}", headerValue);
+        }
+
+        String forwardedHost = RequestUtils.getRequest().getHeader("x-forwarded-host");
+
+
     }
 
     @Override

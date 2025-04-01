@@ -58,6 +58,7 @@ mitt  mitt是一个轻量级的事件总线库,用于实现跨组件通信
 
 nprogress  进度条
 
+notepadd: https://github.com/notepad-plus-plus/notepad-plus-plus
 
 # nginx的配置信息
 
@@ -114,4 +115,42 @@ nprogress  进度条
                 proxy_redirect off;
         }
     }
+    
+    
+    server {
+        listen       80;
+        server_name  test.authorization.life;
+        #后端服务gateway
+        location /test-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+            root html/test_dist;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+    
+    server {
+        listen       80;
+        server_name  password-test.authorization.life;
+        #后端服务gateway
+        location /test-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+            root html/test_dist;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
 ```

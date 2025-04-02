@@ -154,3 +154,11 @@ notepadd: https://github.com/notepad-plus-plus/notepad-plus-plus
     }
 
 ```
+# 参考:
+
+https://github.com/smltq/spring-boot-demo/blob/master/security-oauth2-auth-code/README.md
+
+
+https://www.cnblogs.com/linianhui/p/oauth2-authorization.html
+
+

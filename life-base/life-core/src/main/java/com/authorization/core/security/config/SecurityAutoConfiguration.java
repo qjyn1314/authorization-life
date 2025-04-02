@@ -1,6 +1,8 @@
 package com.authorization.core.security.config;
 
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
+import com.authorization.core.security.handle.CustomerAccessDeniedHandler;
+import com.authorization.core.security.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.utils.security.SecurityCoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -12,7 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.CorsConfig
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -44,8 +45,9 @@ public class SecurityAutoConfiguration {
             authorizeRequests.anyRequest().authenticated();
         });
         http.exceptionHandling(exception -> {
+            exception.accessDeniedHandler(new CustomerAccessDeniedHandler());
             //未登录时跳转至登录页面
-            exception.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE));
+            exception.authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE));
         });
         // 配置formLogin登录, 是为了添加 UsernamePasswordAuthenticationFilter 到过滤链中.
         http.formLogin(Customizer.withDefaults());

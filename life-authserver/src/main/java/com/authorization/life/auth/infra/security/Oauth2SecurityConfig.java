@@ -1,5 +1,6 @@
 package com.authorization.life.auth.infra.security;
 
+import com.authorization.core.security.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
@@ -24,7 +25,6 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
@@ -140,7 +140,7 @@ public class Oauth2SecurityConfig {
         // 配置 异常处理
         http.exceptionHandling(excHandle -> excHandle
                 //当未登录的情况下 自定义该如何跳转。
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE)));
+                .authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE)));
         return http.build();
     }
 

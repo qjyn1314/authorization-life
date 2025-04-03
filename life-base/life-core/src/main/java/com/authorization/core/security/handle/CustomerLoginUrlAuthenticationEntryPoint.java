@@ -43,7 +43,11 @@ public class CustomerLoginUrlAuthenticationEntryPoint implements AuthenticationE
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         log.warn("进入-未登录处理器-CustomerLoginUrlAuthenticationEntryPoint-请求路径->{}-->重定向地址是->{}", request.getRequestURI(), request.getParameter("redirect_uri"));
 
-        requestInfo(request);
+        try {
+            requestInfo(request);
+        } catch (Exception e) {
+            log.error("错误信息->", e);
+        }
 
         URI uri = URI.create(loginPath);
         String query = uri.getQuery();

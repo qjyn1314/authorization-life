@@ -44,12 +44,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
         log.info("请求路径是-{}", JSONUtil.toJsonStr(request.getRequestURI()));
         String jwtToken = getJwtToken(request);
         log.info("进入到-JwtAuthenticationFilter-过滤器-jwtToken->>>{}", jwtToken);
-        UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
-        // 此处如果是需要放过的请求路径, 将请求路径的校验交给SpringSecurity进行校验
-        chain.doFilter(request, response);
-        log.info("将退出-JwtAuthenticationFilter-过滤器-jwtToken->>>{}", JSONUtil.toJsonStr(UserThreadUtil.getUserContext()));
-        //将在此次请求结束后清空此缓存的用户信息
-        UserThreadUtil.removeUserContext();
+        if (StrUtil.isBlank(jwtToken)) {
+            chain.doFilter(request, response);
+        } else {
+            UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
+            // 此处如果是需要放过的请求路径, 将请求路径的校验交给SpringSecurity进行校验
+            chain.doFilter(request, response);
+            log.info("将退出-JwtAuthenticationFilter-过滤器-jwtToken->>>{}", JSONUtil.toJsonStr(UserThreadUtil.getUserContext()));
+            //将在此次请求结束后清空此缓存的用户信息
+            UserThreadUtil.removeUserContext();
+        }
     }
 
     private String getJwtToken(HttpServletRequest request) {

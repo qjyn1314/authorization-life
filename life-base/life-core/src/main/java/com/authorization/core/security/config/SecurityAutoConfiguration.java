@@ -1,9 +1,8 @@
 package com.authorization.core.security.config;
 
 import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.handle.CustomerAccessDeniedHandler;
 import com.authorization.core.security.handle.CustomerLoginUrlAuthenticationEntryPoint;
-import com.authorization.utils.security.SecurityCoreService;
+import com.authorization.utils.security.SsoSecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +31,8 @@ public class SecurityAutoConfiguration {
     private CorsFilter corsFilter;
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private SsoSecurityProperties ssoSecurityProperties;
 
     @Bean
     public SecurityFilterChain defaultSpringSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -40,14 +41,13 @@ public class SecurityAutoConfiguration {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.authorizeHttpRequests(authorizeRequests -> {
             // 配置请求路径不需要鉴权认证
-            authorizeRequests.requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll();
+            authorizeRequests.requestMatchers(ssoSecurityProperties.getPermUrls()).permitAll();
             // 除上面外的所有请求全部需要鉴权认证
             authorizeRequests.anyRequest().authenticated();
         });
         http.exceptionHandling(exception -> {
-            exception.accessDeniedHandler(new CustomerAccessDeniedHandler());
-            //未登录时跳转至登录页面
-            exception.authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE));
+            //当system客户端访问系统时, 未登录时跳转至登录页面
+            exception.authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl()));
         });
         // 配置formLogin登录, 是为了添加 UsernamePasswordAuthenticationFilter 到过滤链中.
         http.formLogin(Customizer.withDefaults());

@@ -6,8 +6,10 @@ import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHan
 import com.authorization.life.auth.infra.security.service.*;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
+import com.authorization.utils.security.SsoSecurityProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -17,6 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -88,6 +91,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @EnableWebSecurity
 @Configuration(proxyBeanMethods = false)
 public class Oauth2SecurityConfig {
+    @Autowired
+    private SsoSecurityProperties ssoSecurityProperties;
 
     /**
      * oauth2.0配置，需要托管给 HttpSecurity
@@ -111,9 +116,6 @@ public class Oauth2SecurityConfig {
                     .authorizationResponseHandler(new OAuth2SuccessHandler());
         });
 
-        //配置openid的配置项
-//        authorizationServerConfigurer.oidc(Customizer.withDefaults());
-
 //        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
 //            endpointConfigurer
 //                    // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
@@ -121,26 +123,41 @@ public class Oauth2SecurityConfig {
 //                    .accessTokenResponseHandler();
 //        });
 
+        // 配置openid的配置项
+        authorizationServerConfigurer.oidc(Customizer.withDefaults());
+
+        // 针对oauth2的请求所需要的配置项
+        http.securityMatcher("/oauth2/**");
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         // 配置请求拦截
         http.securityMatcher(endpointsMatcher)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         // 无需认证即可访问
-                        .requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll()
-                        //除以上的请求之外，都需要token
+                        .requestMatchers(ssoSecurityProperties.getPermUrls()).permitAll()
+                        // 除以上的请求之外，都需要token
                         .anyRequest().authenticated())
                 // 禁用此路径下的所有csrf(伪造防护)
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
 
-        //将oauth2.0自定义的配置托管给 SpringSecurity
+
+        // 开启CORS配置，配合下边的CorsConfigurationSource配置实现跨域配置
+        http.cors(Customizer.withDefaults());
+        // 禁用csrf
+        http.csrf(AbstractHttpConfigurer::disable);
+
+        // 配置 异常处理
+        http.exceptionHandling(excHandle -> excHandle
+                // 当访问的是"/oauth2/**"路径时, 未登录的情况下 自定义该如何跳转。
+                .authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl())));
+
+        http.oauth2ResourceServer((resourceServer) -> resourceServer
+                .jwt(Customizer.withDefaults()));
+
+        // 将oauth2.0自定义的配置托管给 SpringSecurity
         http.with(authorizationServerConfigurer, Customizer.withDefaults());
         // 自定义设置accesstoken中JwtToken-Claims中的内容
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
-        // 配置 异常处理
-        http.exceptionHandling(excHandle -> excHandle
-                //当未登录的情况下 自定义该如何跳转。
-                .authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE)));
         return http.build();
     }
 

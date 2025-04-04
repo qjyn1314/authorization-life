@@ -1,15 +1,16 @@
 package com.authorization.core.security.handle;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.URLUtil;
+import com.authorization.core.exception.handle.CommonException;
 import com.authorization.utils.security.SsoSecurityProperties;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,48 +24,50 @@ import java.util.stream.Collectors;
  * 自定义的未授权时所需要跳转的页面
  */
 @Slf4j
-public class CustomerLoginUrlAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
-    public static final String LOGIN_URL = SsoSecurityProperties.SSO_LOGIN_FORM_PAGE;
+public class CustomerLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private final String loginPath;
-
-    public CustomerLoginUrlAuthenticationEntryPoint() {
-        this.loginPath = LOGIN_URL;
-    }
-
-    public CustomerLoginUrlAuthenticationEntryPoint(String loginPath) {
-        this.loginPath = loginPath;
+    /**
+     * @param loginFormUrl URL where the login page can be found. Should either be
+     *                     relative to the web-app context path (include a leading {@code /}) or an absolute
+     *                     URL.
+     */
+    public CustomerLoginUrlAuthenticationEntryPoint(String loginFormUrl) {
+        super(loginFormUrl);
     }
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.warn("进入-未登录处理器-CustomerLoginUrlAuthenticationEntryPoint-请求路径->{}-->重定向地址是->{}", request.getRequestURI(), request.getParameter("redirect_uri"));
-
+        String loginFormUrl = determineUrlToUseForThisRequest(request, response, authException);
+        log.info("loginFormUrl={}", loginFormUrl);
         try {
+            //此处为了输出一些请求中的参数信息
             requestInfo(request);
         } catch (Exception e) {
-            log.error("错误信息->", e);
+            log.warn("错误信息->", e);
         }
-
-        URI uri = URI.create(loginPath);
-        String query = uri.getQuery();
         String redirectUri = request.getParameter("redirect_uri");
-        // 没有重定向参数则直接重定向到登录页面
+        // 直接重定向到登录页面
         if (CharSequenceUtil.isBlank(redirectUri)) {
-            redirectStrategy.sendRedirect(request, response, loginPath);
+            redirectStrategy.sendRedirect(request, response, loginFormUrl);
             return;
         }
-        String url;
-        // 存在重定向参数则拼接地址再重定向
-        if (CharSequenceUtil.isBlank(query)) {
-            url = loginPath + "?redirect_uri=" + URLUtil.encodeAll(redirectUri);
-        } else {
-            url = loginPath + "&redirect_uri=" + URLUtil.encodeAll(redirectUri);
+        StringBuffer requestUrl = request.getRequestURL();
+        log.info("requestUrl={}", requestUrl);
+
+        String loginPageUrl = loginFormUrl + "?redirect_uri=" + redirectUri;
+
+        try {
+            URI uri = URI.create(loginPageUrl);
+        } catch (Exception e) {
+            log.error("登录页解析失败", e);
+            throw new CommonException("登录页解析失败.");
         }
-        redirectStrategy.sendRedirect(request, response, url);
+
+        log.info("loginPageUrl={}", loginPageUrl);
+        redirectStrategy.sendRedirect(request, response, loginPageUrl);
     }
 
     private void requestInfo(HttpServletRequest request) {

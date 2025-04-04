@@ -91,7 +91,7 @@ public class DefaultSecurityConfig {
 
         http.authorizeHttpRequests(authHttpReq -> authHttpReq
                 // 无需认证即可访问
-                .requestMatchers(SecurityCoreService.IGNORE_PERM_URLS).permitAll()
+                .requestMatchers(ssoSecurityProperties.getPermUrls()).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
         );
@@ -99,8 +99,8 @@ public class DefaultSecurityConfig {
         // 配置异常情况的处理器
         http.exceptionHandling(exceHandle ->
                 exceHandle
-                        //未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
-                        .authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(SecurityCoreService.SSO_LOGIN_FORM_PAGE)));
+                        //当访问的是除"/oauth2/**"路径外时,未登录时请求访问接口所需要跳转的自定义路径，即没有登录时将直接跳转到此 url中
+                        .authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl())));
 
         // 配置退出登录配置
         http.logout(logout -> logout

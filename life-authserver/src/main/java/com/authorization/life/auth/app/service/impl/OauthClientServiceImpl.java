@@ -195,6 +195,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
                         oauthClient.setScopes(scope);
                         oauthClient.setMethod(GET);
                         oauthClient.setRedirectUrl(authUrl);
+                        oauthClient.setRedirectUri(url);
                         clientUrls.add(oauthClient);
 
                         OauthClientVO oauthClient02 = new OauthClientVO();
@@ -203,6 +204,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
                         oauthClient02.setScopes(scope);
                         oauthClient02.setMethod(POST);
                         oauthClient02.setRedirectUrl(genAuthorizationTokenUrl(hostOrigin, AuthorizationGrantType.AUTHORIZATION_CODE));
+                        oauthClient.setRedirectUri(url);
                         oauthClient02.setParams(paramsMap(AuthorizationGrantType.AUTHORIZATION_CODE, redirectUri, clientId, clientSecretBak));
                         clientUrls.add(oauthClient02);
                     }

@@ -251,7 +251,7 @@
           <el-input type="textarea" v-model="clientInfo.additionalInformation"/>
         </el-form-item>
         <el-form-item v-show="drawer.submit">
-          <el-button type="primary" @click="onSubmit">Create</el-button>
+          <el-button type="primary" @click="onSubmit">Submit</el-button>
           <el-button @click="drawer.visible = false">Cancel</el-button>
         </el-form-item>
       </el-form>

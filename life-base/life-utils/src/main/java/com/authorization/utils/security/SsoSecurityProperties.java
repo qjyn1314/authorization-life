@@ -26,6 +26,12 @@ public class SsoSecurityProperties implements SecurityCoreService {
      */
     private String secret;
 
+    private String loginUrl;
+
+    private String clientId;
+
+    private String clientSecret;
+
     public String getSecret() {
         return StrUtil.isBlank(secret) ? JwtService.DEFAULT_SECRET : secret;
     }
@@ -39,5 +45,15 @@ public class SsoSecurityProperties implements SecurityCoreService {
         Set<String> permUrls = ignorePermUrls;
         permUrls.addAll(Set.of(SecurityCoreService.IGNORE_PERM_URLS));
         return permUrls;
+    }
+
+    public String[] getPermUrls() {
+        if (getEnable()) {
+            // 开启登录时做出校验逻辑
+            return getIgnorePermUrls().toArray(new String[0]);
+        } else {
+            // 关闭是将所有请求都放过.
+            return new String[]{"/**"};
+        }
     }
 }

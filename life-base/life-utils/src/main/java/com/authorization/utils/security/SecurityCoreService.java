@@ -48,7 +48,7 @@ public interface SecurityCoreService {
     /**
      * 登录页的跳转路径
      */
-    String SSO_LOGIN_FORM_PAGE = "/login";
+//    String SSO_LOGIN_FORM_PAGE = "/login";
     /**
      * 退出登录接口
      */
@@ -119,10 +119,6 @@ public interface SecurityCoreService {
             "/public/**",
             //监控服务路径
             "/actuator/**",
-            // oauth2相关所有请求-开始
-            //获取client信息接口
-            "/client/**",
-            // oauth2相关所有请求-结束
     };
 
 

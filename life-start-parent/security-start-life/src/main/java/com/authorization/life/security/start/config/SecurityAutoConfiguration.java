@@ -1,7 +1,7 @@
-package com.authorization.core.security.config;
+package com.authorization.life.security.start.config;
 
-import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.handle.CustomerLoginUrlAuthenticationEntryPoint;
+import com.authorization.life.security.start.filter.JwtAuthenticationFilter;
+import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.utils.security.SsoSecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

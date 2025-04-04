@@ -1,8 +1,6 @@
 package com.authorization.life.auth.api.controller;
 
 
-import cn.hutool.core.lang.Assert;
-import com.authorization.core.exception.handle.CommonException;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;

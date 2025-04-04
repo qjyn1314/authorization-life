@@ -1,5 +1,5 @@
 com.authorization.core.shutdown.ShutdownAutoConfiguration
-com.authorization.core.security.config.SecurityAutoComponent
-com.authorization.core.security.config.SecurityAutoConfiguration
+com.authorization.life.security.start.config.SecurityAutoComponent
+com.authorization.life.security.start.config.SecurityAutoConfiguration
 com.authorization.core.LifeCoreAutoConfig
 com.authorization.core.exception.ExceptionConfig

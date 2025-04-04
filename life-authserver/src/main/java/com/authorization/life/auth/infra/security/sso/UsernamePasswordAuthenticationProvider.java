@@ -2,9 +2,9 @@ package com.authorization.life.auth.infra.security.sso;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.core.security.UserDetailService;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.entity.LifeUser;
+import com.authorization.life.security.start.UserDetailService;
 import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.message.StrForm;

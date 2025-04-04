@@ -1,9 +1,9 @@
 package com.authorization.life.auth.infra.security;
 
-import com.authorization.core.security.UserDetailService;
-import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.handle.CustomerLoginUrlAuthenticationEntryPoint;
-import com.authorization.core.security.handle.TokenInformationExpiredStrategy;
+import com.authorization.life.security.start.UserDetailService;
+import com.authorization.life.security.start.filter.JwtAuthenticationFilter;
+import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
+import com.authorization.life.security.start.handle.TokenInformationExpiredStrategy;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.security.handler.sso.SsoFailureHandler;
 import com.authorization.life.auth.infra.security.handler.sso.SsoLogoutHandle;

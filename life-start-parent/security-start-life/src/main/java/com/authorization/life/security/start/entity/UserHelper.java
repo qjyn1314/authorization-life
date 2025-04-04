@@ -1,4 +1,4 @@
-package com.authorization.core.security.entity;
+package com.authorization.life.security.start.entity;
 
 import com.authorization.utils.security.UserDetail;
 import com.authorization.utils.security.UserThreadUtil;

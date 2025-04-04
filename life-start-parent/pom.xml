@@ -25,6 +25,7 @@
         <module>valid-start-life</module>
         <module>mail-start-life</module>
         <module>lov-start-life</module>
+        <module>security-start-life</module>
     </modules>
 
     <dependencies>

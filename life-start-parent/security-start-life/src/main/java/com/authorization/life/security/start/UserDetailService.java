@@ -1,4 +1,4 @@
-package com.authorization.core.security;
+package com.authorization.life.security.start;
 
 import com.authorization.utils.security.UserDetail;
 import org.springframework.security.core.userdetails.UserDetails;

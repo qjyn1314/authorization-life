@@ -1,8 +1,6 @@
-package com.authorization.core.security.handle;
+package com.authorization.life.security.start.handle;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import com.authorization.core.exception.handle.CommonException;
-import com.authorization.utils.security.SsoSecurityProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -63,7 +61,7 @@ public class CustomerLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
             URI uri = URI.create(loginPageUrl);
         } catch (Exception e) {
             log.error("登录页解析失败", e);
-            throw new CommonException("登录页解析失败.");
+            throw new IllegalArgumentException("登录页解析失败.");
         }
 
         log.info("loginPageUrl={}", loginPageUrl);

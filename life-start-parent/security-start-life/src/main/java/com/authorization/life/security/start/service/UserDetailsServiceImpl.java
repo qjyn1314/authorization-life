@@ -1,4 +1,4 @@
-package com.authorization.core.security.service;
+package com.authorization.life.security.start.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

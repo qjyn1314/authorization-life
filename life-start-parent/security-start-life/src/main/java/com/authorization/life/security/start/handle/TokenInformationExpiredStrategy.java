@@ -1,7 +1,6 @@
-package com.authorization.core.security.handle;
+package com.authorization.life.security.start.handle;
 
 import cn.hutool.json.JSONUtil;
-import com.authorization.core.exception.handle.DefaultErrorMsg;
 import com.authorization.utils.result.Result;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ public class TokenInformationExpiredStrategy implements SessionInformationExpire
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         PrintWriter out = response.getWriter();
-        out.write(JSONUtil.toJsonStr(Result.fail(DefaultErrorMsg.EXPIRED_STRATEGY_MSG.getMsgCode())));
+        out.write(JSONUtil.toJsonStr(Result.fail("life-core.user-login-expired")));
         out.flush();
         out.close();
     }

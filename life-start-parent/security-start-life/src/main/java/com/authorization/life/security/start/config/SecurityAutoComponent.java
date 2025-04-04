@@ -1,17 +1,15 @@
-package com.authorization.core.security.config;
+package com.authorization.life.security.start.config;
 
-import com.authorization.core.security.filter.JwtAuthenticationFilter;
-import com.authorization.core.security.service.UserDetailsServiceImpl;
+import com.authorization.life.security.start.filter.JwtAuthenticationFilter;
+import com.authorization.life.security.start.service.UserDetailsServiceImpl;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SsoSecurityProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;

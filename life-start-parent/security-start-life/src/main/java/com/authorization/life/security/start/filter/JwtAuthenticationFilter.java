@@ -1,10 +1,10 @@
-package com.authorization.core.security.filter;
+package com.authorization.life.security.start.filter;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.authorization.core.security.entity.UserHelper;
+import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import com.authorization.utils.security.UserDetail;

@@ -1,6 +1,6 @@
 package com.authorization.life.auth.infra.security;
 
-import com.authorization.core.security.handle.CustomerLoginUrlAuthenticationEntryPoint;
+import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;

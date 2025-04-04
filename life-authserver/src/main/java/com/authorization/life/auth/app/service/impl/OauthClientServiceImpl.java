@@ -180,10 +180,11 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         log.info("hostOrigin->{}", hostOrigin);
         Set<String> authUrlSet = new HashSet<>();
         List<OauthClientVO> clientUrls = CollUtil.newArrayList();
-        for (String code : grantTypeSet) {
-            if (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(code)) {
+
+        for (String url : urlList) {
+            for (String code : grantTypeSet) {
                 for (String scope : scopeSet) {
-                    for (String url : urlList) {
+                    if (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(code)) {
                         String authUrl = genAuthorizationCodeUrl(hostOrigin, clientId, scope, url);
                         if (authUrlSet.contains(authUrl)) {
                             continue;
@@ -204,21 +205,25 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
                         oauthClient02.setScopes(scope);
                         oauthClient02.setMethod(POST);
                         oauthClient02.setRedirectUrl(genAuthorizationTokenUrl(hostOrigin, AuthorizationGrantType.AUTHORIZATION_CODE));
-                        oauthClient.setRedirectUri(url);
-                        oauthClient02.setParams(paramsMap(AuthorizationGrantType.AUTHORIZATION_CODE, redirectUri, clientId, clientSecretBak));
+                        oauthClient02.setRedirectUri(url);
+                        oauthClient02.setParams(paramsMap(AuthorizationGrantType.AUTHORIZATION_CODE, url, clientId, clientSecretBak));
+                        clientUrls.add(oauthClient02);
+
+                    } else if (AuthorizationGrantType.CLIENT_CREDENTIALS.getValue().equals(code)) {
+                        OauthClientVO oauthClient02 = new OauthClientVO();
+                        BeanUtils.copyProperties(oauthClientVO, oauthClient02);
+                        oauthClient02.setGrantTypes(code);
+                        oauthClient02.setMethod(POST);
+                        oauthClient02.setRedirectUrl(genAuthorizationTokenUrl(hostOrigin, AuthorizationGrantType.CLIENT_CREDENTIALS));
+                        oauthClient02.setRedirectUri(url);
+                        oauthClient02.setParams(paramsMap(AuthorizationGrantType.CLIENT_CREDENTIALS, url, clientId, clientSecretBak));
                         clientUrls.add(oauthClient02);
                     }
+
                 }
 
-            } else if (AuthorizationGrantType.CLIENT_CREDENTIALS.getValue().equals(code)) {
-                OauthClientVO oauthClient02 = new OauthClientVO();
-                BeanUtils.copyProperties(oauthClientVO, oauthClient02);
-                oauthClient02.setGrantTypes(code);
-                oauthClient02.setMethod(POST);
-                oauthClient02.setRedirectUrl(genAuthorizationTokenUrl(hostOrigin, AuthorizationGrantType.CLIENT_CREDENTIALS));
-                oauthClient02.setParams(paramsMap(AuthorizationGrantType.CLIENT_CREDENTIALS, redirectUri, clientId, clientSecretBak));
-                clientUrls.add(oauthClient02);
             }
+
         }
 
         return clientUrls;
@@ -267,6 +272,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
     @Override
     @Transactional(rollbackFor = Exception.class)
     public OauthClientVO saveClient(OauthClientDTO clientDTO) {
+        Assert.isFalse("passport".equals(clientDTO.getClientId()), () -> new CommonException("\"passport\"为基本client, 不允许修改"));
         OauthClient oauthClient = Convert.convert(OauthClient.class, clientDTO);
 
         OauthClient existOauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getClientId, clientDTO.getClientId()));
@@ -291,6 +297,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean delClient(String clientId) {
+        Assert.isFalse("passport".equals(clientId), () -> new CommonException("\"passport\"为基本client, 不允许删除"));
         OauthClientVO oauthClientVO = selectClientByClientId(clientId);
         LambdaQueryWrapper<OauthClient> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(OauthClient::getClientId, clientId);

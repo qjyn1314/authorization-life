@@ -148,6 +148,19 @@ class AxiosService {
         });
     }
 
+    // POST 请求
+    postForm(url, data = null, params = null, responseType) {
+        return instance.request({
+            method: 'post',
+            //设置请求头-Content-Type
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            url,
+            data,
+            params,
+            responseType
+        });
+    }
+
     // PUT 请求
     put(url, data = null, params = null) {
         return instance.request({

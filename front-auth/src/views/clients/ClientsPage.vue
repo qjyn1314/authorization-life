@@ -261,7 +261,7 @@
 
 <script>
 
-import {clientPage, delClient, genAuthorizationUrl, getClient, getSelectVal, saveClient} from "@/api/api-clients";
+import {clientPage, delClient, genAuthorizationUrl, getClient, getSelectVal, saveClient} from "@/api/clients-api";
 import {
   CircleCloseFilled,
   Collection,

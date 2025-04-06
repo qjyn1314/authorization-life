@@ -10,6 +10,7 @@ import "animate.css";
 import ElementPlus from "element-plus";
 // 引入ElementPlus的css
 import "element-plus/dist/index.css";
+// http://fontawesome.chrafz.com/#basic
 // 引入ElementPlus所有图标
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";

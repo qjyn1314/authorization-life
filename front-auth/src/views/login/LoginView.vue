@@ -12,54 +12,76 @@
         </el-header>
         <el-main>
           <el-row>
-            <el-col :span="20">
-              <el-form label-width="100px" :model="loginForm" :rules="rules" ref="ruleForm">
-                <el-form-item prop="username">
-                  <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                  <el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
-                </el-form-item>
-                <el-row v-if="showCaptcha">
-                  <el-col :span="12">
+            <el-col>
+
+              <el-row>
+                <el-col :span="16" :offset="4">
+                  <el-form :model="loginForm" :rules="rules" ref="ruleForm">
+                    <el-form-item prop="username">
+                      <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                      <el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+              </el-row>
+              <div v-if="showCaptcha">
+                <el-row>
+                  <el-col :span="6" :offset="4">
                     <el-form-item prop="captchaCode">
                       <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="6">
                     <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px" @click="refreshCode">
                       <el-image :src="captcha.imageBase64"></el-image>
                     </div>
                   </el-col>
                 </el-row>
-                <el-row v-if="showCaptcha">
-                  <h6 style="color: red">密码输入错误十次将锁定三小时.</h6>
+
+                <el-row>
+                  <el-col :span="12" :offset="4">
+                    <h6 style="color: red">密码输入错误十次将锁定三小时.</h6>
+                  </el-col>
                 </el-row>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="6" :offset="18">
-                      <el-button type="text" size="small" @click="goResetPwd">忘记密码</el-button>
-                    </el-col>
-                  </el-row>
-                </el-form-item>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="24">
-                      <el-button type="danger" style="width: 100%;" @click="ssoLogin">登录</el-button>
-                    </el-col>
-                  </el-row>
-                </el-form-item>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="6">
-                      <el-button type="text" icon="el-icon-chat-round">微信</el-button>
-                    </el-col>
-                    <el-col :span="6" :offset="12">
-                      <el-button type="text" @click="goReg">立即注册</el-button>
-                    </el-col>
-                  </el-row>
-                </el-form-item>
-              </el-form>
+              </div>
+
+              <el-row style="margin-bottom: 10px">
+                <el-col :span="3" :offset="17">
+                  <el-link type="info" size="small" @click="goResetPwd" :icon="Promotion">忘记密码</el-link>
+                </el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="6" :offset="4">
+                  <el-button type="danger" style="width: 100%" @click="ssoLogin">登录</el-button>
+                </el-col>
+                <el-col :span="6" :offset="4">
+                  <el-button style="width: 100%" @click="goReg">注册</el-button>
+                </el-col>
+              </el-row>
+
+              <el-row>
+                <el-col :span="16" :offset="4">
+                  <el-divider>
+                    <el-icon>
+                      <star-filled/>
+                    </el-icon>
+                  </el-divider>
+                </el-col>
+              </el-row>
+
+              <!--
+                   https://www.iconfont.cn/
+              -->
+              <el-row>
+                <el-col :span="3" :offset="4">
+                  <el-button type="text"> 微信
+                  </el-button>
+                </el-col>
+              </el-row>
+
             </el-col>
           </el-row>
         </el-main>
@@ -71,10 +93,19 @@
 <script>
 import {getClient, inspirational, pictureCode} from '@/api/login-api'
 import {prompt} from "@/utils/msg-util";
+import {ChatDotRound, Promotion, StarFilled} from "@element-plus/icons-vue";
 
 export default {
   name: 'LoginView',
-  components: {},
+  computed: {
+    ChatDotRound() {
+      return ChatDotRound
+    },
+    Promotion() {
+      return Promotion
+    }
+  },
+  components: {StarFilled},
   data() {
     return {
       inspirational: '',
@@ -202,7 +233,7 @@ export default {
 }
 
 .login_view_container {
-  height: 685px;
+  height: 635px;
 }
 
 .login_view_aside {

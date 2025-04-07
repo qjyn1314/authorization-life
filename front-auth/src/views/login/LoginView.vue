@@ -48,7 +48,7 @@
               </div>
 
               <el-row style="margin-bottom: 10px">
-                <el-col :span="3" :offset="17">
+                <el-col :span="4" :offset="16">
                   <el-link type="info" size="small" @click="goResetPwd" :icon="Promotion">忘记密码</el-link>
                 </el-col>
               </el-row>
@@ -73,12 +73,18 @@
               </el-row>
 
               <!--
+                   iconfont字体图标库:
                    https://www.iconfont.cn/
+                   官网->帮助->代码应用
+                   https://www.iconfont.cn/help/detail
               -->
               <el-row>
-                <el-col :span="3" :offset="4">
-                  <el-button type="text"> 微信
-                  </el-button>
+                <el-col :span="2" :offset="4">
+                  <el-link class="iconfont icon-weixin" :underline="false" type="success"
+                           href="http://weixin.qq.com"></el-link>
+                </el-col>
+                <el-col :span="1">
+                  <el-link class="iconfont icon-qq" :underline="false" type="primary" href="http://im.qq.com"></el-link>
                 </el-col>
               </el-row>
 
@@ -238,8 +244,6 @@ export default {
 
 .login_view_aside {
   background: url("../../assets/images/loginback.png") no-repeat center;
-  //background: url("../../assets/images/天气之子.jpg") no-repeat center;
-  //background: url("../../assets/images/云和山风景4K壁纸_彼岸图网.jpg") no-repeat center;
 }
 
 .el-header {

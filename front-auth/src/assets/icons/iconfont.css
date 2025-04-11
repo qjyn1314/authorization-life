@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4882876 */
-  src: url('//at.alicdn.com/t/c/font_4882876_rosaw7b4ypc.woff2?t=1743993052724') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4882876_rosaw7b4ypc.woff?t=1743993052724') format('woff'),
-       url('//at.alicdn.com/t/c/font_4882876_rosaw7b4ypc.ttf?t=1743993052724') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4882876_gikhw5tvq4v.woff2?t=1744350662915') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4882876_gikhw5tvq4v.woff?t=1744350662915') format('woff'),
+       url('//at.alicdn.com/t/c/font_4882876_gikhw5tvq4v.ttf?t=1744350662915') format('truetype');
 }
 
 .iconfont {
@@ -13,6 +13,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-fanhuidaoshouye:before {
+  content: "\e90b";
+}
+
+.icon-dengchu:before {
+  content: "\e65f";
+}
+
+.icon-SSOdenglu:before {
+  content: "\e88d";
+}
+
 .icon-weixin:before {
   content: "\e607";
 }
@@ -20,4 +32,3 @@
 .icon-qq:before {
   content: "\e600";
 }
-

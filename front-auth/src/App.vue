@@ -15,4 +15,8 @@ export default {}
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.ant-modal div[aria-hidden="true"] {
+  display: none !important;
+}
 </style>

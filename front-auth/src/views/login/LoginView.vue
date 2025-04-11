@@ -13,9 +13,8 @@
         <el-main>
           <el-row>
             <el-col>
-
               <el-row>
-                <el-col :span="16" :offset="4">
+                <el-col :span="20" :offset="2">
                   <el-form :model="loginForm" :rules="rules" ref="ruleForm">
                     <el-form-item prop="username">
                       <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
@@ -28,42 +27,42 @@
               </el-row>
               <div v-if="showCaptcha">
                 <el-row>
-                  <el-col :span="6" :offset="4">
+                  <el-col :span="10" :offset="2">
                     <el-form-item prop="captchaCode">
                       <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
-                    <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px" @click="refreshCode">
+                  <el-col :span="10">
+                    <div style="width: 190px;height: 40px; line-height: 40px;" @click="refreshCode">
                       <el-image :src="captcha.imageBase64"></el-image>
                     </div>
                   </el-col>
                 </el-row>
 
                 <el-row>
-                  <el-col :span="12" :offset="4">
-                    <h6 style="color: red">密码输入错误十次将锁定三小时.</h6>
+                  <el-col :span="20" :offset="2">
+                    <h6 style="color: red">密码输入错误累计十次将锁定三小时.</h6>
                   </el-col>
                 </el-row>
               </div>
 
-              <el-row style="margin-bottom: 10px">
-                <el-col :span="4" :offset="16">
+              <el-row style="margin-bottom: 20px">
+                <el-col :span="6" :offset="16">
                   <el-link type="info" size="small" @click="goResetPwd" :icon="Promotion">忘记密码</el-link>
                 </el-col>
               </el-row>
 
               <el-row>
-                <el-col :span="6" :offset="4">
+                <el-col :span="8" :offset="2">
                   <el-button type="danger" style="width: 100%" @click="ssoLogin">登录</el-button>
                 </el-col>
-                <el-col :span="6" :offset="4">
+                <el-col :span="8" :offset="4">
                   <el-button style="width: 100%" @click="goReg">注册</el-button>
                 </el-col>
               </el-row>
 
               <el-row>
-                <el-col :span="16" :offset="4">
+                <el-col :span="20" :offset="2">
                   <el-divider>
                     <el-icon>
                       <star-filled/>
@@ -79,7 +78,7 @@
                    https://www.iconfont.cn/help/detail
               -->
               <el-row>
-                <el-col :span="2" :offset="4">
+                <el-col :span="4" :offset="2">
                   <el-link class="iconfont icon-weixin" :underline="false" type="success"
                            href="http://weixin.qq.com"></el-link>
                 </el-col>
@@ -97,7 +96,7 @@
 </template>
 
 <script>
-import {getClient, inspirational, pictureCode} from '@/api/login-api'
+import {getClient, inspirational, oauthLogin, pictureCode} from '@/api/login-api'
 import {prompt} from "@/utils/msg-util";
 import {ChatDotRound, Promotion, StarFilled} from "@element-plus/icons-vue";
 
@@ -136,7 +135,9 @@ export default {
   },
   created() {
     // 获取地址栏中的回调地址并赋值给登录表单. 如果没有回调地址, 则从client信息中赋值回调地址
-
+    console.log("当前路径中的参数:", this.$route.query)
+    this.loginForm.redirect_uri = this.$route.query.redirect_uri
+    console.log(this.loginForm.redirect_uri)
     this.pictureAndClient();
     this.inspirationalSentence();
   },
@@ -197,9 +198,23 @@ export default {
     },
     oauth2SsoLogin() {
       // 请求登录接口
+      console.log('this.loginForm', this.loginForm);
+      oauthLogin(this.loginForm).then((res) => {
+        if (res.code === 0) {
+          // 登录成功
+          console.log('登录成功信息', res)
+          this.oauth2Token()
+        } else {
+          this.showCaptcha = res.data.showCaptchaCode;
+          prompt.error(res.msg)
+        }
+      })
 
       // 在登录接口请求成功之后, 再次请求 oauth2/token接口
 
+
+    },
+    oauth2Token() {
 
     }
   },

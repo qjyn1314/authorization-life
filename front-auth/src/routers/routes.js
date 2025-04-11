@@ -32,7 +32,7 @@ const frameOut = [
         name: 'clients',
         component: () => import('@/views/clients/ClientsPage.vue'),
         meta: {
-            title: '管理OAuth2Client',
+            title: '客户端管理',
         },
     },
     {
@@ -40,31 +40,31 @@ const frameOut = [
         name: 'login',
         component: () => import('@/views/login/LoginView.vue'),
         meta: {
-            title: 'Oauth2SSOLogin',
+            title: 'Oauth2SSO-login',
         },
     },
     {
-        path: '/reg',
-        name: 'reg',
+        path: '/register',
+        name: 'register',
         component: () => import('@/views/login/RegView.vue'),
         meta: {
-            title: 'Oauth2SSOReg',
+            title: 'Oauth2SSO-reg',
         },
     },
     {
-        path: '/resetPwd',
-        name: 'resetPwd',
+        path: '/reset-pwd',
+        name: 'ResetPwdView',
         component: () => import('@/views/login/ResetPwdView.vue'),
         meta: {
-            title: 'Oauth2SSOResetPwd',
+            title: 'Oauth2SSO-reset-pwd',
         },
     },
     {
         path: '/auth-redirect',
-        name: 'resetPwd',
+        name: 'TemporaryAuth',
         component: () => import('@/views/auth/TemporaryAuth.vue'),
         meta: {
-            title: 'Oauth2SSOTemporaryAuth',
+            title: 'Oauth2SSO-temporary-auth',
         },
     }
 ]
@@ -86,9 +86,10 @@ const errorPage = [
 // 导出需要显示菜单的
 export const frameInRoutes = frameIn
 
-// 重新组织后导出
-export default [
+const routes = [
     ...frameIn,
     ...frameOut,
     ...errorPage
 ]
+// 重新组织后导出
+export default routes

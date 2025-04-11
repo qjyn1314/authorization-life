@@ -90,7 +90,7 @@ const handleRequestError = (error) => {
                 }
 
             case 404:
-                console.error('404:', error.response.data.message);
+                console.error('404:', error.response.data);
                 prompt.error(error.response.data.message || '资源不存在')
                 return Promise.reject({error: '接口不存在', message: error.response.data.message});
             case 500:
@@ -98,7 +98,7 @@ const handleRequestError = (error) => {
                 prompt.error(error.response.data.message || '服务器内部错误')
                 return Promise.reject({error: '服务器内部错误', message: error.response.data.message});
             case 504:
-                console.error('服务器内部错误:', error.response.data.message);
+                console.error('服务器请求超时:', error.response.data.message);
                 prompt.error(error.response.data.message || '服务器请求超时')
                 return Promise.reject({error: '服务器请求超时', message: error.response.data.message});
             default:

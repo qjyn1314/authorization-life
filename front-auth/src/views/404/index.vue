@@ -8,7 +8,7 @@
         <p>您所访问的页面不存在，它或已被移动，删除或者重命名。</p>
         <p>请访问其他页面</p>
         <nav>
-          <RouterLink :to="{ path: '/', replace: true }">Back To Home</RouterLink>
+          <RouterLink class="iconfont icon-fanhuidaoshouye" :to="{ path: '/', replace: true }">Back To Home</RouterLink>
         </nav>
 
       </div>
@@ -37,14 +37,15 @@ export default {
   text-align: center;
 
   .error-title {
-    font-size: 35px;
+    font-size: 40px;
     padding-bottom: 3px;
     font-weight: bold;
   }
 
   p {
-    font-size: 13px;
+    font-size: 16px;
     padding: 5px 0;
+    color: rgba(243, 35, 35, 0.82);
   }
 
   img {

@@ -136,20 +136,16 @@ export default {
     ssoResetPwd() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          if (this.showCaptcha && this.loginForm.captchaCode === '') {
-            prompt.error("请输入验证码.")
-          } else {
-            //交给store进行登录并进行存储token以及当前登录用户信息
-            resetPassword(this.loginForm).then((res) => {
-              if (!res) {
-                return
-              }
+          //交给store进行登录并进行存储token以及当前登录用户信息
+          resetPassword(this.loginForm).then((res) => {
+            if (res.code === 0) {
               this.loginForm = {};
               prompt.success("账号重置密码成功, 请登录.")
               this.goLogin()
-
-            })
-          }
+            } else {
+              prompt.error(res.msg)
+            }
+          })
         } else {
           return false;
         }

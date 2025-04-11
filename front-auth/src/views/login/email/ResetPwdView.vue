@@ -36,7 +36,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="10">
-                  <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px;"
+                  <div style="width: 190px;height: 40px; line-height: 40px;"
                        @click="refreshCode">
                     <el-button type="text" :disabled="this.sendBtn !== '发送验证码'">{{ sendBtn }}</el-button>
                   </div>

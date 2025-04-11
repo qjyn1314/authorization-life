@@ -33,7 +33,8 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
-                    <div style="width: 190px;height: 40px; line-height: 40px;" @click="refreshCode">
+                    <div style="width: 190px;height: 40px; line-height: 40px;"
+                         @click="refreshCode">
                       <el-image :src="captcha.imageBase64"></el-image>
                     </div>
                   </el-col>

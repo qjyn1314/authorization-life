@@ -192,7 +192,7 @@ export default {
 }
 
 .login_view_aside {
-  background: url("../../assets/images/loginback.png") no-repeat center;
+  background: url("../../../assets/images/loginback.png") no-repeat center;
 }
 
 .el-header {

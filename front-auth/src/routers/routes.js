@@ -38,7 +38,7 @@ const frameOut = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('@/views/login/LoginView.vue'),
+        component: () => import('@/views/login/email/LoginView.vue'),
         meta: {
             title: 'Oauth2SSO-login',
         },
@@ -46,7 +46,7 @@ const frameOut = [
     {
         path: '/register',
         name: 'register',
-        component: () => import('@/views/login/RegView.vue'),
+        component: () => import('@/views/login/email/RegView.vue'),
         meta: {
             title: 'Oauth2SSO-reg',
         },
@@ -54,7 +54,7 @@ const frameOut = [
     {
         path: '/reset-pwd',
         name: 'ResetPwdView',
-        component: () => import('@/views/login/ResetPwdView.vue'),
+        component: () => import('@/views/login/email/ResetPwdView.vue'),
         meta: {
             title: 'Oauth2SSO-reset-pwd',
         },

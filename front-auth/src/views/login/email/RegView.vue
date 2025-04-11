@@ -25,6 +25,8 @@
                     </el-form-item>
                   </el-form>
                 </el-col>
+              </el-row>
+              <el-row>
                 <el-col :span="10" :offset="2">
                   <el-form-item prop="captchaCode">
                     <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
@@ -186,7 +188,7 @@ export default {
 }
 
 .login_view_container {
-  height: 685px;
+  height: 635px;
 }
 
 .login_view_aside {

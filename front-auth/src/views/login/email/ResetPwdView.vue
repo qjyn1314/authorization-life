@@ -13,35 +13,36 @@
         <el-main>
           <el-row>
             <el-col>
-              <el-row>
-                <el-col :span="20" :offset="2">
-                  <el-form :model="loginForm" :rules="rules" ref="ruleForm">
-                    <el-form-item prop="username">
-                      <el-input ref="username" v-model="loginForm.email" placeholder="邮箱"></el-input>
+              <el-form :model="loginForm" :rules="rules" ref="ruleForm">
+                <el-row>
+                  <el-col :span="20" :offset="2">
+                    <el-form-item prop="email">
+                      <el-input ref="email" v-model="loginForm.email" placeholder="邮箱"></el-input>
                     </el-form-item>
-                    <el-form-item prop="password">
-                      <el-input type="password" v-model="loginForm.hashPassword" placeholder="密码"></el-input>
+                    <el-form-item prop="hashPassword">
+                      <el-input ref="hashPassword" type="password" v-model="loginForm.hashPassword"
+                                placeholder="密码"></el-input>
                     </el-form-item>
-                    <el-form-item prop="password">
-                      <el-input type="password" v-model="loginForm.validHashPassword"
+                    <el-form-item prop="validHashPassword">
+                      <el-input ref="validHashPassword" type="password" v-model="loginForm.validHashPassword"
                                 placeholder="确认新密码"></el-input>
                     </el-form-item>
-                  </el-form>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="10" :offset="2">
-                  <el-form-item prop="captchaCode">
-                    <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10">
-                  <div style="width: 190px;height: 40px; line-height: 40px;"
-                       @click="refreshCode">
-                    <el-button type="text" :disabled="this.sendBtn !== '发送验证码'">{{ sendBtn }}</el-button>
-                  </div>
-                </el-col>
-              </el-row>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="10" :offset="2">
+                    <el-form-item prop="captchaCode">
+                      <el-input ref="captchaCode" v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="10">
+                    <div style="width: 190px;height: 40px; line-height: 40px;"
+                         @click="refreshCode">
+                      <el-button type="text" :disabled="this.sendBtn !== '发送验证码'">{{ sendBtn }}</el-button>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-form>
               <el-row>
                 <el-col :span="8" :offset="2">
                   <el-button type="danger" style="width: 100%;" @click="ssoResetPwd">重置密码</el-button>
@@ -80,7 +81,8 @@ export default {
       rules: {
         email: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
         hashPassword: [{required: true, message: '请输入新密码', trigger: 'blur'},],
-        validHashPassword: [{required: true, message: '请输确认新密码', trigger: 'blur'},],
+        validHashPassword: [{required: true, message: '请确认新密码', trigger: 'blur'},],
+        captchaCode: [{required: true, message: '请输入验证码', trigger: 'blur'},],
       }
     }
   },

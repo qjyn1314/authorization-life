@@ -13,9 +13,9 @@
         <el-main>
           <el-row>
             <el-col>
-              <el-row>
-                <el-col :span="20" :offset="2">
-                  <el-form :model="loginForm" :rules="rules" ref="ruleForm">
+              <el-form :model="loginForm" :rules="rules" ref="ruleForm">
+                <el-row>
+                  <el-col :span="20" :offset="2">
                     <el-form-item prop="email">
                       <el-input ref="email" v-model="loginForm.email" placeholder="邮箱"></el-input>
                     </el-form-item>
@@ -23,25 +23,25 @@
                       <el-input ref="hashPassword" type="password" v-model="loginForm.hashPassword"
                                 placeholder="密码"></el-input>
                     </el-form-item>
-                  </el-form>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="10" :offset="2">
-                  <el-form-item prop="captchaCode">
-                    <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="10">
-                  <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px;"
-                       @click="refreshCode">
-                    <el-button link type="primary" :disabled="this.sendBtn !== '发送验证码'">{{
-                        sendBtn
-                      }}
-                    </el-button>
-                  </div>
-                </el-col>
-              </el-row>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="10" :offset="2">
+                    <el-form-item prop="captchaCode">
+                      <el-input ref="captchaCode" v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="10">
+                    <div style="width: 190px;height: 40px; line-height: 40px; margin-right: 5px;"
+                         @click="refreshCode">
+                      <el-button link type="primary" :disabled="this.sendBtn !== '发送验证码'">{{
+                          sendBtn
+                        }}
+                      </el-button>
+                    </div>
+                  </el-col>
+                </el-row>
+              </el-form>
               <el-row>
                 <el-col :span="8" :offset="2">
                   <el-button type="success" style="width: 100%;" @click="ssoReg">注册</el-button>
@@ -78,7 +78,8 @@ export default {
       },
       rules: {
         email: [{required: true, message: '请输入邮箱', trigger: 'blur'},],
-        hashPassword: [{required: true, message: '请输入密码', trigger: 'blur'},]
+        hashPassword: [{required: true, message: '请输入密码', trigger: 'blur'},],
+        captchaCode: [{required: true, message: '请输入验证码', trigger: 'blur'},]
       }
     }
   },
@@ -131,19 +132,15 @@ export default {
     ssoReg() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          if (this.showCaptcha && this.loginForm.captchaCode === '') {
-            prompt.error("请输入验证码.")
-          } else {
-            emailRegister(this.loginForm).then((res) => {
-              if (res.code === 0) {
-                this.loginForm = {};
-                prompt.success("邮箱注册注册成功, 请登录.")
-                this.goLogin()
-              } else {
-                prompt.error(res.msg)
-              }
-            })
-          }
+          emailRegister(this.loginForm).then((res) => {
+            if (res.code === 0) {
+              this.loginForm = {};
+              prompt.success("邮箱注册注册成功, 请登录.")
+              this.goLogin()
+            } else {
+              prompt.error(res.msg)
+            }
+          })
         } else {
           return false;
         }

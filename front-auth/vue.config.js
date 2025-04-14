@@ -5,7 +5,7 @@ console.log("process.env", process.env)
 module.exports = defineConfig({
     // vue-cli-service build --mode 区分多个环境 参考:  https://www.cnblogs.com/grow-up-up/p/17210430.html
     // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
-    // publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+    publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
     // 将构建好的文件输出到哪里
     outputDir: process.env.VUE_APP_PATH,
     // 放置静态资源的地方 (js/css/img/font/...)
@@ -17,7 +17,7 @@ module.exports = defineConfig({
     // 默认代码语法检查为true
     lintOnSave: false,
     //是否使用包含运行时编译器的 Vue 构建版本。设置为 true 后你就可以在 Vue 组件中使用 template 选项了，但是这会让你的应用额外增加 10kb 左右。
-    runtimeCompiler: true,
+    runtimeCompiler: false,
     //开启代理服务器
     devServer: {
         port: process.env.VUE_APP_PORT,

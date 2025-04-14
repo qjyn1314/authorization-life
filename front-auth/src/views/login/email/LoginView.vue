@@ -47,9 +47,11 @@
                 </el-row>
               </div>
 
-              <el-row style="margin-bottom: 20px">
-                <el-col :span="6" :offset="16">
-                  <el-link type="info" size="small" @click="goResetPwd" :icon="Promotion">忘记密码</el-link>
+              <el-row>
+                <el-col :span="6" :offset="18">
+                  <el-form-item>
+                    <el-link type="info" size="small" @click="goResetPwd" :icon="Promotion">忘记密码</el-link>
+                  </el-form-item>
                 </el-col>
               </el-row>
 

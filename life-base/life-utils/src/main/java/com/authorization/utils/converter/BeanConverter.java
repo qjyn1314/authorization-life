@@ -86,11 +86,12 @@ public class BeanConverter {
             return null;
         }
 
-        if (fieldsMap == null || fieldsMap.size() == 0) {
+        if (fieldsMap == null || fieldsMap.isEmpty()) {
             return null;
         }
 
-        MapperFacade mapperFacade = getMapperFacade(origin.getClass(), destClz, fieldsMap, null, null);
+        MapperFacade mapperFacade = getMapperFacade(origin.getClass(), destClz,
+                fieldsMap, null, null);
         return mapperFacade.map(origin, destClz);
     }
 
@@ -99,11 +100,12 @@ public class BeanConverter {
             return null;
         }
 
-        if (fieldsMap == null || fieldsMap.size() == 0) {
+        if (fieldsMap == null || fieldsMap.isEmpty()) {
             return null;
         }
 
-        MapperFacade mapperFacade = getMapperFacade(origin.getClass(), dest.getClass(), fieldsMap, null, null);
+        MapperFacade mapperFacade = getMapperFacade(origin.getClass(), dest.getClass(),
+                fieldsMap, null, null);
         mapperFacade.map(origin, dest);
         return dest;
     }
@@ -114,7 +116,7 @@ public class BeanConverter {
             return null;
         }
 
-        if (customConverterFieldsMap == null || customConverterFieldsMap.size() == 0) {
+        if (customConverterFieldsMap == null || customConverterFieldsMap.isEmpty()) {
             return null;
         }
 
@@ -131,11 +133,11 @@ public class BeanConverter {
             return null;
         }
 
-        if (fieldsMap == null || fieldsMap.size() == 0) {
+        if (fieldsMap == null || fieldsMap.isEmpty()) {
             return null;
         }
 
-        if (customConverterFieldsMap == null || customConverterFieldsMap.size() == 0) {
+        if (customConverterFieldsMap == null || customConverterFieldsMap.isEmpty()) {
             return null;
         }
 
@@ -153,16 +155,17 @@ public class BeanConverter {
             return;
         }
 
-        if (fieldsMap == null || fieldsMap.size() == 0) {
+        if (fieldsMap == null || fieldsMap.isEmpty()) {
             return;
         }
 
-        if (customConverterFieldsMap == null || customConverterFieldsMap.size() == 0) {
+        if (customConverterFieldsMap == null || customConverterFieldsMap.isEmpty()) {
             return;
         }
 
         // 注册自定义转换器
-        MapperFacade mapperFacade = getMapperFacade(origin.getClass(), dest.getClass(), fieldsMap, DatetimeStringConverter.NAME,
+        MapperFacade mapperFacade = getMapperFacade(origin.getClass(), dest.getClass(),
+                fieldsMap, DatetimeStringConverter.NAME,
                 customConverterFieldsMap);
         mapperFacade.map(origin, dest);
     }
@@ -179,11 +182,12 @@ public class BeanConverter {
             return new ArrayList<>(0);
         }
 
-        if (fieldsMap == null || fieldsMap.size() == 0) {
+        if (fieldsMap == null || fieldsMap.isEmpty()) {
             return new ArrayList<>(0);
         }
 
-        MapperFacade mapperFacade = getMapperFacade(originList.get(0).getClass(), destClz, fieldsMap, null, null);
+        MapperFacade mapperFacade = getMapperFacade(originList.get(0).getClass(), destClz,
+                fieldsMap, null, null);
         return mapperFacade.mapAsList(originList, destClz);
     }
 
@@ -195,11 +199,11 @@ public class BeanConverter {
             return new ArrayList<>(0);
         }
 
-        if (fieldsMap == null || fieldsMap.size() == 0) {
+        if (fieldsMap == null || fieldsMap.isEmpty()) {
             return new ArrayList<>(0);
         }
 
-        if (customConverterFieldsMap == null || customConverterFieldsMap.size() == 0) {
+        if (customConverterFieldsMap == null || customConverterFieldsMap.isEmpty()) {
             return null;
         }
 
@@ -225,7 +229,8 @@ public class BeanConverter {
     }
 
     private static <S, T> MapperFacade getMapperFacade(Class<S> sourceClass, Class<T> toClass,
-                                                       Map<String, String> configMap, String customConverterName, Map<String, String> customConverterFieldsMap) {
+                                                       Map<String, String> configMap, String customConverterName,
+                                                       Map<String, String> customConverterFieldsMap) {
         String mapKey = toClass.getCanonicalName() + "->" + sourceClass.getCanonicalName();
         MapperFacade mapperFacade = CACHE_MAPPER_FACADE_MAP.get(mapKey);
         if (Objects.nonNull(mapperFacade)) {
@@ -233,7 +238,7 @@ public class BeanConverter {
         }
         MapperFactory factory = new DefaultMapperFactory.Builder().build();
         ClassMapBuilder<S, T> classMapBuilder = factory.classMap(sourceClass, toClass);
-        if (configMap != null && configMap.size() > 0) {
+        if (configMap != null && !configMap.isEmpty()) {
             configMap.forEach(classMapBuilder::field);
         }
         if (!CollectionUtils.isEmpty(customConverterFieldsMap) && StringUtils.hasText(customConverterName)) {

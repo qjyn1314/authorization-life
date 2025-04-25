@@ -65,6 +65,7 @@ public class CustomerLoginUrlAuthenticationEntryPoint extends LoginUrlAuthentica
         }
 
         log.info("loginPageUrl={}", loginPageUrl);
+//        response.sendRedirect(loginPageUrl);
         redirectStrategy.sendRedirect(request, response, loginPageUrl);
     }
 

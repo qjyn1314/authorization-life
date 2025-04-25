@@ -89,6 +89,10 @@ export default {
   methods: {
     inspirationalSentence() {
       inspirational().then((res) => {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
+        }
         this.inspirational = res.data;
       });
     },
@@ -103,15 +107,14 @@ export default {
       let emailParams = {email: this.loginForm.email};
       // 重新发送邮箱验证码
       sendEmailCode(emailParams).then((res) => {
-        if (res.code === 0) {
-          this.loginForm.captchaUuid = res.data;
-          prompt.success("邮箱注册验证码已发送,请登录邮箱查收.")
-          //在发送成功后进行倒计时描述更改 sendBtn 的值.60秒倒计时开始
-          this.countdownTime();
-        } else {
-          prompt.error(res.msg)
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
         }
-
+        this.loginForm.captchaUuid = res.data;
+        prompt.success("邮箱注册验证码已发送,请登录邮箱查收.")
+        //在发送成功后进行倒计时描述更改 sendBtn 的值.60秒倒计时开始
+        this.countdownTime();
       })
     },
     countdownTime() {
@@ -135,13 +138,13 @@ export default {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           emailRegister(this.loginForm).then((res) => {
-            if (res.code === 0) {
-              this.loginForm = {};
-              prompt.success("邮箱注册注册成功, 请登录.")
-              this.goLogin()
-            } else {
-              prompt.error(res.msg)
+            if (res.code !== 0) {
+              prompt.error(res.msg);
+              return;
             }
+            this.loginForm = {};
+            prompt.success("邮箱注册注册成功, 请登录.")
+            this.goLogin()
           })
         } else {
           return false;
@@ -157,7 +160,7 @@ export default {
     // eslint-disable-next-line vue/valid-next-tick
     this.$nextTick(() => {
       //在页面加载成功后为username输入框获取焦点事件
-      this.$refs.username.focus();
+      this.$refs.email.focus();
     }, 12)
   },
   beforeDestroy() {

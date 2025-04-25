@@ -20,7 +20,8 @@
                       <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
-                      <el-input type="password" v-model="loginForm.password" placeholder="密码"></el-input>
+                      <el-input ref="password" type="password" v-model="loginForm.password"
+                                placeholder="密码"></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
@@ -29,7 +30,7 @@
                 <el-row>
                   <el-col :span="10" :offset="2">
                     <el-form-item prop="captchaCode">
-                      <el-input v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
+                      <el-input ref="captchaCode" v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
@@ -102,6 +103,7 @@
 import {getClient, inspirational, oauthLogin, pictureCode} from '@/api/login-api'
 import {prompt} from "@/utils/msg-util";
 import {ChatDotRound, Promotion, StarFilled} from "@element-plus/icons-vue";
+import {userAuthStore} from "@/stores/modules/user-auth";
 
 export default {
   name: 'LoginView',
@@ -155,7 +157,8 @@ export default {
       const url = new URL(window.location.href);
       // 根据浏览器地址获取认证信息
       getClient({domain: url.hostname}).then((res) => {
-        if (!res) {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
           return;
         }
         this.loginForm.client_id = res.data.clientId;
@@ -172,9 +175,10 @@ export default {
         return
       }
       // 刷新图片验证码
-      pictureCode().then((res) => {
-        if (!res) {
-          return
+      pictureCode(null).then((res) => {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
         }
         this.captcha.imageBase64 = res.data.imageBase64;
         this.loginForm.captchaUuid = res.data.uuid;
@@ -182,14 +186,13 @@ export default {
     },
     ssoLogin() {
       this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          if (this.showCaptcha && this.loginForm.captchaCode === '') {
-            prompt.error("请输入验证码.")
-          } else {
-            this.oauth2SsoLogin();
-          }
-        } else {
+        if (!valid) {
           return false;
+        }
+        if (this.showCaptcha && this.loginForm.captchaCode === '') {
+          prompt.error("请输入验证码.")
+        } else {
+          this.oauth2SsoLogin();
         }
       });
     },
@@ -203,21 +206,26 @@ export default {
       // 请求登录接口
       console.log('this.loginForm', this.loginForm);
       oauthLogin(this.loginForm).then((res) => {
-        if (res.code === 0) {
-          // 登录成功
-          console.log('登录成功信息', res)
-          this.oauth2Token()
-        } else {
+        if (res.code !== 0) {
           this.showCaptcha = res.data.showCaptchaCode;
+          if (this.showCaptcha) {
+            this.refreshCode();
+          }
           prompt.error(res.msg)
+          return;
         }
+        this.oauth2Token(res.data)
       })
-
-      // 在登录接口请求成功之后, 再次请求 oauth2/token接口
-
-
     },
-    oauth2Token() {
+    oauth2Token(userInfo) {
+      console.log('登录成功信息', userInfo)
+      const authStore = userAuthStore();
+      authStore.userOauth2Token(this.loginForm.client_id, this.loginForm.client_secret, this.loginForm.redirect_uri)
+// 如果登录信息中没有回调地址, 用于获取临时code, 则根据
+      this.loginForm = {}
+      // 登录成功
+      // 登录成功存储用户信息至cookie中.
+      // 在登录接口请求成功之后, 再次请求 oauth2/token接口
 
     }
   },
@@ -228,9 +236,6 @@ export default {
       //在页面加载成功后为username输入框获取焦点事件
       this.$refs.username.focus();
     }, 12)
-  },
-  beforeDestroy() {
-
   }
 }
 

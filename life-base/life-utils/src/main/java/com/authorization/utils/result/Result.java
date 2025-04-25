@@ -18,17 +18,17 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result<T> implements Serializable {
 
-    public static final String FORM_ERROR = "-2";
-    public static final String ERROR = "-1";
+    public static final Integer FORM_ERROR = -2;
+    public static final Integer ERROR = -1;
     public static final String ERROR_MSG = "life-util.operation-failed";
-    public static final String SUCCESS = "0";
+    public static final Integer SUCCESS = 0;
     public static final String SUCCESS_MSG = "life-util.operation-successful";
-    private String code;
+    private Integer code;
     private String msg;
     private T data;
     private transient Object[] args;
 
-    private Result(String code, String msg, Object[] args, T data) {
+    private Result(Integer code, String msg, Object[] args, T data) {
         this.code = code;
         try {
             this.msg = Objects.nonNull(msg) ? MsgFormat.getMessageLocal(msg, args, null).getMessage() : null;
@@ -39,15 +39,15 @@ public class Result<T> implements Serializable {
         this.data = data;
     }
 
-    public static <T> Result<T> okForCodeArgs(String code, String msg, Object[] args, T data) {
+    public static <T> Result<T> okForCodeArgs(Integer code, String msg, Object[] args, T data) {
         return new Result<>(code, msg, args, data);
     }
 
-    public static <T> Result<T> okForCode(String code, String msg, T data) {
+    public static <T> Result<T> okForCode(Integer code, String msg, T data) {
         return okForCodeArgs(code, msg, null, data);
     }
 
-    public static <T> Result<T> okCode(String code, T data) {
+    public static <T> Result<T> okCode(Integer code, T data) {
         return okForCode(code, null, data);
     }
 
@@ -67,19 +67,19 @@ public class Result<T> implements Serializable {
         return new Result<>(SUCCESS, SUCCESS_MSG, null, null);
     }
 
-    public static <T> Result<T> failForCodeArgs(String code, String msg, Object[] args, T data) {
+    public static <T> Result<T> failForCodeArgs(Integer code, String msg, Object[] args, T data) {
         return new Result<>(code, msg, args, data);
     }
 
-    public static <T> Result<T> failForCode(String code, String msg, T data) {
+    public static <T> Result<T> failForCode(Integer code, String msg, T data) {
         return failForCodeArgs(code, msg, null, data);
     }
 
-    public static <T> Result<T> failForCode(String code, String msg, Object[] args) {
+    public static <T> Result<T> failForCode(Integer code, String msg, Object[] args) {
         return failForCodeArgs(code, msg, args, null);
     }
 
-    public static <T> Result<T> failCode(String code, String msg) {
+    public static <T> Result<T> failCode(Integer code, String msg) {
         return failForCode(code, msg, null);
     }
 

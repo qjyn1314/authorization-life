@@ -107,7 +107,7 @@ public interface SecurityCoreService {
 
 
     /**
-     * 无需认证即可访问的请求路径
+     * 默认情况下无需认证即可访问的请求路径
      */
     String[] IGNORE_PERM_URLS = {
             //swagger文档
@@ -119,6 +119,8 @@ public interface SecurityCoreService {
             "/public/**",
             //监控服务路径
             "/actuator/**",
+            // 登录页/注册页/忘记密码页面的请求
+            "/oauth/**"
     };
 
 

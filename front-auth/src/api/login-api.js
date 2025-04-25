@@ -4,17 +4,17 @@ import {AUTH_SERVER} from '@/utils/global-util'
 
 //  获取获取一个励志的句子
 export function inspirational() {
-    return axiosService.post(`/${AUTH_SERVER}/oauth/sentence`)
-}
-
-//  获取图片验证码
-export function pictureCode(uuid) {
-    return axiosService.get(`/${AUTH_SERVER}/oauth/picture-code?uuid=${uuid}`)
+    return axiosService.get(`/${AUTH_SERVER}/oauth/sentence`)
 }
 
 //  获取client信息
 export function getClient(data) {
     return axiosService.post(`/${AUTH_SERVER}/oauth/client`, data)
+}
+
+//  获取图片验证码
+export function pictureCode(uuid) {
+    return axiosService.get(`/${AUTH_SERVER}/oauth/picture-code?uuid=${uuid}`)
 }
 
 //  账号登录

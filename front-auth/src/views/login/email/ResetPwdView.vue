@@ -92,6 +92,10 @@ export default {
   methods: {
     inspirationalSentence() {
       inspirational().then((res) => {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
+        }
         this.inspirational = res.data;
       });
     },
@@ -106,8 +110,9 @@ export default {
       let emailParams = {email: this.loginForm.email};
       // 重新发送邮箱验证码
       sendEmailCodeResetPwd(emailParams).then((res) => {
-        if (!res) {
-          return
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
         }
         this.loginForm.captchaUuid = res.data;
         prompt.success("账号重置验证码已发送,请登录邮箱查收.")
@@ -138,13 +143,13 @@ export default {
         if (valid) {
           //交给store进行登录并进行存储token以及当前登录用户信息
           resetPassword(this.loginForm).then((res) => {
-            if (res.code === 0) {
-              this.loginForm = {};
-              prompt.success("账号重置密码成功, 请登录.")
-              this.goLogin()
-            } else {
-              prompt.error(res.msg)
+            if (res.code !== 0) {
+              prompt.error(res.msg);
+              return;
             }
+            this.loginForm = {};
+            prompt.success("账号重置密码成功, 请登录.")
+            this.goLogin()
           })
         } else {
           return false;
@@ -160,7 +165,7 @@ export default {
     // eslint-disable-next-line vue/valid-next-tick
     this.$nextTick(() => {
       //在页面加载成功后为username输入框获取焦点事件
-      this.$refs.username.focus();
+      this.$refs.email.focus();
     }, 12)
   },
   beforeDestroy() {

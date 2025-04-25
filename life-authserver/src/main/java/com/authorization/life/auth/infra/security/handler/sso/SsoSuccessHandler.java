@@ -30,7 +30,7 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
             out.write(JSONUtil.toJsonStr(Result.ok(authentication)));
             out.flush();
             out.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("登录成功处理器处理失败，返回数据异常.", e);
         }
     }

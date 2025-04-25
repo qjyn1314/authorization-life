@@ -4,7 +4,7 @@
       <el-header>
         <el-form :inline="true" :model="tableSearch">
           <el-form-item label="关键词">
-            <el-input v-model="tableSearch.searchKey" placeholder="关键词" clearable/>
+            <el-input ref="searchKey" v-model="tableSearch.searchKey" placeholder="关键词" clearable/>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onQuery">查询</el-button>
@@ -14,7 +14,7 @@
       </el-header>
       <el-main>
         <!--描述列表-->
-        <el-descriptions title="客户端授权路径">
+        <el-descriptions title="获取客户端授权路径">
           <!--第一个描述项-->
           <el-descriptions-item>
             <!--折叠面板-->
@@ -346,10 +346,19 @@ export default {
       }
     }
   },
+  mounted() {
+    //生命周期钩子
+    // eslint-disable-next-line vue/valid-next-tick
+    this.$nextTick(() => {
+      //在页面加载成功后为searchKey输入框获取焦点事件
+      this.$refs.searchKey.focus();
+    },10)
+  },
   methods: {
     getTableData() {
       clientPage(this.tableSearch).then(res => {
-        if (res.data === null) {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
           return;
         }
         this.pageInfo = res.data;
@@ -357,6 +366,10 @@ export default {
     },
     initGrantTypes() {
       getSelectVal().then(res => {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
+        }
         res.data['grantType'].forEach(item => {
           this.redirectUrlFooter.grantTypeOption.push({label: item, value: item});
         });
@@ -370,7 +383,8 @@ export default {
       let hostOrigin = window.location.origin + process.env.VUE_APP_BASE_API + AUTH_SERVER;
       console.log(hostOrigin);
       genAuthorizationUrl({clientId: row.clientId, hostOrigin: hostOrigin}).then(res => {
-        if (res.data == null) {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
           return;
         }
         this.authorizationUrls = res.data;
@@ -416,11 +430,11 @@ export default {
     },
     detail(clientId) {
       getClient({clientId: clientId}).then((res) => {
-        if (res.code === '-1') {
-          prompt.error(res.msg)
-        } else {
-          this.initClientDetail(res.data);
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
         }
+        this.initClientDetail(res.data);
       })
     },
     initClientDetail(clientInfo) {
@@ -446,12 +460,12 @@ export default {
     removeClient(clientId) {
       delClient({clientId: clientId}).then((res) => {
         console.log(res)
-        if (res.code === '-1') {
-          prompt.error(res.msg)
-        } else {
-          prompt.success("删除成功.")
-          this.getTableData();
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
         }
+        prompt.success("删除成功.")
+        this.getTableData();
       })
     },
     onAddUrlOption(type) {
@@ -505,13 +519,13 @@ export default {
       console.log(this.clientInfo);
 
       saveClient(this.clientInfo).then((res) => {
-        if (res.code === '-1') {
-          prompt.error(res.msg)
-        } else {
-          prompt.success("保存成功.")
-          this.getTableData();
-          this.drawerClose();
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
         }
+        prompt.success("保存成功.")
+        this.getTableData();
+        this.drawerClose();
       });
 
     }

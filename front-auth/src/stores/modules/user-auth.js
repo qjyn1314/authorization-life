@@ -5,12 +5,10 @@ import Cookies from "js-cookie";
 const cookiesStorage = {
     setItem(key, state) {
         // 设置有效期 3 天，不设置默认同 sessionStorage 有效期一致
-        return Cookies.set(key, state.accessToken, {expires: 3})
+        return Cookies.set(key, state, {expires: 3})
     },
     getItem(key) {
-        return JSON.stringify({
-            accessToken: Cookies.get(key),
-        })
+        return JSON.stringify(Cookies.get(key))
     },
 }
 // 对外暴露方法
@@ -18,7 +16,7 @@ export const userAuthStore = defineStore("userAuthStore", {
     // 开启数据持久化
     persist: {
         enabled: true, // true 表示开启持久化保存
-        storage: cookiesStorage
+        storage: localStorage
     },
     // 存储数据state
     state: () => {

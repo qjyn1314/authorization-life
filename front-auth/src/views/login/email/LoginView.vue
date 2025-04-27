@@ -71,6 +71,10 @@
                     <el-icon>
                       <star-filled/>
                     </el-icon>
+                    第三方授权登录
+                    <el-icon>
+                      <star-filled/>
+                    </el-icon>
                   </el-divider>
                 </el-col>
               </el-row>
@@ -103,7 +107,7 @@
 import {getClient, inspirational, oauthLogin, pictureCode} from '@/api/login-api'
 import {prompt} from "@/utils/msg-util";
 import {ChatDotRound, Promotion, StarFilled} from "@element-plus/icons-vue";
-import {userAuthStore} from "@/stores/modules/user-auth";
+import {useOauth2Store} from "@/stores/modules/user-auth";
 
 export default {
   name: 'LoginView',
@@ -206,6 +210,7 @@ export default {
       // 请求登录接口
       console.log('this.loginForm', this.loginForm);
       oauthLogin(this.loginForm).then((res) => {
+        console.log(res)
         if (res.code !== 0) {
           this.showCaptcha = res.data.showCaptchaCode;
           if (this.showCaptcha) {
@@ -217,16 +222,10 @@ export default {
         this.oauth2Token(res.data)
       })
     },
-    oauth2Token(userInfo) {
-      console.log('登录成功信息', userInfo)
-      const authStore = userAuthStore();
-      authStore.userOauth2Token(this.loginForm.client_id, this.loginForm.client_secret, this.loginForm.redirect_uri)
-// 如果登录信息中没有回调地址, 用于获取临时code, 则根据
+    oauth2Token(redirectUrl) {
+      const oauth2Store = useOauth2Store();
+      oauth2Store.userOauth2Token(this.loginForm, redirectUrl)
       this.loginForm = {}
-      // 登录成功
-      // 登录成功存储用户信息至cookie中.
-      // 在登录接口请求成功之后, 再次请求 oauth2/token接口
-
     }
   },
   mounted() {

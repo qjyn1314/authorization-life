@@ -1,4 +1,4 @@
-import {axiosService} from '@/utils/service-util'
+import {axiosService} from '@/utils/server-util'
 import {AUTH_SERVER} from '@/utils/global-util'
 
 

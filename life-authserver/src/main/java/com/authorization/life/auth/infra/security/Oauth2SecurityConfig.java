@@ -1,9 +1,9 @@
 package com.authorization.life.auth.infra.security;
 
-import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.service.*;
+import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
@@ -16,6 +16,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,7 +28,9 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AccessTokenResponseAuthenticationSuccessHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
@@ -116,12 +119,13 @@ public class Oauth2SecurityConfig {
                     .authorizationResponseHandler(new OAuth2SuccessHandler());
         });
 
-//        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
-//            endpointConfigurer
-//                    // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
-//                    // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
-//                    .accessTokenResponseHandler();
-//        });
+        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
+            endpointConfigurer
+
+                    // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
+                    // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
+                    .accessTokenResponseHandler(new OAuth2AccessTokenResponseAuthenticationSuccessHandler());
+        });
 
         // 配置openid的配置项
         authorizationServerConfigurer.oidc(Customizer.withDefaults());
@@ -148,7 +152,9 @@ public class Oauth2SecurityConfig {
         // 配置 异常处理
         http.exceptionHandling(excHandle -> excHandle
                 // 当访问的是"/oauth2/**"路径时, 未登录的情况下 自定义该如何跳转。
-                .authenticationEntryPoint(new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl())));
+                .defaultAuthenticationEntryPointFor(
+                        new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl()),
+                        new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
 
         http.oauth2ResourceServer((resourceServer) -> resourceServer
                 .jwt(Customizer.withDefaults()));

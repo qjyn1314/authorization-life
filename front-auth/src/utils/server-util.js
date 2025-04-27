@@ -10,12 +10,15 @@ const instance = axios.create({
     timeout: 5000,
     baseURL: process.env.VUE_APP_BASE_API,
 });
+
+// 为所有请求设置了授权头信息。
+instance.defaults.headers.common["Authorization"] = getToken() ? "Bearer " + getToken() : null;
+instance.defaults.headers.common["base-api"] = process.env.VUE_APP_BASE_API;
+
 // 请求拦截器
 instance.interceptors.request.use(
     (config) => {
         // 在请求发送之前可以进行一些处理，例如设置 token、添加请求头等
-        config.headers.authorization = getToken();
-
         return config;
     },
     (error) => {

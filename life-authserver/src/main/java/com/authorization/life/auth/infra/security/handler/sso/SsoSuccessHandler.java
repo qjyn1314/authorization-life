@@ -1,13 +1,21 @@
 package com.authorization.life.auth.infra.security.handler.sso;
 
+import cn.hutool.core.lang.UUID;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
+import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.authorization.life.auth.infra.security.sso.CaptchaWebAuthenticationDetails;
 import com.authorization.utils.result.Result;
+import com.authorization.utils.security.SecurityCoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
@@ -19,15 +27,29 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 public class SsoSuccessHandler implements AuthenticationSuccessHandler {
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("密码验证登录成功的对象信息是-{}", JSONUtil.toJsonStr(authentication));
+        String origin = request.getHeader("origin");
+        String forwardedPrefix = request.getHeader("x-forwarded-prefix");
+        String baseApi = request.getHeader("base-api");
+        String hostOrigin = origin + baseApi + forwardedPrefix.replace("/", "");
+        CaptchaWebAuthenticationDetails details = (CaptchaWebAuthenticationDetails) authentication.getDetails();
+        OauthClientService clientService = SpringUtil.getBean(OauthClientService.class);
+        OauthClientVO oauthClientVO = clientService.getClient(details.getClientId());
+        String state = UUID.fastUUID().toString(true);
+        String redirectUrl = SecurityCoreService.genAuthorizationCodeUrl(hostOrigin, oauthClientVO.getClientId(),
+                oauthClientVO.getScopes(), state, oauthClientVO.getRedirectUri());
+        log.info("redirectUrl={}", redirectUrl);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         try {
             PrintWriter out = response.getWriter();
-            out.write(JSONUtil.toJsonStr(Result.ok(authentication)));
+            // 在此处登录成功后直接返回需要授权的url
+            out.write(JSONUtil.toJsonStr(Result.ok(redirectUrl)));
             out.flush();
             out.close();
         } catch (Exception e) {

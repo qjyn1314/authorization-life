@@ -1,6 +1,7 @@
 package com.authorization.utils.security;
 
 import com.authorization.utils.message.StrForm;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * <p>
@@ -120,8 +121,30 @@ public interface SecurityCoreService {
             //监控服务路径
             "/actuator/**",
             // 登录页/注册页/忘记密码页面的请求
-            "/oauth/**"
+            "/oauth/**",
+            // 授权页面
+            "/auth-redirect"
     };
+
+    /**
+     * 授权码模式中-生成获取临时code的URL
+     *
+     * @param hostOrigin  授权服务器域名前缀,例如: <a href="http://dev.authorization.life/dev-api/auth-life">http://dev.authorization.life/dev-api/auth-life</a>
+     * @param clientId    客户端
+     * @param scope       授权域
+     * @param redirectUri 客户端的回调路径
+     * @return String
+     */
+    static String genAuthorizationCodeUrl(String hostOrigin, String clientId, String scope, String state, String redirectUri) {
+        return hostOrigin + UriComponentsBuilder
+                .fromPath("/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", clientId)
+                .queryParam("scope", scope)
+                .queryParam("state", state)
+                .queryParam("redirect_uri", redirectUri)
+                .toUriString();
+    }
 
 
 }

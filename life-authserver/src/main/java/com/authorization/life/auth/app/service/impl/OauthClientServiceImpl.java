@@ -5,7 +5,6 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.common.util.RequestUtils;
 import com.authorization.core.exception.handle.CommonException;
 import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
@@ -86,28 +85,6 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
                 Convert.convert(OauthClientVO.class, oauthClient)).collect(Collectors.toList());
     }
 
-
-    /**
-     * 授权码模式中-生成获取临时code的URL
-     *
-     * @param hostOrigin  授权服务器域名前缀
-     * @param code        授权码模式
-     * @param clientId    客户端
-     * @param scope       授权域
-     * @param redirectUri 客户端的回调路径
-     * @return String
-     */
-    public static String genAuthorizationCodeUrl(String hostOrigin, String clientId, String scope, String redirectUri) {
-        return hostOrigin + UriComponentsBuilder
-                .fromPath("/oauth2/authorize")
-                .queryParam("response_type", "code")
-                .queryParam("client_id", clientId)
-                .queryParam("scope", scope)
-                .queryParam("state", UUID.fastUUID().toString(true))
-                .queryParam("redirect_uri", redirectUri)
-                .toUriString();
-    }
-
     /**
      * 生成获取accessToken的URL
      *
@@ -183,7 +160,8 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
             for (String code : grantTypeSet) {
                 for (String scope : scopeSet) {
                     if (AuthorizationGrantType.AUTHORIZATION_CODE.getValue().equals(code)) {
-                        String authUrl = genAuthorizationCodeUrl(hostOrigin, clientId, scope, url);
+                        String state = UUID.fastUUID().toString(true);
+                        String authUrl = SecurityCoreService.genAuthorizationCodeUrl(hostOrigin, clientId, scope, state, url);
                         if (authUrlSet.contains(authUrl)) {
                             continue;
                         }

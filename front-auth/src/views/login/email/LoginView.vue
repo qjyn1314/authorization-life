@@ -147,10 +147,13 @@ export default {
     console.log("当前路径中的参数:", this.$route.query)
     this.loginForm.redirect_uri = this.$route.query.redirect_uri
     console.log(this.loginForm.redirect_uri)
-    this.pictureAndClient();
-    this.inspirationalSentence();
+    this.initClientSentence();
   },
   methods: {
+    initClientSentence() {
+      this.pictureAndClient();
+      this.inspirationalSentence();
+    },
     inspirationalSentence() {
       inspirational().then((res) => {
         this.inspirational = res.data;
@@ -220,12 +223,14 @@ export default {
           return;
         }
         this.oauth2Token(res.data)
+        this.loginForm = {}
+        this.initClientSentence();
       })
     },
     oauth2Token(redirectUrl) {
       const oauth2Store = useOauth2Store();
       oauth2Store.userOauth2Token(this.loginForm, redirectUrl)
-      this.loginForm = {}
+
     }
   },
   mounted() {

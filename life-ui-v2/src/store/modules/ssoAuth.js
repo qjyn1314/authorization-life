@@ -28,7 +28,8 @@ export default {
                 if (!res) {
                     return;
                 }
-                context.state.clientInfo = res.data;
+                context.state.clientInfo = res.data.data;
+                console.log(value);
                 //在获取到client的认证信息后请求登录接口
                 context.commit('SSO_LOGIN', value)
             })
@@ -40,8 +41,8 @@ export default {
                 if (!res || !res.data || !res.data.clientId) {
                     return;
                 }
-                context.state.clientInfo = res.data;
-                let clientInfo = res.data
+                context.state.clientInfo = res.data.data;
+                let clientInfo = res.data.data;
                 let accessTokenByCode = {
                     grant_type: 'authorization_code',
                     redirect_uri: clientInfo.redirectUri,
@@ -64,9 +65,10 @@ export default {
         SSO_LOGIN(state, value) {
             //请求登录接口
             oauthLogin(value).then((res) => {
-                if (!res) {
-                    return
-                }
+                console.log(res)
+                // if (!res) {
+                //     return
+                // }
                 // 登录成功将直接请求授权码模式接口,将跳转至临时授权页面
                 // 使用windows.href直接请求接口
                 // console.log("授权码模式...")

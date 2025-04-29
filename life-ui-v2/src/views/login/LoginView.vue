@@ -102,7 +102,6 @@ export default {
   created() {
     this.pictureAndClient();
     this.inspirationalSentence();
-    this.testJavaScript();
   },
   methods: {
     inspirationalSentence() {
@@ -115,12 +114,11 @@ export default {
       const url = new URL(window.location.href);
       // 根据浏览器地址获取认证信息
       getClient({domain: url.hostname}).then((res) => {
-        if (!res) {
-          return;
-        }
-        this.loginForm.client_id = res.data.clientId;
-        this.loginForm.client_secret = res.data.clientSecret;
-        this.loginForm.redirect_uri = res.data.redirectUri;
+        console.log(res.data.data);
+        const data = res.data.data;
+        this.loginForm.client_id = data.clientId;
+        this.loginForm.client_secret = data.clientSecret;
+        this.loginForm.redirect_uri = data.redirectUri;
       })
       this.refreshCode();
     },
@@ -143,6 +141,7 @@ export default {
           if (this.showCaptcha && this.loginForm.captchaCode === '') {
             Message.error("请输入验证码.")
           } else {
+            console.log(this.loginForm);
             //交给store进行登录并进行存储token以及当前登录用户信息
             store.dispatch('ssoAuth/securityLogin', this.loginForm)
           }

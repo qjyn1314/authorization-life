@@ -20,7 +20,7 @@
             <!--折叠面板-->
             <el-collapse>
               <el-collapse-item v-for="(urlData,index) in authorizationUrls" :key="index"
-                                :title="'域名：' + urlData.domainName + '；CLIENT_KEY：' + urlData.clientId">
+                                :title="'域名：' + urlData.domainName + '；CLIENT_KEY：' + urlData.clientId + '；授权模式：' + urlData.grantTypes">
                 <div>
                   <p><span>授权模式：</span>{{ urlData.grantTypes }}</p>
                   <p><span>授权域：</span>{{ urlData.scopes }}</p>
@@ -403,7 +403,7 @@ export default {
     },
     createClient() {
       this.drawer.visible = true;
-      this.drawer.header = '手工添加客户端授权信息';
+      this.drawer.header = '添加客户端授权信息';
       this.drawer.direction = 'rtl';
       this.drawer.submit = true;
     },

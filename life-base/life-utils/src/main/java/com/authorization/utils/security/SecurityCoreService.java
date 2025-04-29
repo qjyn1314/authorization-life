@@ -25,7 +25,7 @@ public interface SecurityCoreService {
     /**
      * accessToken参数的key
      */
-    String ACCESS_TOKEN = "accessToken";
+    String ACCESS_TOKEN = "access_token";
     /**
      * accessToken参数类型的key
      */
@@ -123,7 +123,7 @@ public interface SecurityCoreService {
             // 登录页/注册页/忘记密码页面的请求
             "/oauth/**",
             // 授权页面
-            "/auth-redirect"
+            "/auth-redirect",
     };
 
     /**

@@ -23,16 +23,22 @@ export function removeKey(key) {
     return Cookies.remove(key)
 }
 
-const TokenKey = 'accessToken'
+export const access_token_key = 'access_token'
 
 export function getToken() {
-    return getValue(TokenKey)
+    return getValue(access_token_key)
 }
 
+/**
+ * 设置accessToken
+ * @param token token值
+ * @param expires 秒数
+ * @returns {*}
+ */
 export function setToken(token, expires) {
-    return setValueExpires(TokenKey, token, expires)
+    return setValueExpires(access_token_key, token, expires)
 }
 
 export function removeToken() {
-    return removeKey(TokenKey)
+    return removeKey(access_token_key)
 }

@@ -58,7 +58,7 @@
 
               <el-row>
                 <el-col :span="8" :offset="2">
-                  <el-button type="danger" style="width: 100%" @click="ssoLogin">登录</el-button>
+                  <el-button type="danger" style="width: 100%" @click="ssoLogin" @keydown.enter="ssoLogin">登录</el-button>
                 </el-col>
                 <el-col :span="8" :offset="4">
                   <el-button style="width: 100%" @click="goReg">注册</el-button>
@@ -107,7 +107,7 @@
 import {getClient, inspirational, oauthLogin, pictureCode} from '@/api/login-api'
 import {prompt} from "@/utils/msg-util";
 import {ChatDotRound, Promotion, StarFilled} from "@element-plus/icons-vue";
-import {useOauth2Store} from "@/stores/modules/user-auth";
+import {oauth2TemporaryCode} from "@/stores/modules/user-auth-code";
 
 export default {
   name: 'LoginView',
@@ -174,6 +174,8 @@ export default {
         if (!this.loginForm.redirect_uri) {
           this.loginForm.redirect_uri = res.data.redirectUri;
         }
+        const oauth2Store = oauth2TemporaryCode();
+        oauth2Store.setClient(res.data)
       })
       this.refreshCode();
     },
@@ -222,15 +224,16 @@ export default {
           prompt.error(res.msg)
           return;
         }
-        this.oauth2Token(res.data)
+        // 在请求登录成功之后, 直接请求获取临时code接口, 其实这个接口与首次请求授权码路径一致.
+        this.oauth2TemporaryCode(res.data)
         this.loginForm = {}
         this.initClientSentence();
       })
     },
-    oauth2Token(redirectUrl) {
-      const oauth2Store = useOauth2Store();
-      oauth2Store.userOauth2Token(this.loginForm, redirectUrl)
-
+    oauth2TemporaryCode(authorizeInfo) {
+      console.log('authorizeInfo', authorizeInfo);
+      const oauth2Store = oauth2TemporaryCode();
+      oauth2Store.oauth2Authorize(authorizeInfo)
     }
   },
   mounted() {

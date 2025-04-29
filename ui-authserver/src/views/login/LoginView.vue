@@ -102,7 +102,6 @@ export default {
   created() {
     this.pictureAndClient();
     this.inspirationalSentence();
-    this.testJavaScript();
   },
   methods: {
     inspirationalSentence() {

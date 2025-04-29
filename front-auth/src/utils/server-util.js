@@ -5,10 +5,10 @@ import {prompt} from "@/utils/msg-util";
 import router from '@/routers'
 // 创建 Axios 实例
 const instance = axios.create({
-    maxRedirects: 5, // 允许的最大重定向次数
+    // maxRedirects: 5, // 允许的最大重定向次数
+    baseURL: process.env.VUE_APP_BASE_API,
     withCredentials: true, // 跨域请求时发送 cookies
     timeout: 5000,
-    baseURL: process.env.VUE_APP_BASE_API,
 });
 
 // 为所有请求设置了授权头信息。

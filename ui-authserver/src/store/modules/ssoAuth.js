@@ -28,7 +28,9 @@ export default {
                 if (!res) {
                     return;
                 }
-                context.state.clientInfo = res.data;
+                const data = res.data.data;
+                context.state.clientInfo = data;
+                console.log("value->",value)
                 //在获取到client的认证信息后请求登录接口
                 context.commit('SSO_LOGIN', value)
             })
@@ -40,8 +42,8 @@ export default {
                 if (!res || !res.data || !res.data.clientId) {
                     return;
                 }
-                context.state.clientInfo = res.data;
-                let clientInfo = res.data
+                context.state.clientInfo = res.data.data;
+                let clientInfo = res.data.data
                 let accessTokenByCode = {
                     grant_type: 'authorization_code',
                     redirect_uri: clientInfo.redirectUri,
@@ -62,17 +64,18 @@ export default {
     },
     mutations: {
         SSO_LOGIN(state, value) {
+            console.log(state);
+            console.log(value);
             //请求登录接口
-            oauthLogin(value).then((res) => {
-                if (!res) {
-                    return
-                }
-                // 登录成功将直接请求授权码模式接口,将跳转至临时授权页面
-                // 使用windows.href直接请求接口
-                // console.log("授权码模式...")
-                // console.log("请求授权确认...", `${process.env.VUE_APP_PROXY_TARGET}/dev-api/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`)
-                window.location.href = `${process.env.VUE_APP_PROXY_TARGET}/dev-api/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`
-            })
+//             oauthLogin(value).then((res) => {
+// console.log(res)
+//
+//                 // 登录成功将直接请求授权码模式接口,将跳转至临时授权页面
+//                 // 使用windows.href直接请求接口
+//                 // console.log("授权码模式...")
+//                 // console.log("请求授权确认...", `${process.env.VUE_APP_PROXY_TARGET}/dev-api/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`)
+//                 // window.location.href = `${process.env.VUE_APP_PROXY_TARGET}/dev-api/${AUTH_SERVER}/oauth2/authorize?response_type=code&client_id=${state.clientInfo.clientId}&scope=${state.clientInfo.scopes}&state=${state.clientInfo.grantTypes}&redirect_uri=${state.clientInfo.redirectUri}`
+//             })
         },
         SELF_USER(state, value) {
             //将accessToken存放到cookie中并设置过期时间

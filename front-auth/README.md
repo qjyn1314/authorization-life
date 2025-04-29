@@ -161,4 +161,32 @@ https://github.com/smltq/spring-boot-demo/blob/master/security-oauth2-auth-code/
 
 https://www.cnblogs.com/linianhui/p/oauth2-authorization.html
 
+```
 
+    # 进入到网站的首页
+    server {
+        # 监听浏览器的80端口
+        listen       80;
+        # 访问域名
+        server_name  dev.authorization.life;
+        #后端服务gateway
+        location /dev-api/ {
+		       proxy_pass http://127.0.0.1:9000/;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		       proxy_set_header X-Forwarded-Proto $scheme;
+		       proxy_set_header Host $http_host;
+		       proxy_redirect off;
+        }
+        # 前端VUE工程
+        location / {
+                proxy_pass http://127.0.0.1:18888;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header Host $http_host;
+                proxy_redirect off;
+        }
+    }
+```

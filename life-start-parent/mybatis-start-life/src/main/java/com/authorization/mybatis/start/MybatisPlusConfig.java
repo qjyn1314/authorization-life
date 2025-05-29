@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
@@ -40,10 +41,12 @@ public class MybatisPlusConfig {
     @Order(100)
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // 防止全表更新
-        interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         // 添加乐观锁控制
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        // 自动分页插件
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+        // 防止全表更新
+        interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         return interceptor;
     }
 

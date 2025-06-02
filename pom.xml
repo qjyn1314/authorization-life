@@ -43,9 +43,7 @@
         <dubbo.version>3.3.4</dubbo.version>
         <knife4j.version>4.5.0</knife4j.version>
 
-        <!--权限认证依赖 需要与springboot 中管理的依赖的版本一致 -->
-        <spring-security.version>6.3.0</spring-security.version>
-        <authorization-server.version>1.3.0</authorization-server.version>
+        <!--权限认证依赖 使用 springboot 中管理的依赖的版本 -->
         <!-- 此处的版本需要与 spring-security-oauth2-authorization-server 中使用的版本一致 -->
         <nimbus-jwt.version>9.39.1</nimbus-jwt.version>
 
@@ -57,7 +55,6 @@
         <slf4j-api.version>2.0.13</slf4j-api.version>
         <hutool.version>5.8.29</hutool.version>
         <guava.version>33.2.1-jre</guava.version>
-        <commons-lang3.version>3.17.0</commons-lang3.version>
         <orika.version>1.5.4</orika.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jasypt.version>3.0.5</jasypt.version>
@@ -212,11 +209,6 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
             <!--bean之间的转换-->
             <dependency>
                 <groupId>ma.glasnost.orika</groupId>
@@ -267,25 +259,6 @@
             </dependency>
             <!--以上为数据库连接-->
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-oauth2-authorization-server</artifactId>
-                <version>${authorization-server.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nimbusds</groupId>
-                <artifactId>nimbus-jose-jwt</artifactId>
-                <!-- 此处的版本号与 spring-security-oauth2-authorization-server 依赖的版本号一致  -->
-                <version>${nimbus-jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-bom</artifactId>
-                <version>${spring-security.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!--以上为security+oauth2-->
-            <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-dependencies</artifactId>
                 <version>${knife4j.version}</version>
@@ -293,16 +266,16 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-bom</artifactId>
+                <version>${dubbo.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-bom</artifactId>
-                <version>${dubbo.version}</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

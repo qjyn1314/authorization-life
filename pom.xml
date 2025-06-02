@@ -39,15 +39,15 @@
             spring.io 对应官网地址: https://spring.io/projects/spring-cloud-alibaba#overview
         -->
         <spring-cloud-alibaba.version>2023.0.3.3</spring-cloud-alibaba.version>
-
+        <!-- 此处的版本暂时不知道如何对应找到 -->
         <dubbo.version>3.3.4</dubbo.version>
-        <jackson-bom.version>2.19.0</jackson-bom.version>
         <knife4j.version>4.5.0</knife4j.version>
 
-        <!--权限认证依赖-->
-        <spring-security.version>6.5.0</spring-security.version>
-        <authorization-server.version>1.5.0</authorization-server.version>
-        <nimbus-jwt.version>10.3</nimbus-jwt.version>
+        <!--权限认证依赖 需要与springboot 中管理的依赖的版本一致 -->
+        <spring-security.version>6.3.0</spring-security.version>
+        <authorization-server.version>1.3.0</authorization-server.version>
+        <!-- 此处的版本需要与 spring-security-oauth2-authorization-server 中使用的版本一致 -->
+        <nimbus-jwt.version>9.39.1</nimbus-jwt.version>
 
         <!--数据库依赖-->
         <mysql.version>9.3.0</mysql.version>
@@ -289,13 +289,6 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-dependencies</artifactId>
                 <version>${knife4j.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

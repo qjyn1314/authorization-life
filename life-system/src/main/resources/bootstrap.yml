@@ -3,7 +3,7 @@ spring:
     name: system-life
   cloud:
     nacos:
-      server-addr: 127.0.0.1:18848
+      server-addr: 127.0.0.1:12095
 #      username: nacos
 #      password: nacos
       namespace: public

@@ -16,7 +16,7 @@ spring:
   data.redis:
     database: 0
     host: 127.0.0.1
-    port: 12030
+    port: 12040
     password: 123456
     lettuce:
       pool:

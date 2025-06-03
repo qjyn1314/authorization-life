@@ -39,17 +39,17 @@
             spring.io 对应官网地址: https://spring.io/projects/spring-cloud-alibaba#overview
         -->
         <spring-cloud-alibaba.version>2023.0.3.3</spring-cloud-alibaba.version>
-        <!-- 此处的版本暂时不知道如何对应找到 -->
-        <dubbo.version>3.3.4</dubbo.version>
+        <!-- 此处的版本需要3.2.17, 3.3.0~ -->
+        <dubbo.version>3.3.0</dubbo.version>
         <knife4j.version>4.5.0</knife4j.version>
 
         <!--权限认证依赖 使用 springboot 中管理的依赖的版本 -->
         <!-- 此处的版本需要与 spring-security-oauth2-authorization-server 中使用的版本一致 -->
-        <nimbus-jwt.version>9.39.1</nimbus-jwt.version>
+        <nimbus-jwt.version>9.37.3</nimbus-jwt.version>
 
         <!--数据库依赖-->
         <mysql.version>9.3.0</mysql.version>
-        <mybatis-plus.version>3.5.12</mybatis-plus.version>
+        <mybatis-plus.version>3.5.8</mybatis-plus.version>
         <pagehelper.version>2.1.0</pagehelper.version>
         <!--工具依赖-->
         <slf4j-api.version>2.0.13</slf4j-api.version>
@@ -236,6 +236,11 @@
                 <artifactId>transmittable-thread-local</artifactId>
                 <version>${transmittable-thread-local.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbus-jwt.version}</version>
+            </dependency>
             <!--以上为工具包依赖-->
             <dependency>
                 <groupId>com.mysql</groupId>
@@ -247,11 +252,11 @@
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus.version}</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -265,12 +270,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-spring-boot-starter -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-bom</artifactId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>

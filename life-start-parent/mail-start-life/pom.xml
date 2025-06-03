@@ -17,6 +17,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>life-utils</artifactId>
         </dependency>
@@ -24,10 +28,6 @@
             <groupId>com.authorization.life</groupId>
             <artifactId>system-remote-api</artifactId>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
     </dependencies>
 

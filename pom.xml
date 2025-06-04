@@ -45,7 +45,7 @@
 
         <!--权限认证依赖 使用 springboot 中管理的依赖的版本 -->
         <!-- 此处的版本需要与 spring-security-oauth2-authorization-server 中使用的版本一致 -->
-        <nimbus-jwt.version>9.37.3</nimbus-jwt.version>
+        <nimbus-jwt.version>9.47</nimbus-jwt.version>
 
         <!--数据库依赖-->
         <mysql.version>9.3.0</mysql.version>
@@ -252,11 +252,11 @@
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
-            <!--<dependency>
+            <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-jsqlparser</artifactId>
                 <version>${mybatis-plus.version}</version>
-            </dependency>-->
+            </dependency>
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -270,11 +270,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-spring-boot-starter -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -287,13 +293,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

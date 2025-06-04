@@ -1,6 +1,10 @@
 package com.authorization.utils.json;
 
 import cn.hutool.core.date.DateUtil;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public final class JsonDateUtil extends DateUtil {
 
@@ -75,5 +79,14 @@ public final class JsonDateUtil extends DateUtil {
      */
     public static final String NONE_DATETIME_SSS = "yyyyMMddHHmmssSSS";
 
+    /**
+     * 将毫秒转换为秒和分
+     */
+    public static String formatMillis(long milliseconds) {
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(milliseconds);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds)
+                - TimeUnit.MINUTES.toSeconds(minutes);
+        return String.format("%d 分 %d 秒", minutes, seconds);
+    }
 
 }

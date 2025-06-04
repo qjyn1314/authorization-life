@@ -4,3 +4,4 @@ com.authorization.utils.jasypt.JasyptConfig
 com.authorization.utils.security.JwtServiceImpl
 com.authorization.utils.excutor.TaskExecutorService
 com.authorization.utils.excutor.ScheduleAutoConfig
+com.authorization.utils.listener.ApplicationEvenListener

@@ -23,7 +23,7 @@ public class RedisServerTest {
      * 定时任务进行redis的消息发布。
      */
     @LogAdvice(name = "定时任务进行redis的消息发布")
-    @Scheduled(cron = "0/15 * * * * ?") //每秒执行一次
+//    @Scheduled(cron = "0/15 * * * * ?") //每秒执行一次
     public void redisNewsRelease() {
         //获取当前时间并设置时分秒为 00:00:00 ，即 2020-05-13 00:00:00
 //        LocalDateTime zeroTime = LocalDateTime.now().withHour(0).withSecond(0).withMinute(0);

@@ -1,5 +1,6 @@
 package com.authorization.core.intercept;
 
+import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -44,13 +45,15 @@ public class UrlInfoInterceptor implements HandlerInterceptor {
         String forwarded = request.getHeader("forwarded");
         log.info("forwarded->{}", forwarded);
         //  header->forwarded-headerVal->proto=http;host=passport-dev.authorization.life;for="127.0.0.1:49971"
-        Map<String, String> forwardedMap = Arrays.stream(forwarded.split(";"))
-                .collect(Collectors.toMap(key -> key.split("=")[0],
-                        value -> value.split("=")[1]));
-        String proto = forwardedMap.getOrDefault("proto", "");
-        String host = forwardedMap.getOrDefault("host", "");
-        log.info("proto->{}", proto);
-        log.info("host->{}", host);
+        if (StrUtil.isNotBlank(forwarded)) {
+            Map<String, String> forwardedMap = Arrays.stream(forwarded.split(";"))
+                    .collect(Collectors.toMap(key -> key.split("=")[0],
+                            value -> value.split("=")[1]));
+            String proto = forwardedMap.getOrDefault("proto", "");
+            String host = forwardedMap.getOrDefault("host", "");
+            log.info("proto->{}", proto);
+            log.info("host->{}", host);
+        }
 
         String[] forwardedSplit = forwarded.split(";");
         for (int i = 0; i < forwardedSplit.length; i++) {

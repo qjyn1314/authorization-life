@@ -16,8 +16,8 @@ import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 
 // 导入微信icon
 import '@/assets/icons/iconfont.css'
-
-import "vue3-json-viewer/dist/index.css"
+// 导入json格式化显示样式
+import "vue3-json-viewer/dist/vue3-json-viewer.css"
 
 const app = createApp(App);
 // 注册ElementPlus

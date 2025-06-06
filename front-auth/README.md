@@ -1,5 +1,15 @@
 # front-auth
 
+# 可以使用最新的nodejs
+
+## 进行更新最新的package包命令: npm update
+
+## npm install
+
+## npm run build
+
+## npm run dev
+
 ## Project setup
 ```
 npm install

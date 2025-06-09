@@ -122,6 +122,8 @@ public interface SecurityCoreService {
             "/actuator/**",
             // 登录页/注册页/忘记密码页面的请求
             "/oauth/**",
+            // 数据库监控
+            "/druid/**",
             // 授权页面
             "/auth-redirect",
     };

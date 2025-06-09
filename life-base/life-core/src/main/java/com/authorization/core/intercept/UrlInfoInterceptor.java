@@ -55,12 +55,6 @@ public class UrlInfoInterceptor implements HandlerInterceptor {
             log.info("host->{}", host);
         }
 
-        String[] forwardedSplit = forwarded.split(";");
-        for (int i = 0; i < forwardedSplit.length; i++) {
-            String key = forwardedSplit[0].split("=")[0];
-            String value = forwardedSplit[0].split("=")[1];
-        }
-
         Iterator<String> iterator = request.getHeaderNames().asIterator();
         while (iterator.hasNext()) {
             String header = iterator.next();

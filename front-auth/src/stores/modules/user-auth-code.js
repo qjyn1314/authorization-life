@@ -1,11 +1,17 @@
 import {defineStore} from "pinia";
 import {AUTH_SERVER} from "@/utils/global-util";
-// 用户获取临时code的请求信息
-export const oauth2TemporaryCode = defineStore("oauth2TemporaryCode", {
+// 登录用户在登录成功后, 携带client信息, 发起获取临时code的请求: /oauth2/authorize
+export const oauth2TemporaryCodeStore = defineStore("oauth2TemporaryCodeStore", {
     // 开启数据持久化
     persist: {
         enabled: true, // true 表示开启持久化保存
-        storage: localStorage
+        strategies: [
+            {
+                key: 'latest-data',
+                storage: localStorage,
+                // 每次状态变化时自动保存
+            }
+        ]
     },
     // 存储数据state
     state: () => ({

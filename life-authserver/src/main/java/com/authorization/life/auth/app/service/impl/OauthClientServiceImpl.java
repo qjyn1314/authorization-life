@@ -69,7 +69,9 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
             oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, SecurityCoreService.DEFAULT_DOMAIN));
         }
         Assert.notNull(oauthClient, "根据域名未找到client信息.");
-        return Convert.convert(OauthClientVO.class, oauthClient);
+        OauthClientVO oauthClientVO = Convert.convert(OauthClientVO.class, oauthClient);
+        oauthClientVO.setClientSecret(oauthClient.getClientSecretBak());
+        return oauthClientVO;
     }
 
     @Override

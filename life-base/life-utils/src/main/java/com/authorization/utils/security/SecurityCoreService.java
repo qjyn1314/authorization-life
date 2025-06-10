@@ -126,6 +126,8 @@ public interface SecurityCoreService {
             "/oauth/**",
             // 数据库监控
             "/druid/**",
+            // 临时code获取token
+            "/oauth2/token",
             // 授权页面
 //            "/auth-redirect",
     };

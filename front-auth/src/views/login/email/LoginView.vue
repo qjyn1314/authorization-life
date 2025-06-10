@@ -107,7 +107,7 @@
 import {getClient, inspirational, oauthLogin, pictureCode} from '@/api/login-api'
 import {prompt} from "@/utils/msg-util";
 import {ChatDotRound, Promotion, StarFilled} from "@element-plus/icons-vue";
-import {oauth2TemporaryCode} from "@/stores/modules/user-auth-code";
+import {oauth2TemporaryCodeStore} from "@/stores/modules/user-auth-code";
 
 export default {
   name: 'LoginView',
@@ -174,7 +174,7 @@ export default {
         if (!this.loginForm.redirect_uri) {
           this.loginForm.redirect_uri = res.data.redirectUri;
         }
-        const oauth2Store = oauth2TemporaryCode();
+        const oauth2Store = oauth2TemporaryCodeStore();
         oauth2Store.setClient(res.data)
       })
       this.refreshCode();
@@ -232,7 +232,7 @@ export default {
     },
     oauth2TemporaryCode(authorizeInfo) {
       console.log('authorizeInfo', authorizeInfo);
-      const oauth2Store = oauth2TemporaryCode();
+      const oauth2Store = oauth2TemporaryCodeStore();
       oauth2Store.oauth2Authorize(authorizeInfo)
     }
   },

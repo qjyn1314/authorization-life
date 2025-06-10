@@ -23,7 +23,7 @@ export function oauthLogin(data) {
 }
 
 // 通过code获取access token
-export function getOauth2TokenByCode(data) {
+export function genOauth2TokenByCode(data) {
     return axiosService.postForm(`/${AUTH_SERVER}/oauth2/token`, data);
 }
 
@@ -47,12 +47,12 @@ export function emailRegister(data) {
     return axiosService.post(`/${AUTH_SERVER}/oauth/email-register`, data)
 }
 
-// 发送邮箱注册验证码
+// 发送邮箱重置密码的验证码
 export function sendEmailCodeResetPwd(data) {
     return axiosService.post(`/${AUTH_SERVER}/oauth/send-email-code-reset-pwd`, data)
 }
 
-// 邮箱注册
+// 邮箱重置密码
 export function resetPassword(data) {
     return axiosService.post(`/${AUTH_SERVER}/oauth/reset-password`, data)
 }

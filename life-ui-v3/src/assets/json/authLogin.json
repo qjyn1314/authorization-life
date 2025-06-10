@@ -1,8 +1,0 @@
-{
-  "status": 200,
-  "msg": "SUCCESS",
-  "data": {
-    "tokenName": "Authorization",
-    "tokenValue": ""
-  }
-}

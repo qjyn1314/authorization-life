@@ -1,5 +1,7 @@
 <template>
-  <h2>我是临时授权页面用于获取临时code 和 state </h2>
+  <h2>我是临时授权页面, 将通过临时code, state获取accessToken等信息</h2>
+  <h2>临时code:{{ this.$route.query.code }}</h2>
+  <h2>state:{{ this.$route.query.state }}</h2>
 </template>
 <script>
 import {oauth2TemporaryCodeStore} from "@/stores/modules/user-auth-code";
@@ -37,8 +39,8 @@ export default {
       // 在设置登录的Token成功之后, 直接请求当前登录用户的信息,并存储到 userInfoStore
       getCurrentUser().then(res => {
         console.log("getCurrentUser", res)
-        debugger
         useUserInfoStore.setUserInfo(res.data);
+        debugger
         // 此处成功设置值后, 将跳转至首页
         window.location.href = "/index";
       })

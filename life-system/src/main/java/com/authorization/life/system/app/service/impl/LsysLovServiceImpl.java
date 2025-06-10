@@ -1,5 +1,6 @@
 package com.authorization.life.system.app.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.core.proxy.CurrentProxy;
@@ -13,7 +14,6 @@ import com.authorization.life.system.infra.mapper.LsysLovMapper;
 import com.authorization.life.system.infra.mapper.LsysLovValueMapper;
 import com.authorization.remote.system.vo.LsysLovRemoteVO;
 import com.authorization.remote.system.vo.LsysLovValueRemoteVO;
-import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.UpdateGroup;
 import com.authorization.valid.start.util.ValidUtil;
@@ -68,7 +68,7 @@ public class LsysLovServiceImpl implements LsysLovService, CurrentProxy<LsysLovS
                 .eq(Objects.nonNull(lovDTO.getEnabledFlag()), LsysLov::getEnabledFlag, lovDTO.getEnabledFlag());
         queryWrapper.orderByDesc(LsysLov::getCreatedTime);
         List<LsysLov> page = mapper.selectList(queryWrapper);
-        return page.stream().map(item -> BeanConverter.convert(item, LsysLovVO.class))
+        return page.stream().map(item -> Convert.convert(LsysLovVO.class, item))
                 .collect(Collectors.toList());
     }
 
@@ -92,7 +92,7 @@ public class LsysLovServiceImpl implements LsysLovService, CurrentProxy<LsysLovS
         queryWrapper.eq(StrUtil.isNotBlank(sysLov.getLovCode()), LsysLov::getLovCode, sysLov.getLovCode());
         List<LsysLov> lsysTemps = mapper.selectList(queryWrapper);
         return lsysTemps.stream().findFirst()
-                .map(item -> BeanConverter.convert(item, LsysLovVO.class)).orElse(new LsysLovVO());
+                .map(item -> Convert.convert(LsysLovVO.class, item)).orElse(new LsysLovVO());
     }
 
     @Override
@@ -130,7 +130,7 @@ public class LsysLovServiceImpl implements LsysLovService, CurrentProxy<LsysLovS
         Assert.notBlank(tenantId, "租户ID不能为空.");
         Assert.notBlank(lovCode, "值集编码不能为空.");
         List<LsysLov> lsysLovList = mapper.selectList(Wrappers.lambdaQuery(new LsysLov()).eq(LsysLov::getLovCode, lovCode).eq(LsysLov::getTenantId, tenantId));
-        return lsysLovList.stream().findFirst().map(item -> BeanConverter.convert(item, LsysLovRemoteVO.class)).orElse(null);
+        return lsysLovList.stream().findFirst().map(item -> Convert.convert(LsysLovRemoteVO.class, item)).orElse(null);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class LsysLovServiceImpl implements LsysLovService, CurrentProxy<LsysLovS
         Assert.notBlank(tenantId, "租户ID不能为空.");
         Assert.notBlank(lovCode, "值集编码不能为空.");
         List<LsysLovValue> lsysLovValues = lovValueMapper.selectList(Wrappers.lambdaQuery(new LsysLovValue()).eq(LsysLovValue::getLovCode, lovCode).eq(LsysLovValue::getTenantId, tenantId));
-        return lsysLovValues.stream().map(item -> BeanConverter.convert(item, LsysLovValueRemoteVO.class)).collect(Collectors.toList());
+        return lsysLovValues.stream().map(item -> Convert.convert(LsysLovValueRemoteVO.class, item)).collect(Collectors.toList());
     }
 
     @Override

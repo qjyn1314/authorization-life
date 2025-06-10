@@ -1,5 +1,6 @@
 package com.authorization.life.auth.app.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import com.authorization.life.auth.app.constant.RedisKeyValid;
@@ -10,7 +11,6 @@ import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
 import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
-import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.ValidGroup;
 import com.authorization.valid.start.util.ValidUtil;
@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<LifeUserVO> handleUserPage(LifeUserDTO lifeUser) {
-        List<LifeUser> userList = mapper.page(BeanConverter.convert(lifeUser, LifeUser.class));
-        return userList.stream().map(item -> BeanConverter.convert(item, LifeUserVO.class)).collect(Collectors.toList());
+        List<LifeUser> userList = mapper.page(Convert.convert(LifeUser.class, lifeUser));
+        return userList.stream().map(item -> Convert.convert(LifeUserVO.class, item)).collect(Collectors.toList());
     }
 
     /**

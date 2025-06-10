@@ -12,7 +12,6 @@ import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.mapper.OauthClientMapper;
-import com.authorization.utils.converter.BeanConverter;
 import com.authorization.utils.security.SecurityCoreService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -70,7 +69,7 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
             oauthClient = mapper.selectOne(Wrappers.lambdaQuery(OauthClient.class).eq(OauthClient::getDomainName, SecurityCoreService.DEFAULT_DOMAIN));
         }
         Assert.notNull(oauthClient, "根据域名未找到client信息.");
-        return BeanConverter.convert(oauthClient, OauthClientVO.class, Map.of(OauthClient.FIELD_CLIENT_SECRET_BAK, OauthClient.FIELD_CLIENT_SECRET));
+        return Convert.convert(OauthClientVO.class, oauthClient);
     }
 
     @Override

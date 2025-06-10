@@ -1,5 +1,6 @@
 package com.authorization.life.system.app.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.system.app.dto.LsysLovValueDTO;
@@ -9,7 +10,6 @@ import com.authorization.life.system.infra.entity.LsysLov;
 import com.authorization.life.system.infra.entity.LsysLovValue;
 import com.authorization.life.system.infra.mapper.LsysLovMapper;
 import com.authorization.life.system.infra.mapper.LsysLovValueMapper;
-import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.UpdateGroup;
 import com.authorization.valid.start.util.ValidUtil;
@@ -56,7 +56,7 @@ public class LsysLovValueServiceImpl implements LsysLovValueService {
                 .eq(LsysLovValue::getLovId, lovValueDTO.getLovId())
                 .orderByDesc(LsysLovValue::getValueOrder)
                 .orderByDesc(LsysLovValue::getCreatedTime);
-        return mapper.selectList(queryWrapper).stream().map(item -> BeanConverter.convert(item, LsysLovValueVO.class))
+        return mapper.selectList(queryWrapper).stream().map(item -> Convert.convert(LsysLovValueVO.class, item))
                 .collect(Collectors.toList());
     }
 
@@ -83,7 +83,7 @@ public class LsysLovValueServiceImpl implements LsysLovValueService {
         queryWrapper.eq(StrUtil.isNotBlank(lovValueDTO.getLovValueId()), LsysLovValue::getLovValueId, lovValueDTO.getLovValueId());
         List<LsysLovValue> lsysTemps = mapper.selectList(queryWrapper);
         return lsysTemps.stream().findFirst()
-                .map(item -> BeanConverter.convert(item, LsysLovValueVO.class)).orElse(new LsysLovValueVO());
+                .map(item -> Convert.convert(LsysLovValueVO.class, item)).orElse(new LsysLovValueVO());
     }
 
     @Override

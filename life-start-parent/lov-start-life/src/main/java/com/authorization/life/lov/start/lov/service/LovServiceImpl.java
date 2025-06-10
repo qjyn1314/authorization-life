@@ -1,13 +1,13 @@
 package com.authorization.life.lov.start.lov.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import com.authorization.life.lov.start.lov.entity.LovDetail;
 import com.authorization.life.lov.start.lov.entity.LovValueDetail;
 import com.authorization.remote.system.SystemRemoteRes;
 import com.authorization.remote.system.service.SystemRemoteService;
 import com.authorization.remote.system.vo.LsysLovRemoteVO;
 import com.authorization.remote.system.vo.LsysLovValueRemoteVO;
-import com.authorization.utils.converter.BeanConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class LovServiceImpl implements LovService {
         if (Objects.isNull(remoteRes.getData())) {
             return null;
         }
-        return BeanConverter.convert(remoteRes.getData(), LovDetail.class);
+        return Convert.convert(LovDetail.class, remoteRes.getData());
     }
 
     @Override
@@ -35,7 +35,9 @@ public class LovServiceImpl implements LovService {
         if (CollUtil.isEmpty(remoteRes.getData())) {
             return null;
         }
-        return remoteRes.getData().stream().map(item -> BeanConverter.convert(item, LovValueDetail.class)).collect(Collectors.toList());
+        return remoteRes.getData().stream().map(item ->
+                Convert.convert(LovValueDetail.class, remoteRes.getData())
+        ).collect(Collectors.toList());
     }
 
 

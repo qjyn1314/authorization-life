@@ -1,12 +1,12 @@
 package com.authorization.life.auth.app.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import com.authorization.life.auth.app.dto.LsysMenuDTO;
 import com.authorization.life.auth.app.service.LsysMenuService;
 import com.authorization.life.auth.app.vo.LsysMenuVO;
 import com.authorization.life.auth.infra.entity.LsysMenu;
 import com.authorization.life.auth.infra.mapper.LsysMenuMapper;
-import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.UpdateGroup;
 import com.authorization.valid.start.util.ValidUtil;
@@ -47,7 +47,7 @@ public class LsysMenuServiceImpl implements LsysMenuService {
     @Override
     public List<LsysMenuVO> listByParams(LsysMenuDTO lsysMenu) {
         List<LsysMenu> page = mapper.page(new LsysMenu());
-        return page.stream().map(item -> BeanConverter.convert(item, LsysMenuVO.class))
+        return page.stream().map(item -> Convert.convert(LsysMenuVO.class, item))
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +64,7 @@ public class LsysMenuServiceImpl implements LsysMenuService {
     @Override
     public LsysMenuVO detailById(LsysMenuDTO lsysMenu) {
         LsysMenu item = mapper.selectById(lsysMenu.getMenuId());
-        return BeanConverter.convert(item, LsysMenuVO.class);
+        return Convert.convert(LsysMenuVO.class, item);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class LsysMenuServiceImpl implements LsysMenuService {
         LambdaQueryWrapper<LsysMenu> queryWrapper = Wrappers.lambdaQuery(new LsysMenu());
         List<LsysMenu> dataList = mapper.selectList(queryWrapper);
         return dataList.stream().findFirst()
-                .map(item -> BeanConverter.convert(item, LsysMenuVO.class)).orElse(new LsysMenuVO());
+                .map(item -> Convert.convert(LsysMenuVO.class, item)).orElse(new LsysMenuVO());
     }
 
     @Override

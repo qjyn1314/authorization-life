@@ -1,6 +1,7 @@
 package com.authorization.life.system.app.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import com.authorization.life.system.app.dto.LsysTempDTO;
@@ -9,7 +10,6 @@ import com.authorization.life.system.app.vo.LsysTempVO;
 import com.authorization.life.system.infra.entity.LsysTemp;
 import com.authorization.life.system.infra.mapper.LsysTempMapper;
 import com.authorization.remote.system.vo.TempVO;
-import com.authorization.utils.converter.BeanConverter;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.UpdateGroup;
 import com.authorization.valid.start.util.ValidUtil;
@@ -47,7 +47,7 @@ public class LsysTempServiceImpl implements LsysTempService {
         }
         return lsysTemps.stream()
                 .findFirst()
-                .map(lsysTemp -> BeanConverter.convert(lsysTemp, TempVO.class)).orElse(null);
+                .map(lsysTemp -> Convert.convert(TempVO.class, lsysTemp)).orElse(null);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class LsysTempServiceImpl implements LsysTempService {
         queryWrapper.orderByDesc(LsysTemp::getCreatedTime);
         List<LsysTemp> lsysTemps = mapper.selectList(queryWrapper);
         return lsysTemps.stream()
-                .map(item -> BeanConverter.convert(item, LsysTempVO.class))
+                .map(item -> Convert.convert(LsysTempVO.class, item))
                 .collect(Collectors.toList());
     }
 
@@ -92,7 +92,7 @@ public class LsysTempServiceImpl implements LsysTempService {
         queryWrapper.eq(StrUtil.isNotBlank(sysTemp.getTempCode()), LsysTemp::getTempCode, sysTemp.getTempCode());
         List<LsysTemp> lsysTemps = mapper.selectList(queryWrapper);
         return lsysTemps.stream().findFirst()
-                .map(item -> BeanConverter.convert(item, LsysTempVO.class)).orElse(new LsysTempVO());
+                .map(item -> Convert.convert(LsysTempVO.class, item)).orElse(new LsysTempVO());
     }
 
     @Override

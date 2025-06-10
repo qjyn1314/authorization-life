@@ -54,7 +54,7 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
 
     private void authorizationCodeUrl(HttpServletRequest request, Authentication authentication) {
         String origin = request.getHeader("origin");
-        String forwardedPrefix = request.getHeader("x-forwarded-prefix");
+        String forwardedPrefix = request.getHeader(SecurityCoreService.AUTH_FORWARDED);
         String baseApi = request.getHeader("base-api");
         String hostOrigin = origin + baseApi + forwardedPrefix.replace("/", "");
         CaptchaWebAuthenticationDetails details = (CaptchaWebAuthenticationDetails) authentication.getDetails();

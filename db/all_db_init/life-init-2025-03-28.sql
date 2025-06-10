@@ -361,6 +361,8 @@ CREATE TABLE `liam_user`  (
 INSERT INTO `liam_user` VALUES ('1', 'auth-server', 'AuthServer', 'zh_CN', 'CN', 1, '$2a$10$HwlX.mszrL626fqplubAOO1t7E1XYs30fkcrNI2CwceWyXSDrdqOy', '+86', '15321355715', 0, 'qjyn1314@163.com', 0, NULL, '2022-03-06 18:52:20', '2025-06-06 20:50:50', 1, 0, '2024-10-30 23:48:13', 1, '0', 1, '0', '0', '2022-03-06 18:52:20', '0', '0', '2024-10-27 20:48:13');
 INSERT INTO `liam_user` VALUES ('1bad911753332b234be12411de61c5f0', 'X3A9X5VG0PJEVKHT', NULL, 'zh_CN', 'CN', 1, '$2a$10$kGupRXFnSGKUxSZjGXWoPea5Kgx8ejcvi5uNpAXOH6NoiOT9ptUiq', '+86', NULL, 0, 'calmer19961126@163.com', 1, NULL, '2024-10-27 22:41:46', '2034-10-27 22:41:46', 1, 0, NULL, 1, '0', 1, '0', '0', '2024-10-27 22:41:46', '0', '0', '2024-10-27 23:46:20');
 
+UPDATE liam_user t1 SET t1.effective_end_date = '3000-12-31 23:59:59' WHERE t1.user_id = '1';
+
 -- ----------------------------
 -- Table structure for liam_oauth_client
 -- ----------------------------

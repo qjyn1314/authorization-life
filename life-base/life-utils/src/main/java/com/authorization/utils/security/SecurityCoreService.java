@@ -42,6 +42,8 @@ public interface SecurityCoreService {
      * gateway下发到各个服务的TokenHeader, 为了确定系统中的所有请求一定是从此gateway中请求, 从而获取到用户信息.
      */
     String AUTH_POSITION = "Auth-Position";
+
+    String AUTH_FORWARDED = "x-forwarded-prefix";
     /**
      * 退出登录是需要将sessionId删除, 如果有的情况下
      */
@@ -125,7 +127,7 @@ public interface SecurityCoreService {
             // 数据库监控
             "/druid/**",
             // 授权页面
-            "/auth-redirect",
+//            "/auth-redirect",
     };
 
     /**

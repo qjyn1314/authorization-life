@@ -20,11 +20,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * jwt转换过滤器，将token转换为jwtToken
@@ -53,10 +56,16 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
             ServerHttpRequest request = exchange.getRequest();
             String token = getToken(request);
             log.info("accessToken中的token字符串是->{}", token);
+            // 服务之间相互转换的真实jwt
             String realJwtToken = getByToken(token);
+            // 服务名称
+            String serviceName = Arrays.stream(StringUtils.tokenizeToStringArray(request.getURI().getRawPath(), "/")).limit(1).collect(Collectors.joining("/"));
+
             ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate()
                     // 下传Header信息,存储了用户信息的自定义JwtToken
                     .header(SecurityCoreService.AUTH_POSITION, realJwtToken)
+                    // 将请求中的服务名称设置到请求头中, 为登录成功后生成跳转路径使用. com.authorization.life.auth.infra.security.handler.sso.SsoSuccessHandler.authorizationCodeUrl
+                    .header(SecurityCoreService.AUTH_FORWARDED, serviceName)
                     .build()).build();
             return chain.filter(jwtExchange);
         };

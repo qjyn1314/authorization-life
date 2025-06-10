@@ -4,7 +4,7 @@
 <script>
 import {oauth2TemporaryCodeStore} from "@/stores/modules/user-auth-code";
 import {userAccessTokenStore} from "@/stores/modules/user-auth-token"
-import {userInfoStore} from "@/stores/modules/user-auth-token";
+import {userInfoStore} from "@/stores/modules/user-auth-info";
 import {genOauth2TokenByCode, getCurrentUser} from "@/api/login-api"
 
 export default {
@@ -29,18 +29,18 @@ export default {
     console.log("进入到了临时授权页面,请求获取AccessToken的参数:", accessTokenByCode)
     debugger
     // 获取accessToken
-    const oauth2TokenStore = userAccessTokenStore();
+    const useOauth2TokenStore = userAccessTokenStore();
+    const useUserInfoStore = userInfoStore();
     genOauth2TokenByCode(accessTokenByCode).then(res => {
       console.log('accessTokenByCodeRes', res)
-      oauth2TokenStore.setAccessToken(res);
+      useOauth2TokenStore.setAccessToken(res);
       // 在设置登录的Token成功之后, 直接请求当前登录用户的信息,并存储到 userInfoStore
       getCurrentUser().then(res => {
         console.log("getCurrentUser", res)
         debugger
-        userInfoStore.setUserInfo(res.data);
-        let userInfo = userInfoStore.getUserInfo();
-        debugger
-        console.log("userInfo", userInfo)
+        useUserInfoStore.setUserInfo(res.data);
+        // 此处成功设置值后, 将跳转至首页
+        window.location.href = "/index";
       })
     })
 

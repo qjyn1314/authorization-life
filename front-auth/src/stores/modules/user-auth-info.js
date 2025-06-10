@@ -56,6 +56,8 @@ export const userInfoStore = defineStore("userInfoStore", {
     },
     // 计算属性，和vuex是使用一样，getters里面不是方法，是计算返回的结果值
     getters: {
-        getUserInfo: state => state
+        getUsername() {
+            return this.username
+        }
     }
 });

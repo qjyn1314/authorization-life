@@ -1,7 +1,7 @@
 package com.authorization.life.auth.api.controller;
 
 import cn.hutool.core.lang.Assert;
-import com.authorization.core.exception.handle.CommonException;
+import com.authorization.common.exception.handle.CommonException;
 import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.life.auth.app.constant.Inspirational;
 import com.authorization.life.auth.app.constant.RedisKeyValid;

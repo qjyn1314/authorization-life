@@ -1,6 +1,6 @@
 package com.authorization.utils.security;
 
-import com.authorization.utils.message.StrForm;
+import com.authorization.utils.StringUtil;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -105,7 +105,7 @@ public interface SecurityCoreService {
      * redis中存储的用户tokenKey信息
      */
     static String getUserTokenKey(String token) {
-        return StrForm.of(USER_TOKEN_DETAIL).add(CLAIM_TOKEN_KEY, token).format();
+        return StringUtil.of(USER_TOKEN_DETAIL).add(CLAIM_TOKEN_KEY, token).format();
     }
 
 

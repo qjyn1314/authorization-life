@@ -3,7 +3,7 @@ package com.authorization.life.auth.infra.security.service;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.text.StrPool;
 import cn.hutool.json.JSONUtil;
-import com.authorization.core.exception.handle.CommonException;
+import com.authorization.common.exception.handle.CommonException;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.sso.RegClientException;

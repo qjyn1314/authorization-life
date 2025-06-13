@@ -5,7 +5,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
-import com.authorization.core.exception.handle.CommonException;
+import com.authorization.common.exception.handle.CommonException;
 import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.service.OauthClientService;

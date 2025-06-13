@@ -8,7 +8,7 @@ import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import com.authorization.utils.security.UserDetail;
-import com.authorization.utils.security.UserThreadUtil;
+import com.authorization.utils.security.UserDetailUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,10 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter implements Ini
             UserHelper.setUserDetail(getUserDetailByInteriorJwt(jwtToken));
             // 此处如果是需要放过的请求路径, 将请求路径的校验交给SpringSecurity进行校验
             chain.doFilter(request, response);
-            log.info("将退出-JwtAuthenticationFilter-过滤器-jwtToken->>>{}", JSONUtil.toJsonStr(UserThreadUtil.getUserContext()));
-            //将在此次请求结束后清空此缓存的用户信息
-            UserThreadUtil.removeUserContext();
+            log.info("将退出-JwtAuthenticationFilter-过滤器-jwtToken->>>{}", JSONUtil.toJsonStr(UserDetailUtil.getUserContext()));
         }
+        //将在此次请求结束后清空此缓存的用户信息
+        UserDetailUtil.remove();
     }
 
     private String getJwtToken(HttpServletRequest request) {

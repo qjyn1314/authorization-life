@@ -1,4 +1,4 @@
-package com.authorization.core.exception.handle;
+package com.authorization.common.exception.handle;
 
 public class CommonException extends RuntimeException{
 

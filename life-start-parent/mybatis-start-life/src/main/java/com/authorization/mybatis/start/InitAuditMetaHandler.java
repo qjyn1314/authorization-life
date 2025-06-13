@@ -1,7 +1,7 @@
 package com.authorization.mybatis.start;
 
 import com.authorization.mybatis.start.entity.AuditEntity;
-import com.authorization.utils.security.UserThreadUtil;
+import com.authorization.utils.security.UserDetailUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -19,19 +19,19 @@ public class InitAuditMetaHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.setFieldValByName(AuditEntity.FIELD_TENANT_ID, UserThreadUtil.getUserContext().getTenantId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_TENANT_ID, UserDetailUtil.getUserContext().getTenantId(), metaObject);
         this.setFieldValByName(AuditEntity.FIELD_CREATED_TIME, LocalDateTime.now(), metaObject);
-        this.setFieldValByName(AuditEntity.FIELD_CREATED_BY_USER, UserThreadUtil.getUserContext().getUserId(), metaObject);
-        this.setFieldValByName(AuditEntity.FIELD_CREATED_BY_EMP, UserThreadUtil.getUserContext().getEmpId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_CREATED_BY_USER, UserDetailUtil.getUserContext().getUserId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_CREATED_BY_EMP, UserDetailUtil.getUserContext().getEmpId(), metaObject);
         this.setFieldValByName(AuditEntity.FIELD_UPDATED_TIME, LocalDateTime.now(), metaObject);
-        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_USER, UserThreadUtil.getUserContext().getUserId(), metaObject);
-        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_EMP, UserThreadUtil.getUserContext().getEmpId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_USER, UserDetailUtil.getUserContext().getUserId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_EMP, UserDetailUtil.getUserContext().getEmpId(), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         this.setFieldValByName(AuditEntity.FIELD_UPDATED_TIME, LocalDateTime.now(), metaObject);
-        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_USER, UserThreadUtil.getUserContext().getUserId(), metaObject);
-        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_EMP, UserThreadUtil.getUserContext().getEmpId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_USER, UserDetailUtil.getUserContext().getUserId(), metaObject);
+        this.setFieldValByName(AuditEntity.FIELD_UPDATED_BY_EMP, UserDetailUtil.getUserContext().getEmpId(), metaObject);
     }
 }

@@ -1,6 +1,6 @@
-package com.authorization.core.exception;
+package com.authorization.common.exception;
 
-import com.authorization.core.exception.handle.ExceptionHandle;
+import com.authorization.common.exception.handle.ExceptionHandle;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 

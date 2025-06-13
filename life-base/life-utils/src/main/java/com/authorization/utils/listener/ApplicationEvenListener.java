@@ -19,21 +19,21 @@ import java.lang.management.RuntimeMXBean;
  * 监听服务是否启动成功
  */
 @Slf4j
-@Order // @Order注解可以指定组件的加载顺序，数值越小优先级越高。
+@Order
 public class ApplicationEvenListener implements CommandLineRunner, ApplicationRunner, ApplicationListener<ApplicationEvent> {
 
     @Override
     public void run(String... args) {
-        log.warn("CommandLineRunner args:{}", JSONUtil.toJsonStr(args));
+        log.info("CommandLineRunner args:{}", JSONUtil.toJsonStr(args));
         RuntimeMXBean runtimeJvmBean = ManagementFactory.getRuntimeMXBean();
         long uptime = runtimeJvmBean.getUptime();
         String jvmStartTime = JsonDateUtil.formatMillis(uptime);
-        log.warn("ApplicationEvenListener CommandLineRunner jvmStartTime: {}: ", jvmStartTime);
+        log.info("ApplicationEvenListener CommandLineRunner jvmStartTime: {}: ", jvmStartTime);
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.warn("ApplicationArguments args: {}", JSONUtil.toJsonStr(args));
+        log.info("ApplicationArguments args: {}", JSONUtil.toJsonStr(args));
     }
 
     /**
@@ -42,12 +42,12 @@ public class ApplicationEvenListener implements CommandLineRunner, ApplicationRu
      */
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
-        log.warn("Application event received: {}, eventData:{}", event, event.getSource());
+        log.info("Application event received: {}, eventData:{}", event, event.getSource());
         if (event instanceof ApplicationStartedEvent startedEvent) {
-            log.warn("应用启动耗时:{}", JsonDateUtil.formatMillis(startedEvent.getTimeTaken().toMillis()));
+            log.info("应用启动耗时:{}", JsonDateUtil.formatMillis(startedEvent.getTimeTaken().toMillis()));
         }
         if (event instanceof ApplicationReadyEvent readyEvent) {
-            log.warn("应用已完全启动，可以开始处理请求, 完全就绪耗时: {}", JsonDateUtil.formatMillis(readyEvent.getTimeTaken().toMillis()));
+            log.info("应用已完全启动，可以开始处理请求, 完全就绪耗时: {}", JsonDateUtil.formatMillis(readyEvent.getTimeTaken().toMillis()));
         }
     }
 

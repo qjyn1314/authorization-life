@@ -1,2 +1,4 @@
 com.authorization.common.log.LogAopAdvice
 com.authorization.common.config.RestTemplateConfig
+com.authorization.common.config.CorsFilterConfig
+com.authorization.common.exception.ExceptionConfig

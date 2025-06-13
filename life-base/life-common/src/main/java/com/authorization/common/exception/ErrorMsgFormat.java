@@ -1,5 +1,11 @@
-package com.authorization.utils.message;
+package com.authorization.common.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.util.Locale;
@@ -13,7 +19,7 @@ import java.util.Locale;
  * @author wangjunming
  * @date 2023/3/7 14:28
  */
-public class MsgFormat {
+public class ErrorMsgFormat {
 
     private static final ReloadableResourceBundleMessageSource BUNDLE_MESSAGE_SOURCE;
 
@@ -74,5 +80,20 @@ public class MsgFormat {
     public static String getMsg(String code) {
         return BUNDLE_MESSAGE_SOURCE.getMessage(code, null, Locale.getDefault());
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @Accessors(chain = true)
+    @EqualsAndHashCode
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class Msg {
+
+        private String message;
+
+        private String code;
+
+    }
+
 
 }

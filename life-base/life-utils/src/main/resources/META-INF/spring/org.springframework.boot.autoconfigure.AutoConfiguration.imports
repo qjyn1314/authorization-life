@@ -1,5 +1,5 @@
 com.authorization.utils.security.SsoSecurityProperties
-com.authorization.utils.props.LifeProperties
+com.authorization.utils.properties.RefreshableProperties
 com.authorization.utils.jasypt.JasyptConfig
 com.authorization.utils.security.JwtServiceImpl
 com.authorization.utils.excutor.TaskExecutorService

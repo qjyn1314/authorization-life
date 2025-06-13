@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import routes from './routes'
 
 const router = createRouter({
@@ -17,7 +17,7 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     if (to.matched.length === 0) {
         // 不存在的路由地址
         next('/404')
@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to, from) => {
-
+    console.log('to', to, 'from', from)
 })
 
 export default router

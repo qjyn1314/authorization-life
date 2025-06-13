@@ -18,9 +18,7 @@ public class Result<T> implements Serializable {
 
     public static final Integer FORM_ERROR = -2;
     public static final Integer ERROR = -1;
-    public static final String ERROR_MSG = "life-util.operation-failed";
     public static final Integer SUCCESS = 0;
-    public static final String SUCCESS_MSG = "life-util.operation-successful";
     private Integer code;
     private String msg;
     private T data;
@@ -54,11 +52,11 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> ok(T data) {
-        return ok(SUCCESS_MSG, data);
+        return ok(null, data);
     }
 
     public static <T> Result<T> ok() {
-        return new Result<>(SUCCESS, SUCCESS_MSG, null, null);
+        return new Result<>(SUCCESS, null, null, null);
     }
 
     public static <T> Result<T> failForCodeArgs(Integer code, String msg, Object[] args, T data) {
@@ -94,7 +92,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> fail(T data) {
-        return failMsg(ERROR_MSG, data);
+        return failMsg(null, data);
     }
 
     public static <T> Result<T> fail() {

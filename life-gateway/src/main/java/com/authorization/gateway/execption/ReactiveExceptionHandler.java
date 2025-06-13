@@ -51,14 +51,14 @@ public class ReactiveExceptionHandler implements ErrorWebExceptionHandler {
                 log.error("Error Spring Cloud Gateway : {} {}", exchange.getRequest().getPath(), ex.getMessage());
                 Result<Object> result = Result.failCode(Result.ERROR, ex.getMessage());
                 if (ex instanceof ResponseStatusException && HttpStatus.GATEWAY_TIMEOUT.value() == Objects.requireNonNull(response.getStatusCode()).value()) {
-                    result = Result.failCode(Result.ERROR, Result.ERROR_MSG);
+                    result = Result.failCode(Result.ERROR, null);
                 }
 
                 return bufferFactory.wrap(JsonHelper.getObjectMapper().writeValueAsBytes(result));
             } catch (Exception e) {
                 log.error("Error writing response", ex);
                 log.error("Error writing response JsonException", e);
-                return bufferFactory.wrap(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, Result.ERROR_MSG)).getBytes());
+                return bufferFactory.wrap(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, null)).getBytes());
             }
         }));
     }

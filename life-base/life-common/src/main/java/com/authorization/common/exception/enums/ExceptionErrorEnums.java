@@ -12,21 +12,18 @@ public enum ExceptionErrorEnums implements ExceptionErrorCode {
 
     // 10000 ~ 11000 是系统默认的错误消息
 
-
-
+    /**
+     * 操作失败.
+     */
+    OPERATION_FAILED(10000, "操作失败。", "life-util.operation-failed"),
     /**
      * 系统异常，请稍后重试。
      */
-    SYSTEM_EXCEPTION(10000, "系统异常，请稍后重试。", "life-core.system-exception"),
-
-    /**
-     * 系统异常，请稍后重试。
-     */
-    SYSTEM_EXCEPTION(10000, "系统异常，请稍后重试。", "life-core.system-exception"),
+    SYSTEM_EXCEPTION(10001, "系统异常，请稍后重试。", "life-core.system-exception"),
     /**
      * 系统异常, 数据不存在.
      */
-    DATA_NOT_EXIST(10001, "系统异常, 数据不存在.", "life-core.data-does-not-exist"),
+    DATA_NOT_EXIST(10002, "系统异常, 数据不存在.", "life-core.data-does-not-exist"),
 
 
     ;

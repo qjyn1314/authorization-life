@@ -2,7 +2,7 @@ package com.authorization.life.system;
 
 import com.authorization.remote.authserver.auto.EnableAuthServerConsumer;
 import com.authorization.remote.system.auto.EnableSystemProvider;
-import com.authorization.utils.message.MsgFormat;
+import com.authorization.common.exception.ErrorMsgFormat;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public class SystemLifeApplication {
 
     public static void main(String[] args) {
-        MsgFormat.addBasenames("classpath:message/messages_system");
+        ErrorMsgFormat.addBasenames("classpath:message/messages_system");
         SpringApplication.run(SystemLifeApplication.class, args);
     }
 

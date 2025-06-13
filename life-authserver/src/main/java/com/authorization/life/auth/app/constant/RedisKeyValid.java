@@ -1,7 +1,7 @@
 package com.authorization.life.auth.app.constant;
 
 import cn.hutool.core.util.StrUtil;
-import com.authorization.core.exception.handle.CommonException;
+import com.authorization.common.exception.handle.CommonException;
 import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
 

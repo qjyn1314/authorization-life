@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to, from) => {
-
+    console.log('to', to, 'from', from)
 })
 
 export default router

@@ -41,11 +41,6 @@
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>
-            <artifactId>valid-start-life</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.authorization.life</groupId>
             <artifactId>dubbo-start-life</artifactId>
             <optional>true</optional>
         </dependency>

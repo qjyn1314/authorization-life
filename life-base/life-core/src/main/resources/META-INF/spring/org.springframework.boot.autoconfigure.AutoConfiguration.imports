@@ -1,3 +1,2 @@
 com.authorization.core.shutdown.ShutdownAutoConfiguration
 com.authorization.core.LifeCoreAutoConfig
-com.authorization.core.exception.ExceptionConfig

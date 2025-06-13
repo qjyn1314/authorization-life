@@ -1,5 +1,6 @@
-package com.authorization.core.exception.handle;
+package com.authorization.common.exception.handle;
 
+import com.authorization.common.exception.enums.ExceptionErrorEnums;
 import com.authorization.utils.result.Result;
 import com.authorization.valid.start.util.ValidException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,9 @@ public class ExceptionHandle {
         if (defaultEx instanceof IllegalArgumentException) {
             return Result.fail(defaultEx.getMessage());
         }
+        if (defaultEx instanceof ParamValidException) {
+            return Result.fail(defaultEx.getMessage());
+        }
         if (defaultEx instanceof NoResourceFoundException) {
             return Result.fail("未找到请求路径.");
         }
@@ -37,7 +41,7 @@ public class ExceptionHandle {
         if (defaultEx instanceof HttpRequestMethodNotSupportedException) {
             return Result.fail("请求方式不正确.");
         }
-        return Result.fail(DefaultErrorMsg.SYSTEM_EXCEPTION.getMsgCode());
+        return Result.fail(ExceptionErrorEnums.SYSTEM_EXCEPTION.formatMsg());
     }
 
 

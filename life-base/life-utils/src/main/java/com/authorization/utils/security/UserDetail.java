@@ -151,9 +151,9 @@ public class UserDetail implements Serializable {
      */
     private String language;
     /**
-     * 地区
+     * 地区-默认本地区域
      */
-    private Locale locale;
+    private Locale locale = Locale.getDefault();
     /**
      * 租户编码
      */

@@ -3,7 +3,7 @@ package com.authorization.life.auth.infra.security.handler.sso;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.authorization.core.exception.handle.DefaultErrorMsg;
+import com.authorization.common.exception.enums.SecurityErrorEnums;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.JwtService;
@@ -60,7 +60,7 @@ public class SsoLogoutHandle implements LogoutHandler {
         if (StrUtil.isBlank(authorization) || StrUtil.isBlank(interiorJwt)) {
             try {
                 PrintWriter out = response.getWriter();
-                out.write(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, DefaultErrorMsg.TOKEN_OF_HEADER_NOT_FOUND.getMsgCode())));
+                out.write(JSONUtil.toJsonStr(Result.failCode(Result.ERROR, SecurityErrorEnums.LOGIN_IS_INVALID.formatMsg())));
                 out.flush();
                 out.close();
             } catch (Exception e) {

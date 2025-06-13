@@ -1,13 +1,11 @@
 package com.authorization.utils.result;
 
-import com.authorization.utils.message.MsgFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * 公共返回参数信息
@@ -30,12 +28,8 @@ public class Result<T> implements Serializable {
 
     private Result(Integer code, String msg, Object[] args, T data) {
         this.code = code;
-        try {
-            this.msg = Objects.nonNull(msg) ? MsgFormat.getMessageLocal(msg, args, null).getMessage() : null;
-        } catch (Exception e) {
-            this.msg = msg;
-        }
-        this.args = null;
+        this.msg = msg;
+        this.args = args;
         this.data = data;
     }
 

@@ -7,7 +7,7 @@ import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.security.start.UserDetailService;
 import com.authorization.redis.start.util.RedisCaptchaValidator;
 import com.authorization.redis.start.util.RedisUtil;
-import com.authorization.utils.message.StrForm;
+import com.authorization.utils.StringUtil;
 import com.authorization.utils.security.SecurityCoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -113,12 +113,12 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         String presentedPassword = authentication.getCredentials().toString();
         if (passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
             // 清除密码错误次数累计
-            String cacheKey = StrForm.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
+            String cacheKey = StringUtil.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
             redisUtil.delete(cacheKey);
         } else {
             log.debug("Authentication failed: password does not match stored value");
             // 检查密码错误次数
-            String cacheKey = StrForm.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
+            String cacheKey = StringUtil.of(PASSWORD_ERROR_COUNT).add("username", userDetails.getUsername()).format();
             int passwordErrorCount = Optional.ofNullable(redisUtil.get(cacheKey)).map(Integer::parseInt).orElse(0);
             if (passwordErrorCount >= 5 && passwordErrorCount < 10) {
                 // 未超过10次则密码错误累计次数+1

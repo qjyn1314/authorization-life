@@ -47,6 +47,12 @@
         <dependency>
             <groupId>com.authorization.life</groupId>
             <artifactId>dubbo-start-life</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>logback-adapter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.authorization.life</groupId>

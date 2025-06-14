@@ -35,7 +35,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         OAuth2AuthorizationCodeRequestAuthenticationToken authorizationCodeRequestAuthentication =
                 (OAuth2AuthorizationCodeRequestAuthenticationToken) authentication;
-        Assert.notNull(authorizationCodeRequestAuthentication.getRedirectUri(), "回调地址不能为空。");
+        Assert.notNull(authorizationCodeRequestAuthentication, "临时code信息不能为空.");
+        Assert.notBlank(authorizationCodeRequestAuthentication.getRedirectUri(), "回调地址不能为空。");
         Assert.notNull(authorizationCodeRequestAuthentication.getAuthorizationCode(), "认证授权码不能为空。");
         Assert.notNull(authorizationCodeRequestAuthentication.getAuthorizationCode().getTokenValue(), "授权码的token不能为空。");
         UriComponentsBuilder uriBuilder = UriComponentsBuilder

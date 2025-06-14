@@ -30,16 +30,19 @@ import java.util.Map;
  */
 @Slf4j
 public class SsoSuccessHandler implements AuthenticationSuccessHandler {
-    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("密码验证登录成功的对象信息是-{}", JSONUtil.toJsonStr(authentication));
+
+        //在此处发现当前登录已经登录时, 则将当前登录用户进行退出登录并删除redis中的token信息和临时code信息.
+
+
         authorizationCodeUrl(request, authentication);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-//        UserHelper.setUserDetail((UserDetail) authentication.getDetails());
+        UserHelper.setUserDetail((UserDetail) authentication.getDetails());
         try {
             PrintWriter out = response.getWriter();
             out.write(JSONUtil.toJsonStr(Result.ok(Map
@@ -52,6 +55,9 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
         }
     }
 
+    /**
+     * 在登录成功后生成的授权路径
+     */
     private void authorizationCodeUrl(HttpServletRequest request, Authentication authentication) {
         String origin = request.getHeader("origin");
         String forwardedPrefix = request.getHeader(SecurityCoreService.AUTH_FORWARDED);
@@ -63,6 +69,6 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
         String state = UUID.fastUUID().toString(true);
         String redirectUrl = SecurityCoreService.genAuthorizationCodeUrl(hostOrigin, oauthClientVO.getClientId(),
                 oauthClientVO.getScopes(), state, oauthClientVO.getRedirectUri());
-        log.info("onAuthenticationSuccess->genAuthorizationCodeUrl:{}", redirectUrl);
+        log.info("在登录成功后生成的授权路径是:{}", redirectUrl);
     }
 }

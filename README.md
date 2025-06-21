@@ -1,4 +1,4 @@
-# authorization-life oauth2.1 授权服务
+# authorization-life oauth2.0 授权服务
 
 ## 前后端分离Oauth2.0的实践
 
@@ -54,7 +54,7 @@ redis 工具类, 发布和订阅服务, 分布式锁等.
 
 ### [security-start-life](life-start-parent/security-start-life)
 
-Oauth2.1 授权认证服务
+Oauth2.0 授权认证服务
 
 ### [valid-start-life](life-start-parent/valid-start-life)
 
@@ -76,11 +76,11 @@ authserver-授权服务提供的dubbo服务接口
 
 system-系统管理服务提供的dubbo服务接口
 
-### [life-authserver](life-authserver) 授权认证的服务端(oauth2.1中的server端)
+### [life-authserver](life-authserver) 授权认证的服务端(oauth2.0中的server端)
 
-集成spring-security、spring-authorization-server 深度整合Oauth2.1的模块，作为认证和授权服务，将认证用户和颁发token。
+集成spring-security、spring-authorization-server 深度整合Oauth2.0的模块，作为认证和授权服务，将认证用户和颁发token。
 
-### [life-system](life-system) 系统管理服务(oauth2.1中的client端)
+### [life-system](life-system) 系统管理服务(oauth2.0中的client端)
 
 系统中的字典、业务配置、系统的默认参数、等等具体的需求。
 
@@ -124,7 +124,7 @@ dubbo 3.3.4
 
 #### "axios": "^1.9.0"
 
-# Oauth2.1的授权模式的概念
+# Oauth2.0的授权模式的概念
 
 授权的四种方式
 
@@ -134,7 +134,7 @@ https://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html
 
 https://learnku.com/articles/20082
 
-## 实践Oauth2.1前后端分离两个步骤
+## 实践Oauth2.0前后端分离两个步骤
 
 1. spring-boot 与 spring-security 整合
 

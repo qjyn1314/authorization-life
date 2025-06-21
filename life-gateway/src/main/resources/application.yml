@@ -1,21 +1,10 @@
 server:
   port: 9000
 spring:
-  cloud:
-    gateway.server.webflux.globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOriginPatterns: '*'
-            allowedMethods: '*'
-            allowedHeaders: '*'
-            allowCredentials: true
-            max-age: 3600
-      default-filters:
-        - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
   data.redis:
     database: 0
     host: 127.0.0.1
-    port: 12030
+    port: 12040
     password: 123456
     lettuce:
       pool:

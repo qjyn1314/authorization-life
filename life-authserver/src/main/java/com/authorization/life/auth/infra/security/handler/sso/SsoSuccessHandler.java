@@ -6,18 +6,14 @@ import cn.hutool.json.JSONUtil;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.security.sso.CaptchaWebAuthenticationDetails;
-import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.SecurityCoreService;
-import com.authorization.utils.security.UserDetail;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.IOException;
@@ -34,15 +30,10 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("密码验证登录成功的对象信息是-{}", JSONUtil.toJsonStr(authentication));
-
-        //在此处发现当前登录已经登录时, 则将当前登录用户进行退出登录并删除redis中的token信息和临时code信息.
-
-
         authorizationCodeUrl(request, authentication);
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        UserHelper.setUserDetail((UserDetail) authentication.getDetails());
         try {
             PrintWriter out = response.getWriter();
             out.write(JSONUtil.toJsonStr(Result.ok(Map

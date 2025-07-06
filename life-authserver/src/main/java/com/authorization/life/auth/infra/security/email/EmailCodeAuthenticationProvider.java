@@ -23,6 +23,6 @@ public class EmailCodeAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return EmailCodeAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

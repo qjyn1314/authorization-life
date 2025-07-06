@@ -22,7 +22,7 @@ export function oauthLogin(data) {
     return axiosService.postForm(`/${AUTH_SERVER}/oauth/login`, data)
 }
 
-// 通过code获取access token
+// 通过临时code获取access token
 export function genOauth2TokenByCode(data) {
     return axiosService.postForm(`/${AUTH_SERVER}/oauth2/token`, data);
 }
@@ -57,6 +57,7 @@ export function resetPassword(data) {
     return axiosService.post(`/${AUTH_SERVER}/oauth/reset-password`, data)
 }
 
+// 发送手机号登录验证码
 
 
 

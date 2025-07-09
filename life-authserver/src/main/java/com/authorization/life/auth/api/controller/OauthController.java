@@ -143,9 +143,23 @@ public class OauthController {
     @Operation(summary = "发送邮箱登录验证码")
     @GetMapping("/send-email-code-login")
     public Result<String> sendLoginEmailCode(@RequestParam(name = "email") String email) {
-        Captcha captcha = RedisCaptchaValid.create(redisUtil);
-        String code = captcha.getCode();
-        return Result.ok(code);
+        // 验证邮箱是否重复
+        Boolean emailExist = userService.validateEmailExist(new LifeUserDTO().setEmail(email));
+        Assert.isTrue(emailExist, "邮箱未注册.");
+        //邮箱验证码是否在十分钟内重复发送.
+        RedisKeyValid.validEmailRepeatSendCode(redisUtil, email);
+        //生成验证码
+        Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
+        //发送邮件
+        try {
+            mailSendService.sendEmail(MailConstant.LOGIN_CAPTCHA_CODE_TEMPLATE, email, Map.of("captchaCode", captcha.getCode()));
+        } catch (Exception e) {
+            log.error("发送邮件异常", e);
+            RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
+            RedisKeyValid.delEmailRepeatSendCode(redisUtil, email);
+            throw new CommonException("邮件发送失败,请输入正确的邮箱.");
+        }
+        return Result.ok(captcha.getUuid());
     }
 
 }

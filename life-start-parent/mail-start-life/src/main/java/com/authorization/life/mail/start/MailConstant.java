@@ -26,5 +26,9 @@ public class MailConstant {
      * 重置密码时发送邮件的验证码
      */
     public static final String RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE = "RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE";
+    /**
+     * 登录时发送邮件的验证码
+     */
+    public static final String LOGIN_CAPTCHA_CODE_TEMPLATE = "LOGIN_CAPTCHA_CODE_TEMPLATE";
 
 }

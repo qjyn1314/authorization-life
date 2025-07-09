@@ -9,7 +9,7 @@ import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
-import com.authorization.redis.start.util.RedisCaptchaValidator;
+import com.authorization.redis.start.model.RedisCaptchaValid;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.ValidGroup;
@@ -98,9 +98,9 @@ public class UserServiceImpl implements UserService {
         Boolean emailExist = validateEmailExist(lifeUser);
         Assert.isFalse(emailExist, "该邮箱已注册.");
         Assert.notBlank(lifeUser.getHashPassword(), "密码不能为空.");
-        boolean verifiedExpirationDate = RedisCaptchaValidator.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        boolean verifiedExpirationDate = RedisCaptchaValid.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
         Assert.isTrue(verifiedExpirationDate, "验证码已过期, 请重新获取.");
-        boolean verify = RedisCaptchaValidator.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        boolean verify = RedisCaptchaValid.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
 
         //此处是验证通过, 将删除缓存中的验证码和邮箱校验逻辑
@@ -148,9 +148,9 @@ public class UserServiceImpl implements UserService {
         ValidUtil.validateAndThrow(lifeUser, LifeUserDTO.ResetPwdGroup.class);
         Assert.isTrue(lifeUser.getHashPassword().equals(lifeUser.getValidHashPassword()), "两次输入密码不一致,请重新输入.");
 
-        boolean verifiedExpirationDate = RedisCaptchaValidator.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        boolean verifiedExpirationDate = RedisCaptchaValid.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
         Assert.isTrue(verifiedExpirationDate, "验证码已过期, 请重新获取.");
-        boolean verify = RedisCaptchaValidator.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        boolean verify = RedisCaptchaValid.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
 
         //此处是验证通过, 将删除缓存中的验证码和邮箱校验逻辑

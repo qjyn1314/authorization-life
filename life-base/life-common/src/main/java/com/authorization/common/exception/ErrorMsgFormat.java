@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * 国际化提示消息处理器
@@ -60,11 +61,10 @@ public class ErrorMsgFormat {
         return new Msg().setCode(code).setMessage(message);
     }
 
-    /**
-     * 从本地消息文件获取多语言消息
-     */
+    /** 从本地消息文件获取多语言消息 */
     public static String getMsg(String code, Locale locale) {
-        return BUNDLE_MESSAGE_SOURCE.getMessage(code, null, Locale.getDefault());
+        return BUNDLE_MESSAGE_SOURCE.getMessage(
+            code, null, Objects.isNull(locale) ? Locale.getDefault() : locale);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.authorization.redis.start.util;
+package com.authorization.redis.start.model;
 
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.GifCaptcha;
@@ -8,6 +8,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
 
 import java.util.Map;
@@ -16,10 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 基于redis的验证码校验器
+ * @author wangjunming3
  */
-public final class RedisCaptchaValidator {
+public final class RedisCaptchaValid {
 
     public static final String CAPTCHA_CACHE_KEY = SecurityCoreService.CAPTCHA_CACHE_KEY;
+
+    public static final String CAPTCHA_CACHE_BIZ_KEY = "sso-oauth-server:auth:captcha-code:{bizType}:{bizId}:{uuid}";
 
     /**
      * 默认时间 10 分钟

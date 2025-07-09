@@ -11,8 +11,8 @@ import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.mail.start.MailConstant;
 import com.authorization.life.mail.start.MailSendService;
-import com.authorization.redis.start.util.Captcha;
-import com.authorization.redis.start.util.RedisCaptchaValidator;
+import com.authorization.redis.start.model.Captcha;
+import com.authorization.redis.start.model.RedisCaptchaValid;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.UserDetail;
@@ -20,8 +20,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -61,15 +59,15 @@ public class OauthController {
         return Result.ok(oauthClientService.clientByDomain(param.getOrDefault("domain", "")));
     }
 
-    @Operation(summary = "图片验证码")
+    @Operation(summary = "获取图片验证码")
     @GetMapping("/picture-code")
     public Result<Captcha> pictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
-        boolean repeatPictureCode = RedisCaptchaValidator.verifyRepeatPictureCode(redisUtil, uuid);
+        boolean repeatPictureCode = RedisCaptchaValid.verifyRepeatPictureCode(redisUtil, uuid);
         Assert.isFalse(repeatPictureCode, "验证码未验证, 请勿重新获取.");
-        return Result.ok(RedisCaptchaValidator.create(redisUtil));
+        return Result.ok(RedisCaptchaValid.create(redisUtil));
     }
 
-    @Operation(summary = "发送邮箱验证码")
+    @Operation(summary = "发送邮箱注册验证码")
     @PostMapping("/send-email-code")
     public Result<String> sendEmailCode(@RequestBody LifeUserDTO lifeUser) {
         //验证邮箱是否重复
@@ -78,13 +76,13 @@ public class OauthController {
         //邮箱验证码是否在十分钟内重复发送.
         RedisKeyValid.validEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
         //生成验证码
-        Captcha captcha = RedisCaptchaValidator.createNumCaptcha(redisUtil);
+        Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
         //发送邮件
         try {
             mailSendService.sendEmail(MailConstant.REGISTER_CAPTCHA_CODE_TEMPLATE, lifeUser.getEmail(), Map.of("captchaCode", captcha.getCode()));
         } catch (Exception e) {
             log.error("发送邮件异常", e);
-            RedisCaptchaValidator.verify(redisUtil, captcha.getUuid(), captcha.getCode());
+            RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
             RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");
         }
@@ -104,7 +102,7 @@ public class OauthController {
     }
 
 
-    @Operation(summary = "发送邮箱验证码")
+    @Operation(summary = "发送邮箱重置密码验证码")
     @PostMapping("/send-email-code-reset-pwd")
     public Result<String> sendEmailCodeResetPwd(@RequestBody LifeUserDTO lifeUser) {
         //验证邮箱是否重复
@@ -113,13 +111,13 @@ public class OauthController {
         //邮箱验证码是否在十分钟内重复发送.
         RedisKeyValid.validEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
         //生成验证码
-        Captcha captcha = RedisCaptchaValidator.createNumCaptcha(redisUtil);
+        Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
         //发送邮件
         try {
             mailSendService.sendEmail(MailConstant.RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE, lifeUser.getEmail(), Map.of("captchaCode", captcha.getCode()));
         } catch (Exception e) {
             log.error("发送邮件异常", e);
-            RedisCaptchaValidator.verify(redisUtil, captcha.getUuid(), captcha.getCode());
+            RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
             RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");
         }
@@ -134,22 +132,20 @@ public class OauthController {
         return Result.ok();
     }
 
-    @Operation(summary = "发送手机验证码")
-    @GetMapping("/send-sms-code")
-    public Result<String> sendSmsCode(@RequestParam(name = "phone") String phone) {
-        Captcha captcha = RedisCaptchaValidator.create(redisUtil);
+    @Operation(summary = "发送手机登录验证码")
+    @GetMapping("/send-sms-code-login")
+    public Result<String> sendLoginSmsCode(@RequestParam(name = "phone") String phone) {
+        Captcha captcha = RedisCaptchaValid.create(redisUtil);
         String code = captcha.getCode();
         return Result.ok(code);
     }
 
-    @Autowired
-    private JwtDecoder jwtDecoder;
-
-    @Operation(summary = "解析jwt信息")
-    @PostMapping("/decode-jwt")
-    public Result<Map<String, Object>> decodeJwt(@RequestParam("jwtToken") String jwtToken) {
-        Jwt decode = jwtDecoder.decode(jwtToken);
-        return Result.ok(decode.getClaims());
+    @Operation(summary = "发送邮箱登录验证码")
+    @GetMapping("/send-email-code-login")
+    public Result<String> sendLoginEmailCode(@RequestParam(name = "email") String email) {
+        Captcha captcha = RedisCaptchaValid.create(redisUtil);
+        String code = captcha.getCode();
+        return Result.ok(code);
     }
 
 }

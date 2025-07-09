@@ -2,7 +2,7 @@ package com.authorization.life.auth.app.constant;
 
 import cn.hutool.core.util.StrUtil;
 import com.authorization.common.exception.handle.CommonException;
-import com.authorization.redis.start.util.RedisCaptchaValidator;
+import com.authorization.redis.start.model.RedisCaptchaValid;
 import com.authorization.redis.start.util.RedisUtil;
 
 import java.util.Map;
@@ -38,7 +38,7 @@ public class RedisKeyValid {
     }
 
     public static void delEmailRegSendCode(RedisUtil redisUtil, String uuid) {
-        redisUtil.delete(StrUtil.format(RedisCaptchaValidator.CAPTCHA_CACHE_KEY, Map.of("uuid", uuid)));
+        redisUtil.delete(StrUtil.format(RedisCaptchaValid.CAPTCHA_CACHE_KEY, Map.of("uuid", uuid)));
     }
 
 }

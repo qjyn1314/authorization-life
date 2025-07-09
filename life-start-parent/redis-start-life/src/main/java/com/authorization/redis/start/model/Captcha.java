@@ -1,4 +1,4 @@
-package com.authorization.redis.start.util;
+package com.authorization.redis.start.model;
 
 import cn.hutool.captcha.GifCaptcha;
 import lombok.Getter;

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.security.start.UserDetailService;
-import com.authorization.redis.start.util.RedisCaptchaValidator;
+import com.authorization.redis.start.model.RedisCaptchaValid;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.StringUtil;
 import com.authorization.utils.security.SecurityCoreService;
@@ -102,7 +102,7 @@ public class UsernamePasswordAuthenticationProvider extends AbstractUserDetailsA
         Object authenticationDetails = authentication.getDetails();
         if (authenticationDetails instanceof CaptchaWebAuthenticationDetails captcha && StrUtil.isNotBlank(captcha.getCaptchaCode())) {
             // 检查验证码正确
-            boolean verify = RedisCaptchaValidator.verify(redisUtil, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
+            boolean verify = RedisCaptchaValid.verify(redisUtil, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
             Assert.isTrue(verify, () -> new ValiVerificationCodeException("验证码输入错误。"));
         }
         if (authentication.getCredentials() == null) {

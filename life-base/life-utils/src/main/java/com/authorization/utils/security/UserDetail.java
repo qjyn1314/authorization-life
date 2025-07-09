@@ -27,7 +27,7 @@ public class UserDetail implements Serializable {
         userDetail.setUserId("0");
         userDetail.setEmpId("0");
         userDetail.setTenantId("0");
-        userDetail.setLocale(Locale.CHINA);
+        userDetail.setLocale(Locale.US);
         userDetail.setAnonymousFlag(true);
         return userDetail;
     }

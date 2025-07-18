@@ -38,15 +38,39 @@ const frameOut = [
     {
         path: '/login',
         name: 'login',
-        component: () => import('@/views/login/email/LoginView.vue'),
+        component: () => import('@/views/login/authorization_code/LoginView.vue'),
         meta: {
             title: 'Oauth2SSO-login',
         },
     },
     {
+        path: '/password',
+        name: 'password',
+        component: () => import('@/views/login/password/LoginView.vue'),
+        meta: {
+            title: 'Oauth2SSO-password-login',
+        },
+    },
+    {
+        path: '/email_captcha',
+        name: 'email_captcha',
+        component: () => import('@/views/login/email_captcha/LoginView.vue'),
+        meta: {
+            title: 'Oauth2SSO-email_captcha-login',
+        },
+    },
+    {
+        path: '/phone_captcha',
+        name: 'phone_captcha',
+        component: () => import('@/views/login/phone_captcha/LoginView.vue'),
+        meta: {
+            title: 'Oauth2SSO-phone_captcha-login',
+        },
+    },
+    {
         path: '/register',
         name: 'register',
-        component: () => import('@/views/login/email/RegView.vue'),
+        component: () => import('@/views/login/reg_pwd/RegView.vue'),
         meta: {
             title: 'Oauth2SSO-reg',
         },
@@ -54,7 +78,7 @@ const frameOut = [
     {
         path: '/reset-pwd',
         name: 'ResetPwdView',
-        component: () => import('@/views/login/email/ResetPwdView.vue'),
+        component: () => import('@/views/login/reg_pwd/ResetPwdView.vue'),
         meta: {
             title: 'Oauth2SSO-reset-pwd',
         },

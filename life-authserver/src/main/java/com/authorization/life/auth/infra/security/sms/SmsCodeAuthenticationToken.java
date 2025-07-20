@@ -15,6 +15,7 @@ import java.util.Collection;
  */
 public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
+    public static final String PHONE_CAPTCHA = "phone_captcha";
 
     public SmsCodeAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
         super(authorities);

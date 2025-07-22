@@ -19,7 +19,11 @@ const router = createRouter({
     routes
 })
 
-const noRequiredPath = ['/clients','/login','/register','/reset-pwd','/auth-redirect'];
+// 无需登录即可访问
+const noRequiredPath = ['/clients', '/login', '/register', '/reset-pwd', '/auth-redirect'];
+
+// 登录页集合
+const loginPath = ['/login'];
 
 
 router.beforeEach((to, from, next) => {
@@ -28,25 +32,26 @@ router.beforeEach((to, from, next) => {
         next('/404')
     } else {
         window.document.title = (to.query.title ? to.query.title : to.meta.title);
-        let accessToken = getToken();
-        let noAuthFlag  = noRequiredPath.includes(to.path);
-        // 没有token, 需要认证的则跳转到client管理
-        if(!accessToken && !noAuthFlag){
-         return next("/clients");
-        }
+        let noAuthFlag = noRequiredPath.includes(to.path);
         // 不需要登录的路径直接放行
-        if(noAuthFlag) {
+        if (noAuthFlag) {
             return next()
         }
+        let accessToken = getToken();
+        // 没有token, 需要认证的则跳转到client管理
+        if (!accessToken && !noAuthFlag) {
+
+            return next("/clients");
+        }
         // 有登录用户信息直接放行
-        if (accessToken && to.path === '/login') {
+        if (accessToken && loginPath.includes(to.path)) {
             console.log('getToken()', getToken());
-           return next("/")
+            return next("/")
         }
         // 有登录用户信息直接放行
         if (accessToken) {
             console.log('getToken()', getToken());
-           return next()
+            return next()
         }
     }
 

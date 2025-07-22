@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
         // 有登录用户信息直接放行
         if (accessToken && to.path === '/login') {
             console.log('getToken()', getToken());
-           return next("/clients")
+           return next("/")
         }
         // 有登录用户信息直接放行
         if (accessToken) {

@@ -70,6 +70,14 @@ nprogress  进度条
 
 notepadd: https://github.com/notepad-plus-plus/notepad-plus-plus
 
+
+#### 设置git提交用户
+
+git config user.name 'wangjunming'
+
+git config user.email 'qjyn1314@163.com'
+
+
 # nginx的配置信息
 
 ```

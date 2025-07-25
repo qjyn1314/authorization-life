@@ -2,7 +2,6 @@ package com.authorization.life.auth.api.controller;
 
 import cn.hutool.core.lang.Assert;
 import com.authorization.common.exception.handle.CommonException;
-import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.life.auth.app.constant.Inspirational;
 import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
@@ -11,6 +10,7 @@ import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.mail.start.MailConstant;
 import com.authorization.life.mail.start.MailSendService;
+import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.redis.start.model.Captcha;
 import com.authorization.redis.start.model.RedisCaptchaValid;
 import com.authorization.redis.start.util.RedisUtil;
@@ -59,14 +59,6 @@ public class OauthController {
         return Result.ok(oauthClientService.clientByDomain(param.getOrDefault("domain", "")));
     }
 
-    @Operation(summary = "获取图片验证码")
-    @GetMapping("/picture-code")
-    public Result<Captcha> pictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
-        boolean repeatPictureCode = RedisCaptchaValid.verifyRepeatPictureCode(redisUtil, uuid);
-        Assert.isFalse(repeatPictureCode, "验证码未验证, 请勿重新获取.");
-        return Result.ok(RedisCaptchaValid.create(redisUtil));
-    }
-
     @Operation(summary = "发送邮箱注册验证码")
     @PostMapping("/send-email-code")
     public Result<String> sendEmailCode(@RequestBody LifeUserDTO lifeUser) {
@@ -95,13 +87,6 @@ public class OauthController {
         return Result.ok(userService.emailRegister(lifeUser));
     }
 
-    @Operation(summary = "获取当前登录用户信息")
-    @GetMapping("/self-user")
-    public Result<UserDetail> getCurrentUser() {
-        return Result.ok(UserHelper.getUserDetail());
-    }
-
-
     @Operation(summary = "发送邮箱重置密码验证码")
     @PostMapping("/send-email-code-reset-pwd")
     public Result<String> sendEmailCodeResetPwd(@RequestBody LifeUserDTO lifeUser) {
@@ -124,12 +109,25 @@ public class OauthController {
         return Result.ok(captcha.getUuid());
     }
 
-
     @Operation(summary = "用户重置密码")
     @PostMapping("/reset-password")
     public Result<Void> resetPassword(@RequestBody LifeUserDTO lifeUser) {
         userService.resetPassword(lifeUser);
         return Result.ok();
+    }
+
+    @Operation(summary = "获取当前登录用户信息")
+    @GetMapping("/self-user")
+    public Result<UserDetail> getCurrentUser() {
+        return Result.ok(UserHelper.getUserDetail());
+    }
+
+    @Operation(summary = "获取图片验证码")
+    @GetMapping("/picture-code")
+    public Result<Captcha> pictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
+        boolean repeatPictureCode = RedisCaptchaValid.verifyRepeatPictureCode(redisUtil, uuid);
+        Assert.isFalse(repeatPictureCode, "验证码未验证, 请勿重新获取.");
+        return Result.ok(RedisCaptchaValid.create(redisUtil));
     }
 
     @Operation(summary = "发送手机登录验证码")
@@ -152,9 +150,9 @@ public class OauthController {
         Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
         //发送邮件
         try {
-            mailSendService.sendEmail(MailConstant.LOGIN_CAPTCHA_CODE_TEMPLATE, email, Map.of("captchaCode", captcha.getCode()));
+            mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, email, Map.of("captchaCode", captcha.getCode()));
         } catch (Exception e) {
-            log.error("发送邮件异常", e);
+            log.error("发送邮件异常#email:{}", email, e);
             RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
             RedisKeyValid.delEmailRepeatSendCode(redisUtil, email);
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");

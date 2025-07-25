@@ -27,8 +27,12 @@ public class MailConstant {
      */
     public static final String RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE = "RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE";
     /**
-     * 登录时发送邮件的验证码
+     * 邮件登录时发送的验证码
      */
-    public static final String LOGIN_CAPTCHA_CODE_TEMPLATE = "LOGIN_CAPTCHA_CODE_TEMPLATE";
+    public static final String EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE = "EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE";
+    /**
+     * 手机登录时发送的验证码
+     */
+    public static final String PHONE_LOGIN_CAPTCHA_CODE_TEMPLATE = "PHONE_LOGIN_CAPTCHA_CODE_TEMPLATE";
 
 }

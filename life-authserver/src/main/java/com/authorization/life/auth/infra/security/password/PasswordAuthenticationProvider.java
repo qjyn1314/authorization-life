@@ -12,19 +12,19 @@ import org.springframework.security.core.AuthenticationException;
 @Slf4j
 public class PasswordAuthenticationProvider implements AuthenticationProvider {
 
-  @Override
-  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
 
+        log.info("PasswordAuthenticationProvider:{}", authentication);
 
+        return null;
+    }
 
-    return null;
-  }
-
-  @Override
-  public boolean supports(Class<?> authentication) {
-    boolean supports = PasswordAuthenticationToken.class.isAssignableFrom(authentication);
-    log.debug("supports authentication=" + authentication + " returning " + supports);
-    return supports;
-  }
+    @Override
+    public boolean supports(Class<?> authentication) {
+        boolean supports = PasswordAuthenticationToken.class.isAssignableFrom(authentication);
+        log.debug("supports authentication=" + authentication + " returning " + supports);
+        return supports;
+    }
 }

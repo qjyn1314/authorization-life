@@ -1,8 +1,14 @@
 package com.authorization.life.auth.infra.security;
 
 import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.infra.security.email.EmailCodeAuthenticationConverter;
+import com.authorization.life.auth.infra.security.email.EmailCodeAuthenticationProvider;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
+import com.authorization.life.auth.infra.security.password.PasswordAuthenticationConverter;
+import com.authorization.life.auth.infra.security.password.PasswordAuthenticationProvider;
 import com.authorization.life.auth.infra.security.service.*;
+import com.authorization.life.auth.infra.security.sms.SmsCodeAuthenticationConverter;
+import com.authorization.life.auth.infra.security.sms.SmsCodeAuthenticationProvider;
 import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
@@ -17,6 +23,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,8 +37,12 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AccessTokenResponseAuthenticationSuccessHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.web.authentication.DelegatingAuthenticationConverter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.Arrays;
 
 /**
  * 整合 oauth2_authorization 的配置类。
@@ -54,7 +65,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  * <p>
  * https://docs.spring.io/spring-security/reference/getting-spring-security.html
  * <p>
- * /oauth2/authorize >
+ * /oauth2/authorize > 请求的流程图
  * <p>
  * 1. OAuth2AuthorizationEndpointFilter
  * <p>
@@ -92,7 +103,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
  */
 @Slf4j
 @EnableWebSecurity
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class Oauth2SecurityConfig {
     @Autowired
     private SsoSecurityProperties ssoSecurityProperties;
@@ -121,7 +132,7 @@ public class Oauth2SecurityConfig {
 
         authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
             endpointConfigurer
-
+                    .accessTokenRequestConverter(accessTokenRequestConverter())
                     // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
                     // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
                     .accessTokenResponseHandler(new OAuth2AccessTokenResponseAuthenticationSuccessHandler());
@@ -164,7 +175,16 @@ public class Oauth2SecurityConfig {
         // 自定义设置accesstoken中JwtToken-Claims中的内容
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
+        addCustomOAuth2GrantAuthenticationProvider(http);
+
         return http.build();
+    }
+
+    public AuthenticationConverter accessTokenRequestConverter() {
+        return new DelegatingAuthenticationConverter(Arrays.asList(
+                new PasswordAuthenticationConverter(),
+                new SmsCodeAuthenticationConverter(),
+                new EmailCodeAuthenticationConverter()));
     }
 
     /**
@@ -233,6 +253,21 @@ public class Oauth2SecurityConfig {
         //加载org/springframework/security包下的中文提示信息 配置文件
         messageSource.setBasename("classpath:messages/messages_zh_CN");
         return messageSource;
+    }
+
+    /**
+     * 注入授权模式实现提供方
+     * <p>
+     * 1. 密码模式 </br>
+     * 2. 短信登录 </br>
+     */
+    private void addCustomOAuth2GrantAuthenticationProvider(HttpSecurity http) {
+        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+        OAuth2AuthorizationService authorizationService = http.getSharedObject(OAuth2AuthorizationService.class);
+
+        http.authenticationProvider(new PasswordAuthenticationProvider());
+        http.authenticationProvider(new SmsCodeAuthenticationProvider());
+        http.authenticationProvider(new EmailCodeAuthenticationProvider());
     }
 
 }

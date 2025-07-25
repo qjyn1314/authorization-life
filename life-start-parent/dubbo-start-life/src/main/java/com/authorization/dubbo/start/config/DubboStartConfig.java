@@ -24,7 +24,7 @@ import java.util.Map;
  * @date 2022/12/22 14:40
  */
 @Slf4j
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @AutoConfiguration
 public class DubboStartConfig {
 

@@ -1,13 +1,8 @@
-package com.authorization.life.auth.infra.security.password;
+package com.authorization.life.auth.infra.security.email;
 
 import com.authorization.life.auth.infra.security.OAuth2EndpointUtils;
+import com.authorization.life.auth.infra.security.password.PasswordAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,12 +13,18 @@ import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * @author wangjunming
  * @since 2025-06-14 22:02
  */
 @Slf4j
-public class PasswordAuthenticationConverter implements AuthenticationConverter {
+public class EmailCodeAuthenticationConverter implements AuthenticationConverter {
 
   @Override
   public Authentication convert(HttpServletRequest request) {

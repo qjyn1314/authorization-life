@@ -16,6 +16,7 @@ import java.util.Collection;
 public class EmailCodeAuthenticationToken extends AbstractAuthenticationToken {
 
     public static final String EMAIL_CAPTCHA = "email_captcha";
+    public static final String CAPTCHA_CODE = "captcha_code";
 
     public EmailCodeAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
         super(authorities);

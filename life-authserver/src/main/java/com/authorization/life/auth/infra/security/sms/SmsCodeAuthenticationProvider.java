@@ -1,5 +1,6 @@
 package com.authorization.life.auth.infra.security.sms;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -12,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
  * @author wangjunming
  * @since 2025-06-14 22:01
  */
+@Slf4j
 public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
 

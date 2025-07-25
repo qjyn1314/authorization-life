@@ -39,7 +39,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Slf4j
 @EnableWebSecurity(debug = true)
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class DefaultSecurityConfig {
 
     @Autowired

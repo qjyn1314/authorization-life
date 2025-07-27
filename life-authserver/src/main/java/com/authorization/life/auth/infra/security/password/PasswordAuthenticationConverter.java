@@ -1,13 +1,13 @@
 package com.authorization.life.auth.infra.security.password;
 
 import com.authorization.life.auth.infra.security.OAuth2EndpointUtils;
+import com.authorization.utils.json.JsonHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -89,10 +89,15 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
                         && !e.getKey().equals(OAuth2ParameterNames.SCOPE))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
-    return new PasswordAuthenticationToken(
-        new AuthorizationGrantType(PasswordAuthenticationToken.PASSWORD),
-        clientPrincipal,
-        requestedScopes,
-        additionalParameters);
+    PasswordAuthenticationToken passwordAuthenticationToken =
+        new PasswordAuthenticationToken(
+            new AuthorizationGrantType(PasswordAuthenticationToken.PASSWORD),
+            clientPrincipal,
+            username,
+            password,
+            requestedScopes,
+            additionalParameters);
+    log.info("passwordAuthenticationToken->{}", JsonHelper.toJson(passwordAuthenticationToken));
+    return passwordAuthenticationToken;
   }
 }

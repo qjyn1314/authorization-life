@@ -90,10 +90,6 @@ public class EmailCodeAuthenticationConverter implements AuthenticationConverter
                         && !e.getKey().equals(OAuth2ParameterNames.SCOPE))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
-    return new PasswordAuthenticationToken(
-        new AuthorizationGrantType(PasswordAuthenticationToken.PASSWORD),
-        clientPrincipal,
-        requestedScopes,
-        additionalParameters);
+    return new EmailCodeAuthenticationToken(null);
   }
 }

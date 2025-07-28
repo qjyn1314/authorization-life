@@ -1,5 +1,9 @@
 # authorization-life oauth2.0 授权服务
 
+ * OAuth 2.0 协议规范: https://datatracker.ietf.org/doc/html/rfc6749
+ 
+ * OAuth 2.1 协议规范: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13
+
 ## 前后端分离Oauth2.0的实践
 
 自定义maven工程 与 spring-security + spring-authorization-server 深度整合实践。

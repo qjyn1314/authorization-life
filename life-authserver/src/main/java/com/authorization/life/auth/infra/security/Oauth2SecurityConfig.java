@@ -47,6 +47,10 @@ import java.util.Arrays;
 /**
  * 整合 oauth2_authorization 的配置类。
  * <p>
+ * OAuth 2.0 协议规范: https://datatracker.ietf.org/doc/html/rfc6749
+ * <p>
+ * OAuth 2.1 协议规范: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13
+ * <p>
  * 相关教程说明
  * <p>
  * https://book-spring-security-reference.vnzmi.com/3.2_httpsecurity.html

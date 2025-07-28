@@ -9,6 +9,7 @@ import com.authorization.common.exception.handle.CommonException;
 import com.authorization.core.proxy.CurrentProxy;
 import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.app.vo.AuthorizationGrant;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.life.auth.infra.entity.OauthClient;
 import com.authorization.life.auth.infra.mapper.OauthClientMapper;
@@ -18,6 +19,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,6 +243,62 @@ public class OauthClientServiceImpl implements OauthClientService, CurrentProxy<
         wrapper.eq(OauthClient::getClientId, clientId);
         int delete = mapper.delete(wrapper);
         return delete > 0;
+    }
+
+    @Override
+    public List<AuthorizationGrant> genGrantTypeUrl(String clientId) {
+        OauthClientVO oauthClientVO = selectClientByClientId(clientId);
+        LinkedList<AuthorizationGrant> authorizationGrantList = Lists.newLinkedList();
+        for (Map.Entry<String, String> grantTypeMap : AuthorizationGrant.GrantTypeEnum.GRANT_TYPES.entrySet()) {
+            String key = grantTypeMap.getKey();
+            String value = grantTypeMap.getValue();
+            AuthorizationGrant authorizationGrant = new AuthorizationGrant();
+            authorizationGrantList.add(authorizationGrant);
+            authorizationGrant.setGrantType(key);
+            authorizationGrant.setGrantTypeContent(value);
+            genGrantUrl(key, oauthClientVO, authorizationGrant);
+        }
+        return authorizationGrantList;
+    }
+
+    private void genGrantUrl(String key, OauthClientVO oauthClientVO, AuthorizationGrant authorizationGrant) {
+        if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.AUTHORIZATION_CODE)) {
+            authorizationGrant.setGrantTypeSet(getAuthorizationCode(oauthClientVO));
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.IMPLICIT)) {
+
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.CLIENT_CREDENTIALS)) {
+
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.PASSWORD)) {
+
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.AUTHORIZATION_CODE_ENHANCE)) {
+
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.JWT_BEARER)) {
+
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.DEVICE_CODE)) {
+
+        } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.TOKEN_EXCHANGE)) {
+
+        }
+    }
+
+    private TreeSet<AuthorizationGrant> getAuthorizationCode(OauthClientVO oauthClientVO) {
+        String clientSecretBak = oauthClientVO.getClientSecretBak();
+        String redirectUri = oauthClientVO.getRedirectUri();
+        String scopes = oauthClientVO.getScopes();
+        String grantTypes = oauthClientVO.getGrantTypes();
+        TreeSet<AuthorizationGrant> grantSet = Sets.newTreeSet(Comparator.comparing(AuthorizationGrant::getMethod));
+
+
+        AuthorizationGrant stepOne = new AuthorizationGrant();
+        stepOne.setStepNum(AuthorizationGrant.stepNumOne);
+        grantSet.add(stepOne);
+
+        AuthorizationGrant stepTwo = new AuthorizationGrant();
+        stepTwo.setStepNum(AuthorizationGrant.stepNumTwo);
+        grantSet.add(stepTwo);
+
+
+        return grantSet;
     }
 
 }

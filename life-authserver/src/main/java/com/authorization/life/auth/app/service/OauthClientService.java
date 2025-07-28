@@ -1,6 +1,7 @@
 package com.authorization.life.auth.app.service;
 
 import com.authorization.life.auth.app.dto.OauthClientDTO;
+import com.authorization.life.auth.app.vo.AuthorizationGrant;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.github.pagehelper.PageInfo;
 
@@ -28,5 +29,7 @@ public interface OauthClientService {
     OauthClientVO getClient(String clientId);
 
     Boolean delClient(String clientId);
+
+    List<AuthorizationGrant> genGrantTypeUrl(String clientId);
 
 }

@@ -3,6 +3,7 @@ package com.authorization.life.auth.api.controller;
 
 import com.authorization.life.auth.app.dto.OauthClientDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.app.vo.AuthorizationGrant;
 import com.authorization.life.auth.app.vo.OauthClientVO;
 import com.authorization.utils.result.Result;
 import com.authorization.valid.start.util.ValidUtil;
@@ -46,6 +47,13 @@ public class ClientController {
     public Result<List<OauthClientVO>> genAuthorizationUrl(@RequestParam("clientId") String clientId,
                                                            @RequestParam("hostOrigin") String hostOrigin) {
         return Result.ok(oauthClientService.genAuthorizationUrl(clientId, hostOrigin));
+    }
+
+
+    @Operation(summary = "生成授权路径")
+    @GetMapping("/genGrantTypeUrl")
+    public Result<List<AuthorizationGrant>> genGrantTypeUrl(@RequestParam("clientId") String clientId) {
+        return Result.ok(oauthClientService.genGrantTypeUrl(clientId));
     }
 
 

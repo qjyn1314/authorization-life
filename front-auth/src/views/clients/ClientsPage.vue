@@ -14,7 +14,7 @@
       </el-header>
       <el-main>
         <!--描述列表-->
-        <el-descriptions title="获取客户端授权路径">
+        <el-descriptions>
           <!--第一个描述项-->
           <el-descriptions-item>
             <!--折叠面板-->
@@ -48,7 +48,7 @@
           </el-descriptions-item>
         </el-descriptions>
         <!--描述列表-->
-        <el-descriptions title="获取客户端授权路径">
+        <el-descriptions>
           <!--第一个描述项-->
           <el-descriptions-item>
             <!--折叠面板-->
@@ -56,7 +56,7 @@
               <el-collapse-item v-for="(urlData,index) in grantTypeUrl" :key="index"
                                 :title="'CLIENT_KEY：' + urlData.clientId + '；授权模式：' + urlData.grantTypeContent">
                 <el-collapse-item v-for="(grantUrlData,index) in urlData.grantTypeSet" :key="index"
-                                  :title="'CLIENT_KEY：' + grantUrlData.stepNum">
+                                  :title="grantUrlData.stepNum">
                   <div>
                     <p><span>请求方式：</span>{{ grantUrlData.method }}</p>
                     <p><span>请求内容类型：</span>{{ grantUrlData.contentType }}</p>
@@ -66,11 +66,12 @@
                       <json-viewer :value="grantUrlData.params" theme="jv-dark" boxed sort/>
                     </div>
                     <p>
-                      <el-button link type="primary" @click="copySource(grantUrlData.redirectUrl)" :icon="DocumentCopy">
+                      <el-button link type="primary" @click="copySource(grantUrlData.grantTypeUrl)"
+                                 :icon="DocumentCopy">
                         复制URL到剪切板
                       </el-button>
                       <el-space v-if="grantUrlData.method === 'GET'">
-                        <el-link type="success" underline :href="grantUrlData.redirectUrl"
+                        <el-link type="success" underline :href="grantUrlData.grantTypeUrl"
                                  target="_blank" :icon="Promotion">
                           请求授权URL
                         </el-link>

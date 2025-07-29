@@ -41,7 +41,7 @@ public class AuthorizationGrant implements Serializable {
   private String grantTypeContent;
 
   /** 授权类型协议地址 */
-  private String grantTypeAgreement;
+  private List<String> grantTypeAgreement;
 
   /** 授权步骤 */
   private String stepNum;
@@ -154,24 +154,15 @@ public class AuthorizationGrant implements Serializable {
       GRANT_TYPES.put(IMPLICIT, "隐式模式" + Oauth20Type);
       GRANT_TYPES.put(CLIENT_CREDENTIALS, "客户端凭证模式" + Oauth20Type);
       GRANT_TYPES.put(PASSWORD, "密码模式" + Oauth20Type);
-      GRANT_TYPES.put(EMAIL_CAPTCHA, "邮箱验证码模式" + Oauth20Type);
-      GRANT_TYPES.put(PHONE_CAPTCHA, "手机验证码模式" + Oauth20Type);
-      GRANT_TYPES.put(JWT_BEARER, "jwt-bearer" + Oauth20Type);
-      GRANT_TYPES.put(DEVICE_CODE, "device_code" + Oauth20Type);
-      GRANT_TYPES.put(TOKEN_EXCHANGE, "token-exchange" + Oauth20Type);
     }
 
     static {
       GRANT_TYPES_OAUTH21.put(AUTHORIZATION_CODE, "授权码模式" + Oauth21Type);
-      GRANT_TYPES_OAUTH21.put(IMPLICIT, "隐式模式" + Oauth21Type);
-      GRANT_TYPES_OAUTH21.put(CLIENT_CREDENTIALS, "客户端凭证模式" + Oauth21Type);
-      GRANT_TYPES_OAUTH21.put(PASSWORD, "密码模式" + Oauth21Type);
       GRANT_TYPES_OAUTH21.put(EMAIL_CAPTCHA, "邮箱验证码模式" + Oauth21Type);
       GRANT_TYPES_OAUTH21.put(PHONE_CAPTCHA, "手机验证码模式" + Oauth21Type);
       GRANT_TYPES_OAUTH21.put(JWT_BEARER, "jwt-bearer" + Oauth21Type);
       GRANT_TYPES_OAUTH21.put(DEVICE_CODE, "device_code" + Oauth21Type);
       GRANT_TYPES_OAUTH21.put(TOKEN_EXCHANGE, "token-exchange" + Oauth21Type);
     }
-
   }
 }

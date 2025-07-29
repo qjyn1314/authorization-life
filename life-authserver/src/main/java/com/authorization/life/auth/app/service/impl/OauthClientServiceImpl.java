@@ -22,7 +22,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
@@ -356,20 +355,18 @@ public class OauthClientServiceImpl
   private TreeSet<AuthorizationGrant> getPassword(OauthClientVO oauthClientVO) {
 
     String clientSecretBak = oauthClientVO.getClientSecretBak();
-    String redirectUri = oauthClientVO.getRedirectUri();
     String scopes = oauthClientVO.getScopes();
-    String grantTypes = oauthClientVO.getGrantTypes();
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
         Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
 
     AuthorizationGrant passwordStep = new AuthorizationGrant();
-    passwordStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     grantSet.add(passwordStep);
-    passwordStep.setClientId(oauthClientVO.getClientId());
+    passwordStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    passwordStep.setClientId(clientId);
     passwordStep.setClientSecret(clientSecretBak);
-    passwordStep.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    passwordStep.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
 
     String authUrlPasswordUrl = genOauthTokenUrl(domain);
     passwordStep.setGrantTypeUrl(authUrlPasswordUrl);
@@ -380,28 +377,29 @@ public class OauthClientServiceImpl
     params.put(OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrant.GrantTypeEnum.PASSWORD);
     params.put(OAuth2ParameterNames.USERNAME, "用户名");
     params.put(OAuth2ParameterNames.PASSWORD, "密码");
+    params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
+    params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecretBak);
     params.put(OAuth2ParameterNames.SCOPE, scopes);
     passwordStep.setParams(params);
     return grantSet;
   }
 
   private TreeSet<AuthorizationGrant> getClientCredentials(OauthClientVO oauthClientVO) {
-
     String clientSecretBak = oauthClientVO.getClientSecretBak();
-    String redirectUri = oauthClientVO.getRedirectUri();
-    String scopes = oauthClientVO.getScopes();
-    String grantTypes = oauthClientVO.getGrantTypes();
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
         Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
 
     AuthorizationGrant clientCredentialsStep = new AuthorizationGrant();
-    clientCredentialsStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     grantSet.add(clientCredentialsStep);
-    clientCredentialsStep.setClientId(oauthClientVO.getClientId());
+    clientCredentialsStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    clientCredentialsStep.setClientId(clientId);
     clientCredentialsStep.setClientSecret(clientSecretBak);
-    clientCredentialsStep.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    clientCredentialsStep.setGrantTypeAgreement(
+        List.of(
+            AuthorizationGrant.GrantTypeEnum.Oauth20Agreement,
+            AuthorizationGrant.GrantTypeEnum.Oauth21Agreement));
 
     String authUrlClientCredentialsUrl = genClientCredentialsUrl(domain);
     clientCredentialsStep.setGrantTypeUrl(authUrlClientCredentialsUrl);
@@ -418,22 +416,21 @@ public class OauthClientServiceImpl
   }
 
   private TreeSet<AuthorizationGrant> getImplicit(OauthClientVO oauthClientVO) {
-
     String clientSecretBak = oauthClientVO.getClientSecretBak();
     String redirectUri = oauthClientVO.getRedirectUri();
     String scopes = oauthClientVO.getScopes();
-    String grantTypes = oauthClientVO.getGrantTypes();
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
+
     TreeSet<AuthorizationGrant> grantSet =
         Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
-
     AuthorizationGrant implicitStep = new AuthorizationGrant();
-    implicitStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     grantSet.add(implicitStep);
-    implicitStep.setClientId(oauthClientVO.getClientId());
+
+    implicitStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    implicitStep.setClientId(clientId);
     implicitStep.setClientSecret(clientSecretBak);
-    implicitStep.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    implicitStep.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
     String state = UUID.fastUUID().toString(true);
     String authUrlImplicitStep = genImplicitTokenUrl(domain, clientId, scopes, state, redirectUri);
     implicitStep.setGrantTypeUrl(authUrlImplicitStep);
@@ -447,18 +444,17 @@ public class OauthClientServiceImpl
     String clientSecretBak = oauthClientVO.getClientSecretBak();
     String redirectUri = oauthClientVO.getRedirectUri();
     String scopes = oauthClientVO.getScopes();
-    String grantTypes = oauthClientVO.getGrantTypes();
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
         Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
 
     AuthorizationGrant stepOne = new AuthorizationGrant();
-    stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     grantSet.add(stepOne);
-    stepOne.setClientId(oauthClientVO.getClientId());
+    stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    stepOne.setClientId(clientId);
     stepOne.setClientSecret(clientSecretBak);
-    stepOne.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    stepOne.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
     String state = UUID.fastUUID().toString(true);
     String authUrlStepOne = genAuthorizationCodeUrl(domain, clientId, scopes, state, redirectUri);
     stepOne.setGrantTypeUrl(authUrlStepOne);
@@ -466,11 +462,11 @@ public class OauthClientServiceImpl
     stepOne.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
 
     AuthorizationGrant stepTwo = new AuthorizationGrant();
-    stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
     grantSet.add(stepTwo);
-    stepTwo.setClientId(oauthClientVO.getClientId());
+    stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
+    stepTwo.setClientId(clientId);
     stepTwo.setClientSecret(clientSecretBak);
-    stepTwo.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    stepTwo.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
     String authUrlStepTwo = genOauthTokenUrl(domain);
     stepTwo.setGrantTypeUrl(authUrlStepTwo);
     stepTwo.setMethod(AuthorizationGrant.GrantTypeEnum.POST);
@@ -492,18 +488,17 @@ public class OauthClientServiceImpl
     String clientSecretBak = oauthClientVO.getClientSecretBak();
     String redirectUri = oauthClientVO.getRedirectUri();
     String scopes = oauthClientVO.getScopes();
-    String grantTypes = oauthClientVO.getGrantTypes();
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
         Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
 
     AuthorizationGrant stepOne = new AuthorizationGrant();
-    stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     grantSet.add(stepOne);
-    stepOne.setClientId(oauthClientVO.getClientId());
+    stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    stepOne.setClientId(clientId);
     stepOne.setClientSecret(clientSecretBak);
-    stepOne.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    stepOne.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth21Agreement));
     String state = UUID.fastUUID().toString(true);
     String codeVerifier = generateCodeVerifier();
     String codeChallenge =
@@ -522,11 +517,11 @@ public class OauthClientServiceImpl
     stepOne.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
 
     AuthorizationGrant stepTwo = new AuthorizationGrant();
-    stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
     grantSet.add(stepTwo);
-    stepTwo.setClientId(oauthClientVO.getClientId());
+    stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
+    stepTwo.setClientId(clientId);
     stepTwo.setClientSecret(clientSecretBak);
-    stepTwo.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    stepTwo.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth21Agreement));
     String authUrlStepTwo = genOauthTokenUrl(domain);
     stepTwo.setGrantTypeUrl(authUrlStepTwo);
     stepTwo.setMethod(AuthorizationGrant.GrantTypeEnum.POST);

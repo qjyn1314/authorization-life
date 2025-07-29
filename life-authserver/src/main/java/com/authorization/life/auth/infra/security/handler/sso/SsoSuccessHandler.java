@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -58,8 +59,30 @@ public class SsoSuccessHandler implements AuthenticationSuccessHandler {
         OauthClientService clientService = SpringUtil.getBean(OauthClientService.class);
         OauthClientVO oauthClientVO = clientService.getClient(details.getClientId());
         String state = UUID.fastUUID().toString(true);
-        String redirectUrl = SecurityCoreService.genAuthorizationCodeUrl(hostOrigin, oauthClientVO.getClientId(),
+        String redirectUrl = genAuthorizationCodeUrl(hostOrigin, oauthClientVO.getClientId(),
                 oauthClientVO.getScopes(), state, oauthClientVO.getRedirectUri());
         log.info("在登录成功后生成的授权路径是:{}", redirectUrl);
     }
+
+
+    /**
+     * 授权码模式中-生成获取临时code的URL
+     *
+     * @param hostOrigin  授权服务器域名前缀,例如: <a href="http://dev.authorization.life/dev-api/auth-life">http://dev.authorization.life/dev-api/auth-life</a>
+     * @param clientId    客户端
+     * @param scope       授权域
+     * @param redirectUri 客户端的回调路径
+     * @return String
+     */
+    String genAuthorizationCodeUrl(String hostOrigin, String clientId, String scope, String state, String redirectUri) {
+        return hostOrigin + UriComponentsBuilder
+                .fromPath("/oauth2/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", clientId)
+                .queryParam("scope", scope)
+                .queryParam("state", state)
+                .queryParam("redirect_uri", redirectUri)
+                .toUriString();
+    }
+
 }

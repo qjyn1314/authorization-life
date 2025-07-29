@@ -47,6 +47,41 @@
             </el-collapse>
           </el-descriptions-item>
         </el-descriptions>
+        <!--描述列表-->
+        <el-descriptions title="获取客户端授权路径">
+          <!--第一个描述项-->
+          <el-descriptions-item>
+            <!--折叠面板-->
+            <el-collapse>
+              <el-collapse-item v-for="(urlData,index) in grantTypeUrl" :key="index"
+                                :title="'CLIENT_KEY：' + urlData.clientId + '；授权模式：' + urlData.grantTypeContent">
+                <el-collapse-item v-for="(grantUrlData,index) in urlData.grantTypeSet" :key="index"
+                                  :title="'CLIENT_KEY：' + grantUrlData.stepNum">
+                  <div>
+                    <p><span>请求方式：</span>{{ grantUrlData.method }}</p>
+                    <p><span>请求内容类型：</span>{{ grantUrlData.contentType }}</p>
+                    <p><span>URL：</span>{{ grantUrlData.grantTypeUrl }}</p>
+                    <div v-if="grantUrlData.method === 'POST'">
+                      <p>请求参数：</p>
+                      <json-viewer :value="grantUrlData.params" theme="jv-dark" boxed sort/>
+                    </div>
+                    <p>
+                      <el-button link type="primary" @click="copySource(grantUrlData.redirectUrl)" :icon="DocumentCopy">
+                        复制URL到剪切板
+                      </el-button>
+                      <el-space v-if="grantUrlData.method === 'GET'">
+                        <el-link type="success" underline :href="grantUrlData.redirectUrl"
+                                 target="_blank" :icon="Promotion">
+                          请求授权URL
+                        </el-link>
+                      </el-space>
+                    </p>
+                  </div>
+                </el-collapse-item>
+              </el-collapse-item>
+            </el-collapse>
+          </el-descriptions-item>
+        </el-descriptions>
         <!--    分割线    -->
         <el-row :gutter="20">
           <el-col :span="1">
@@ -80,6 +115,9 @@
             <template #default="{row}">
               <el-button link type="primary" size="large" @click="authorizationURL(row)" :icon="Collection">
                 生成授权路径
+              </el-button>
+              <el-button link type="primary" size="large" @click="grantTypeURL(row)" :icon="Collection">
+                生成授权路径(grantTypeURL)
               </el-button>
               <el-button link type="success" size="large" :icon="Reading" @click="updateClient(row.clientId)">EDIT
               </el-button>
@@ -261,7 +299,15 @@
 
 <script>
 
-import {clientPage, delClient, genAuthorizationUrl, getClient, getSelectVal, saveClient} from "@/api/clients-api";
+import {
+  clientPage,
+  delClient,
+  genAuthorizationUrl,
+  genGrantTypeUrl,
+  getClient,
+  getSelectVal,
+  saveClient
+} from "@/api/clients-api";
 import {
   CircleCloseFilled,
   Collection,
@@ -306,6 +352,7 @@ export default {
       },
       pageInfo: {total: 0},
       authorizationUrls: [],
+      grantTypeUrl: [],
       drawer: {
         visible: false,
         header: '',
@@ -352,7 +399,7 @@ export default {
     this.$nextTick(() => {
       //在页面加载成功后为searchKey输入框获取焦点事件
       this.$refs.searchKey.focus();
-    },10)
+    }, 10)
   },
   methods: {
     getTableData() {
@@ -388,6 +435,16 @@ export default {
           return;
         }
         this.authorizationUrls = res.data;
+      })
+    },
+    grantTypeURL(row) {
+      this.grantTypeUrl = [];
+      genGrantTypeUrl({clientId: row.clientId}).then(res => {
+        if (res.code !== 0) {
+          prompt.error(res.msg);
+          return;
+        }
+        this.grantTypeUrl = res.data;
       })
     },
     onQuery() {

@@ -15,6 +15,10 @@ export function genAuthorizationUrl(param) {
     return axiosService.get(`/${AUTH_SERVER}/client/genAuthorizationUrl`, param)
 }
 
+export function genGrantTypeUrl(param) {
+    return axiosService.get(`/${AUTH_SERVER}/client/genGrantTypeUrl`, param)
+}
+
 
 export function saveClient(param) {
     return axiosService.post(`/${AUTH_SERVER}/client/saveClient`, param)

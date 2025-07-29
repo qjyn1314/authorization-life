@@ -119,7 +119,7 @@ public class AuthorizationGrant implements Serializable {
     /** 刷新AccessToken */
     public static String REFRESH_TOKEN = AuthorizationGrantType.REFRESH_TOKEN.getValue();
 
-    public static final String AUTHORIZATION_CODE_ENHANCE = AUTHORIZATION_CODE + "_enhance";
+    public static final String AUTHORIZATION_CODE_ENHANCE = AUTHORIZATION_CODE + "_pkce";
     public static final String JWT_BEARER = AuthorizationGrantType.JWT_BEARER.getValue();
     public static final String DEVICE_CODE = AuthorizationGrantType.DEVICE_CODE.getValue();
     public static final String TOKEN_EXCHANGE = AuthorizationGrantType.TOKEN_EXCHANGE.getValue();
@@ -141,9 +141,13 @@ public class AuthorizationGrant implements Serializable {
     public static final String GET = "GET";
     public static final String POST = "POST";
 
+    public static final String S256 = "S256";
+    public static final String PLAIN = "plain";
+
     public static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
 
     public static final TreeMap<String, String> GRANT_TYPES = Maps.newTreeMap();
+    public static final TreeMap<String, String> GRANT_TYPES_OAUTH21 = Maps.newTreeMap();
 
     static {
       GRANT_TYPES.put(AUTHORIZATION_CODE, "授权码模式" + Oauth20Type);
@@ -156,5 +160,18 @@ public class AuthorizationGrant implements Serializable {
       GRANT_TYPES.put(DEVICE_CODE, "device_code" + Oauth20Type);
       GRANT_TYPES.put(TOKEN_EXCHANGE, "token-exchange" + Oauth20Type);
     }
+
+    static {
+      GRANT_TYPES_OAUTH21.put(AUTHORIZATION_CODE, "授权码模式" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(IMPLICIT, "隐式模式" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(CLIENT_CREDENTIALS, "客户端凭证模式" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(PASSWORD, "密码模式" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(EMAIL_CAPTCHA, "邮箱验证码模式" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(PHONE_CAPTCHA, "手机验证码模式" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(JWT_BEARER, "jwt-bearer" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(DEVICE_CODE, "device_code" + Oauth21Type);
+      GRANT_TYPES_OAUTH21.put(TOKEN_EXCHANGE, "token-exchange" + Oauth21Type);
+    }
+
   }
 }

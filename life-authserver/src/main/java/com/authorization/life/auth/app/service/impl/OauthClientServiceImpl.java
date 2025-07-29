@@ -22,6 +22,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -281,6 +285,17 @@ public class OauthClientServiceImpl
       authorizationGrant.setGrantTypeContent(value);
       genGrantUrl(key, oauthClientVO, authorizationGrant);
     }
+    for (Map.Entry<String, String> grantTypeMap :
+        AuthorizationGrant.GrantTypeEnum.GRANT_TYPES_OAUTH21.entrySet()) {
+      String key = grantTypeMap.getKey();
+      String value = grantTypeMap.getValue();
+      AuthorizationGrant authorizationGrant = new AuthorizationGrant();
+      authorizationGrantList.add(authorizationGrant);
+      authorizationGrant.setClientId(clientId);
+      authorizationGrant.setGrantType(key);
+      authorizationGrant.setGrantTypeContent(value);
+      genGrantUrlOauth21(key, oauthClientVO, authorizationGrant);
+    }
     return authorizationGrantList;
   }
 
@@ -307,9 +322,31 @@ public class OauthClientServiceImpl
     } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.TOKEN_EXCHANGE)) {
 
     }
+  }
 
+  private void genGrantUrlOauth21(
+      String key, OauthClientVO oauthClientVO, AuthorizationGrant authorizationGrant) {
+    if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.AUTHORIZATION_CODE)) {
+      authorizationGrant.setGrantTypeSet(getAuthorizationCodeOAuth21(oauthClientVO));
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.IMPLICIT)) {
+      authorizationGrant.setGrantTypeSet(getImplicit(oauthClientVO));
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.CLIENT_CREDENTIALS)) {
+      authorizationGrant.setGrantTypeSet(getClientCredentials(oauthClientVO));
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.PASSWORD)) {
+      authorizationGrant.setGrantTypeSet(getPassword(oauthClientVO));
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.AUTHORIZATION_CODE_ENHANCE)) {
+      authorizationGrant.setGrantTypeSet(getAuthorizationCodeEnhance(oauthClientVO));
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.EMAIL_CAPTCHA)) {
 
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.PHONE_CAPTCHA)) {
 
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.JWT_BEARER)) {
+
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.DEVICE_CODE)) {
+
+    } else if (Objects.equals(key, AuthorizationGrant.GrantTypeEnum.TOKEN_EXCHANGE)) {
+
+    }
   }
 
   private TreeSet<AuthorizationGrant> getAuthorizationCodeEnhance(OauthClientVO oauthClientVO) {
@@ -439,7 +476,6 @@ public class OauthClientServiceImpl
     stepTwo.setMethod(AuthorizationGrant.GrantTypeEnum.POST);
     stepTwo.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
     // 参数拼接: https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
-    // todo 需要修改
     Map<String, String> params = new TreeMap<>();
     params.put(
         OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrant.GrantTypeEnum.AUTHORIZATION_CODE);
@@ -450,6 +486,130 @@ public class OauthClientServiceImpl
     params.put(OAuth2ParameterNames.REDIRECT_URI, redirectUri);
     stepTwo.setParams(params);
     return grantSet;
+  }
+
+  private TreeSet<AuthorizationGrant> getAuthorizationCodeOAuth21(OauthClientVO oauthClientVO) {
+    String clientSecretBak = oauthClientVO.getClientSecretBak();
+    String redirectUri = oauthClientVO.getRedirectUri();
+    String scopes = oauthClientVO.getScopes();
+    String grantTypes = oauthClientVO.getGrantTypes();
+    String domain = oauthClientVO.getDomainName();
+    String clientId = oauthClientVO.getClientId();
+    TreeSet<AuthorizationGrant> grantSet =
+        Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
+
+    AuthorizationGrant stepOne = new AuthorizationGrant();
+    stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    grantSet.add(stepOne);
+    stepOne.setClientId(oauthClientVO.getClientId());
+    stepOne.setClientSecret(clientSecretBak);
+    stepOne.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    String state = UUID.fastUUID().toString(true);
+    String codeVerifier = generateCodeVerifier();
+    String codeChallenge =
+        generateCodeChallenge(codeVerifier, AuthorizationGrant.GrantTypeEnum.S256);
+    String authUrlStepOne =
+        genAuthorizationCodeOAuth21Url(
+            domain,
+            clientId,
+            codeChallenge,
+            AuthorizationGrant.GrantTypeEnum.S256,
+            scopes,
+            state,
+            redirectUri);
+    stepOne.setGrantTypeUrl(authUrlStepOne);
+    stepOne.setMethod(AuthorizationGrant.GrantTypeEnum.GET);
+    stepOne.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
+
+    AuthorizationGrant stepTwo = new AuthorizationGrant();
+    stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
+    grantSet.add(stepTwo);
+    stepTwo.setClientId(oauthClientVO.getClientId());
+    stepTwo.setClientSecret(clientSecretBak);
+    stepTwo.setGrantTypeAgreement(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement);
+    String authUrlStepTwo = genOauthTokenUrl(domain);
+    stepTwo.setGrantTypeUrl(authUrlStepTwo);
+    stepTwo.setMethod(AuthorizationGrant.GrantTypeEnum.POST);
+    stepTwo.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
+    // 参数拼接: https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3
+    Map<String, String> params = new TreeMap<>();
+    params.put(
+        OAuth2ParameterNames.GRANT_TYPE, AuthorizationGrant.GrantTypeEnum.AUTHORIZATION_CODE);
+    params.put(OAuth2ParameterNames.CODE, "URL中的临时CODE");
+    params.put(OAuth2ParameterNames.STATE, "URL中的state");
+    params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
+    params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecretBak);
+    params.put("code_verifier", codeVerifier);
+    params.put(OAuth2ParameterNames.REDIRECT_URI, redirectUri);
+    stepTwo.setParams(params);
+    return grantSet;
+  }
+
+  public static String generateCodeVerifier() {
+    SecureRandom random = new SecureRandom();
+    byte[] codeVerifierBytes = new byte[32]; // 生成 32 个字节的随机值
+    random.nextBytes(codeVerifierBytes);
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(codeVerifierBytes);
+  }
+
+  public static String generateCodeChallenge(String codeVerifier, String method) {
+    if ("S256".equals(method)) {
+      try {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(codeVerifier.getBytes(StandardCharsets.UTF_8));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+      } catch (Exception e) {
+        throw new RuntimeException("生成 codeChallenge 时出错", e);
+      }
+    } else if ("plain".equals(method)) {
+      return codeVerifier;
+    } else {
+      throw new IllegalArgumentException("不支持的 codeChallengeMethod: " + method);
+    }
+  }
+
+  public static void main(String[] args) {
+    // 生成 codeVerifier
+    String codeVerifier = generateCodeVerifier();
+    System.out.println("codeVerifier: " + codeVerifier);
+
+    // 生成 codeChallenge
+    String codeChallenge = generateCodeChallenge(codeVerifier, "S256");
+    System.out.println("codeChallenge: " + codeChallenge);
+    // codeVerifier: e3fKD1-3KyrQ8f11MApC5mHeRQiWaQ_GHfl7QwvYbfI
+    // codeChallenge: gEoIfA6Y_BZMTPO7kxXbsC2eWI1q5jSPB0Y4fNMtU-w
+  }
+
+  /**
+   * 生成oauth2.1获取临时授权码模式
+   *
+   * @param domain 授权服务端域名
+   * @param clientId 客户端ID
+   * @param codeChallenge 授权域
+   * @param codeChallengeMethod 授权域
+   * @param scope 授权域
+   * @param state 临时参数
+   * @param redirectUri 重定向url
+   * @return String
+   */
+  private String genAuthorizationCodeOAuth21Url(
+      String domain,
+      String clientId,
+      String codeChallenge,
+      String codeChallengeMethod,
+      String scope,
+      String state,
+      String redirectUri) {
+    return genHostOrigin(domain)
+        + UriComponentsBuilder.fromPath("/oauth2/authorize")
+            .queryParam("response_type", "code")
+            .queryParam("client_id", clientId)
+            .queryParam("code_challenge", codeChallenge)
+            .queryParam("code_challenge_method", codeChallengeMethod)
+            .queryParam("scope", scope)
+            .queryParam("state", state)
+            .queryParam("redirect_uri", redirectUri)
+            .toUriString();
   }
 
   /**

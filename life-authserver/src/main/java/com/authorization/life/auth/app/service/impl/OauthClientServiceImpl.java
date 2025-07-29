@@ -359,11 +359,11 @@ public class OauthClientServiceImpl
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
-        Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
+        Sets.newTreeSet(Comparator.comparing(AuthorizationGrant::getStepNum));
 
     AuthorizationGrant passwordStep = new AuthorizationGrant();
-    grantSet.add(passwordStep);
     passwordStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    grantSet.add(passwordStep);
     passwordStep.setClientId(clientId);
     passwordStep.setClientSecret(clientSecretBak);
     passwordStep.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
@@ -389,11 +389,11 @@ public class OauthClientServiceImpl
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
-        Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
+        Sets.newTreeSet(Comparator.comparing(AuthorizationGrant::getStepNum));
 
     AuthorizationGrant clientCredentialsStep = new AuthorizationGrant();
-    grantSet.add(clientCredentialsStep);
     clientCredentialsStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    grantSet.add(clientCredentialsStep);
     clientCredentialsStep.setClientId(clientId);
     clientCredentialsStep.setClientSecret(clientSecretBak);
     clientCredentialsStep.setGrantTypeAgreement(
@@ -423,11 +423,11 @@ public class OauthClientServiceImpl
     String clientId = oauthClientVO.getClientId();
 
     TreeSet<AuthorizationGrant> grantSet =
-        Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
+        Sets.newTreeSet(Comparator.comparing(AuthorizationGrant::getStepNum));
     AuthorizationGrant implicitStep = new AuthorizationGrant();
+    implicitStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     grantSet.add(implicitStep);
 
-    implicitStep.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
     implicitStep.setClientId(clientId);
     implicitStep.setClientSecret(clientSecretBak);
     implicitStep.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
@@ -447,11 +447,11 @@ public class OauthClientServiceImpl
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
-        Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
+        Sets.newTreeSet(Comparator.comparing(AuthorizationGrant::getStepNum));
 
     AuthorizationGrant stepOne = new AuthorizationGrant();
-    grantSet.add(stepOne);
     stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    grantSet.add(stepOne);
     stepOne.setClientId(clientId);
     stepOne.setClientSecret(clientSecretBak);
     stepOne.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
@@ -462,8 +462,8 @@ public class OauthClientServiceImpl
     stepOne.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
 
     AuthorizationGrant stepTwo = new AuthorizationGrant();
-    grantSet.add(stepTwo);
     stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
+    grantSet.add(stepTwo);
     stepTwo.setClientId(clientId);
     stepTwo.setClientSecret(clientSecretBak);
     stepTwo.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth20Agreement));
@@ -491,11 +491,11 @@ public class OauthClientServiceImpl
     String domain = oauthClientVO.getDomainName();
     String clientId = oauthClientVO.getClientId();
     TreeSet<AuthorizationGrant> grantSet =
-        Sets.newTreeSet(Comparator.comparing(item -> item.getStepNum() + item.getMethod()));
+        Sets.newTreeSet(Comparator.comparing(AuthorizationGrant::getStepNum));
 
     AuthorizationGrant stepOne = new AuthorizationGrant();
-    grantSet.add(stepOne);
     stepOne.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumOne);
+    grantSet.add(stepOne);
     stepOne.setClientId(clientId);
     stepOne.setClientSecret(clientSecretBak);
     stepOne.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth21Agreement));
@@ -517,8 +517,8 @@ public class OauthClientServiceImpl
     stepOne.setContentType(AuthorizationGrant.GrantTypeEnum.FORM_URLENCODED);
 
     AuthorizationGrant stepTwo = new AuthorizationGrant();
-    grantSet.add(stepTwo);
     stepTwo.setStepNum(AuthorizationGrant.GrantTypeEnum.stepNumTwo);
+    grantSet.add(stepTwo);
     stepTwo.setClientId(clientId);
     stepTwo.setClientSecret(clientSecretBak);
     stepTwo.setGrantTypeAgreement(List.of(AuthorizationGrant.GrantTypeEnum.Oauth21Agreement));
@@ -542,7 +542,8 @@ public class OauthClientServiceImpl
 
   public static String generateCodeVerifier() {
     SecureRandom random = new SecureRandom();
-    byte[] codeVerifierBytes = new byte[32]; // 生成 32 个字节的随机值
+    // 生成 32 个字节的随机值
+    byte[] codeVerifierBytes = new byte[32];
     random.nextBytes(codeVerifierBytes);
     return Base64.getUrlEncoder().withoutPadding().encodeToString(codeVerifierBytes);
   }

@@ -75,7 +75,6 @@ public class AuthorizationGrant implements Serializable {
         && Objects.equal(getClientType(), that.getClientType())
         && Objects.equal(getGrantType(), that.getGrantType())
         && Objects.equal(getGrantTypeContent(), that.getGrantTypeContent())
-        && Objects.equal(getGrantTypeAgreement(), that.getGrantTypeAgreement())
         && Objects.equal(getStepNum(), that.getStepNum())
         && Objects.equal(getGrantTypeUrl(), that.getGrantTypeUrl())
         && Objects.equal(getMethod(), that.getMethod());
@@ -89,7 +88,6 @@ public class AuthorizationGrant implements Serializable {
         getClientType(),
         getGrantType(),
         getGrantTypeContent(),
-        getGrantTypeAgreement(),
         getStepNum(),
         getGrantTypeUrl(),
         getMethod());
@@ -134,9 +132,9 @@ public class AuthorizationGrant implements Serializable {
     public static final String Oauth20Type = " OAuth 2.0";
     public static final String Oauth21Type = " OAuth 2.1";
 
-    public static final String stepNumOne = "第一步";
-    public static final String stepNumTwo = "第二步";
-    public static final String stepNumThree = "第三步";
+    public static final String stepNumOne = "第1步";
+    public static final String stepNumTwo = "第2步";
+    public static final String stepNumThree = "第3步";
 
     public static final String GET = "GET";
     public static final String POST = "POST";

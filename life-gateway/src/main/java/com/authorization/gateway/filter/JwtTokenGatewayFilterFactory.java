@@ -1,6 +1,5 @@
 package com.authorization.gateway.filter;
 
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -8,6 +7,11 @@ import com.authorization.gateway.execption.UnauthorizedException;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SecurityCoreService;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,111 +27,137 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-/**
- * jwt转换过滤器，将token转换为jwtToken
- */
+/** jwt转换过滤器，将token转换为jwtToken */
 @Slf4j
 @Component
-public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> implements InitializingBean {
+public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<Object>
+    implements InitializingBean {
 
-    public static final String JWT_TOKEN = "JwtToken";
+  public static final String JWT_TOKEN = "JwtToken";
 
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private RedisUtil redisUtil;
-    @Autowired
-    private JwtDecoder jwtDecoder;
+  @Autowired private JwtService jwtService;
+  @Autowired private RedisUtil redisUtil;
+  @Autowired private JwtDecoder jwtDecoder;
 
-    @Override
-    public void afterPropertiesSet() {
+  @Override
+  public void afterPropertiesSet() {}
 
+  @Override
+  public GatewayFilter apply(Object config) {
+    return (exchange, chain) -> {
+      ServerHttpRequest request = exchange.getRequest();
+      String accessToken = getAccessToken(request);
+      log.info("accessToken中的token字符串是->{}", accessToken);
+
+      String token = genToken(accessToken);
+      log.info("accessToken中的decode-token字符串是->{}", token);
+
+      // 服务之间相互转换的真实jwt
+      String realJwtToken = getByToken(token);
+      log.info("accessToken中的decode-token-jwtToken字符串是->{}", realJwtToken);
+      // 服务名称
+      String serviceName =
+          Arrays.stream(StringUtils.tokenizeToStringArray(request.getURI().getRawPath(), "/"))
+              .limit(1)
+              .collect(Collectors.joining("/"));
+
+      ServerWebExchange jwtExchange =
+          exchange
+              .mutate()
+              .request(
+                  request
+                      .mutate()
+                      // 下传Header信息,存储了用户信息的自定义JwtToken
+                      .header(SecurityCoreService.AUTH_POSITION, realJwtToken)
+                      .header(SecurityCoreService.AUTHORIZATION, accessToken)
+                      .header(SecurityCoreService.AUTHORIZATION_TOKEN, token)
+                      // 将请求中的服务名称设置到请求头中, 为登录成功后生成跳转路径使用.
+                      // com.authorization.life.auth.infra.security.handler.sso.SsoSuccessHandler.authorizationCodeUrl
+                      .header(SecurityCoreService.AUTH_FORWARDED, serviceName)
+                      .build())
+              .build();
+      return chain.filter(jwtExchange);
+    };
+  }
+
+  private String getByToken(String token) {
+    if (StrUtil.isBlank(token)) {
+      return null;
     }
-
-    @Override
-    public GatewayFilter apply(Object config) {
-        return (exchange, chain) -> {
-            ServerHttpRequest request = exchange.getRequest();
-            String token = getToken(request);
-            log.info("accessToken中的token字符串是->{}", token);
-            // 服务之间相互转换的真实jwt
-            String realJwtToken = getByToken(token);
-            // 服务名称
-            String serviceName = Arrays.stream(StringUtils.tokenizeToStringArray(request.getURI().getRawPath(), "/")).limit(1).collect(Collectors.joining("/"));
-
-            ServerWebExchange jwtExchange = exchange.mutate().request(request.mutate()
-                    // 下传Header信息,存储了用户信息的自定义JwtToken
-                    .header(SecurityCoreService.AUTH_POSITION, realJwtToken)
-                    // 将请求中的服务名称设置到请求头中, 为登录成功后生成跳转路径使用. com.authorization.life.auth.infra.security.handler.sso.SsoSuccessHandler.authorizationCodeUrl
-                    .header(SecurityCoreService.AUTH_FORWARDED, serviceName)
-                    .build()).build();
-            return chain.filter(jwtExchange);
-        };
+    String userJson = redisUtil.get(SecurityCoreService.getUserTokenKey(token));
+    if (StrUtil.isBlank(userJson)) {
+      return null;
     }
+    String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(userJson, LinkedHashMap.class));
+    log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
+    return jwtToken;
+  }
 
-    private String getByToken(String token) {
-        if (StrUtil.isBlank(token)) {
-            return null;
-        }
-        String userJson = redisUtil.get(SecurityCoreService.getUserTokenKey(token));
-        if (StrUtil.isBlank(userJson)) {
-            return null;
-        }
-        String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(userJson, LinkedHashMap.class));
-        log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
-        return jwtToken;
+  /**
+   * 获取jwtToken，并解析获取其中的token信息
+   *
+   * @param accessToken 请求中的jwt
+   * @return token
+   */
+  private String genToken(String accessToken) {
+    Jwt decode = null;
+    try {
+      // 当accessToken不为空时做校验, 并解析
+      decode = jwtDecoder.decode(accessToken);
+      return Optional.ofNullable(decode.getClaims())
+          .orElse(Map.of())
+          .getOrDefault(SecurityCoreService.CLAIM_TOKEN_KEY, "")
+          .toString();
+    } catch (Exception e) {
+      log.error("解析Token失败...", e);
+      // 解析失败则抛出异常
+      throw new UnauthorizedException();
     }
+  }
 
-    /**
-     * 获取jwtToken，并解析获取其中的token信息
-     *
-     * @param request request
-     * @return token
-     */
-    private String getToken(ServerHttpRequest request) {
-        String accessToken = null;
-        // 先检查header中有没有accessToken
-        String authorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (StrUtil.isNotBlank(authorization) && StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.ACCESS_TOKEN_TYPE)) {
-            accessToken = StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.ACCESS_TOKEN_TYPE).trim();
-        }
-        // 如果header中没有，则检查url参数并赋值
-        if (StrUtil.isBlank(accessToken)) {
-            accessToken = Optional.of(request.getQueryParams()).map(param -> param.getFirst(SecurityCoreService.ACCESS_TOKEN)).orElse(null);
-        }
-        // 如果url参数中也没有赋值, 则检查cookie并赋值
-        if (StrUtil.isBlank(accessToken)) {
-            MultiValueMap<String, HttpCookie> cookiesMap = request.getCookies();
-            if (CollUtil.isEmpty(cookiesMap)) {
-                return null;
-            }
-            accessToken = Optional.ofNullable(cookiesMap.getFirst(SecurityCoreService.ACCESS_TOKEN)).orElse(new HttpCookie(SecurityCoreService.ACCESS_TOKEN, "")).getValue();
-        }
-        log.info("网关接受到前端的AccessToken是->{}", accessToken);
-        if (StrUtil.isBlank(accessToken)) {
-            // 此处请求直接放过, 请求路径的白名单, 将交给 core包里面的 JwtAuthenticationFilter
-            return null;
-        }
-        Jwt decode = null;
-        try {
-            // 当accessToken不为空时做校验, 并解析
-            decode = jwtDecoder.decode(accessToken);
-            return Optional.ofNullable(decode.getClaims()).orElse(Map.of()).getOrDefault(SecurityCoreService.CLAIM_TOKEN_KEY, "").toString();
-        } catch (Exception e) {
-            log.error("解析Token失败...", e);
-            // 解析失败则抛出异常
-            throw new UnauthorizedException();
-        }
+  /**
+   * 获取原始的accessToken
+   *
+   * @return String
+   */
+  private String getAccessToken(ServerHttpRequest request) {
+    String accessToken = null;
+    // 先检查header中有没有accessToken
+    String authorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+    if (StrUtil.isNotBlank(authorization)
+        && StrUtil.startWithIgnoreCase(authorization, SecurityCoreService.ACCESS_TOKEN_TYPE)) {
+      accessToken =
+          StrUtil.removePrefixIgnoreCase(authorization, SecurityCoreService.ACCESS_TOKEN_TYPE)
+              .trim();
     }
+    // 如果header中没有，则检查url参数并赋值
+    if (StrUtil.isBlank(accessToken)) {
+      accessToken =
+          Optional.of(request.getQueryParams())
+              .map(param -> param.getFirst(SecurityCoreService.ACCESS_TOKEN))
+              .orElse(null);
+    }
+    // 如果url参数中也没有赋值, 则检查cookie并赋值
+    if (StrUtil.isBlank(accessToken)) {
+      MultiValueMap<String, HttpCookie> cookiesMap = request.getCookies();
+      if (CollUtil.isEmpty(cookiesMap)) {
+        return null;
+      }
+      accessToken =
+          Optional.ofNullable(cookiesMap.getFirst(SecurityCoreService.ACCESS_TOKEN))
+              .orElse(new HttpCookie(SecurityCoreService.ACCESS_TOKEN, ""))
+              .getValue();
+    }
+    log.info("网关接受到前端的AccessToken是->{}", accessToken);
+    if (StrUtil.isBlank(accessToken)) {
+      // 此处请求直接放过, 请求路径的白名单, 将交给 core包里面的 JwtAuthenticationFilter
+      return null;
+    }
+    return accessToken;
+  }
 
-    @Override
-    public String name() {
-        return JWT_TOKEN;
-    }
+  @Override
+  public String name() {
+    return JWT_TOKEN;
+  }
 }

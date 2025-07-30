@@ -35,6 +35,10 @@ public interface SecurityCoreService {
      */
     String AUTHORIZATION = "Authorization";
     /**
+     * 请求头中AccessToken的Key
+     */
+    String AUTHORIZATION_TOKEN = "AuthorizationToken";
+    /**
      * 请求头中AccessToken的Key的前缀
      */
     String ACCESS_TOKEN_TYPE = "Bearer";

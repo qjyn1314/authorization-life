@@ -14,6 +14,7 @@ import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -41,8 +42,6 @@ import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.DelegatingAuthenticationConverter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import java.util.Arrays;
 
 /**
  * 整合 oauth2_authorization 的配置类。
@@ -136,6 +135,7 @@ public class Oauth2SecurityConfig {
 
         authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
             endpointConfigurer
+                    // 增加自定义的转换Token的处理器
                     .accessTokenRequestConverter(accessTokenRequestConverter())
                     // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
                     // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
@@ -179,6 +179,7 @@ public class Oauth2SecurityConfig {
         // 自定义设置accesstoken中JwtToken-Claims中的内容
         http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
+        // 添加自定义的模式实现类
         addCustomOAuth2GrantAuthenticationProvider(http);
 
         return http.build();
@@ -263,12 +264,10 @@ public class Oauth2SecurityConfig {
      * 注入授权模式实现提供方
      * <p>
      * 1. 密码模式 </br>
-     * 2. 短信登录 </br>
+     * 2. 短信验证码登录 </br>
+     * 3. 邮箱验证码登录 </br>
      */
     private void addCustomOAuth2GrantAuthenticationProvider(HttpSecurity http) {
-        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-        OAuth2AuthorizationService authorizationService = http.getSharedObject(OAuth2AuthorizationService.class);
-
         http.authenticationProvider(new PasswordAuthenticationProvider());
         http.authenticationProvider(new SmsCodeAuthenticationProvider());
         http.authenticationProvider(new EmailCodeAuthenticationProvider());

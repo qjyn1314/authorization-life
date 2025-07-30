@@ -378,7 +378,6 @@ public class OauthClientServiceImpl
     params.put(OAuth2ParameterNames.USERNAME, "用户名");
     params.put(OAuth2ParameterNames.PASSWORD, "密码");
     params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
-    params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecretBak);
     params.put(OAuth2ParameterNames.SCOPE, scopes);
     passwordStep.setParams(params);
     return grantSet;
@@ -478,7 +477,6 @@ public class OauthClientServiceImpl
     params.put(OAuth2ParameterNames.CODE, "URL中的临时CODE");
     params.put(OAuth2ParameterNames.STATE, "URL中的state");
     params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
-    params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecretBak);
     params.put(OAuth2ParameterNames.REDIRECT_URI, redirectUri);
     stepTwo.setParams(params);
     return grantSet;

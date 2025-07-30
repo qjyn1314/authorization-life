@@ -2,7 +2,7 @@ package com.authorization.gateway.filter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSON;
 import com.authorization.gateway.execption.UnauthorizedException;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.JwtService;
@@ -88,7 +88,8 @@ public class JwtTokenGatewayFilterFactory extends AbstractGatewayFilterFactory<O
     if (StrUtil.isBlank(userJson)) {
       return null;
     }
-    String jwtToken = jwtService.createJwtToken(JSONUtil.toBean(userJson, LinkedHashMap.class));
+    String jwtToken =
+        jwtService.createJwtToken(JSON.parseObject(userJson, LinkedHashMap.class));
     log.info("网关下传到其他服务的JwtToken是-{}", jwtToken);
     return jwtToken;
   }

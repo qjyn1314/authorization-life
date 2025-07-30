@@ -55,6 +55,7 @@
         <!--工具依赖-->
         <slf4j-api.version>2.0.13</slf4j-api.version>
         <hutool.version>5.8.29</hutool.version>
+        <fastjson2.version>2.0.57</fastjson2.version>
         <guava.version>33.2.1-jre</guava.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jasypt.version>3.0.5</jasypt.version>
@@ -87,6 +88,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -208,6 +213,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
             <!--bean之间的转换-->
             <dependency>

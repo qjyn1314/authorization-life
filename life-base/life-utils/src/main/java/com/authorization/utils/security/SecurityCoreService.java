@@ -29,7 +29,7 @@ public interface SecurityCoreService {
     /**
      * accessToken参数类型的key
      */
-    String TOKEN_TYPE = "tokenType";
+    String TOKEN_TYPE = "token_type";
     /**
      * 请求头中AccessToken的Key
      */

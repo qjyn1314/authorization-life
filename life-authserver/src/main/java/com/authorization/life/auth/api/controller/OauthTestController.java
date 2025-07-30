@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -24,12 +27,30 @@ import org.springframework.web.bind.annotation.*;
 public class OauthTestController {
 
   @Autowired private JwtDecoder jwtDecoder;
+  @Autowired private OAuth2AuthorizationService authorizationService;
 
   @Operation(summary = "解析请求头中的jwt信息")
   @PostMapping("/decode-jwt")
   public Result<Map<String, Object>> decodeJwt(@RequestParam("jwtToken") String jwtToken) {
     Jwt decode = jwtDecoder.decode(jwtToken);
     return Result.ok(decode.getClaims());
+  }
+
+  @Operation(summary = "根据tokenId获取jwt中的信息")
+  @PostMapping("/getJwt")
+  public Result<OAuth2Authorization> getJwt(@RequestParam("jwtTokenKey") String jwtTokenKey) {
+    OAuth2Authorization auth2Authorization = authorizationService.findById(jwtTokenKey);
+    return Result.ok(auth2Authorization);
+  }
+
+  @Operation(summary = "根据token类型获取jwt中的信息")
+  @PostMapping("/getJwtByToken")
+  public Result<OAuth2Authorization> getJwtByToken(
+      @RequestParam("jwtTokenKey") String jwtTokenKey,
+      @RequestParam("tokenType") OAuth2TokenType tokenType) {
+    OAuth2Authorization auth2Authorization =
+        authorizationService.findByToken(jwtTokenKey, tokenType);
+    return Result.ok(auth2Authorization);
   }
 
   @Operation(summary = "测试国际化异常信息")

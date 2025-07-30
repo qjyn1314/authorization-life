@@ -58,7 +58,8 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
     Authentication authentication = context.getPrincipal();
     RegisteredClient registeredClient = context.getRegisteredClient();
     UserDetail userDetail = null;
-    if (authentication instanceof OAuth2ClientAuthenticationToken) {
+    if (authentication instanceof OAuth2ClientAuthenticationToken clientAuthenticationToken) {
+      log.info("clientAuthenticationToken->{}", clientAuthenticationToken);
       // 如果当前登录的是client，则进行封装client
       userDetail =
           securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());

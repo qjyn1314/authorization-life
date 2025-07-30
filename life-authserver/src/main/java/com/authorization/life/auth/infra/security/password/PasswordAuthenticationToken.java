@@ -20,6 +20,7 @@ public class PasswordAuthenticationToken extends AbstractAuthenticationToken {
   @Getter private final Authentication clientPrincipal;
   @Getter private final String username;
   @Getter private final String password;
+  @Getter private final String clientId;
 
   @Getter private final Set<String> scopes;
 
@@ -30,6 +31,7 @@ public class PasswordAuthenticationToken extends AbstractAuthenticationToken {
       Authentication clientPrincipal,
       String username,
       String password,
+      String clientId,
       Set<String> scopes,
       Map<String, Object> additionalParameters) {
     super(Collections.emptyList());
@@ -37,8 +39,10 @@ public class PasswordAuthenticationToken extends AbstractAuthenticationToken {
     Assert.notNull(clientPrincipal, "clientPrincipal cannot be null");
     Assert.notNull(username, "username cannot be null");
     Assert.notNull(password, "password cannot be null");
+    Assert.notNull(clientId, "clientId cannot be null");
     this.username = username;
     this.password = password;
+    this.clientId = clientId;
     this.authorizationGrantType = authorizationGrantType;
     this.clientPrincipal = clientPrincipal;
     this.scopes =

@@ -56,6 +56,16 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
           OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
     }
 
+    // clientId (REQUIRED)
+    String clientId = parameters.getFirst(OAuth2ParameterNames.CLIENT_ID);
+    if (!StringUtils.hasText(clientId)
+        || parameters.get(OAuth2ParameterNames.CLIENT_ID).size() != 1) {
+      OAuth2EndpointUtils.throwError(
+          OAuth2ErrorCodes.INVALID_REQUEST,
+          OAuth2ParameterNames.CLIENT_ID,
+          OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
+    }
+
     // scope (OPTIONAL)
     String scope = parameters.getFirst(OAuth2ParameterNames.SCOPE);
     if (StringUtils.hasText(scope) && parameters.get(OAuth2ParameterNames.SCOPE).size() != 1) {
@@ -68,7 +78,7 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
     Set<String> requestedScopes = null;
     if (StringUtils.hasText(scope)) {
       requestedScopes =
-          new HashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(scope, " ")));
+          new HashSet<>(Arrays.asList(StringUtils.delimitedListToStringArray(scope, ",")));
     }
 
     // 获取当前已经认证的客户端信息
@@ -86,7 +96,10 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
             .filter(
                 e ->
                     !e.getKey().equals(OAuth2ParameterNames.GRANT_TYPE)
-                        && !e.getKey().equals(OAuth2ParameterNames.SCOPE))
+                        && !e.getKey().equals(OAuth2ParameterNames.USERNAME)
+                        && !e.getKey().equals(OAuth2ParameterNames.PASSWORD)
+                        && !e.getKey().equals(OAuth2ParameterNames.SCOPE)
+                        && !e.getKey().equals(OAuth2ParameterNames.CLIENT_ID))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
     PasswordAuthenticationToken passwordAuthenticationToken =
@@ -95,6 +108,7 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
             clientPrincipal,
             username,
             password,
+            clientId,
             requestedScopes,
             additionalParameters);
     log.info("passwordAuthenticationToken->{}", JsonHelper.toJson(passwordAuthenticationToken));

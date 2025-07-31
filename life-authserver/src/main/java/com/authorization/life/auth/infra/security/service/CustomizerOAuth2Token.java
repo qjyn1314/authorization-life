@@ -3,6 +3,7 @@ package com.authorization.life.auth.infra.security.service;
 import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson2.JSON;
 import com.authorization.life.auth.app.service.OauthClientService;
+import com.authorization.life.auth.infra.security.password.PasswordAuthenticationToken;
 import com.authorization.life.auth.infra.security.sso.CustomizerTokenException;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
@@ -65,6 +66,10 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
           securityAuthUserService.createUserDetailByClientId(registeredClient.getClientId());
     } else if (authentication.getPrincipal() instanceof UserDetails userDetails) {
       // 如果当前登录的是系统用户，则进行封装userDetail
+      userDetail = securityAuthUserService.createUserDetailByUser(userDetails);
+    } else if (authentication instanceof PasswordAuthenticationToken passwordAuthenticationToken) {
+      UserDetails userDetails =
+          securityAuthUserService.loadUserByUsername(passwordAuthenticationToken.getUsername());
       userDetail = securityAuthUserService.createUserDetailByUser(userDetails);
     }
     // 如果解析失败，则抛出异常信息。

@@ -133,14 +133,20 @@ public class RegisteredClientService implements RegisteredClientRepository {
       AuthorizationGrantType authorizationGrantType,
       String clientSecret,
       Set<String> scopes) {
-
+    log.info(
+        "checkClient#client:{},authorizationGrantType:{},clientSecret:{},scopes:{}",
+        JSON.toJSONString(client),
+        authorizationGrantType,
+        clientSecret,
+        scopes);
     if (StrUtil.isNotBlank(clientSecret)) {
       boolean matches = this.passwordEncoder.matches(clientSecret, client.getClientSecret());
-      Assert.isFalse(
+      Assert.isTrue(
           matches, () -> new OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT));
     }
     boolean contains = client.getAuthorizationGrantTypes().contains(authorizationGrantType);
-    Assert.isFalse(
+
+    Assert.isTrue(
         contains,
         () ->
             new OAuth2AuthenticationException(

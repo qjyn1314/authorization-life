@@ -32,13 +32,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
-import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AccessTokenResponseAuthenticationSuccessHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
@@ -194,8 +190,6 @@ public class Oauth2SecurityConfig {
 
     // 将oauth2.0自定义的配置托管给 SpringSecurity
     http.with(authorizationServerConfigurer, Customizer.withDefaults());
-    // 自定义设置accesstoken中JwtToken-Claims中的内容
-    http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
     // 添加自定义的模式实现类
     addCustomOAuth2GrantAuthenticationProvider(http);
@@ -222,6 +216,21 @@ public class Oauth2SecurityConfig {
         securityAuthUserService, oauthClientService, redisUtil, servletRequest);
   }
 
+  /**
+   * 令牌生成规则实现
+   *
+   * @return OAuth2TokenGenerator
+   */
+  @Bean
+  public DelegatingOAuth2TokenGenerator oAuth2TokenGenerator(
+      JwtEncoder jwtEecoder, OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer) {
+    // 注入Token 增加关联用户信息
+    JwtGenerator jwtGenerator = new JwtGenerator(jwtEecoder);
+    // 自定义设置accesstoken中JwtToken-Claims中的内容
+    jwtGenerator.setJwtCustomizer(jwtTokenCustomizer);
+    return new DelegatingOAuth2TokenGenerator(
+        jwtGenerator, new OAuth2AccessTokenGenerator(), new OAuth2RefreshTokenGenerator());
+  }
 
   /**
    * 注册client
@@ -230,13 +239,13 @@ public class Oauth2SecurityConfig {
    * @return RegisteredClientRepository
    */
   @Bean
-  public RegisteredClientRepository registeredClientRepository(
+  public RegisteredClientService registeredClientRepository(
       OauthClientService clientService, PasswordEncoder passwordEncoder) {
     return new RegisteredClientService(clientService, passwordEncoder);
   }
 
   /**
-   * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
+   * 保存授权信息
    *
    * @param redisTemplate redis操作类
    * @return OAuth2AuthorizationService
@@ -248,7 +257,7 @@ public class Oauth2SecurityConfig {
   }
 
   /**
-   * 如果是授权码的流程，可能客户端申请了多个权限，比如：获取用户信息，修改用户信息，此Service处理的是用户给这个客户端哪些权限，比如只给获取用户信息的权限
+   * 此处是授权页面中需要的信息
    *
    * @param redisTemplate redis操作类
    * @return OAuth2AuthorizationConsentService

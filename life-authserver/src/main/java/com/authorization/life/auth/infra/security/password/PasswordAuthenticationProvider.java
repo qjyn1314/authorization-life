@@ -39,6 +39,8 @@ public class PasswordAuthenticationProvider
   private static final String ERROR_URI =
       "https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1";
 
+  public PasswordAuthenticationProvider() {}
+
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     PasswordAuthenticationToken passwordAuthenticationToken =
@@ -72,6 +74,7 @@ public class PasswordAuthenticationProvider
 
     // 验证client是否正确, 授权域是否正确.
     RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
+    // 校验是否支持password模式, 验证clientSecret, 检查 scopes
     registeredClientService.checkClient(
         registeredClient, authorizationGrantType, clientSecret, scopes);
     // 验证用户信息
@@ -79,7 +82,7 @@ public class PasswordAuthenticationProvider
     // 验证密码是否正确
     String detailsPassword = userDetails.getPassword();
     boolean matches = passwordEncoder.matches(password, detailsPassword);
-    Assert.isFalse(matches, () -> new BadCredentialsException("用户名或密码错误."));
+    Assert.isTrue(matches, () -> new BadCredentialsException("用户名或密码错误."));
     // 验证用户状态
     new AccountStatusUserDetailsChecker().check(userDetails);
     // 创建授权通过的用户认证信息
@@ -137,7 +140,7 @@ public class PasswordAuthenticationProvider
         .authorizedScopes(scopes)
         .attribute(Principal.class.getName(), passwordAuthenticationToken);
 
-    // 生成refrenToken
+    // 校验是否支持 生成 REFRESH_TOKEN 模式, 验证clientSecret, 检查 scopes
     registeredClientService.checkClient(
         registeredClient, AuthorizationGrantType.REFRESH_TOKEN, null, null);
     // ----- Refresh token -----

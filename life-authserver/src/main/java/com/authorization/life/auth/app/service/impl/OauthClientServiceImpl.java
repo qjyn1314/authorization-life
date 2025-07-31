@@ -378,6 +378,7 @@ public class OauthClientServiceImpl
     params.put(OAuth2ParameterNames.USERNAME, "用户名");
     params.put(OAuth2ParameterNames.PASSWORD, "密码");
     params.put(OAuth2ParameterNames.CLIENT_ID, clientId);
+    params.put(OAuth2ParameterNames.CLIENT_SECRET, clientSecretBak);
     params.put(OAuth2ParameterNames.SCOPE, scopes);
     passwordStep.setParams(params);
     return grantSet;

@@ -1,34 +1,42 @@
 package com.authorization.life.auth.infra.security.service;
 
-import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrPool;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.authorization.common.exception.handle.CommonException;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
-import com.authorization.life.auth.infra.security.sso.RegClientException;
 import com.authorization.utils.security.SecurityCoreService;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.util.CollectionUtils;
 
 /** 自定义的client信息，查询后进行转化 */
 @Slf4j
 public class RegisteredClientService implements RegisteredClientRepository {
 
   private final OauthClientService clientService;
+  private final PasswordEncoder passwordEncoder;
 
-  public RegisteredClientService(OauthClientService clientService) {
+  public RegisteredClientService(
+      OauthClientService clientService, PasswordEncoder passwordEncoder) {
     this.clientService = clientService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
@@ -39,9 +47,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
   @Override
   public RegisteredClient findById(String clientId) {
     OauthClientVO oauthClient = clientService.selectClientByClientId(clientId);
-    if (Objects.isNull(oauthClient)) {
-      return null;
-    }
+    Assert.notNull(oauthClient, OAuth2ErrorCodes.UNAUTHORIZED_CLIENT);
     log.debug("findById-{}", JSON.toJSONString(oauthClient));
     return getRegisteredClient(clientId, oauthClient);
   }
@@ -49,9 +55,7 @@ public class RegisteredClientService implements RegisteredClientRepository {
   @Override
   public RegisteredClient findByClientId(String clientId) {
     OauthClientVO oauthClient = clientService.selectClientByClientId(clientId);
-    if (Objects.isNull(oauthClient)) {
-      return null;
-    }
+    Assert.notNull(oauthClient, OAuth2ErrorCodes.UNAUTHORIZED_CLIENT);
     log.debug("findByClientId-{}", JSON.toJSONString(oauthClient));
     return getRegisteredClient(clientId, oauthClient);
   }
@@ -110,23 +114,47 @@ public class RegisteredClientService implements RegisteredClientRepository {
                     .build());
     // 批量设置当前的授权类型
     Arrays.stream(oauthClient.getGrantTypes().split(StrPool.COMMA))
-        .map(
-            grantType -> {
-              if (CharSequenceUtil.equals(
-                  grantType, AuthorizationGrantType.AUTHORIZATION_CODE.getValue())) {
-                return AuthorizationGrantType.AUTHORIZATION_CODE;
-              } else if (CharSequenceUtil.equals(
-                  grantType, AuthorizationGrantType.REFRESH_TOKEN.getValue())) {
-                return AuthorizationGrantType.REFRESH_TOKEN;
-              } else if (CharSequenceUtil.equals(
-                  grantType, AuthorizationGrantType.CLIENT_CREDENTIALS.getValue())) {
-                return AuthorizationGrantType.CLIENT_CREDENTIALS;
-              } else {
-                throw new RegClientException("不支持的授权模式, [" + grantType + "]");
-              }
-            })
+        .map(AuthorizationGrantType::new)
         .forEach(builder::authorizationGrantType);
     Arrays.stream(oauthClient.getScopes().split(StrPool.COMMA)).forEach(builder::scope);
     return builder.build();
+  }
+
+  /**
+   * 验证客户端的密码是否正确
+   *
+   * @param client 客户端信息
+   * @param authorizationGrantType 授权类型
+   * @param clientSecret 客户端密钥
+   * @param scopes 授权域
+   */
+  public void checkClient(
+      RegisteredClient client,
+      AuthorizationGrantType authorizationGrantType,
+      String clientSecret,
+      Set<String> scopes) {
+
+    if (StrUtil.isNotBlank(clientSecret)) {
+      boolean matches = this.passwordEncoder.matches(clientSecret, client.getClientSecret());
+      Assert.isFalse(
+          matches, () -> new OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT));
+    }
+    boolean contains = client.getAuthorizationGrantTypes().contains(authorizationGrantType);
+    Assert.isFalse(
+        contains,
+        () ->
+            new OAuth2AuthenticationException(
+                OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE
+                    + " 不支持的授权模式, ["
+                    + authorizationGrantType.getValue()
+                    + "]"));
+    Set<String> clientScopes = client.getScopes();
+    if (!CollectionUtils.isEmpty(scopes)) {
+      for (String requestedScope : scopes) {
+        if (!clientScopes.contains(requestedScope)) {
+          throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_SCOPE);
+        }
+      }
+    }
   }
 }

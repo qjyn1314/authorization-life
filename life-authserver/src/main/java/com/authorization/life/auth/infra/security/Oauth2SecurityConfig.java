@@ -24,18 +24,21 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AccessTokenResponseAuthenticationSuccessHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
@@ -45,61 +48,67 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 /**
  * 整合 oauth2_authorization 的配置类。
+ *
+ * <p>OAuth 2.0 协议规范: https://datatracker.ietf.org/doc/html/rfc6749
+ *
+ * <p>OAuth 2.1 协议规范: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13
+ *
+ * <p>相关教程说明
+ *
+ * <p>https://book-spring-security-reference.vnzmi.com/3.2_httpsecurity.html
+ *
+ * <p>https://spring.io/projects/spring-security/
+ *
+ * <p>https://blog.csdn.net/sinat_29899265/article/details/80736498
+ *
+ * <p>https://www.hangge.com/blog/cache/detail_2680.html
+ *
+ * <p>oauth2 security 的配置信息，关键是将配置信息托管给 HttpSecurity
+ *
+ * <p>https://juejin.cn/post/6985411823144615972
+ *
+ * <p>官网:
+ *
+ * <p>https://docs.spring.io/spring-security/reference/getting-spring-security.html
+ *
+ * <p>/oauth2/authorize > 请求的流程图
+ *
+ * <p>1. OAuth2AuthorizationEndpointFilter
+ *
+ * <p>2. OAuth2AuthorizationCodeAuthenticationConverter 在此处获取当前登录用户的信息-通过
+ * SecurityContextHolder.getContext().getAuthentication();获取到此次会话中的用户信息, 并设置到
+ * OAuth2AuthorizationCodeAuthenticationToken clientPrincipal字段中
+ *
+ * <p>3. OAuth2AuthorizationCodeRequestAuthenticationProvider
+ *
+ * <p>3.1. RegisteredClientRepository
+ *
+ * <p>3.2. OAuth2AuthorizationService 使用redis实现,用于保存当前临时code的信息,过期时间为5分钟, 并创建
+ * OAuth2AuthorizationCodeRequestAuthenticationToken
+ *
+ * <p>4. AuthenticationSuccessHandler -> 自定义的 OAuth2SuccessHandler
+ *
  * <p>
- * OAuth 2.0 协议规范: https://datatracker.ietf.org/doc/html/rfc6749
- * <p>
- * OAuth 2.1 协议规范: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13
- * <p>
- * 相关教程说明
- * <p>
- * https://book-spring-security-reference.vnzmi.com/3.2_httpsecurity.html
- * <p>
- * https://spring.io/projects/spring-security/
- * <p>
- * https://blog.csdn.net/sinat_29899265/article/details/80736498
- * <p>
- * https://www.hangge.com/blog/cache/detail_2680.html
- * <p>
- * oauth2 security 的配置信息，关键是将配置信息托管给 HttpSecurity
- * <p>
- * https://juejin.cn/post/6985411823144615972
- * <p>
- * 官网:
- * <p>
- * https://docs.spring.io/spring-security/reference/getting-spring-security.html
- * <p>
- * /oauth2/authorize > 请求的流程图
- * <p>
- * 1. OAuth2AuthorizationEndpointFilter
- * <p>
- * 2. OAuth2AuthorizationCodeAuthenticationConverter
- * 在此处获取当前登录用户的信息-通过 SecurityContextHolder.getContext().getAuthentication();获取到此次会话中的用户信息, 并设置到 OAuth2AuthorizationCodeAuthenticationToken clientPrincipal字段中
- * <p>
- * 3. OAuth2AuthorizationCodeRequestAuthenticationProvider
- * <p>
- * 3.1. RegisteredClientRepository
- * <p>
- * 3.2. OAuth2AuthorizationService  使用redis实现,用于保存当前临时code的信息,过期时间为5分钟, 并创建 OAuth2AuthorizationCodeRequestAuthenticationToken
- * <p>
- * 4. AuthenticationSuccessHandler  -> 自定义的 OAuth2SuccessHandler
- * <p>
- * <p>
- * /oauth2/token >
- * <p>
- * 1. OAuth2TokenEndpointFilter
- * <p>
- * 2. OAuth2AuthorizationCodeAuthenticationConverter
- * 在此处获取当前登录用户的信息-通过 SecurityContextHolder.getContext().getAuthentication(); 获取到此次会话中的用户信息, 并设置到 OAuth2AuthorizationCodeAuthenticationToken 的clientPrincipal 字段中
- * <p>
- * 3.OAuth2AuthorizationCodeAuthenticationProvider
- * <p>
- * 3.1 OAuth2AuthorizationService 使用redis从redis中获取临时code的信息.
- * <p>
- * 3.2 OAuth2TokenCustomizer 自定义accessToken中的内容
- * <p>
- * 3.3 OAuth2AuthorizationService 使用redis保存 code accessToken refrenchToken, 最后设置到 OAuth2AccessTokenAuthenticationToken 中
- * <p>
- * 4.OAuth2AccessTokenResponseAuthenticationSuccessHandler 将token返回
+ *
+ * <p>/oauth2/token >
+ *
+ * <p>1. OAuth2TokenEndpointFilter
+ *
+ * <p>2. OAuth2AuthorizationCodeAuthenticationConverter 在此处获取当前登录用户的信息-通过
+ * SecurityContextHolder.getContext().getAuthentication(); 获取到此次会话中的用户信息, 并设置到
+ * OAuth2AuthorizationCodeAuthenticationToken 的clientPrincipal 字段中
+ *
+ * <p>3.OAuth2AuthorizationCodeAuthenticationProvider
+ *
+ * <p>3.1 OAuth2AuthorizationService 使用redis从redis中获取临时code的信息.
+ *
+ * <p>3.2 OAuth2TokenCustomizer 自定义accessToken中的内容
+ *
+ * <p>3.3 OAuth2AuthorizationService 使用redis保存 code accessToken refrenchToken, 最后设置到
+ * OAuth2AccessTokenAuthenticationToken 中
+ *
+ * <p>4.OAuth2AccessTokenResponseAuthenticationSuccessHandler 将token返回
+ *
  * <p>
  *
  * @author wangjunming
@@ -108,169 +117,180 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @EnableWebSecurity
 @Configuration
 public class Oauth2SecurityConfig {
-    @Autowired
-    private SsoSecurityProperties ssoSecurityProperties;
+  @Autowired private SsoSecurityProperties ssoSecurityProperties;
 
-    /**
-     * oauth2.0配置，需要托管给 HttpSecurity
-     * <p>
-     * 详解： https://blog.51cto.com/u_14558366/5605065
-     *
-     * @param http HttpSecurity
-     * @return SecurityFilterChain
-     * @throws Exception
-     */
-    @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                      OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer
-    ) throws Exception {
-        // 参考: org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
-        authorizationServerConfigurer.authorizationEndpoint(endpointConfigurer -> {
-            endpointConfigurer
-                    // 配置自定义登录成功处理器, 即登录成功之后,在登录页面拼接参数后直接请求此路径, get请求: /oauth2/authorize 的成功处理器,用于重定向到相应的登录成功页面并携带临时code
-                    .authorizationResponseHandler(new OAuth2SuccessHandler());
+  /**
+   * oauth2.0配置，需要托管给 HttpSecurity
+   *
+   * <p>详解： https://blog.51cto.com/u_14558366/5605065
+   *
+   * @param http HttpSecurity
+   * @return SecurityFilterChain
+   * @throws Exception
+   */
+  @Bean
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  public SecurityFilterChain authorizationServerSecurityFilterChain(
+      HttpSecurity http, OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer)
+      throws Exception {
+    // 参考:
+    // org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
+    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+        new OAuth2AuthorizationServerConfigurer();
+    authorizationServerConfigurer.authorizationEndpoint(
+        endpointConfigurer -> {
+          endpointConfigurer
+              // 配置自定义登录成功处理器, 即登录成功之后,在登录页面拼接参数后直接请求此路径, get请求: /oauth2/authorize
+              // 的成功处理器,用于重定向到相应的登录成功页面并携带临时code
+              .authorizationResponseHandler(new OAuth2SuccessHandler());
         });
 
-        authorizationServerConfigurer.tokenEndpoint(endpointConfigurer -> {
-            endpointConfigurer
-                    // 增加自定义的转换Token的处理器
-                    .accessTokenRequestConverter(accessTokenRequestConverter())
-                    // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
-                    // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
-                    .accessTokenResponseHandler(new OAuth2AccessTokenResponseAuthenticationSuccessHandler());
+    authorizationServerConfigurer.tokenEndpoint(
+        endpointConfigurer -> {
+          endpointConfigurer
+              // 增加自定义的转换Token的处理器
+              .accessTokenRequestConverter(accessTokenRequestConverter())
+              // 配置自定义登录成功处理器, 即登录成功之后, post请求: /oauth2/token 的成功处理器
+              // 默认使用的是 OAuth2AccessTokenResponseAuthenticationSuccessHandler
+              .accessTokenResponseHandler(
+                  new OAuth2AccessTokenResponseAuthenticationSuccessHandler());
         });
 
-        // 配置openid的配置项
-        authorizationServerConfigurer.oidc(Customizer.withDefaults());
+    // 配置openid的配置项
+    authorizationServerConfigurer.oidc(Customizer.withDefaults());
 
-        // 针对oauth2的请求所需要的配置项
-        http.securityMatcher("/oauth2/**");
-        RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
-        // 配置请求拦截
-        http.securityMatcher(endpointsMatcher)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        // 无需认证即可访问
-                        .requestMatchers(ssoSecurityProperties.getPermUrls()).permitAll()
-                        // 除以上的请求之外，都需要token
-                        .anyRequest().authenticated())
-                // 禁用此路径下的所有csrf(伪造防护)
-                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
+    // 针对oauth2的请求所需要的配置项
+    http.securityMatcher("/oauth2/**");
+    RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
+    // 配置请求拦截
+    http.securityMatcher(endpointsMatcher)
+        .authorizeHttpRequests(
+            authorizeRequests ->
+                authorizeRequests
+                    // 无需认证即可访问
+                    .requestMatchers(ssoSecurityProperties.getPermUrls())
+                    .permitAll()
+                    // 除以上的请求之外，都需要token
+                    .anyRequest()
+                    .authenticated())
+        // 禁用此路径下的所有csrf(伪造防护)
+        .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher));
 
+    // 开启CORS配置，配合下边的CorsConfigurationSource配置实现跨域配置
+    http.cors(Customizer.withDefaults());
+    // 禁用csrf
+    http.csrf(AbstractHttpConfigurer::disable);
 
-        // 开启CORS配置，配合下边的CorsConfigurationSource配置实现跨域配置
-        http.cors(Customizer.withDefaults());
-        // 禁用csrf
-        http.csrf(AbstractHttpConfigurer::disable);
-
-        // 配置 异常处理
-        http.exceptionHandling(excHandle -> excHandle
+    // 配置 异常处理
+    http.exceptionHandling(
+        excHandle ->
+            excHandle
                 // 当访问的是"/oauth2/**"路径时, 未登录的情况下 自定义该如何跳转。
                 .defaultAuthenticationEntryPointFor(
-                        new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl()),
-                        new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
+                new CustomerLoginUrlAuthenticationEntryPoint(ssoSecurityProperties.getLoginUrl()),
+                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
 
-        http.oauth2ResourceServer((resourceServer) -> resourceServer
-                .jwt(Customizer.withDefaults()));
+    http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
 
-        // 将oauth2.0自定义的配置托管给 SpringSecurity
-        http.with(authorizationServerConfigurer, Customizer.withDefaults());
-        // 自定义设置accesstoken中JwtToken-Claims中的内容
-        http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
+    // 将oauth2.0自定义的配置托管给 SpringSecurity
+    http.with(authorizationServerConfigurer, Customizer.withDefaults());
+    // 自定义设置accesstoken中JwtToken-Claims中的内容
+    http.setSharedObject(OAuth2TokenCustomizer.class, oAuth2TokenCustomizer);
 
-        // 添加自定义的模式实现类
-        addCustomOAuth2GrantAuthenticationProvider(http);
+    // 添加自定义的模式实现类
+    addCustomOAuth2GrantAuthenticationProvider(http);
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    public AuthenticationConverter accessTokenRequestConverter() {
-        return new DelegatingAuthenticationConverter(Arrays.asList(
-                new PasswordAuthenticationConverter(),
-                new SmsCodeAuthenticationConverter(),
-                new EmailCodeAuthenticationConverter()));
-    }
+  public AuthenticationConverter accessTokenRequestConverter() {
+    return new DelegatingAuthenticationConverter(
+        Arrays.asList(
+            new PasswordAuthenticationConverter(),
+            new SmsCodeAuthenticationConverter(),
+            new EmailCodeAuthenticationConverter()));
+  }
 
-    /**
-     * 自定义accessToken的Claims, 在其中添加自定义字段 token
-     */
-    @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(SecurityAuthUserService securityAuthUserService,
-                                                                        OauthClientService oauthClientService,
-                                                                        RedisUtil redisUtil,
-                                                                        HttpServletRequest servletRequest) {
-        return new CustomizerOAuth2Token(securityAuthUserService, oauthClientService, redisUtil, servletRequest);
-    }
-
-    /**
-     * 注册client
-     *
-     * @param clientService 自定义的client端信息
-     * @return RegisteredClientRepository
-     */
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(OauthClientService clientService) {
-        return new RegisteredClientService(clientService);
-    }
-
-    /**
-     * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
-     *
-     * @param redisTemplate redis操作类
-     * @return OAuth2AuthorizationService
-     */
-    @Bean
-    public OAuth2AuthorizationService authorizationService(RedisTemplate<String, Object> redisTemplate) {
-        return new RedisOAuth2AuthorizationService(redisTemplate);
-    }
-
-    /**
-     * 如果是授权码的流程，可能客户端申请了多个权限，比如：获取用户信息，修改用户信息，此Service处理的是用户给这个客户端哪些权限，比如只给获取用户信息的权限
-     *
-     * @param redisTemplate redis操作类
-     * @return OAuth2AuthorizationConsentService
-     */
-    @Bean
-    public OAuth2AuthorizationConsentService authorizationConsentService(RedisTemplate<String, Object> redisTemplate) {
-        return new RedisOAuth2AuthorizationConsentService(redisTemplate);
-    }
-
-    /**
-     * AccessToken的提供者
-     *
-     * @return ProviderSettings
-     */
-    @Bean
-    public AuthorizationServerSettings providerSettings() {
-        //此处为oauth授权服务的发行者，即此授权服务地址
-        return AuthorizationServerSettings.builder()
-                //发布者的url地址,一般是本系统访问的根路径
-                .issuer(SecurityCoreService.DEFAULT_ISSUER)
-                .build();
-    }
+  /** 自定义accessToken的Claims, 在其中添加自定义字段 token */
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer(
+      SecurityAuthUserService securityAuthUserService,
+      OauthClientService oauthClientService,
+      RedisUtil redisUtil,
+      HttpServletRequest servletRequest) {
+    return new CustomizerOAuth2Token(
+        securityAuthUserService, oauthClientService, redisUtil, servletRequest);
+  }
 
 
-    @Bean
-    public ReloadableResourceBundleMessageSource messageSource() {
-        //加载中文认证提示信息
-        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        //加载org/springframework/security包下的中文提示信息 配置文件
-        messageSource.setBasename("classpath:messages/messages_zh_CN");
-        return messageSource;
-    }
+  /**
+   * 注册client
+   *
+   * @param clientService 自定义的client端信息
+   * @return RegisteredClientRepository
+   */
+  @Bean
+  public RegisteredClientRepository registeredClientRepository(
+      OauthClientService clientService, PasswordEncoder passwordEncoder) {
+    return new RegisteredClientService(clientService, passwordEncoder);
+  }
 
-    /**
-     * 注入授权模式实现提供方
-     * <p>
-     * 1. 密码模式 </br>
-     * 2. 短信验证码登录 </br>
-     * 3. 邮箱验证码登录 </br>
-     */
-    private void addCustomOAuth2GrantAuthenticationProvider(HttpSecurity http) {
-        http.authenticationProvider(new PasswordAuthenticationProvider());
-        http.authenticationProvider(new SmsCodeAuthenticationProvider());
-        http.authenticationProvider(new EmailCodeAuthenticationProvider());
-    }
+  /**
+   * 保存授权信息，授权服务器给我们颁发来token，那我们肯定需要保存吧，由这个服务来保存
+   *
+   * @param redisTemplate redis操作类
+   * @return OAuth2AuthorizationService
+   */
+  @Bean
+  public OAuth2AuthorizationService authorizationService(
+      RedisTemplate<String, Object> redisTemplate) {
+    return new RedisOAuth2AuthorizationService(redisTemplate);
+  }
 
+  /**
+   * 如果是授权码的流程，可能客户端申请了多个权限，比如：获取用户信息，修改用户信息，此Service处理的是用户给这个客户端哪些权限，比如只给获取用户信息的权限
+   *
+   * @param redisTemplate redis操作类
+   * @return OAuth2AuthorizationConsentService
+   */
+  @Bean
+  public OAuth2AuthorizationConsentService authorizationConsentService(
+      RedisTemplate<String, Object> redisTemplate) {
+    return new RedisOAuth2AuthorizationConsentService(redisTemplate);
+  }
+
+  /**
+   * AccessToken的提供者
+   *
+   * @return ProviderSettings
+   */
+  @Bean
+  public AuthorizationServerSettings providerSettings() {
+    // 此处为oauth授权服务的发行者，即此授权服务地址
+    return AuthorizationServerSettings.builder()
+        // 发布者的url地址,一般是本系统访问的根路径
+        .issuer(SecurityCoreService.DEFAULT_ISSUER)
+        .build();
+  }
+
+  @Bean
+  public ReloadableResourceBundleMessageSource messageSource() {
+    // 加载中文认证提示信息
+    ReloadableResourceBundleMessageSource messageSource =
+        new ReloadableResourceBundleMessageSource();
+    // 加载org/springframework/security包下的中文提示信息 配置文件
+    messageSource.setBasename("classpath:messages/messages_zh_CN");
+    return messageSource;
+  }
+
+  /**
+   * 注入授权模式实现提供方
+   *
+   * <p>1. 密码模式 </br> 2. 短信验证码登录 </br> 3. 邮箱验证码登录 </br>
+   */
+  private void addCustomOAuth2GrantAuthenticationProvider(HttpSecurity http) {
+    http.authenticationProvider(new PasswordAuthenticationProvider());
+    http.authenticationProvider(new SmsCodeAuthenticationProvider());
+    http.authenticationProvider(new EmailCodeAuthenticationProvider());
+  }
 }

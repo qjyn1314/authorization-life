@@ -66,6 +66,16 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
           OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
     }
 
+    // clientSecret (REQUIRED)
+    String clientSecret = parameters.getFirst(OAuth2ParameterNames.CLIENT_SECRET);
+    if (!StringUtils.hasText(clientSecret)
+        || parameters.get(OAuth2ParameterNames.CLIENT_SECRET).size() != 1) {
+      OAuth2EndpointUtils.throwError(
+          OAuth2ErrorCodes.INVALID_REQUEST,
+          OAuth2ParameterNames.CLIENT_SECRET,
+          OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
+    }
+
     // scope (OPTIONAL)
     String scope = parameters.getFirst(OAuth2ParameterNames.SCOPE);
     if (StringUtils.hasText(scope) && parameters.get(OAuth2ParameterNames.SCOPE).size() != 1) {
@@ -99,7 +109,8 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
                         && !e.getKey().equals(OAuth2ParameterNames.USERNAME)
                         && !e.getKey().equals(OAuth2ParameterNames.PASSWORD)
                         && !e.getKey().equals(OAuth2ParameterNames.SCOPE)
-                        && !e.getKey().equals(OAuth2ParameterNames.CLIENT_ID))
+                        && !e.getKey().equals(OAuth2ParameterNames.CLIENT_ID)
+                        && !e.getKey().equals(OAuth2ParameterNames.CLIENT_SECRET))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
     PasswordAuthenticationToken passwordAuthenticationToken =
@@ -109,6 +120,7 @@ public class PasswordAuthenticationConverter implements AuthenticationConverter 
             username,
             password,
             clientId,
+            clientSecret,
             requestedScopes,
             additionalParameters);
     log.info("passwordAuthenticationToken->{}", JsonHelper.toJson(passwordAuthenticationToken));

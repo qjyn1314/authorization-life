@@ -1,6 +1,5 @@
 package com.authorization.life.auth.infra.security.service;
 
-import com.authorization.utils.security.SecurityCoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
@@ -14,6 +13,10 @@ import java.util.concurrent.TimeUnit;
  */
 @RequiredArgsConstructor
 public final class RedisOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
+    /**
+     * 登录过程中所需要存储信息的 redisKey前缀
+     */
+    static String AUTHORIZATION_KET_PREFIX = "sso-oauth-server:auth:token:";
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -42,7 +45,7 @@ public final class RedisOAuth2AuthorizationConsentService implements OAuth2Autho
 
     private static String buildKey(String registeredClientId, String principalName) {
 
-        return SecurityCoreService.AUTHORIZATION_KET_PREFIX + "token-consent:" + registeredClientId + ":" + principalName;
+        return AUTHORIZATION_KET_PREFIX + "token-consent:" + registeredClientId + ":" + principalName;
     }
 
     private static String buildKey(OAuth2AuthorizationConsent authorizationConsent) {

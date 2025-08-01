@@ -6,7 +6,8 @@ import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.security.service.RegisteredClientService;
 import com.authorization.life.security.start.UserDetailService;
-import com.authorization.redis.start.model.RedisCaptchaValid;
+import com.authorization.redis.start.model.RedisCaptcha;
+import com.authorization.redis.start.service.CaptchaService;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -47,18 +48,20 @@ public class UsernamePasswordAuthenticationProvider
     private final RedisUtil redisUtil;
     private final UserService userService;
     private final RegisteredClientService registeredClientService;
+    private final CaptchaService captchaService;
 
     public UsernamePasswordAuthenticationProvider(
             UserDetailService userDetailsService,
             PasswordEncoder passwordEncoder,
             RedisUtil redisUtil,
             UserService userService,
-            RegisteredClientService registeredClientService) {
+            RegisteredClientService registeredClientService, CaptchaService captchaService) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.redisUtil = redisUtil;
         this.userService = userService;
         this.registeredClientService = registeredClientService;
+        this.captchaService = captchaService;
     }
 
     /**
@@ -110,9 +113,10 @@ public class UsernamePasswordAuthenticationProvider
         Object authenticationDetails = authentication.getDetails();
         if (authenticationDetails instanceof CaptchaWebAuthenticationDetails captcha
                 && StrUtil.isNotBlank(captcha.getCaptchaCode())) {
+            RedisCaptcha genCaptcha = RedisCaptcha.of("valid-picture-code", "valid-picture-code", captcha.getCaptchaUuid()).genCaptcha();
             // 检查验证码正确
             boolean verify =
-                    RedisCaptchaValid.verify(redisUtil, captcha.getCaptchaUuid(), captcha.getCaptchaCode());
+                    captchaService.validClearCaptcha(genCaptcha, captcha.getCaptchaCode());
             Assert.isTrue(verify, () -> new ValiVerificationCodeException("验证码输入错误。"));
         }
         if (authentication.getCredentials() == null) {

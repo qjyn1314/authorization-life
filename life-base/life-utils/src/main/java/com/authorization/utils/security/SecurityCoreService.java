@@ -84,10 +84,7 @@ public interface SecurityCoreService {
      * refreshToken 过期时间, 单位:秒(30小时)
      */
     long REFRESH_TOKEN_TIME_TO_LIVE = 108000;
-    /**
-     * 登录过程中所需要存储信息的 redisKey前缀
-     */
-    String AUTHORIZATION_KET_PREFIX = "sso-oauth-server:auth:token:";
+
     /**
      * oauth2/token 接口中返回的 accessToken(jwt形式)中用户的标识 在 claim 的key
      */

@@ -1,6 +1,5 @@
 package com.authorization.life.auth.infra.security.service;
 
-import com.authorization.utils.security.SecurityCoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,6 +30,10 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
     private final static Long TIMEOUT = 10L;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    /**
+     * 登录过程中所需要存储信息的 redisKey前缀
+     */
+    static String AUTHORIZATION_KET_PREFIX = "sso-oauth-server:auth:token:";
 
     @Override
     public void save(OAuth2Authorization authorization) {
@@ -135,11 +138,11 @@ public final class RedisOAuth2AuthorizationService implements OAuth2Authorizatio
     }
 
     private String buildKeyId(String id) {
-        return String.format(SecurityCoreService.AUTHORIZATION_KET_PREFIX + "%s", id);
+        return String.format(AUTHORIZATION_KET_PREFIX + "%s", id);
     }
 
     private String buildKey(String type, String id) {
-        return String.format(SecurityCoreService.AUTHORIZATION_KET_PREFIX + "%s:%s", type, id);
+        return String.format(AUTHORIZATION_KET_PREFIX + "%s:%s", type, id);
     }
 
     private static boolean isState(OAuth2Authorization authorization) {

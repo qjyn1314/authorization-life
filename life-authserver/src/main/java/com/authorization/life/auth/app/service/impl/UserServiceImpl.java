@@ -3,13 +3,13 @@ package com.authorization.life.auth.app.service.impl;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
-import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.LifeUserVO;
 import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
-import com.authorization.redis.start.model.RedisCaptchaValid;
+import com.authorization.redis.start.model.RedisCaptcha;
+import com.authorization.redis.start.service.CaptchaService;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.ValidGroup;
@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,8 +43,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper mapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private RedisUtil redisUtil;
+    @Resource
+    private CaptchaService captchaService;
 
     @Override
     public PageInfo<LifeUserVO> page(LifeUserDTO lifeUser) {
@@ -98,15 +99,10 @@ public class UserServiceImpl implements UserService {
         Boolean emailExist = validateEmailExist(lifeUser);
         Assert.isFalse(emailExist, "该邮箱已注册.");
         Assert.notBlank(lifeUser.getHashPassword(), "密码不能为空.");
-        boolean verifiedExpirationDate = RedisCaptchaValid.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
-        Assert.isTrue(verifiedExpirationDate, "验证码已过期, 请重新获取.");
-        boolean verify = RedisCaptchaValid.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+
+        RedisCaptcha captcha = RedisCaptcha.of("send-email-code", lifeUser.getEmail(), lifeUser.getCaptchaUuid());
+        boolean verify = captchaService.validClearCaptcha(captcha, lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
-
-        //此处是验证通过, 将删除缓存中的验证码和邮箱校验逻辑
-        RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
-        RedisKeyValid.delEmailRegSendCode(redisUtil, lifeUser.getCaptchaUuid());
-
 
         LifeUser insertUser = new LifeUser();
         insertUser.setUsername(getUserName());
@@ -148,14 +144,9 @@ public class UserServiceImpl implements UserService {
         ValidUtil.validateAndThrow(lifeUser, LifeUserDTO.ResetPwdGroup.class);
         Assert.isTrue(lifeUser.getHashPassword().equals(lifeUser.getValidHashPassword()), "两次输入密码不一致,请重新输入.");
 
-        boolean verifiedExpirationDate = RedisCaptchaValid.verifyExpirationDate(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
-        Assert.isTrue(verifiedExpirationDate, "验证码已过期, 请重新获取.");
-        boolean verify = RedisCaptchaValid.verify(redisUtil, lifeUser.getCaptchaUuid(), lifeUser.getCaptchaCode());
+        RedisCaptcha captcha = RedisCaptcha.of("send-email-code", lifeUser.getEmail(), lifeUser.getCaptchaUuid());
+        boolean verify = captchaService.validClearCaptcha(captcha, lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
-
-        //此处是验证通过, 将删除缓存中的验证码和邮箱校验逻辑
-        RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
-        RedisKeyValid.delEmailRegSendCode(redisUtil, lifeUser.getCaptchaUuid());
 
         LambdaQueryWrapper<LifeUser> queryEmailWrapper = Wrappers.lambdaQuery(new LifeUser())
                 .eq(LifeUser::getEmail, lifeUser.getEmail());

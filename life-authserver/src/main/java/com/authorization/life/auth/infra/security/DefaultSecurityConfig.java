@@ -10,11 +10,12 @@ import com.authorization.life.auth.infra.security.sso.UsernamePasswordAuthentica
 import com.authorization.life.security.start.UserDetailService;
 import com.authorization.life.security.start.filter.JwtAuthenticationFilter;
 import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
-import com.authorization.life.security.start.handle.TokenInformationExpiredStrategy;
+import com.authorization.redis.start.service.CaptchaService;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.JwtService;
 import com.authorization.utils.security.SecurityCoreService;
 import com.authorization.utils.security.SsoSecurityProperties;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.web.SecurityFilterChain;
@@ -58,6 +58,8 @@ public class DefaultSecurityConfig {
     private SsoSecurityProperties ssoSecurityProperties;
     @Autowired
     private JwtService jwtService;
+    @Resource
+    private CaptchaService captchaService;
 
     /**
      * 默认的过滤链信息
@@ -146,7 +148,7 @@ public class DefaultSecurityConfig {
     @Bean
     public AuthenticationProvider usernamePasswordProvider() {
         return new UsernamePasswordAuthenticationProvider(
-                userDetailsService, passwordEncoder, redisUtil, userService, registeredClientService);
+                userDetailsService, passwordEncoder, redisUtil, userService, registeredClientService, captchaService);
     }
 
     /**

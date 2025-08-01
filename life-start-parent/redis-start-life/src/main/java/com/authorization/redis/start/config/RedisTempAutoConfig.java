@@ -1,6 +1,8 @@
 package com.authorization.redis.start.config;
 
 import com.authorization.redis.start.listener.RedisSubscription;
+import com.authorization.redis.start.service.CaptchaService;
+import com.authorization.redis.start.service.impl.CaptchaServiceImpl;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.json.JsonHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,11 @@ public class RedisTempAutoConfig {
 //        log.info("initialed redis-start-life RedisService");
 //        return new RedisService(stringRedisTemplate, JsonHelper.getObjectMapper());
 //    }
+
+    @Bean
+    public CaptchaService captchaService() {
+        return new CaptchaServiceImpl();
+    }
 
     @Bean
     public RedisUtil redisUtil(StringRedisTemplate stringRedisTemplate) {

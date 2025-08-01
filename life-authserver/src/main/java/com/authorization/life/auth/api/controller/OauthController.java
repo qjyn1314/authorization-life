@@ -3,7 +3,6 @@ package com.authorization.life.auth.api.controller;
 import cn.hutool.core.lang.Assert;
 import com.authorization.common.exception.handle.CommonException;
 import com.authorization.life.auth.app.constant.Inspirational;
-import com.authorization.life.auth.app.constant.RedisKeyValid;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserService;
@@ -12,12 +11,14 @@ import com.authorization.life.mail.start.MailConstant;
 import com.authorization.life.mail.start.MailSendService;
 import com.authorization.life.security.start.entity.UserHelper;
 import com.authorization.redis.start.model.Captcha;
-import com.authorization.redis.start.model.RedisCaptchaValid;
+import com.authorization.redis.start.model.RedisCaptcha;
+import com.authorization.redis.start.service.CaptchaService;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.result.Result;
 import com.authorization.utils.security.UserDetail;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,8 @@ public class OauthController {
     private UserService userService;
     @Autowired
     private MailSendService mailSendService;
+    @Resource
+    private CaptchaService captchaService;
 
     @Operation(summary = "获取随机的励志句子")
     @GetMapping("/sentence")
@@ -65,17 +68,14 @@ public class OauthController {
         //验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(lifeUser);
         Assert.isFalse(emailExist, "邮箱已注册.");
-        //邮箱验证码是否在十分钟内重复发送.
-        RedisKeyValid.validEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
-        //生成验证码
-        Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
+        RedisCaptcha captcha = RedisCaptcha.of("send-email-code", lifeUser.getEmail()).genCaptcha();
+        String captchaCode = captchaService.genNumCaptcha(captcha).getCode();
         //发送邮件
         try {
-            mailSendService.sendEmail(MailConstant.REGISTER_CAPTCHA_CODE_TEMPLATE, lifeUser.getEmail(), Map.of("captchaCode", captcha.getCode()));
+            mailSendService.sendEmail(MailConstant.REGISTER_CAPTCHA_CODE_TEMPLATE, lifeUser.getEmail(), Map.of("captchaCode", captchaCode));
         } catch (Exception e) {
             log.error("发送邮件异常", e);
-            RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
-            RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
+            captchaService.validClearCaptcha(captcha, captchaCode);
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");
         }
         return Result.ok(captcha.getUuid());
@@ -93,17 +93,14 @@ public class OauthController {
         //验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(lifeUser);
         Assert.isTrue(emailExist, "邮箱未注册.");
-        //邮箱验证码是否在十分钟内重复发送.
-        RedisKeyValid.validEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
-        //生成验证码
-        Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
+        RedisCaptcha captcha = RedisCaptcha.of("send-email-code-reset-pwd", lifeUser.getEmail()).genCaptcha();
+        String captchaCode = captchaService.genNumCaptcha(captcha).getCode();
         //发送邮件
         try {
-            mailSendService.sendEmail(MailConstant.RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE, lifeUser.getEmail(), Map.of("captchaCode", captcha.getCode()));
+            mailSendService.sendEmail(MailConstant.RESET_PASSWORD_CAPTCHA_CODE_TEMPLATE, lifeUser.getEmail(), Map.of("captchaCode", captchaCode));
         } catch (Exception e) {
             log.error("发送邮件异常", e);
-            RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
-            RedisKeyValid.delEmailRepeatSendCode(redisUtil, lifeUser.getEmail());
+            captchaService.validClearCaptcha(captcha, captchaCode);
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");
         }
         return Result.ok(captcha.getUuid());
@@ -123,19 +120,21 @@ public class OauthController {
     }
 
     @Operation(summary = "获取图片验证码")
-    @GetMapping("/picture-code")
-    public Result<Captcha> pictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
-        boolean repeatPictureCode = RedisCaptchaValid.verifyRepeatPictureCode(redisUtil, uuid);
-        Assert.isFalse(repeatPictureCode, "验证码未验证, 请勿重新获取.");
-        return Result.ok(RedisCaptchaValid.create(redisUtil));
+    @GetMapping("/valid-picture-code")
+    public Result<Captcha> validPictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
+        RedisCaptcha genCaptcha = RedisCaptcha.of("valid-picture-code", "valid-picture-code", uuid).genCaptcha();
+        captchaService.genNumCaptcha(genCaptcha);
+        Captcha captcha = genCaptcha.getCaptcha();
+        captcha.setCode(null);
+        return Result.ok(captcha);
     }
 
     @Operation(summary = "发送手机登录验证码")
     @GetMapping("/send-sms-code-login")
     public Result<String> sendLoginSmsCode(@RequestParam(name = "phone") String phone) {
-        Captcha captcha = RedisCaptchaValid.create(redisUtil);
-        String code = captcha.getCode();
-        return Result.ok(code);
+        RedisCaptcha genCaptcha = RedisCaptcha.of("send-sms-code-login", phone).genCaptcha();
+        captchaService.genNumCaptcha(genCaptcha);
+        return Result.ok(genCaptcha.getUuid());
     }
 
     @Operation(summary = "发送邮箱登录验证码")
@@ -144,20 +143,17 @@ public class OauthController {
         // 验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(new LifeUserDTO().setEmail(email));
         Assert.isTrue(emailExist, "邮箱未注册.");
-        //邮箱验证码是否在十分钟内重复发送.
-        RedisKeyValid.validEmailRepeatSendCode(redisUtil, email);
-        //生成验证码
-        Captcha captcha = RedisCaptchaValid.createNumCaptcha(redisUtil);
+        RedisCaptcha genCaptcha = RedisCaptcha.of("send-email-code-login", email).genCaptcha();
+        String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
         //发送邮件
         try {
-            mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, email, Map.of("captchaCode", captcha.getCode()));
+            mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, email, Map.of("captchaCode", captchaCode));
         } catch (Exception e) {
             log.error("发送邮件异常#email:{}", email, e);
-            RedisCaptchaValid.verify(redisUtil, captcha.getUuid(), captcha.getCode());
-            RedisKeyValid.delEmailRepeatSendCode(redisUtil, email);
+            captchaService.validClearCaptcha(genCaptcha, captchaCode);
             throw new CommonException("邮件发送失败,请输入正确的邮箱.");
         }
-        return Result.ok(captcha.getUuid());
+        return Result.ok(genCaptcha.getUuid());
     }
 
 }

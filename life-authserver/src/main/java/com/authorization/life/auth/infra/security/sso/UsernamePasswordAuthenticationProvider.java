@@ -9,7 +9,6 @@ import com.authorization.life.security.start.UserDetailService;
 import com.authorization.redis.start.model.RedisCaptchaValid;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.StringUtil;
-import com.authorization.utils.security.SecurityCoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -29,7 +28,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-/** 用户名密码登录的校验。 */
+/** 授权码模式中使用, 用户名密码登录的校验。 */
 @Slf4j
 public class UsernamePasswordAuthenticationProvider
         extends AbstractUserDetailsAuthenticationProvider {
@@ -38,7 +37,10 @@ public class UsernamePasswordAuthenticationProvider
     public static final String CAPTCHA_CODE = "captchaCode";
     public static final String CLIENT_ID = "client_id";
 
-    private static final String PASSWORD_ERROR_COUNT = SecurityCoreService.PASSWORD_ERROR_COUNT_KEY;
+    /**
+     * 授权码模式中密码输入错误的次数,redis的key, 是指不管用什么方式登录出错都会被记录一次.当此处达到 默认5次时将锁定账户不允许登录.
+     */
+    private static final String PASSWORD_ERROR_COUNT = "sso-oauth-server:auth:password-error-count:{username}";
 
     private final UserDetailService userDetailsService;
     private final PasswordEncoder passwordEncoder;

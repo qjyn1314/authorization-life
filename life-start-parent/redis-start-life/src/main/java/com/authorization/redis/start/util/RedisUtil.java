@@ -1590,4 +1590,25 @@ public class RedisUtil {
         redisTemplate.convertAndSend(channel, toJson(message));
     }
 
+    /**
+     * 校验redis中的value并删除
+     * @param redisKey redis中的key
+     * @param redisVal 需要校验的value
+     * @param delFlag 是否删除数据
+     * @return boolean
+     */
+    public boolean validCodeVal(String redisKey, String redisVal, boolean delFlag) {
+        if (StrUtil.isBlank(redisKey) || StrUtil.isBlank(redisVal)) {
+            return false;
+        }
+        String value = this.get(redisKey);
+        if (StrUtil.isBlank(value)) {
+            return false;
+        }
+        boolean verify = value.equals(redisVal);
+        if (delFlag) {
+            this.delete(redisKey);
+        }
+        return verify;
+    }
 }

@@ -21,9 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class RedisCaptchaValid {
 
-    public static final String CAPTCHA_CACHE_KEY = SecurityCoreService.CAPTCHA_CACHE_KEY;
-
-    public static final String CAPTCHA_CACHE_BIZ_KEY = "sso-oauth-server:auth:captcha-code:{bizType}:{bizId}:{uuid}";
+    public static final String CAPTCHA_CACHE_KEY = "sso-oauth-server:auth:captcha-code:{uuid}";
 
     /**
      * 默认时间 10 分钟

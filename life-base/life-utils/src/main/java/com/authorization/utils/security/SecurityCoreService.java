@@ -73,14 +73,6 @@ public interface SecurityCoreService {
      */
     String SSO_EMAIL_LOGIN = "/oauth/email-login";
     /**
-     * 验证码的缓存key
-     */
-    String CAPTCHA_CACHE_KEY = "sso-oauth-server:auth:captcha-code:{uuid}";
-    /**
-     * 密码输入错误的次数,redis的key, 是指不管用什么方式登录出错都会被记录一次.当此处达到 默认5次时将锁定账户不允许登录.
-     */
-    String PASSWORD_ERROR_COUNT_KEY = "sso-oauth-server:auth:password-error-count:{username}";
-    /**
      * 登录错误的默认次数
      */
     Integer ERROR_COUNT = 5;

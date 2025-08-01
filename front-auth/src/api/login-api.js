@@ -14,7 +14,7 @@ export function getClient(data) {
 
 //  获取图片验证码
 export function pictureCode(uuid) {
-    return axiosService.get(`/${AUTH_SERVER}/oauth/picture-code?uuid=${uuid}`)
+    return axiosService.get(`/${AUTH_SERVER}/oauth/valid-picture-code?uuid=${uuid}`)
 }
 
 //  账号登录

@@ -154,9 +154,6 @@ public class Oauth2SecurityConfig {
                                     new OAuth2AccessTokenResponseAuthenticationSuccessHandler());
                 });
 
-        // 配置openid的配置项
-        authorizationServerConfigurer.oidc(Customizer.withDefaults());
-
         // 针对oauth2的请求所需要的配置项
         http.securityMatcher("/oauth2/**");
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
@@ -199,6 +196,9 @@ public class Oauth2SecurityConfig {
         return http.build();
     }
 
+    /**
+     * 自定义转换类型
+     */
     public AuthenticationConverter accessTokenRequestConverter() {
         return new DelegatingAuthenticationConverter(
                 Arrays.asList(
@@ -219,7 +219,7 @@ public class Oauth2SecurityConfig {
     }
 
     /**
-     * 令牌生成规则实现
+     * 令牌生成规则实现和自定义附加信息的配置
      *
      * @return OAuth2TokenGenerator
      */
@@ -247,7 +247,7 @@ public class Oauth2SecurityConfig {
     }
 
     /**
-     * 保存授权信息
+     * 保存accessToken的信息
      *
      * @param redisTemplate redis操作类
      * @return OAuth2AuthorizationService
@@ -271,9 +271,7 @@ public class Oauth2SecurityConfig {
     }
 
     /**
-     * AccessToken的提供者
-     *
-     * @return ProviderSettings
+     * AccessToken的发行者
      */
     @Bean
     public AuthorizationServerSettings providerSettings() {
@@ -284,6 +282,9 @@ public class Oauth2SecurityConfig {
                 .build();
     }
 
+    /**
+     * 消息中英文转换
+     */
     @Bean
     public ReloadableResourceBundleMessageSource messageSource() {
         // 加载中文认证提示信息

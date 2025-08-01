@@ -45,6 +45,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         if (StringUtils.hasText(authorizationCodeRequestAuthentication.getState())) {
             uriBuilder.queryParam(OAuth2ParameterNames.STATE, authorizationCodeRequestAuthentication.getState());
         }
-        this.redirectStrategy.sendRedirect(request, response, uriBuilder.toUriString());
+
+        String uri = uriBuilder.toString();
+        log.info("重定向default auth令牌, 重定向到当前回调页面地址:{}", uri);
+
+        this.redirectStrategy.sendRedirect(request, response, uri);
     }
 }

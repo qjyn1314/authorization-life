@@ -80,8 +80,7 @@ public class CustomizerOAuth2Token implements OAuth2TokenCustomizer<JwtEncodingC
         }
         log.info("当前登录用户信息是->{}", JSON.toJSONString(userDetail));
         userDetail.setAccessTokenId(accessTokenId);
-        // 此处的token字符串是前端拿到的jwtToken信息中解密后的字符串，在这里将自定义jwtToken的实现，将定制jwt的 header 和 claims，将此token存放到
-        // claim 中
+        // 此处的token字符串是前端拿到的jwtToken信息中解密后的字符串，在这里将自定义jwtToken的实现，将定制jwt的 header 和 claims，将此token存放到claim 中
         String token = UUID.randomUUID().toString(true);
         // 也需要将此token存放到当前登录用户中，为了在退出登录时进行获取redis中的信息并将其删除
         userDetail.setToken(token);

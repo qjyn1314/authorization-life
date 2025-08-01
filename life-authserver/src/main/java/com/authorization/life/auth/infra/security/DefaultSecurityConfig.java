@@ -81,18 +81,6 @@ public class DefaultSecurityConfig {
         http.csrf(CsrfConfigurer::disable);
         http.cors(CorsConfigurer::disable);
 
-        // 配置session会话管理器
-        http.sessionManagement(
-                sessionMan ->
-                        sessionMan
-                                // 此处必须配置为  security 在需要的时候创建session, 因为 OAuth2AuthorizationServer
-                                // 时通过当前session会话中获取登录用户信息的.
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                                // 仅允许一个用户登录
-                                .maximumSessions(1)
-                                // session过期后的处理策略
-                                .expiredSessionStrategy(new TokenInformationExpiredStrategy()));
-
         http.authorizeHttpRequests(
                 authHttpReq ->
                         authHttpReq

@@ -134,12 +134,6 @@ public class RegisteredClientService implements RegisteredClientRepository {
             AuthorizationGrantType authorizationGrantType,
             String clientSecret,
             Set<String> scopes) {
-        log.info(
-                "checkClient#client:{},authorizationGrantType:{},clientSecret:{},scopes:{}",
-                JSON.toJSONString(client),
-                authorizationGrantType,
-                clientSecret,
-                scopes);
         if (StrUtil.isNotBlank(clientSecret)) {
             boolean matches = this.passwordEncoder.matches(clientSecret, client.getClientSecret());
             Assert.isTrue(

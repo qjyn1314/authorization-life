@@ -133,7 +133,8 @@ public class OauthController {
     @GetMapping("/send-sms-code-login")
     public Result<String> sendLoginSmsCode(@RequestParam(name = "phone") String phone) {
         RedisCaptcha genCaptcha = RedisCaptcha.of("send-sms-code-login", phone).genCaptcha();
-        captchaService.genNumCaptcha(genCaptcha);
+        String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
+        log.info("send-sms-code-login->{}", captchaCode);
         return Result.ok(genCaptcha.getUuid());
     }
 

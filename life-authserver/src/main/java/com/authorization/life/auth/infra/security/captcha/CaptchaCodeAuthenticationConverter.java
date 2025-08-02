@@ -1,7 +1,6 @@
-package com.authorization.life.auth.infra.security.sms;
+package com.authorization.life.auth.infra.security.captcha;
 
 import com.authorization.life.auth.infra.security.OAuth2EndpointUtils;
-import com.authorization.utils.json.JsonHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
  * @since 2025-06-14 22:02
  */
 @Slf4j
-public class SmsCodeAuthenticationConverter implements AuthenticationConverter {
+public class CaptchaCodeAuthenticationConverter implements AuthenticationConverter {
 
     @Override
     public Authentication convert(HttpServletRequest request) {
@@ -33,7 +32,7 @@ public class SmsCodeAuthenticationConverter implements AuthenticationConverter {
 
         // grant_type (REQUIRED)
         String grantType = parameters.getFirst(OAuth2ParameterNames.GRANT_TYPE);
-        if (!SmsCodeAuthenticationToken.PHONE_CAPTCHA.equals(grantType)) {
+        if (!CaptchaCodeAuthenticationToken.CAPTCHA_CODE.equals(grantType)) {
             return null;
         }
 
@@ -48,22 +47,22 @@ public class SmsCodeAuthenticationConverter implements AuthenticationConverter {
         }
 
         // captchaUuid (REQUIRED)
-        String captchaUuid = parameters.getFirst(SmsCodeAuthenticationProvider.CAPTCHA_UUID);
+        String captchaUuid = parameters.getFirst(CaptchaCodeAuthenticationProvider.CAPTCHA_UUID);
         if (!StringUtils.hasText(captchaUuid)
-                || parameters.get(SmsCodeAuthenticationProvider.CAPTCHA_UUID).size() != 1) {
+                || parameters.get(CaptchaCodeAuthenticationProvider.CAPTCHA_UUID).size() != 1) {
             OAuth2EndpointUtils.throwError(
                     OAuth2ErrorCodes.INVALID_REQUEST,
-                    SmsCodeAuthenticationProvider.CAPTCHA_UUID,
+                    CaptchaCodeAuthenticationProvider.CAPTCHA_UUID,
                     OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
         }
 
         // captchaCode (REQUIRED)
-        String captchaCode = parameters.getFirst(SmsCodeAuthenticationProvider.CAPTCHA_CODE);
+        String captchaCode = parameters.getFirst(CaptchaCodeAuthenticationProvider.CAPTCHA_CODE);
         if (!StringUtils.hasText(captchaCode)
-                || parameters.get(SmsCodeAuthenticationProvider.CAPTCHA_CODE).size() != 1) {
+                || parameters.get(CaptchaCodeAuthenticationProvider.CAPTCHA_CODE).size() != 1) {
             OAuth2EndpointUtils.throwError(
                     OAuth2ErrorCodes.INVALID_REQUEST,
-                    SmsCodeAuthenticationProvider.CAPTCHA_CODE,
+                    CaptchaCodeAuthenticationProvider.CAPTCHA_CODE,
                     OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
         }
 
@@ -124,8 +123,8 @@ public class SmsCodeAuthenticationConverter implements AuthenticationConverter {
                                                 && !e.getKey().equals(OAuth2ParameterNames.CLIENT_SECRET))
                         .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
-        SmsCodeAuthenticationToken smsCodeAuthenticationToken = new SmsCodeAuthenticationToken(
-                new AuthorizationGrantType(SmsCodeAuthenticationToken.PHONE_CAPTCHA),
+        return new CaptchaCodeAuthenticationToken(
+                new AuthorizationGrantType(CaptchaCodeAuthenticationToken.CAPTCHA_CODE),
                 clientPrincipal,
                 username,
                 captchaUuid,
@@ -133,10 +132,6 @@ public class SmsCodeAuthenticationConverter implements AuthenticationConverter {
                 clientId,
                 clientSecret,
                 requestedScopes,
-                additionalParameters
-        );
-
-        log.info("passwordAuthenticationToken->{}", JsonHelper.toJson(smsCodeAuthenticationToken));
-        return smsCodeAuthenticationToken;
+                additionalParameters);
     }
 }

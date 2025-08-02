@@ -1,4 +1,4 @@
-package com.authorization.life.auth.infra.security.sms;
+package com.authorization.life.auth.infra.security.captcha;
 
 import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -15,11 +15,11 @@ import java.util.*;
  * @author wangjunming
  * @since 2025-06-14 22:02
  */
-public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
+public class CaptchaCodeAuthenticationToken extends AbstractAuthenticationToken {
     /**
-     * 授权模式-手机验证码模式
+     * 授权模式-验证码模式(包含手机验证码和邮箱验证码)
      */
-    public static final String PHONE_CAPTCHA = "phone_captcha";
+    public static final String CAPTCHA_CODE = "captcha_code";
     @Getter
     private final AuthorizationGrantType authorizationGrantType;
     @Getter
@@ -39,9 +39,9 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
     @Getter
     private final Map<String, Object> additionalParameters;
 
-    public SmsCodeAuthenticationToken(AuthorizationGrantType authorizationGrantType,
-                                      Authentication clientPrincipal, String username, String captchaUuid, String captchaCode,
-                                      String clientId, String clientSecret, Set<String> scopes, Map<String, Object> additionalParameters) {
+    public CaptchaCodeAuthenticationToken(AuthorizationGrantType authorizationGrantType,
+                                          Authentication clientPrincipal, String username, String captchaUuid, String captchaCode,
+                                          String clientId, String clientSecret, Set<String> scopes, Map<String, Object> additionalParameters) {
         super(Collections.emptyList());
         this.authorizationGrantType = authorizationGrantType;
         this.clientPrincipal = clientPrincipal;
@@ -62,7 +62,7 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return Map.of(SmsCodeAuthenticationProvider.CAPTCHA_CODE, captchaCode, SmsCodeAuthenticationProvider.CAPTCHA_UUID, captchaUuid);
+        return Map.of(CaptchaCodeAuthenticationProvider.CAPTCHA_CODE, captchaCode, CaptchaCodeAuthenticationProvider.CAPTCHA_UUID, captchaUuid);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.authorization.utils.result;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -99,4 +100,8 @@ public class Result<T> implements Serializable {
         return fail(null);
     }
 
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 }

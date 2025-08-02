@@ -1,4 +1,4 @@
-package com.authorization.life.auth.infra.security.sms;
+package com.authorization.life.auth.infra.security.captcha;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.extra.spring.SpringUtil;
@@ -15,7 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
 import java.util.Map;
@@ -30,8 +29,8 @@ import java.util.Set;
  * @since 2025-06-14 22:01
  */
 @Slf4j
-public class SmsCodeAuthenticationProvider
-        extends OAuth2BaseAuthenticationProvider<SmsCodeAuthenticationToken> {
+public class CaptchaCodeAuthenticationProvider
+        extends OAuth2BaseAuthenticationProvider<CaptchaCodeAuthenticationToken> {
 
     /**
      * 验证码uuid
@@ -45,8 +44,8 @@ public class SmsCodeAuthenticationProvider
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        SmsCodeAuthenticationToken codeAuthenticationToken =
-                (SmsCodeAuthenticationToken) authentication;
+        CaptchaCodeAuthenticationToken codeAuthenticationToken =
+                (CaptchaCodeAuthenticationToken) authentication;
 
         AuthorizationGrantType authorizationGrantType =
                 codeAuthenticationToken.getAuthorizationGrantType();
@@ -92,21 +91,18 @@ public class SmsCodeAuthenticationProvider
                         userDetails, codeAuthenticationToken.getCredentials(), userDetails.getAuthorities());
 
         // 创建 accessToken
-        OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
-                createOAuth2AccessTokenAuthenticationToken(
-                        registeredClient,
-                        authenticated,
-                        scopes,
-                        authorizationGrantType,
-                        codeAuthenticationToken,
-                        additionalParameters
-                );
-        log.info("SmsCodeAuthenticationProvider:{}", oAuth2AccessTokenAuthenticationToken);
-        return oAuth2AccessTokenAuthenticationToken;
+        return createOAuth2AccessTokenAuthenticationToken(
+                registeredClient,
+                authenticated,
+                scopes,
+                authorizationGrantType,
+                codeAuthenticationToken,
+                additionalParameters
+        );
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return SmsCodeAuthenticationToken.class.isAssignableFrom(authentication);
+        return CaptchaCodeAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

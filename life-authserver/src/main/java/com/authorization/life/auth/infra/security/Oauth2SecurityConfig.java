@@ -1,14 +1,12 @@
 package com.authorization.life.auth.infra.security;
 
 import com.authorization.life.auth.app.service.OauthClientService;
-import com.authorization.life.auth.infra.security.email.EmailCodeAuthenticationConverter;
-import com.authorization.life.auth.infra.security.email.EmailCodeAuthenticationProvider;
+import com.authorization.life.auth.infra.security.captcha.CaptchaCodeAuthenticationConverter;
+import com.authorization.life.auth.infra.security.captcha.CaptchaCodeAuthenticationProvider;
 import com.authorization.life.auth.infra.security.handler.oauth.OAuth2SuccessHandler;
 import com.authorization.life.auth.infra.security.password.PasswordAuthenticationConverter;
 import com.authorization.life.auth.infra.security.password.PasswordAuthenticationProvider;
 import com.authorization.life.auth.infra.security.service.*;
-import com.authorization.life.auth.infra.security.sms.SmsCodeAuthenticationConverter;
-import com.authorization.life.auth.infra.security.sms.SmsCodeAuthenticationProvider;
 import com.authorization.life.security.start.handle.CustomerLoginUrlAuthenticationEntryPoint;
 import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.utils.security.SecurityCoreService;
@@ -203,8 +201,7 @@ public class Oauth2SecurityConfig {
         return new DelegatingAuthenticationConverter(
                 Arrays.asList(
                         new PasswordAuthenticationConverter(),
-                        new SmsCodeAuthenticationConverter(),
-                        new EmailCodeAuthenticationConverter()));
+                        new CaptchaCodeAuthenticationConverter()));
     }
 
     /** 自定义accessToken的Claims, 在其中添加自定义字段 token */
@@ -302,7 +299,6 @@ public class Oauth2SecurityConfig {
      */
     private void addCustomOAuth2GrantAuthenticationProvider(HttpSecurity http) {
         http.authenticationProvider(new PasswordAuthenticationProvider());
-        http.authenticationProvider(new SmsCodeAuthenticationProvider());
-        http.authenticationProvider(new EmailCodeAuthenticationProvider());
+        http.authenticationProvider(new CaptchaCodeAuthenticationProvider());
     }
 }

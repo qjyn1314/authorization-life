@@ -27,7 +27,7 @@ public class CaptchaServiceImpl implements CaptchaService {
             throw new IllegalArgumentException("验证码已生成.");
         }
         String code = captcha.getCode();
-        redisUtil.setEx(captchaKey, code, 10, TimeUnit.MINUTES);
+        redisUtil.setEx(captchaKey, code, captcha.getExpiredTime(), TimeUnit.MINUTES);
         return captcha;
     }
 

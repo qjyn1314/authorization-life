@@ -7,14 +7,13 @@ import com.authorization.life.auth.infra.security.service.RegisteredClientServic
 import com.authorization.life.security.start.UserDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
 import java.util.Map;
@@ -67,7 +66,7 @@ public class PasswordAuthenticationProvider
         // 验证密码是否正确
         String detailsPassword = userDetails.getPassword();
         boolean matches = passwordEncoder.matches(password, detailsPassword);
-        Assert.isTrue(matches, () -> new BadCredentialsException("用户名或密码错误."));
+        Assert.isTrue(matches, () -> new OAuth2AuthenticationException("用户名或密码错误."));
         // 验证用户状态
         new AccountStatusUserDetailsChecker().check(userDetails);
         // 创建授权通过的用户认证信息
@@ -76,23 +75,18 @@ public class PasswordAuthenticationProvider
                         userDetails, password, userDetails.getAuthorities());
 
         // 创建 accessToken
-        OAuth2AccessTokenAuthenticationToken oAuth2AccessTokenAuthenticationToken =
-                createOAuth2AccessTokenAuthenticationToken(
-                        registeredClient,
-                        authenticated,
-                        scopes,
-                        authorizationGrantType,
-                        passwordAuthenticationToken,
-                        additionalParameters
-                );
-        log.info("PasswordAuthenticationProvider:{}", oAuth2AccessTokenAuthenticationToken);
-        return oAuth2AccessTokenAuthenticationToken;
+        return createOAuth2AccessTokenAuthenticationToken(
+                registeredClient,
+                authenticated,
+                scopes,
+                authorizationGrantType,
+                passwordAuthenticationToken,
+                additionalParameters
+        );
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        boolean supports = PasswordAuthenticationToken.class.isAssignableFrom(authentication);
-        log.debug("supports authentication=" + authentication + " returning " + supports);
-        return supports;
+        return PasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

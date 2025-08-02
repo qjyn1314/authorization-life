@@ -63,12 +63,12 @@ public class OauthController {
     }
 
     @Operation(summary = "发送邮箱注册验证码")
-    @PostMapping("/send-email-code")
+    @PostMapping("/send-email-code-register")
     public Result<String> sendEmailCode(@RequestBody LifeUserDTO lifeUser) {
         //验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(lifeUser);
         Assert.isFalse(emailExist, "邮箱已注册.");
-        RedisCaptcha captcha = RedisCaptcha.of("send-email-code", lifeUser.getEmail()).genCaptcha();
+        RedisCaptcha captcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_REGISTER, lifeUser.getEmail()).genCaptcha();
         String captchaCode = captchaService.genNumCaptcha(captcha).getCode();
         //发送邮件
         try {
@@ -93,7 +93,7 @@ public class OauthController {
         //验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(lifeUser);
         Assert.isTrue(emailExist, "邮箱未注册.");
-        RedisCaptcha captcha = RedisCaptcha.of("send-email-code-reset-pwd", lifeUser.getEmail()).genCaptcha();
+        RedisCaptcha captcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_RESET_PWD, lifeUser.getEmail()).genCaptcha();
         String captchaCode = captchaService.genNumCaptcha(captcha).getCode();
         //发送邮件
         try {
@@ -122,7 +122,7 @@ public class OauthController {
     @Operation(summary = "获取图片验证码")
     @GetMapping("/valid-picture-code")
     public Result<Captcha> validPictureCode(@RequestParam(required = false, value = "uuid") String uuid) {
-        RedisCaptcha genCaptcha = RedisCaptcha.of("valid-picture-code", "valid-picture-code", uuid).genCaptcha();
+        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.VALID_PICTURE_CODE, "valid-picture-code", uuid).genCaptcha();
         captchaService.genNumCaptcha(genCaptcha);
         Captcha captcha = genCaptcha.getCaptcha();
         captcha.setCode(null);
@@ -132,7 +132,7 @@ public class OauthController {
     @Operation(summary = "发送手机登录验证码")
     @GetMapping("/send-sms-code-login")
     public Result<String> sendLoginSmsCode(@RequestParam(name = "phone") String phone) {
-        RedisCaptcha genCaptcha = RedisCaptcha.of("send-sms-code-login", phone).genCaptcha();
+        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_SMS_CODE_LOGIN, phone).genCaptcha();
         String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
         log.info("send-sms-code-login->{}", captchaCode);
         return Result.ok(genCaptcha.getUuid());
@@ -144,7 +144,7 @@ public class OauthController {
         // 验证邮箱是否重复
         Boolean emailExist = userService.validateEmailExist(new LifeUserDTO().setEmail(email));
         Assert.isTrue(emailExist, "邮箱未注册.");
-        RedisCaptcha genCaptcha = RedisCaptcha.of("send-email-code-login", email).genCaptcha();
+        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_LOGIN, email).genCaptcha();
         String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
         //发送邮件
         try {

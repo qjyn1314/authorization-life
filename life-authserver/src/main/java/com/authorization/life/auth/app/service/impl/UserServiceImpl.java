@@ -10,7 +10,6 @@ import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.auth.infra.mapper.UserMapper;
 import com.authorization.redis.start.model.RedisCaptcha;
 import com.authorization.redis.start.service.CaptchaService;
-import com.authorization.redis.start.util.RedisUtil;
 import com.authorization.valid.start.group.SaveGroup;
 import com.authorization.valid.start.group.ValidGroup;
 import com.authorization.valid.start.util.ValidUtil;
@@ -100,7 +99,7 @@ public class UserServiceImpl implements UserService {
         Assert.isFalse(emailExist, "该邮箱已注册.");
         Assert.notBlank(lifeUser.getHashPassword(), "密码不能为空.");
 
-        RedisCaptcha captcha = RedisCaptcha.of("send-email-code", lifeUser.getEmail(), lifeUser.getCaptchaUuid());
+        RedisCaptcha captcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_REGISTER, lifeUser.getEmail(), lifeUser.getCaptchaUuid());
         boolean verify = captchaService.validClearCaptcha(captcha, lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
 
@@ -144,7 +143,7 @@ public class UserServiceImpl implements UserService {
         ValidUtil.validateAndThrow(lifeUser, LifeUserDTO.ResetPwdGroup.class);
         Assert.isTrue(lifeUser.getHashPassword().equals(lifeUser.getValidHashPassword()), "两次输入密码不一致,请重新输入.");
 
-        RedisCaptcha captcha = RedisCaptcha.of("send-email-code", lifeUser.getEmail(), lifeUser.getCaptchaUuid());
+        RedisCaptcha captcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_RESET_PWD, lifeUser.getEmail(), lifeUser.getCaptchaUuid());
         boolean verify = captchaService.validClearCaptcha(captcha, lifeUser.getCaptchaCode());
         Assert.isTrue(verify, "验证码不正确,请重新输入.");
 

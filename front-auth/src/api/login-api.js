@@ -39,7 +39,7 @@ export function oauthLogout(data) {
 
 // 发送邮箱注册验证码
 export function sendEmailCode(data) {
-    return axiosService.post(`/${AUTH_SERVER}/oauth/send-email-code`, data)
+    return axiosService.post(`/${AUTH_SERVER}/oauth/send-email-code-register`, data)
 }
 
 // 邮箱注册

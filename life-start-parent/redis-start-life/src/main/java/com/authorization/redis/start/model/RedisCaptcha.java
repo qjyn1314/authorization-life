@@ -42,14 +42,11 @@ public class RedisCaptcha implements Serializable {
     /** 过期时间(单位:分钟) */
     private Integer expiredTime = 10;
 
-    /** 格式字符串 */
-    private String format;
-
     /**
      * 如果为空则返回默认的格式
      */
     public String getFormat() {
-        return StrUtil.isBlank(this.format) ? sso_oauth_server : this.format;
+        return sso_oauth_server;
     }
 
     /** 格式化后的key */
@@ -68,18 +65,15 @@ public class RedisCaptcha implements Serializable {
     private RedisCaptcha() {
     }
 
-    public static RedisCaptcha ofKeyUuid(String key, Integer expiredTime) {
-        RedisCaptcha redisCaptcha = new RedisCaptcha();
-        redisCaptcha.setKey(key);
-        redisCaptcha.setExpiredTime(expiredTime);
-        return redisCaptcha;
-    }
-
     public static RedisCaptcha of(String bizType, String bizId) {
         return of(bizType, bizId, UUID.fastUUID().toString(true));
     }
 
     public static RedisCaptcha of(String bizType, String bizId, String uuid) {
+        return of(bizType, bizId, uuid, defaultExpiredTime);
+    }
+
+    public static RedisCaptcha of(String bizType, String bizId, String uuid, Integer expiredTime) {
         RedisCaptcha redisCaptcha = new RedisCaptcha();
         redisCaptcha.setBizType(bizType);
         redisCaptcha.setBizId(bizId);
@@ -88,21 +82,24 @@ public class RedisCaptcha implements Serializable {
         } else {
             redisCaptcha.setUuid(UUID.fastUUID().toString(true));
         }
-        return redisCaptcha;
-    }
-
-    public static RedisCaptcha of(String bizType, String bizId, String uuid, Integer expiredTime) {
-        RedisCaptcha redisCaptcha = of(bizType, bizId, uuid);
         redisCaptcha.setExpiredTime(expiredTime);
         return redisCaptcha;
     }
 
-    public static RedisCaptcha of(String bizType, String bizId, String uuid, String format) {
-        RedisCaptcha redisCaptcha = of(bizType, bizId, uuid);
-        redisCaptcha.setFormat(format);
+    public static RedisCaptcha ofKey(String key, Integer expiredTime) {
+        RedisCaptcha redisCaptcha = new RedisCaptcha();
+        redisCaptcha.setKey(key);
+        redisCaptcha.setExpiredTime(expiredTime);
         return redisCaptcha;
     }
 
+    public static RedisCaptcha ofKey(String key) {
+        RedisCaptcha redisCaptcha = new RedisCaptcha();
+        redisCaptcha.setKey(key);
+        return redisCaptcha;
+    }
+
+    private static final Integer defaultExpiredTime = 10;
     private static final int NUM_GEN_COUNT = 6;
     private static final CodeGenerator NUM_GEN = new RandomGenerator(RandomUtil.BASE_NUMBER, NUM_GEN_COUNT);
 
@@ -117,6 +114,29 @@ public class RedisCaptcha implements Serializable {
         this.code = shearCaptcha.getCode();
         this.captcha = Captcha.of(shearCaptcha, this.uuid);
         return this;
+    }
+
+    public interface CaptchaType {
+        /**
+         * 发送邮箱注册验证码
+         */
+        String SEND_EMAIL_CODE_REGISTER = "send-email-code-register";
+        /**
+         * 发送邮箱重置密码验证码
+         */
+        String SEND_EMAIL_CODE_RESET_PWD = "send-email-code-reset-pwd";
+        /**
+         * 获取图片验证码
+         */
+        String VALID_PICTURE_CODE = "valid-picture-code";
+        /**
+         * 发送手机登录验证码
+         */
+        String SEND_SMS_CODE_LOGIN = "send-sms-code-login";
+        /**
+         * 发送手机登录验证码
+         */
+        String SEND_EMAIL_CODE_LOGIN = "send-email-code-login";
     }
 
 }

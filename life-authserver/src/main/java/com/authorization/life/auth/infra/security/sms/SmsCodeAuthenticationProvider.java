@@ -5,16 +5,16 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.authorization.life.auth.infra.security.base.OAuth2BaseAuthenticationProvider;
 import com.authorization.life.auth.infra.security.service.RegisteredClientService;
 import com.authorization.life.security.start.UserDetailService;
-import com.authorization.redis.start.util.RedisUtil;
-import com.authorization.utils.StringUtil;
+import com.authorization.redis.start.model.RedisCaptcha;
+import com.authorization.redis.start.service.CaptchaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
@@ -41,10 +41,6 @@ public class SmsCodeAuthenticationProvider
      * 验证码
      */
     public static final String CAPTCHA_CODE = "captcha_code";
-    /**
-     * 短信验证码存储在redis中的key
-     */
-    public static final String CAPTCHA_UUID_KEY = "sso-oauth-server:auth:phone-captcha-uuid:{uuid}";
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -73,7 +69,7 @@ public class SmsCodeAuthenticationProvider
         UserDetailService userDetailService = SpringUtil.getBean(UserDetailService.class);
         RegisteredClientService registeredClientService =
                 SpringUtil.getBean(RegisteredClientService.class);
-        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
+        CaptchaService captchaService = SpringUtil.getBean(CaptchaService.class);
 
         // 验证client是否正确, 授权域是否正确.
         RegisteredClient registeredClient = registeredClientService.findByClientId(clientId);
@@ -84,9 +80,9 @@ public class SmsCodeAuthenticationProvider
         UserDetails userDetails = userDetailService.loadUserByUsername(username);
 
         // 校验验证码是否正确
-        String captchaUuidRedisKey = StringUtil.of(CAPTCHA_UUID_KEY).add("uuid", captchaUuid).format();
-        boolean validCodeVal = redisUtil.validCodeVal(captchaUuidRedisKey, captchaCode, true);
-        Assert.isTrue(validCodeVal, () -> new BadCredentialsException("验证码不正确."));
+        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_SMS_CODE_LOGIN, username, captchaUuid);
+        boolean validCaptcha = captchaService.validClearCaptcha(genCaptcha, captchaCode);
+        Assert.isTrue(validCaptcha, () -> new OAuth2AuthenticationException("验证码不正确."));
 
         // 验证用户状态
         new AccountStatusUserDetailsChecker().check(userDetails);

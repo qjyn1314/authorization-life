@@ -1,7 +1,6 @@
 package com.authorization.life.auth.infra.security.sms;
 
 import com.authorization.life.auth.infra.security.OAuth2EndpointUtils;
-import com.authorization.life.auth.infra.security.password.PasswordAuthenticationToken;
 import com.authorization.utils.json.JsonHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ public class SmsCodeAuthenticationConverter implements AuthenticationConverter {
 
         // grant_type (REQUIRED)
         String grantType = parameters.getFirst(OAuth2ParameterNames.GRANT_TYPE);
-        if (!PasswordAuthenticationToken.PASSWORD.equals(grantType)) {
+        if (!SmsCodeAuthenticationToken.PHONE_CAPTCHA.equals(grantType)) {
             return null;
         }
 

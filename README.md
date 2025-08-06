@@ -1,8 +1,8 @@
 # authorization-life oauth2.0 授权服务
 
- * OAuth 2.0 协议规范: https://datatracker.ietf.org/doc/html/rfc6749
- 
- * OAuth 2.1 协议规范: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13
+* OAuth 2.0 协议规范: https://datatracker.ietf.org/doc/html/rfc6749
+
+* OAuth 2.1 协议规范: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13
 
 ## 前后端分离Oauth2.0的实践
 
@@ -50,7 +50,7 @@ OpenApi文档助手
 
 ### [mybatis-start-life](life-start-parent/mybatis-start-life)
 
-orm持久层, mybatis-plus, 
+orm持久层, mybatis-plus,
 
 ### [redis-start-life](life-start-parent/redis-start-life)
 
@@ -66,11 +66,12 @@ Oauth2.0 授权认证服务
 
 ### [life-gateway](life-gateway)
 
-服务上下线的监听(动态路由的实现)，Authorization 的解析、校验权限，自定义路由，url路径的校验，gateway断路器的配置， 等一些可以在网关层次做的操作。
+服务上下线的监听(动态路由的实现)，Authorization 的解析、校验权限，自定义路由，url路径的校验，gateway断路器的配置，
+等一些可以在网关层次做的操作。
 
 ### [life-remote-api](life-remote-api)
 
-服务之间相互调用基本依赖, 前提是已经依赖了 [dubbo-start-life](life-start-parent/dubbo-start-life) 
+服务之间相互调用基本依赖, 前提是已经依赖了 [dubbo-start-life](life-start-parent/dubbo-start-life)
 
 ### [authserver-remote-api](life-remote-api/authserver-remote-api)
 
@@ -168,7 +169,7 @@ https://blog.csdn.net/qq_38046739/article/details/127752149
 
 ### 授权码模式授权登录思路
 
-##### 1. 获取授权路径: 前端启动成功后默认访问页面: http://dev.authorization.life/clients 
+##### 1. 获取授权路径: 前端启动成功后默认访问页面: http://dev.authorization.life/clients
 
 ![授权码模式的获取授权路径.png](image/%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E8%8E%B7%E5%8F%96%E6%8E%88%E6%9D%83%E8%B7%AF%E5%BE%84.png)
 
@@ -177,20 +178,25 @@ https://blog.csdn.net/qq_38046739/article/details/127752149
 ![授权码模式的授权登录页面.png](image/%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%8E%88%E6%9D%83%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2.png)
 
 ##### 3. 输入用户名密码
+
 用户名：qjyn1314@163.com
 密码：admin
 
-##### 4. 用户名密码验证通过之后，将重定向到： http://dev.authorization.life/auth-redirect?code=_nQESeSDC0cYcgrdbQQf2HOMNEl5zxz1hP-qzwuSeVsJ--5rJsqu_tKGKSv_Rsx_N5bXn309p71zEx9BuLLKJT4OU8Pw42w4f8eVO06s4FqhGgbin_i7v1379XBf0atm&state=4946cb97e744467b9086722234a09f3e 
+##### 4. 用户名密码验证通过之后，将重定向到： http://dev.authorization.life/auth-redirect?code=_nQESeSDC0cYcgrdbQQf2HOMNEl5zxz1hP-qzwuSeVsJ--5rJsqu_tKGKSv_Rsx_N5bXn309p71zEx9BuLLKJT4OU8Pw42w4f8eVO06s4FqhGgbin_i7v1379XBf0atm&state=4946cb97e744467b9086722234a09f3e
 
-> 说明: 用户已经登录成功, 但是需要授权token, 当前浏览器会话中, (spring-boot-starter-security)已经将登录成功用户信息存放至SecurityContext缓存中. 此处路径中的 /auth-redirect 就对应着前端工程的临时授权页面, 主要是(spring-security-oauth2-authorization-server)为了颁发token, 但是在颁发token之前, 在此页面中可以进行发送短信验证码, 或者发送邮箱验证码, 或者二维码验证, 再次验证用户是否真实, 待通过后再次请求 /oauth2/token 接口. 
+> 说明: 用户已经登录成功, 但是需要授权token, 当前浏览器会话中, (spring-boot-starter-security)
+> 已经将登录成功用户信息存放至SecurityContext缓存中. 此处路径中的 /auth-redirect 就对应着前端工程的临时授权页面, 主要是(
+> spring-security-oauth2-authorization-server)为了颁发token, 但是在颁发token之前, 在此页面中可以进行发送短信验证码,
+> 或者发送邮箱验证码, 或者二维码验证, 再次验证用户是否真实, 待通过后再次请求 /oauth2/token 接口.
 
 授权码模式的前端临时code获取授权页面:
 ![授权码模式的临时code授权页面.png](image/%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%B4%E6%97%B6code%E6%8E%88%E6%9D%83%E9%A1%B5%E9%9D%A2.png)
 
 ##### 5. [front-auth](front-auth)前端工程中的 [TemporaryAuth.vue](front-auth/src/views/auth/TemporaryAuth.vue) 临时授权页面，通过
+
 网址中的 code 请求 /oauth2/token 接口 ，获取自定义的 jwt形式的 accessToken，然后将其保存到cookie中，为下一次请求接口使用。
 
-授权码模式的获取AccessToken的请求: 
+授权码模式的获取AccessToken的请求:
 ![授权码模式的获取AccessToken的请求.png](image/%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E8%8E%B7%E5%8F%96AccessToken%E7%9A%84%E8%AF%B7%E6%B1%82.png)
 
 授权码模式的获取AccessToken的结果:
@@ -207,16 +213,14 @@ https://blog.csdn.net/qq_38046739/article/details/127752149
 授权码模式的登录成功的LocalStorage
 ![授权码模式的登录成功的LocalStorage.png](image/%E6%8E%88%E6%9D%83%E7%A0%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%99%BB%E5%BD%95%E6%88%90%E5%8A%9F%E7%9A%84LocalStorage.png)
 
-
 # 客户端凭证（client credentials）
 
 博文:
 
 https://blog.csdn.net/qq_38046739/article/details/127774901
 
-流程:
+post请求接口
 
-1.post请求接口
 http://dev.authorization.life/dev-api/auth-life/oauth2/token
 
 传参:
@@ -229,6 +233,62 @@ client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
 
 ![client_credentials.png](image/client_credentials.png)
 
+# 用户名密码模式（password）
+
+post请求接口
+
+http://dev.authorization.life/dev-api/auth-life/oauth2/token
+
+传参:
+
+grant_type： password – 验证方式.
+
+client_id： passport – 申请时的 client信息
+
+client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
+
+username： qjyn1314@163.com – 用户名
+
+password： admin – 密码
+
+![用户名密码模式获取AccessToken.png](image/%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81%E6%A8%A1%E5%BC%8F%E8%8E%B7%E5%8F%96AccessToken.png)
+
+# 验证码模式（captcha_code）
+
+1. 发送验证码
+
+get请求接口
+
+http://dev.authorization.life/dev-api/auth-life/oauth/send-login-code
+
+传参:
+
+username：已注册的手机号或者已注册的邮箱
+
+![验证码模式获取验证码uuid.png](image/%E9%AA%8C%E8%AF%81%E7%A0%81%E6%A8%A1%E5%BC%8F%E8%8E%B7%E5%8F%96%E9%AA%8C%E8%AF%81%E7%A0%81uuid.png)
+
+2. 通过验证码获取AccessToken
+
+post请求接口
+
+http://dev.authorization.life/dev-api/auth-life/oauth2/token
+
+传参:
+
+grant_type： captcha_code – 验证方式.
+
+client_id： passport – 申请时的 client信息
+
+client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
+
+username： qjyn1314@163.com – 邮箱或者手机号
+
+captcha_uuid： d3ca558a5cf84853a98f61b90c2640ee – 验证码对应的rediskey
+
+captcha_code： 780214 – 验证码
+
+![验证码模式获取AccessToken.png](image/%E9%AA%8C%E8%AF%81%E7%A0%81%E6%A8%A1%E5%BC%8F%E8%8E%B7%E5%8F%96AccessToken.png)
+
 
 # 部署和访问页面
 
@@ -237,7 +297,7 @@ client_secret：3MMoCFo4nTNjRtGZ – 申请的密码明文
 3. 部署 mysql: 33010, nacos v2.5.1: 12095, redis: 12040
 4. 部署 nginx 1.27.2 , 并配置 dev.authorization.life 域名的转发
 5. 部署前端, 进入 front-auth 文件后 , npm npm install , npm run dev 启动 vue工程.
-6. 启动认证授权服务 [AuthServerLifeApplication.java](life-authserver/src/main/java/com/authorization/life/auth/AuthServerLifeApplication.java) 9030, 网关服务 [GatewayLifeApplication.java](life-gateway/src/main/java/com/authorization/gateway/GatewayLifeApplication.java) 9000 
+6. 启动认证授权服务 [AuthServerLifeApplication.java](life-authserver/src/main/java/com/authorization/life/auth/AuthServerLifeApplication.java)  端口号: 9030, 网关服务 [GatewayLifeApplication.java](life-gateway/src/main/java/com/authorization/gateway/GatewayLifeApplication.java) 端口号: 9000
 7. 访问地址: http://dev.authorization.life/clients
 
 > 注意: 其中 每个springboot服务中,redis的配置是一致的, 使用 0号 数据库.
@@ -330,31 +390,33 @@ http {
 
 [life_20250621_allinit.sql](db/life_20250621_allinit.sql)
 
-
 官网的授权客户端表 对应本项目中的 liam_oauth_client
+
 ```url
 https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/client/oauth2-registered-client-schema.sql
 ```
 
-官网的授权页面信息, 本项目中使用redis进行存储, 服务类: [RedisOAuth2AuthorizationConsentService.java](life-authserver/src/main/java/com/authorization/life/auth/infra/security/service/RedisOAuth2AuthorizationConsentService.java) 
+官网的授权页面信息, 本项目中使用redis进行存储,
+服务类: [RedisOAuth2AuthorizationConsentService.java](life-authserver/src/main/java/com/authorization/life/auth/infra/security/service/RedisOAuth2AuthorizationConsentService.java)
+
 ```url
 https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/oauth2-authorization-consent-schema.sql
 ```
 
-官网的授权AccessToken, 临时code, RefreshToken信息, 在本项目中使用redis 进行存储, 服务类: 
+官网的授权AccessToken, 临时code, RefreshToken信息, 在本项目中使用redis 进行存储, 服务类:
 [RedisOAuth2AuthorizationService.java](life-authserver/src/main/java/com/authorization/life/auth/infra/security/service/RedisOAuth2AuthorizationService.java)
+
 ```url
 https://github.com/spring-projects/spring-authorization-server/blob/main/oauth2-authorization-server/src/main/resources/org/springframework/security/oauth2/server/authorization/oauth2-authorization-schema.sql
 ```
 
-
-用户表  liam_user
+用户表 liam_user
 
 用户分组表 liam_user_group
 
-字典主表  lsys_lov
+字典主表 lsys_lov
 
-字典子表  lsys_lov_value
+字典子表 lsys_lov_value
 
 模板主表 lsys_temp
 

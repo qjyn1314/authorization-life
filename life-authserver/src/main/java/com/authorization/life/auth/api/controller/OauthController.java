@@ -146,20 +146,21 @@ public class OauthController {
         log.info("send-login-code-genCaptcha->{}", JSON.toJSONString(genCaptcha));
         String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
         log.info("send-login-code-captchaCode->{}", JSON.toJSONString(captchaCode));
-        boolean emailFlag = username.contains("@");
-        if (emailFlag) {
-            //发送邮件验证码
-            try {
-                mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, username, Map.of("captchaCode", captchaCode));
-            } catch (Exception e) {
-                log.error("发送登录验证码异常#email:{}", username, e);
-                captchaService.validClearCaptcha(genCaptcha, captchaCode);
-                throw new CommonException("发送登录验证码,请输入正确的账号.");
-            }
-        } else {
-            // 发送短信验证码
-
-        }
+        // todo 此处需要实现真正的发送验证码
+//        boolean emailFlag = username.contains("@");
+//        if (emailFlag) {
+//            //发送邮件验证码
+//            try {
+//                mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, username, Map.of("captchaCode", captchaCode));
+//            } catch (Exception e) {
+//                log.error("发送登录验证码异常#email:{}", username, e);
+//                captchaService.validClearCaptcha(genCaptcha, captchaCode);
+//                throw new CommonException("发送登录验证码,请输入正确的账号.");
+//            }
+//        } else {
+//            // 发送短信验证码
+//
+//        }
         return Result.ok(genCaptcha.getUuid());
     }
 

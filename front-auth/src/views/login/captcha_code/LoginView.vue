@@ -17,37 +17,15 @@
                 <el-col :span="20" :offset="2">
                   <el-form :model="loginForm" :rules="rules" ref="ruleForm">
                     <el-form-item prop="username">
-                      <el-input ref="username" v-model="loginForm.username" placeholder="邮箱"></el-input>
+                      <el-input ref="username" v-model="loginForm.username" placeholder="邮箱/(+86)手机号"></el-input>
                     </el-form-item>
-                    <el-form-item prop="password">
-                      <el-input ref="password" type="password" v-model="loginForm.password"
-                                placeholder="密码"></el-input>
+                    <el-form-item prop="captchaCode">
+                      <el-input ref="captchaCode" v-model="loginForm.captchaCode"
+                                placeholder="验证码"></el-input>
                     </el-form-item>
                   </el-form>
                 </el-col>
               </el-row>
-              <div v-if="showCaptcha">
-                <el-row>
-                  <el-col :span="10" :offset="2">
-                    <el-form-item prop="captchaCode">
-                      <el-input ref="captchaCode" v-model="loginForm.captchaCode" placeholder="验证码"></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <div style="width: 190px;height: 40px; line-height: 40px;"
-                         @click="refreshCode">
-                      <el-image :src="captcha.imageBase64"></el-image>
-                    </div>
-                  </el-col>
-                </el-row>
-
-                <el-row>
-                  <el-col :span="20" :offset="2">
-                    <h6 style="color: red">密码输入错误累计十次将锁定三小时.</h6>
-                  </el-col>
-                </el-row>
-              </div>
-
               <el-row>
                 <el-col :span="6" :offset="18">
                   <el-form-item>

@@ -1,12 +1,14 @@
 package com.authorization.life.auth.api.controller;
 
 import cn.hutool.core.lang.Assert;
+import com.alibaba.fastjson2.JSON;
 import com.authorization.common.exception.handle.CommonException;
 import com.authorization.life.auth.app.constant.Inspirational;
 import com.authorization.life.auth.app.dto.LifeUserDTO;
 import com.authorization.life.auth.app.service.OauthClientService;
 import com.authorization.life.auth.app.service.UserService;
 import com.authorization.life.auth.app.vo.OauthClientVO;
+import com.authorization.life.auth.infra.entity.LifeUser;
 import com.authorization.life.mail.start.MailConstant;
 import com.authorization.life.mail.start.MailSendService;
 import com.authorization.life.security.start.entity.UserHelper;
@@ -129,30 +131,34 @@ public class OauthController {
         return Result.ok(captcha);
     }
 
-    @Operation(summary = "发送手机登录验证码")
-    @GetMapping("/send-sms-code-login")
-    public Result<String> sendLoginSmsCode(@RequestParam(name = "phone") String phone) {
-        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_SMS_CODE_LOGIN, phone).genCaptcha();
-        String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
-        log.info("send-sms-code-login->{}", captchaCode);
-        return Result.ok(genCaptcha.getUuid());
-    }
+    @Operation(summary = "发送登录验证码")
+    @GetMapping("/send-login-code")
+    public Result<String> sendLoginCode(@RequestParam(name = "username") String username) {
+        // 验证用户名是否存在
+        LifeUser lifeUser = userService.selectByUsername(username);
+        Assert.notNull(lifeUser, "账号未注册.");
+        // 仅支持手机号和邮箱发送验证码
+        boolean validFlag = username.equals(lifeUser.getEmail()) || username.equals(lifeUser.getPhone());
+        Assert.isTrue(validFlag, "账号未注册.");
+        String captchaType = username.contains("@") ? RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_LOGIN : RedisCaptcha.CaptchaType.SEND_SMS_CODE_LOGIN;
 
-    @Operation(summary = "发送邮箱登录验证码")
-    @GetMapping("/send-email-code-login")
-    public Result<String> sendLoginEmailCode(@RequestParam(name = "email") String email) {
-        // 验证邮箱是否重复
-        Boolean emailExist = userService.validateEmailExist(new LifeUserDTO().setEmail(email));
-        Assert.isTrue(emailExist, "邮箱未注册.");
-        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_LOGIN, email).genCaptcha();
+        RedisCaptcha genCaptcha = RedisCaptcha.of(captchaType, username).genCaptcha();
+        log.info("send-login-code-genCaptcha->{}", JSON.toJSONString(genCaptcha));
         String captchaCode = captchaService.genNumCaptcha(genCaptcha).getCode();
-        //发送邮件
-        try {
-            mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, email, Map.of("captchaCode", captchaCode));
-        } catch (Exception e) {
-            log.error("发送邮件异常#email:{}", email, e);
-            captchaService.validClearCaptcha(genCaptcha, captchaCode);
-            throw new CommonException("邮件发送失败,请输入正确的邮箱.");
+        log.info("send-login-code-captchaCode->{}", JSON.toJSONString(captchaCode));
+        boolean emailFlag = username.contains("@");
+        if (emailFlag) {
+            //发送邮件验证码
+            try {
+                mailSendService.sendEmail(MailConstant.EMAIL_LOGIN_CAPTCHA_CODE_TEMPLATE, username, Map.of("captchaCode", captchaCode));
+            } catch (Exception e) {
+                log.error("发送登录验证码异常#email:{}", username, e);
+                captchaService.validClearCaptcha(genCaptcha, captchaCode);
+                throw new CommonException("发送登录验证码,请输入正确的账号.");
+            }
+        } else {
+            // 发送短信验证码
+
         }
         return Result.ok(genCaptcha.getUuid());
     }

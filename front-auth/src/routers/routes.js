@@ -54,7 +54,7 @@ const frameOut = [
     {
         path: '/email_captcha',
         name: 'email_captcha',
-        component: () => import('@/views/login/email_captcha/LoginView.vue'),
+        component: () => import('@/views/login/captcha_code/LoginView.vue'),
         meta: {
             title: 'Oauth2SSO-email_captcha-login',
         },

@@ -79,7 +79,8 @@ public class CaptchaCodeAuthenticationProvider
         UserDetails userDetails = userDetailService.loadUserByUsername(username);
 
         // 校验验证码是否正确
-        RedisCaptcha genCaptcha = RedisCaptcha.of(RedisCaptcha.CaptchaType.SEND_SMS_CODE_LOGIN, username, captchaUuid);
+        String captchaType = username.contains("@") ? RedisCaptcha.CaptchaType.SEND_EMAIL_CODE_LOGIN : RedisCaptcha.CaptchaType.SEND_SMS_CODE_LOGIN;
+        RedisCaptcha genCaptcha = RedisCaptcha.of(captchaType, username, captchaUuid);
         boolean validCaptcha = captchaService.validClearCaptcha(genCaptcha, captchaCode);
         Assert.isTrue(validCaptcha, () -> new OAuth2AuthenticationException("验证码不正确."));
 
